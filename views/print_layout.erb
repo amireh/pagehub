@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><% yield_content :title %></title>
+
+  <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
+  <link href="/css/fonts/proximanova.css" rel="stylesheet" type="text/css" />
+  <link href="/css/common.css" rel="stylesheet" type="text/css" />
+
+  <% yield_content :scripts %>
+</head>
+
+<body>
+
+  <div class="stuff">
+    <header>
+      <% yield_content :header %>
+    </header>
+    
+    <div id="content">
+      <%= yield %>
+    </div>
+  </div>
+
+</body>
+
+</html>

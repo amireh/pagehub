@@ -1,0 +1,26 @@
+.CodeMirror {
+  /*border: 1px solid #E1E6E5;*/
+  /*border-left: 1px solid #ddd;*/
+  background: #FFFFF7;
+  overflow: auto;
+  font-size: 14px;
+  width: 698px;
+  margin-right: 0;
+  display: inline-block;
+  height: auto;
+  font-family: inherit;
+  margin-top: 26px;
+}
+.CodeMirror-scroll {
+  min-height: 480px;
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.CodeMirror-gutter-text {
+  /*text-align: center;*/
+}
+.CodeMirror-gutter {
+  background: transparent;
+}
