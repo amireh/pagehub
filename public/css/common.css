@@ -89,12 +89,12 @@ nav {
 }
 
 textarea,
-#current_page,
+#page_editor,
 input {
   border-radius: 2px;
 }
 
-#current_page,
+#page_editor,
 #pages {
   /*border: 1px solid #FF4242; */
   /*border: 1px solid #312D21; */
@@ -135,7 +135,7 @@ a#new_page:not(:hover) {
   /*color: #FFF;*/
 }
 
-#current_page {
+#page_editor {
   width: 718px;
   /*border-bottom-right-radius: 10px;*/
   background: #FFFFF7;
@@ -166,7 +166,7 @@ a#new_page:not(:hover) {
   /*color: #fffff7;*/
 }
 
-#current_page > *:first-child,
+#page_editor > *:first-child,
 #pages > *:first-child {
   margin-top: 0;
 }
@@ -177,7 +177,7 @@ a#new_page:not(:hover) {
   border-bottom: 1px solid #DDD;
   width: 959px;
   text-align: center;
-  padding: 10px;
+  padding: 0px;
   margin-left: -20px;
   z-index: 100;
 
@@ -187,7 +187,8 @@ a#new_page:not(:hover) {
   -o-transition: top 0.5s ease 0s;
   transition: top 0.5s ease 0s;    
 
-  box-shadow: 0 0px 5px 0px black;
+  box-shadow: 0 0px 3px 0px #615B4E;
+  font-size: 14px;
 }
 #status.good {
   background: #C0D23E;

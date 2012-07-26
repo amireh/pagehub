@@ -11,7 +11,8 @@ class Page
   belongs_to :user
   has n, :tags, :through => Resource
 
-  before :save do |page|
+  before :valid? do |_|
+    page = self
     p page.title
     p page.pretty_title
     page.pretty_title = page.title.sanitize

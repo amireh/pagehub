@@ -12,99 +12,26 @@
 <script src="/js/codemirror-2.3/mode/lua/lua.js"></script>
 <script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
 
+<script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
+
 <script src="/js/jqModal.js"></script>
 <script src="/js/naughty.js"></script>
+<script src="/js/naughty_ui.js"></script>
 
 <link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
 <link rel="stylesheet" href="/css/codemirror.css">
 <link rel="stylesheet" href="/css/jqModal.css">
-<script>
+
+<script type="text/javascript">
+  // ui = naughty_ui();
+  // naughty = new naughty;
+
   $(function() {
     var editor = null;
 
-    function save() {
-      editor.save();
-
-      // var title = $("#pages .selected").html();
-      var title = $("#pages .selected").attr("id").replace("page_", "");
-      // var content = $("#current_page").serialize();
-      var content = editor.getValue();
-
-      console.log("Saving " + title);
-
-      ui.status("Saving page...", "pending");
-
-      $.ajax({
-        type: "PUT",
-        url: "/pages/" + title,
-        data: { attributes: { content: content } },
-        success: function() {
-          status("Page saved!", "good");
-        },
-        error: function(rc) {
-          status("Unable to save page: " + rc.responseText, "bad");
-        }
-      })
-    } // save();
-
-    function edit_title() {
-      var li = $("#pages li.selected");
-      var txtbox = $("#title_editor");
-
-      li.hide();
-      console.log(li)
-      txtbox.show().attr("value", li.html());
-      li.after(txtbox);
-      txtbox.focus();
-
-      return true;
-    }
-    function reset_title(capture) {
-      var li = $("#pages li:hidden");
-      var txtbox = $("#title_editor");
-
-      if (capture)
-        li.html(txtbox.attr("value"));
-
-      txtbox.hide();
-      li.show();
-    }
-
-    function save_title() {
-      reset_title(true);
-
-      var page_id = li.attr("id").replace("page_", "");
-      var title = li.html();
-
-      ui.status("Saving page title...", "pending");
-
-      $.ajax({
-        type: "PUT",
-        url: "/pages/" + page_id,
-        data: { attributes: { title: title } },
-        success: function() {
-          status("Page title changed!", "good");
-        },
-        error: function(rc) {
-          status("Unable to change the page's title :( " + rc.responseText, "bad");
-        }
-      })
-    }
-
-    $("#title_editor").keyup(function(e) {
-      if ( e.which == 13 ) {
-        e.preventDefault();
-        save_title();
-        // $(this).siblings("a:first").click();
-      } else if (e.which == 27) {
-        e.preventDefault();
-        reset_title();
-      }
-    });
-
     function get_page() {
       if ($(this).hasClass("selected"))
-        return edit_title();
+        return ui.show_title_editor();
 
       $("#page_actions").removeClass("disabled");
 
@@ -120,9 +47,9 @@
         type: "GET",
         url: "/pages/" + title + ".json",
         success: function(content) {
-          // $("#current_page").html(content);
+          // $("#page_editor").html(content);
           editor.setValue(content);
-          $("#preview").attr("href", "/pages/" + title + "/preview");
+          $("#preview").attr("href", "/pages/" + title + "/pretty");
           $("#share").attr("href", "/pages/" + title + "/share");
         }
       });
@@ -135,7 +62,7 @@
       "Ctrl-2": function(cm) { mxvt.markdown.heading(cm, 2) },
       "Ctrl-3": function(cm) { mxvt.markdown.heading(cm, 3) },
       "Ctrl-4": function(cm) { mxvt.markdown.heading(cm, 4) },
-      "Ctrl-S": function(cm) { save(); },
+      "Ctrl-S": function(cm) { ui.save(); },
       "Ctrl-B": function(cm) { mxvt.markdown.strongify(cm) },
       "Ctrl-I": function(cm) { mxvt.markdown.emphasize(cm) },
       "Shift-Ctrl-K": function(cm) { cm.removeLine(cm.getCursor(true).line) },
@@ -147,7 +74,7 @@
       fallthrough: ["default"]
     };
 
-    editor = CodeMirror.fromTextArea(document.getElementById("current_page"), {
+    editor = CodeMirror.fromTextArea(document.getElementById("page_editor"), {
       mode: "markdown",
       lineNumbers: true,
       matchBrackets: true,
@@ -162,17 +89,24 @@
     ui.editor = editor;
     ui.actions = $("#page_actions");
 
-    $("#zoom_in").click(function() {
+    ui.on_action("zoom_in", function() {
       $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
-    });
-    $("#zoom_out").click(function() {
-      $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) - 2);
+      // $(".CodeMirror").css("line-height", parseInt($(".CodeMirror").css("line-height")) + 2);
+      $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) + 2) + "px");
     });
 
-    $("#font_selection").change(function() {
-      console.log("Font: " + $(this).find(":selected").attr("value"));
-      $(".CodeMirror").css("font-family", $(this).find(":selected").attr("value"));
+    ui.on_action("zoom_out", function() {
+      $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) - 2);
+      $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) - 2) + "px");
     });
+
+    ui.on_action("change_font", function() {
+      var font = $("#page_actions select :selected").attr("value");
+      console.log("Font: " + font);
+      $(".CodeMirror").css("font-family", font);
+    });
+
+
 
     $("#new_page").click(function() {
       console.log("creating a page")
@@ -194,6 +128,13 @@
           console.log(e)
         }
       });
+    });
+
+    $("#page_actions a").click(function() {
+      return ui.action($(this).attr("id"));
+    });
+    $("#page_actions select").change(function() {
+      return ui.action($(this).attr("id"));
     });
 
   }); 
@@ -218,7 +159,7 @@
 --><div class="disabled" id="page_actions">
   <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
   <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet;<!--
-  --><select title="The font used in the page editor" id="font_selection">
+  --><select title="The font used in the page editor" id="change_font">
     <option value="ProximaNova-Light" selected="selected">Proxima Nova</option>
     <option value="monospace">Monospace</option>
     <option value="Arial">Arial</option>
@@ -226,16 +167,16 @@
     <option value="Helvetica Neue">Helvetica Neue</option>
   </select><!--
   --><a target="Naughty - Preview" 
-  title="View the current page in prettified HTML mode" 
-  href="/pages/x/preview" id="preview">Pretty Mode</a> &bullet;
+        title="View the current page in prettified HTML mode" 
+        href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
   <a target="Naughty" 
-  title="Make a public version of this page that you can share with people" 
-  href="/pages/x/share" id="share">Share this</a> &bullet;
+      title="Make a public version of this page that you can share with people" 
+      href="/pages/x/share" id="share">Share this</a> &bullet;
   <a id="delete_page" class="confirm"
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="delete_page"
      title="Deletes the page forever">Delete</a>
-</div><textarea id="current_page">
+</div><textarea id="page_editor">
 </textarea>
 
 <!-- Confirm Dialog -->

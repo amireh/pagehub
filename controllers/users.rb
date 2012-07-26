@@ -15,6 +15,11 @@ helpers do
     @user = User.first(email: session[:email])
     @user
   end
+
+  def restricted!
+    halt 401 unless logged_in?
+  end
+
 end
 
 get '/signup' do

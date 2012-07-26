@@ -1,5 +1,5 @@
 get '/pages/:id.json' do |id|
-  halt 401 unless logged_in?
+  restricted!
 
   p = Page.first(id: id, user_id: current_user.id)
 
@@ -11,7 +11,7 @@ get '/pages/:id.json' do |id|
 end
 
 put '/pages/:id' do |id|
-  halt 401 unless logged_in?
+  restricted!
 
   p = Page.first({ id: id, user_id: current_user.id })
   
@@ -22,51 +22,25 @@ put '/pages/:id' do |id|
   true.to_json
 end
 
-get '/pages/:id/preview' do |id|
-  halt 401 unless logged_in?
+get '/pages/:id/pretty' do |id|
+  restricted!
 
-  # @page = Page.first_or_create({ pretty_title: title.sanitize, user_id: current_user.id },
-  # { title: title })
-  @page = Page.first({ id: id, user_id: current_user.id })
-
-  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
-  # if page.saved?
-  #   return page.content.to_markdown
-  # else
-  #   return "Sorry, I was unable to find the page :("
-  # end
-  erb :"preview", layout: :"print_layout"
-end
-
-get '/pages/:id/share' do |id|
-  halt 401 unless logged_in?
-
-  # @page = Page.first_or_create({ pretty_title: title.sanitize, user_id: current_user.id },
-  # { title: title })
   @page = Page.first({ id: id, user_id: current_user.id })
 
   halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
 
-  @pp = PublicPage.create({ page_id: @page.id, user_id: @page.user_id })
-
-  redirect "/#{@page.user.nickname}/#{@page.title.sanitize}"
-
-  # if page.saved?
-  #   return page.content.to_markdown
-  # else
-  #   return "Sorry, I was unable to find the page :("
-  # end
-  # erb :"preview", layout: :"print_layout"
+  erb :"pretty", layout: :"print_layout"
 end
 
+# Creates a blank new page
 post '/pages' do
-  halt 401 unless logged_in?
+  restricted!
 
   Page.create({ user_id: current_user.id }).id.to_json
 end
 
 delete '/pages/:id' do |id|
-  halt 401 unless logged_in?
+  restricted!
 
   p = Page.first({ id: id, user_id: current_user.id })
   
@@ -77,6 +51,24 @@ delete '/pages/:id' do |id|
   true.to_json
 end
 
+# Creates a publicly accessible version of the given page.
+# The public version will be accessible at:
+# => /user-nickname/pretty-article-title
+#
+# See String.sanitize for the nickname and pretty page titles.
+get '/pages/:id/share' do |id|
+  restricted!
+
+  @page = Page.first({ id: id, user_id: current_user.id })
+
+  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
+
+  @pp = PublicPage.first_or_create({ page_id: @page.id, user_id: @page.user_id })
+
+  redirect "/#{@page.user.nickname}/#{@page.title.sanitize}"
+end
+
+# Retrieve a publicly accessible page.
 get '/:nickname/:title' do |nn, title|
   user = User.first({ nickname: nn })
   halt 404, "This seems to be an invalid link, sorry :(" if !user
