@@ -100,7 +100,7 @@ naughty_ui = function() {
 
       ui.clear_status(function() {
         // status_timer = setTimeout("ui.clear_status()", seconds_to_show * 1000);
-        status_timer = setTimeout("ui.clear_status()", 1000);
+        status_timer = setTimeout("ui.clear_status()", 2000);
         $("#status").removeClass("pending good bad").addClass(status + " visible").html(text);//"slide", {}, anime_dur);
         status_shown = true;
       });
@@ -131,7 +131,7 @@ naughty_ui = function() {
     },
 
     save: function() {
-      ui.editor.save();
+      // ui.editor.save();
 
       var page_id = current_page_id();
       var content = ui.editor.getValue();

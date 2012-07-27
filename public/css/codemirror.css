@@ -1,16 +1,17 @@
 .CodeMirror {
   /*border: 1px solid #E1E6E5;*/
   /*border-left: 1px solid #ddd;*/
-  background: #FFFFF7;
+  /*background: #FFFFF7;*/
   overflow: auto;
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 16px;
+  /*line-height: 14px;*/
   width: 698px;
   margin-right: 0;
   display: inline-block;
   height: auto;
   font-family: inherit;
   margin-top: 26px;
+  letter-spacing: 1px;
 }
 .CodeMirror-scroll {
   min-height: 480px;
@@ -24,4 +25,12 @@
 }
 .CodeMirror-gutter {
   background: transparent;
+  border-color: #615B4E;
+}
+.CodeMirror pre.CodeMirror-cursor {
+  border-left-color: #BBB;
+  border-left-width: 1px;
+}
+.CodeMirror-selected {
+  background: #F34379 !important;
 }

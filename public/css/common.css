@@ -6,12 +6,15 @@ body {
   line-height: 26px;
   /*line-height: 20px;*/
   position: relative;
-  background: #FFFFF7;
-  background: #615B4E;
+  /*background: #FFFFF7;*/
+  /*background: #615B4E;*/
   margin: 0;
   padding: 0;
-  color: #312D21;
-  /*color: #615B4E;*/
+  /*color: #312D21;*/
+  color: #615B4E;
+  color: #F4FAD2;
+  background: url(bg.png) repeat;
+  margin-bottom: 20px;
 }
 
 small {
@@ -23,16 +26,35 @@ body * {
           box-sizing: border-box;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid #615b4e;
+}
+
+.strikes {
+  position: relative;
+  width: 962px;
+  /*width: 100%;*/
+  left: -22px;
+  -webkit-transform: rotate(-1.5deg);
+  z-index: 100;
+  margin-bottom: 30px;
+  background: url(bg.png) repeat;
+  box-shadow: 0px 0px 25px 1px rgba(0,0,0,0.5);
+}
+.strikes hr {
+  border-color: #615B4E;
+}
+
 a,
 a:visited {
   color: #D4EE5E;
-  color: #00BDD7;
+  color: #F0AD11;
   /*color: #E15E32;*/
 }
 
 header h1 {
   margin-top: 0;
-  /*text-shadow: 0 1px 0 #F0AD11;*/
 }
 header h1 a {
   text-decoration: none;
@@ -42,10 +64,12 @@ h1,h2,h3,
 h1 a,
 h1 a:visited {
   color: #FF4A58;
+  color: #F34379;
   /*color: #A82743;*/
 }
 h2 {
   color: #34747E;
+  color: #D4EE5E;
 }
 h3 {
   color: #F0AD11;
@@ -63,25 +87,28 @@ h3 {
   display: block;
 
   /*background: rgba(255,180,11,0.1);*/
+  background: rgba(0,0,0,0.1);
   /*background: #E5F04C;*/
   /*background: #FFB40B;*/
   /*background: #5C323E;*/
-  background: #FFFFF7;
+  /*background: #FFFFF7;*/
   /*border: 1px solid #FFB40B;*/
   /*border: 1px solid #C0D23E;*/
   /*border: 1px solid #F0AD11;*/
-  border: 1px solid #E1E6E5;
+  /*border: 1px solid #E1E6E5;*/
   border-top: none;
   padding: 20px 20px 5px 20px;
-  /*box-shadow: 0px 1px 2px 1px #E1E6E5;*/
+  /*box-shadow: 0px 0px 1px 1px #615B4E;*/
+  box-shadow: 0px 0px 25px 1px rgba(0,0,0,0.5) inset;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius:  10px;
+  border: 1px solid #615b4e;
 }
 
 nav {
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 15px;
 }
 
 #actions {
@@ -99,10 +126,10 @@ input {
   /*border: 1px solid #FF4242; */
   /*border: 1px solid #312D21; */
   /*border: 1px solid #C0D23E; */
-  /*border: 1px solid #00BDD7; */
+  /*border: 1px solid #F0AD11; */
   /*border: 1px solid #E1E6E5; */
   /*min-height: 300px;*/
-  background: #FFFFF7;
+  /*background: #FFFFF7;*/
   margin: 0;
   /*margin-top: 5px;*/
   display: inline-block;
@@ -129,6 +156,7 @@ input {
   margin-top: 0;
   border: none;
   border-top: 1px solid #fffff7;
+  border-top: 1px solid #615B4E;
 }
 a#new_page:not(:hover) {
   color: #F0AD11;
@@ -138,14 +166,14 @@ a#new_page:not(:hover) {
 #page_editor {
   width: 718px;
   /*border-bottom-right-radius: 10px;*/
-  background: #FFFFF7;
+  background: transparent;
   margin-top: 40px;
   /*border-left-color: #F0F2EB;*/
 }
 
 #pages li:hover,
 #pages .selected {
-  background: #fffff7;
+  /*background: #fffff7;*/
   color: #615B4E;
   color: #E2403D;
   cursor: pointer;
@@ -174,8 +202,8 @@ a#new_page:not(:hover) {
   position: fixed;
   top: -100px;
   background: #FFFFF7;
-  border-bottom: 1px solid #DDD;
-  width: 959px;
+  /*border-bottom: 1px solid #DDD;*/
+  width: 960px;
   text-align: center;
   padding: 0px;
   margin-left: -20px;
@@ -192,12 +220,13 @@ a#new_page:not(:hover) {
 }
 #status.good {
   background: #C0D23E;
+  color: #111;
 }
 #status.bad {
   background: #BF0606;
 }
 #status.pending {
-  background: #F0AD11;
+  background: rgba(240,173,17,0.5);
 }
 
 #status.hidden {
@@ -220,24 +249,28 @@ a:visited:hover {
   /*text-decoration: underline;*/
   cursor: pointer;
   color: #E2403D;
+  color: #F34379;
 }
 
 #page_actions select {
-  background: #fffff7;
+  /*background: #fffff7;*/
+  background: transparent;
   border: none;
   outline: none;
-  color: #00BDD7;
+  color: #F0AD11;
   font-size: 13px;
   border-color: yellow;
   text-align: center;
 }
 #page_actions select:hover {
   color: #E2403D;
+  color: #F34379;
   cursor: pointer;
 }
 
 #page_actions select option {
-  background: #fffff7;
+  /*background: #fffff7;*/
+  background: #615B4E;
 }
 
 input[type=text],
@@ -245,9 +278,18 @@ input[type=email],
 input[type=password] {
   border-radius: 8px;
   background: none;
-  border: 2px solid #555;
+  border: 1px solid #615B4E;
   padding: 5px 10px;
   line-height: 28px;
+  outline: none;
+  color: #fff;
+}
+
+form input[type=text],
+form input[type=email],
+form input[type=password] {
+  width: 320px;
+  line-height: 40px;
 }
 
 #title_editor {
@@ -264,18 +306,32 @@ button {
   cursor: pointer;
 
   padding: 5px 10px;
-  border:  1px solid #FF4242;
+/*  border:  1px solid #FF4242;
   border:  1px solid #FFB40B;
   border:  2px solid #555;
   border-radius: 15px;
 
   background: #F0AD11;
-  background: #00BDD7;
+  background: #F0AD11;*/
+
+color: white;
+background-color: #B85C00;
+background-repeat: no-repeat;
+background-image: -webkit-gradient(linear,0 0,0 100%,from(#F93),color-stop(25%,#F93),to(#B85C00));
+background-image: -webkit-linear-gradient(#F93,#F93 25%,#B85C00);
+background-image: -moz-linear-gradient(top,#F93,#F93 25%,#B85C00);
+background-image: -ms-linear-gradient(#F93,#F93 25%,#B85C00);
+background-image: -o-linear-gradient(#F93,#F93 25%,#B85C00);
+background-image: linear-gradient(#F93,#F93 25%,#B85C00);
+text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+border-color: #C60 #C60 #AD5700;
+border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.00);
+
   text-transform: uppercase;
   font-weight: bold;
 
 /*text-shadow: 0 0 1px black;*/
-color: white;
+/*color: white;*/
 /*box-shadow: 0 0px 0px 2px #D4EE5E;*/
 
   -webkit-transition: all 0.25s ease 0s;
@@ -287,10 +343,13 @@ color: white;
 
 button:hover, 
 input[type=submit]:hover {
-  background: #312D21;
-  background: #FFB40B;
+/*  background: #312D21;
+  background: #FFB40B;*/
   /*border-color: #fffff7;*/
-  color: white;
+/*  color: white;*/
+color: #EEE;
+background-position: 0 -15px;
+padding: 5px 20px;
 }
 
 button:active,
@@ -308,7 +367,7 @@ footer {
 #page_actions {
   position: absolute;
   top: 0;
-  left: 228px;
+  left: 200px;
   font-size: 14px;
   z-index: 100;
   /*border-bottom: 1px solid #EEE;*/

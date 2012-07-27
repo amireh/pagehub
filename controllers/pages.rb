@@ -75,5 +75,5 @@ get '/:nickname/:title' do |nn, title|
   @page = Page.first({ pretty_title: title, user_id: user.id })
   halt 404, "This seems to be an invalid link, sorry :(" if !user
 
-  erb :"preview", layout: :"print_layout"
+  erb :"pretty", layout: :"print_layout"
 end
