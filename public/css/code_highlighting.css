@@ -6,7 +6,12 @@
   font-size: 13px;
   line-height: 19px;*/
 }
-.highlight pre { font-size: 14px; }
+.highlight pre { 
+  font-size: 14px;
+  word-wrap: break-word;
+  line-height: 16px;
+}
+
 .highlight .c { color: #999988; font-style: italic } /* Comment */
 .highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
 .highlight .k { color: #000000; font-weight: bold } /* Keyword */
