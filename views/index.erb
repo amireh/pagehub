@@ -40,7 +40,8 @@
       $("#pages .selected").removeClass("selected");
       $(this).addClass("selected");
 
-      ui.status("Loading page...", "pending");
+      // ui.status("Loading page...", "pending");
+      ui.mark_pending();
 
       editor.save();
       // var title = $(this).html();
@@ -53,6 +54,9 @@
           editor.setValue(content);
           $("#preview").attr("href", "/pages/" + title + "/pretty");
           $("#share").attr("href", "/pages/" + title + "/share");
+        },
+        complete: function() {
+          ui.mark_ready();          
         }
       });
     }
@@ -65,6 +69,7 @@
       "Ctrl-3": function(cm) { mxvt.markdown.heading(cm, 3) },
       "Ctrl-4": function(cm) { mxvt.markdown.heading(cm, 4) },
       "Ctrl-S": function(cm) { ui.save(); },
+      "Ctrl-P": function(cm) { ui.preview(); },
       "Ctrl-B": function(cm) { mxvt.markdown.strongify(cm) },
       "Ctrl-I": function(cm) { mxvt.markdown.emphasize(cm) },
       "Shift-Ctrl-K": function(cm) { cm.removeLine(cm.getCursor(true).line) },
@@ -90,6 +95,10 @@
 
     ui.editor = editor;
     ui.actions = $("#page_actions");
+
+    ui.on_action("save_content", function() {
+      ui.save();
+    });
 
     ui.on_action("zoom_in", function() {
       $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
@@ -122,9 +131,12 @@
           var new_page = "<li id=\"page_" + page_id + "\">page #" + page_id + "</li>";
           $("#pages ul").prepend(new_page);
           $("#pages li.selected").removeClass("selected");
-          $("#pages ul li:first").addClass("selected").click(get_page);
+          // $("#pages ul li:first").addClass("selected").click(get_page);
+          $("#pages ul li:first").click(get_page);
+          // $("#page_actions").removeClass("disabled");
           ui.editor.setValue("Write your text here.");
-          ui.editor.focus();
+          // ui.editor.focus();
+          $("#pages ul li:first").click();
         },
         error: function(e) {
           console.log("smth bad happened")
@@ -149,17 +161,17 @@
 <% end %>
 
 <div id="pages">
-  <a href="#" id="new_page">+ start a new page</a>
-  <hr />
+  <a href="#" id="new_page">start a new page</a>
   <input type="text" id="title_editor" hidden="hidden" />
   <ul>
     <% logged_in? && @pages.each do |p| %>
       <li id="page_<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></li>
     <% end %>
   </ul>
-</div><!--
+</div><div id="editor_container"><!--
 
 --><div class="disabled" id="page_actions">
+  <a href="#" title="Saves the content of this page (shortcut: Ctrl+S)" id="save_content">Save</a> &bullet;
   <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
   <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet;<!--
   --><!--<select title="The font used in the page editor" id="change_font">
@@ -181,6 +193,8 @@
      title="Deletes the page forever">Delete</a>
 </div><textarea id="page_editor">
 </textarea>
+</div>
+<img class="loader" src="/css/ajax-loader.gif" />
 
 <!-- Confirm Dialog -->
 <div class="jqmConfirm" id="confirm">

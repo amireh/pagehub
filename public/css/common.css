@@ -4,7 +4,6 @@ body {
   /*font-size: 1em;*/
   /*font-size: 14px;*/
   line-height: 26px;
-  /*line-height: 20px;*/
   position: relative;
   /*background: #FFFFF7;*/
   /*background: #615B4E;*/
@@ -13,7 +12,7 @@ body {
   /*color: #312D21;*/
   color: #615B4E;
   color: #F4FAD2;
-  background: url(bg.png) repeat;
+  background: url(bg2.png) repeat;
   margin-bottom: 20px;
 }
 
@@ -29,22 +28,24 @@ body * {
 hr {
   border: none;
   border-top: 1px solid #615b4e;
+  box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.1);
 }
 
 .strikes {
   position: relative;
   width: 962px;
-  /*width: 100%;*/
   left: -22px;
   -webkit-transform: rotate(-1.5deg);
   -moz-transform: rotate(-1.5deg);
   z-index: 100;
   margin-bottom: 30px;
-  background: url(bg.png) repeat;
+  background: rgba(0,0,0,0.2);
   box-shadow: 0px 0px 25px 1px rgba(0,0,0,0.5);
 }
 .strikes hr {
   border-color: #615B4E;
+  margin: 19px -10px;
+  box-shadow: none;
 }
 
 a,
@@ -156,8 +157,11 @@ input {
 #pages hr {
   margin-top: 0;
   border: none;
-  border-top: 1px solid #fffff7;
-  border-top: 1px solid #615B4E;
+  /*border-top: 1px solid #fffff7;*/
+  /*border-top: 1px solid #615B4E;*/
+}
+a#new_page {
+  font-size: 23px;
 }
 a#new_page:not(:hover) {
   color: #F0AD11;
@@ -179,6 +183,7 @@ a#new_page:not(:hover) {
   color: #E2403D;
   cursor: pointer;
 }
+
 #pages ul {
   list-style-type: none;
   width: 241px;
@@ -368,12 +373,9 @@ footer {
 #page_actions {
   position: absolute;
   top: 0;
-  left: 200px;
+  left: 0;
   font-size: 14px;
   z-index: 100;
-  /*border-bottom: 1px solid #EEE;*/
-  width: 690px;
-  /*border-left: 1px solid #EEE;*/
   padding-left: 5px;
 }
 .disabled {
@@ -386,4 +388,42 @@ footer {
 
 #content {
   position: relative;
+}
+
+img.loader {
+  position: absolute;
+  left: 0;
+  top: -38px;
+  -webkit-transform: rotate(-1.5deg);
+  -moz-transform: rotate(-1.5deg);
+  display: none;
+}
+
+#flashes {
+  display: block;
+  position: relative;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  min-height: 50px;
+  width: 100%;
+  -webkit-transition: all 1s ease 0s;
+  -moz-transition:    all 1s ease 0s;
+  -ms-transition:     all 1s ease 0s;
+  -o-transition:      all 1s ease 0s;
+  transition:         all 1s ease 0s;    
+}
+#flashes button {
+  right: 7px;
+  position: absolute;
+  top: 7px;  
+}
+#flashes.hidden {
+  opacity: 0;
+  position: absolute;
+  top: -150px;
+}
+#editor_container {
+  position: relative;
+  display: inline-block;
 }

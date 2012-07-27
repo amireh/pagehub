@@ -16,7 +16,8 @@
       $(function() {
         $("#flashes button").click(function() {
           $(this).parent().next("hr:first").remove();
-          $(this).parent().remove();
+          // $(this).parent().remove();
+          $(this).parent().addClass("hidden");
         });
       });
 

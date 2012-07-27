@@ -70,20 +70,16 @@ naughty_ui = function() {
       if (!$("#status").is(":visible"))
         return (cb || function() {})();
 
-      // $("#status").hide("slide", {}, anime_dur, function() {
-      // $("#status").hide();
       $("#status").addClass("hidden").removeClass("visible");
-        status_shown = false;
-        
-        if (cb)
-          cb();
+      status_shown = false;
+      
+      if (cb)
+        cb();
 
-        if (status_queue.length > 0) {
-          var status = status_queue.pop();
-          return ui.status(status[0], status[1], status[2]);
-        }
-      // });
-      // $("#status").html("");
+      if (status_queue.length > 0) {
+        var status = status_queue.pop();
+        return ui.status(status[0], status[1], status[2]);
+      }
     },
     status: function(text, status, seconds_to_show) {
       if (!status)
@@ -91,20 +87,27 @@ naughty_ui = function() {
       if (!seconds_to_show)
         seconds_to_show = defaults.status;
 
+      // queue the status if there's one already being displayed
       if (status_shown) {
         return status_queue.push([ text, status, seconds_to_show ]);
       }
 
+      // clear the status resetter timer
       if (status_timer)
         clearTimeout(status_timer)
 
-      ui.clear_status(function() {
-        // status_timer = setTimeout("ui.clear_status()", seconds_to_show * 1000);
-        status_timer = setTimeout("ui.clear_status()", 2000);
-        $("#status").removeClass("pending good bad").addClass(status + " visible").html(text);//"slide", {}, anime_dur);
-        status_shown = true;
-      });
+      status_timer = setTimeout("ui.clear_status()", 2000);
+      $("#status").removeClass("pending good bad").addClass(status + " visible").html(text);
+      status_shown = true;
+    },
 
+    mark_pending: function() {
+      // $(".loader").show(250);
+      $(".loader").show();
+    },
+    mark_ready: function() {
+      // $(".loader").hide(250);
+      $(".loader").hide();
     },
 
     is_editing: function() {

@@ -12,11 +12,12 @@ class Page
   has n, :tags, :through => Resource
 
   before :valid? do |_|
-    page = self
-    p page.title
-    p page.pretty_title
-    page.pretty_title = page.title.sanitize
+    self.pretty_title = self.title.sanitize
 
     true
+  end
+
+  def public_url
+    "http://naughty.mxvt.net/#{self.user.nickname}/#{self.pretty_title}"
   end
 end
