@@ -37,6 +37,7 @@ hr {
   /*width: 100%;*/
   left: -22px;
   -webkit-transform: rotate(-1.5deg);
+  -moz-transform: rotate(-1.5deg);
   z-index: 100;
   margin-bottom: 30px;
   background: url(bg.png) repeat;
@@ -64,7 +65,7 @@ h1,h2,h3,
 h1 a,
 h1 a:visited {
   color: #FF4A58;
-  color: #F34379;
+  /*color: #FF4A58;*/
   /*color: #A82743;*/
 }
 h2 {
@@ -249,7 +250,7 @@ a:visited:hover {
   /*text-decoration: underline;*/
   cursor: pointer;
   color: #E2403D;
-  color: #F34379;
+  color: #FF4A58;
 }
 
 #page_actions select {
@@ -264,7 +265,7 @@ a:visited:hover {
 }
 #page_actions select:hover {
   color: #E2403D;
-  color: #F34379;
+  color: #FF4A58;
   cursor: pointer;
 }
 
