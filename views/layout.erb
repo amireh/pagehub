@@ -7,6 +7,7 @@
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <link href="/css/fonts/proximanova.css" rel="stylesheet" type="text/css" />
+  <link href="/css/fonts/ubuntu/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/common.css" rel="stylesheet" type="text/css" />
 
   <% if !flash.empty? %>
@@ -39,19 +40,18 @@
     
     <div class="strikes">
       <hr />
+      <nav>
+        <% if logged_in? %>
+          <div id="admin_actions">
+            <a href="/logout">logout</a>
+          </div>
+        <% else %>
+          <a id="login" href="/login">login</a>
+          <a href="/signup">signup</a>
+        <% end %>
+      </nav>      
       <hr />
     </div>
-
-    <nav>
-      <% if logged_in? %>
-        <div id="admin_actions">
-          <a href="/logout">Logout</a>
-        </div>
-      <% else %>
-        <a id="login" href="/login">Login</a>
-        <a href="/signup">Signup</a>      
-      <% end %>
-    </nav>
     
     <div id="content">
       <div id="status">
