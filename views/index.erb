@@ -102,7 +102,6 @@
 
     ui.on_action("zoom_in", function() {
       $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
-      // $(".CodeMirror").css("line-height", parseInt($(".CodeMirror").css("line-height")) + 2);
       $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) + 2) + "px");
     });
 
@@ -168,6 +167,7 @@
       <li id="page_<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></li>
     <% end %>
   </ul>
+
 </div><div id="editor_container"><!--
 
 --><div class="disabled" id="page_actions">
@@ -191,8 +191,7 @@
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="delete_page"
      title="Deletes the page forever">Delete</a>
-</div><textarea id="page_editor">
-</textarea>
+</div><textarea id="page_editor"><%= erb :"/tutorial" %></textarea>
 </div>
 <img class="loader" src="/css/ajax-loader.gif" />
 

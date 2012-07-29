@@ -1,0 +1,9 @@
+<% content_for :title do %>
+  Tutorial - Naughty Notebook
+<% end %>
+
+<% content_for :header do %>
+  <h1>The Naughty Tutorial</h1>
+<% end %>
+
+<%= File.read(File.join(settings.views, "tutorial.erb")).to_markdown %>

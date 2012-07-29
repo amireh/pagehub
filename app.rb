@@ -72,3 +72,11 @@ get '/' do
 
   erb destination.to_sym
 end
+
+get '/tutorial' do
+  erb :"/tutorial.md", layout: :"print_layout"
+end
+
+get '/markdown-cheatsheet' do
+  erb :"/markdown-cheatsheet", layout: :"print_layout"
+end
