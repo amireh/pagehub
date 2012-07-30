@@ -6,6 +6,7 @@ class User
   property :name, String, required: true
   property :nickname, String, default: ""
   property :password, String
+  property :settings, Text, default: "{}"
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   # has n, :notebooks
@@ -16,4 +17,5 @@ class User
 
     true
   end
+
 end

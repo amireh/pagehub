@@ -1,0 +1,129 @@
+<% content_for :scripts do %>
+<script>
+  $(function() {
+    $("#check_availability").click(function() {
+      var btn = $(this);
+      $.ajax({
+        url: "/users/nickname",
+        type: "POST",
+        data: { nickname: $("input[name=nickname]").attr("value") },
+
+        success: function(is_available) {
+          is_available = JSON.parse(is_available);
+          console.log(is_available)
+          if (is_available) {
+            btn.next("span").addClass("success").removeClass("error").html("available");
+          } else {
+            btn.next("span").addClass("error").removeClass("success").html("not available");
+          }
+        }
+
+      });
+      return false;
+    })
+  });
+</script>
+<% end %>
+
+<form id="preferences" action="/profile/preferences" method="POST">
+  <section>
+  <h2>Nickname</h2>
+  <label>
+    Your nickname is used in the links when sharing documents with people.
+    <br />
+    <br />
+    <input type="text" name="nickname" value="<%= current_user.nickname %>" />
+    <button id="check_availability">check availability</button>
+    <span></span>
+  </label>
+  <p>Links to your public pages will look something like this:
+    <br />
+    &rarr; <a><code><%= request.referrer %><strong>your-nickname</strong>/<strong>page-title</strong></code></a>
+  </p>
+  </section>
+
+  <section>
+    <h2>Publishing settings</h2>
+
+    <p>These settings control the "pretty" versions of your pages.</p>
+
+    <h3>Colour scheme</h3>
+
+    <% schemes = {
+      "Hazzle Dazzle" => [ "443a34", "F4FAD2", "E94E77", "D4EE5E", "F0AD11" ],
+      "Wasabi Suicide" => [ "F0F2EB", "222", "FF4242", "D4EE5E", "F4FAD2" ],
+    } %>
+    <% schemes.each_pair do |scheme, colours| %>
+      <label style="vertical-align: top; font-size: 18px;">
+        <% colours.each do |hex| %>
+          <span style="height: 24px; width: 24px; display: inline-block; background: #<%= hex %>; border: 1px solid #111"></span>
+        <% end %>
+        <input type="radio" 
+        style="vertical-align: top;"
+        name="settings[pretty][scheme]" 
+        value="<%= scheme %>"
+        <%= preferences["pretty"] || {}["scheme"] == scheme ? "checked='checked'" : "" %>
+        />
+        <%= scheme %>      
+      </label>
+      <br />
+    <% end %>
+  </section>
+
+  <section>
+  <h2>Editing settings</h2>
+
+  <p>These settings will apply only to Naughty's editor and <em>not</em>
+    to the pretty versions of your pages.</p>
+
+    <h3>Font face</h3>
+
+      <% { 
+          "Proxima Nova" => "ProximaNova-Light",
+          "Monospace" => "monospace, Courier New, courier, Mono",
+          "Arial" => "Arial",
+          "Verdana" => "Verdana",
+          "Helvetica Neue" => "Helvetica Neue"
+        }.each_pair do |name, font| %>
+        <label style="font-family: <%= font %>; font-size: 14px">
+          <input 
+          type="radio" name="settings[editing][font_face]" 
+          value="<%=name%>"
+          ><%= name %></input>
+        </label>
+        <br />
+      <% end %>
+    <h3>Font size (pixels)</h3>
+      <input 
+        type="text" name="settings[editing][font_size]"
+        autocomplete="off"
+        style="text-align: center; width: 70px; font-size: 20px;"
+        value="<%= (preferences["editing"] || {})["font_size"] %>" />
+  </section>
+
+  <br />
+  <input type="submit" value="Update preferences" />
+</form>
+<br />
+<hr />
+<form id="password" method="POST" action="/profile/password">
+  <section>
+    <h2>Changing your password</h2>
+
+    <label>
+      Your current password:<br />
+      <input type="password" name="password[current]" />
+    </label>
+    <br />
+    
+    <label>
+      And a new one (type it twice to confirm it):<br />
+      #1 &rarr; <input type="password" name="password[new]" /><br />
+      #2 &rarr; <input type="password" name="password[confirmation]" />
+    </label>
+
+  </section>
+
+  <br />
+  <input type="submit" value="Change password" />
+</form>

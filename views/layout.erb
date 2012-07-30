@@ -8,6 +8,7 @@
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <link href="/css/fonts/proximanova.css" rel="stylesheet" type="text/css" />
   <link href="/css/fonts/ubuntu/stylesheet.css" rel="stylesheet" type="text/css" />
+  <link href="/css/fonts/ubuntu-mono/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/common.css" rel="stylesheet" type="text/css" />
 
   <% if !flash.empty? %>
@@ -43,6 +44,7 @@
       <nav>
         <% if logged_in? %>
           <div id="admin_actions">
+            <a href="/profile">edit profile</a>
             <a href="/logout">logout</a>
           </div>
         <% else %>
@@ -59,8 +61,16 @@
 
       <% if !flash.empty? %>
         <div id="flashes">
-          <% flash.each_pair do |ctx,msg| %>
-          <span class="flash <%= ctx %>"><%= msg %></span>
+          <% if flash.size > 1 then %>
+            <ol>
+              <% flash.each_pair do |ctx,msg| %>
+                <li class="flash <%= ctx %>"><%= msg %></li>
+              <% end %>
+            </ol>
+          <% else %>
+            <% flash.each_pair do |ctx,msg| %>
+              <span class="flash <%= ctx %>"><%= msg %></span>
+            <% end %>
           <% end %>
           <button>&times;</button>
         </div>

@@ -16,6 +16,9 @@ body {
   margin-bottom: 20px;
 }
 
+.funky {
+  font-family: "UbuntuMonoRegular";
+}
 body.print {
   font-family: "ProximaNova-Light";
   font-size: 16px;
@@ -123,6 +126,10 @@ nav {
   right: 20px;
   /*top: 15px;*/
   top: 2px;
+}
+
+nav a {
+  margin-left: 10px;
 }
 
 #actions {
@@ -345,7 +352,7 @@ background-image: -o-linear-gradient(#F93,#F93 25%,#B85C00);
 background-image: linear-gradient(#F93,#F93 25%,#B85C00);
 text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 border-color: #C60 #C60 #AD5700;
-border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.00);
+border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.3);
 
   text-transform: uppercase;
   font-weight: bold;
@@ -442,3 +449,13 @@ img.loader {
   position: relative;
   display: inline-block;
 }
+
+form section { padding-left: 10px; }
+form section h2:first-child { margin-left: -10px; }
+
+form#password input[type=password] {
+  line-height: 22px;
+}
+
+.flash.error { color: red; }
+.flash.notice { color: green; }
