@@ -262,7 +262,8 @@ a#new_page:not(:hover) {
   top: 0;
 }
 
-a {
+a,
+#pages li {
   text-decoration: none;
   -webkit-transition: color 0.25s ease 0s;
   -moz-transition:    color 0.25s ease 0s;
@@ -400,7 +401,7 @@ input[type=submit]:active {
 }
 
 footer {
-  color: #fff;
+  /*color: #fff;*/
   width: 960px;
   margin: 0 auto;
   text-align: center;
@@ -441,7 +442,6 @@ img.loader {
   z-index: 1000;
   background: rgba(0, 0, 0, 0.2);
   padding: 10px;
-  min-height: 50px;
   width: 100%;
   -webkit-transition: all 1s ease 0s;
   -moz-transition:    all 1s ease 0s;
@@ -450,9 +450,12 @@ img.loader {
   transition:         all 1s ease 0s;    
 }
 #flashes button {
-  right: 7px;
-  position: absolute;
-  top: 7px;  
+right: 7px;
+position: absolute;
+top: 7px;
+line-height: 16px;
+padding: 5px;
+height: 29px;
 }
 #flashes.hidden {
   opacity: 0;
@@ -471,5 +474,13 @@ form#password input[type=password] {
   line-height: 22px;
 }
 
-.flash.error, span.error { color: red; }
-.flash.notice, .success { color: green; }
+.flash.error, span.error { color: #E94E77; }
+.flash.notice, .success { color: #D4EE5E; }
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: none;
+}

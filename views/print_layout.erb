@@ -9,8 +9,14 @@
   <link href="/css/common.css" rel="stylesheet" type="text/css" />
 
   <% yield_content :scripts %>
-</head>
 
+  <% if params[:scheme] %>
+    <link href="/css/schemes/<%= params[:scheme].sanitize %>.css" rel="stylesheet" type="text/css" />
+  <% else %>
+    <link href="/css/schemes/<%= preferences["pretty"]["scheme"].sanitize %>.css" rel="stylesheet" type="text/css" />
+  <% end %>
+  
+</head>
 <body class="print">
 
   <div class="stuff">

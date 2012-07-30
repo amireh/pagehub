@@ -1,0 +1,10 @@
+{ 
+  "editing": {
+    "font_face": "Ubuntu",
+    "font_size": 14,
+    "line_height": 18
+  },
+  "pretty": {
+    "scheme": "Hazzle Dazzle"
+  }
+}

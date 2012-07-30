@@ -151,8 +151,17 @@
       return ui.action($(this).attr("id"));
     });
 
+    
   }); 
 </script>
+  <!-- apply user preferences -->
+  <style>
+    .CodeMirror {
+      font-family: <%= Preferences::FontMap[preferences["editing"]["font_face"]] %>;
+      font-size: <%= preferences["editing"]["font_size"].to_i %>px;
+      line-height: <%= preferences["editing"]["line_height"].to_i %>px;
+    }
+  </style>
 <% end %>
 
 <% content_for :title do %>
