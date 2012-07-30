@@ -89,6 +89,8 @@ get '/profile' do
 end
 
 post '/profile/preferences' do
+  restricted!
+
   # p params.inspect
 
   # see if the nickname is available
@@ -126,11 +128,14 @@ end
 
 # Returns whether params[:nickname] is available or not
 post '/users/nickname' do
+  restricted!
+
   User.first(nickname: params[:nickname]).nil?.to_json
 end
 
 post '/profile/password' do
-
+  restricted!
+  
   pw = Digest::SHA1.hexdigest(params[:password][:current])
 
   if current_user.password == pw then

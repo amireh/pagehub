@@ -310,6 +310,20 @@ input[type=password] {
   line-height: 28px;
   outline: none;
   color: #fff;
+  box-shadow: 0 0 5px 0 black inset;
+  background: rgba(0,0,0,0.2);
+
+  -webkit-transition: background-color 0.25s ease 0s;
+  -moz-transition:    background-color 0.25s ease 0s;
+  -ms-transition:     background-color 0.25s ease 0s;
+  -o-transition:      background-color 0.25s ease 0s;
+  transition:         background-color 0.25s ease 0s;    
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus {
+  background: none;
 }
 
 form input[type=text],
@@ -457,5 +471,5 @@ form#password input[type=password] {
   line-height: 22px;
 }
 
-.flash.error { color: red; }
-.flash.notice { color: green; }
+.flash.error, span.error { color: red; }
+.flash.notice, .success { color: green; }

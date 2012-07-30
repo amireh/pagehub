@@ -20,7 +20,17 @@
 
       });
       return false;
-    })
+    });
+
+    var colour_scheme_map = [ "Background", "Foreground", "Heading #1", "Heading #2", "Heading #3" ];
+    $("span.scheme_colours").hover(function() {
+      var idx = $(this).attr("class").substr(-1);
+      // $(this).addClass("zoom").html(colour_scheme_map[idx]);
+      $("#colour_explanation").html("Colour: " + colour_scheme_map[idx]);
+    }, function() {
+      $("#colour_explanation").html("Colour: &minus;");      
+      // $(this).removeClass("zoom").html("");
+    });
   });
 </script>
 <% end %>
@@ -55,8 +65,8 @@
     } %>
     <% schemes.each_pair do |scheme, colours| %>
       <label style="vertical-align: top; font-size: 18px;">
-        <% colours.each do |hex| %>
-          <span style="height: 24px; width: 24px; display: inline-block; background: #<%= hex %>; border: 1px solid #111"></span>
+        <% colours.each_with_index do |hex, idx| %>
+          <span class="scheme_colours colour_<%=idx%>" style="height: 24px; width: 24px; display: inline-block; background: #<%= hex %>; border: 1px solid #111"></span>
         <% end %>
         <input type="radio" 
         style="vertical-align: top;"
@@ -68,6 +78,8 @@
       </label>
       <br />
     <% end %>
+      <span id="colour_explanation">Colour: &minus;</span>
+
   </section>
 
   <section>
