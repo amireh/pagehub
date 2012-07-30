@@ -52,7 +52,7 @@ configure do
   end
 
   # DataMapper::Logger.new($stdout, :debug)
-  DataMapper.setup(:default, 'mysql://root@localhost/notebook')
+  DataMapper.setup(:default, 'mysql://root:mysqlZephyr771@localhost/naughty')
 
   load "models"
   load "controllers"
