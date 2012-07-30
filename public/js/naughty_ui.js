@@ -61,6 +61,9 @@ naughty_ui = function() {
   ];
 
   function current_page_id() {
+    if ($("#pages .selected").length == 0)
+      return null;
+
     return $("#pages .selected").attr("id").replace("page_", "");
   }
 
@@ -137,6 +140,9 @@ naughty_ui = function() {
       // ui.editor.save();
 
       var page_id = current_page_id();
+      if (!page_id)
+        return;
+
       var content = ui.editor.getValue();
 
       naughty.update(page_id, { content: content }, {
@@ -146,10 +152,13 @@ naughty_ui = function() {
     },
 
     save_title: function() {
+      var page_id = current_page_id();
+      if (!page_id)
+        return;
+      var title = $("#title_editor").attr("value");
+      
       ui.hide_title_editor(true);
 
-      var page_id = current_page_id();
-      var title = $("#title_editor").attr("value");
 
       ui.status("Saving page title...", "pending");
       naughty.update(page_id, { title: title }, {
@@ -182,17 +191,37 @@ naughty_ui = function() {
     },
 
     delete_page: function() {
-      var entry = $("li.selected");
-      var page_id = entry.attr("id").replace("page_", "");
+      var page_id = current_page_id();
+      if (!page_id)
+        return;
+
+      var entry = $("#pages .selected");
       var page_title = entry.html();
       naughty.delete(page_id, function() {
         ui.status("Page " + page_title + " is now dead :(", "good");
         entry.remove();
         ui.editor.setValue("");
         ui.actions.addClass("disabled");
+        $("#pages li:last").click();
       }, function() {
         ui.status("Page could not be deleted! Please try again.", "bad");
       });
+    },
+
+    delete: function() {
+      var page_id = current_page_id();
+      if (!page_id)
+        return;
+
+      $("a.confirm#delete_page").click();      
+    },
+
+    preview: function() {
+      var id = current_page_id();
+      if (!id)
+        return true;
+
+      window.open("/pages/" + id + "/pretty", "_pretty")
     }
   }
 }

@@ -51,9 +51,11 @@
         url: "/pages/" + title + ".json",
         success: function(content) {
           // $("#page_editor").html(content);
+          editor.clearHistory();
           editor.setValue(content);
           $("#preview").attr("href", "/pages/" + title + "/pretty");
           $("#share").attr("href", "/pages/" + title + "/share");
+          editor.focus();
         },
         complete: function() {
           ui.mark_ready();          
@@ -68,16 +70,14 @@
       "Ctrl-2": function(cm) { mxvt.markdown.heading(cm, 2) },
       "Ctrl-3": function(cm) { mxvt.markdown.heading(cm, 3) },
       "Ctrl-4": function(cm) { mxvt.markdown.heading(cm, 4) },
-      "Ctrl-S": function(cm) { ui.save(); },
-      "Ctrl-P": function(cm) { ui.preview(); },
+      "Ctrl-5": function(cm) { mxvt.markdown.heading(cm, 5) },
+      "Ctrl-6": function(cm) { mxvt.markdown.heading(cm, 6) },
+      // "Shift-Ctrl-S": function(cm) { ui.save(); },
+      // "Shift-Ctrl-V": function(cm) { ui.preview(); },
+      // "Shift-Ctrl-D": function(cm) { ui.delete_page(); },
       "Ctrl-B": function(cm) { mxvt.markdown.strongify(cm) },
       "Ctrl-I": function(cm) { mxvt.markdown.emphasize(cm) },
       "Shift-Ctrl-K": function(cm) { cm.removeLine(cm.getCursor(true).line) },
-      "Shift-Ctrl-D": function(cm) {
-        var line_pos = cm.getCursor(true).line;
-        var line_txt = cm.getLine(line_pos);
-        cm.setLine(line_pos, line_txt + '\n' + line_txt)
-      },
       fallthrough: ["default"]
     };
 
@@ -90,7 +90,20 @@
       tabSize: 2,
       gutter: false,
       autoClearEmptyLines: false,
-      lineWrapping: true
+      lineWrapping: true,
+      onScroll: function(e) {
+        // console.log(e.cursorCoords(true, "page"));
+        var y = e.cursorCoords(true, "page").y;
+        if (y > $(window).height() - 40) {
+          console.log("i be scrolling to: " + (y - $(window).height() ));
+          window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
+        }
+        // e.refresh();
+        // var editor = e.getWrapperElement();
+        // var editorScroll = $(editor).find('.CodeMirror-scroll');
+        // if (editorScroll.length > 0)
+          // console.log($(editorScroll).css("height"))
+      }
     });
 
     ui.editor = editor;
@@ -116,7 +129,48 @@
       $(".CodeMirror").css("font-family", font);
     });
 
+    shortcut.add("ctrl+alt+s", function() { ui.save(); })
+    shortcut.add("ctrl+alt+v", function() { ui.preview(); })
+    shortcut.add("ctrl+alt+d", function() { ui.delete(); })
+    shortcut.add("ctrl+alt+c", function() { $("#new_page").click(); })
+    shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
+    shortcut.add("ctrl+alt+a", function() { 
+      if ($("#pages li.selected").length == 1)
+        $("#pages li.selected").focus();
+      else
+        $("#pages li:first").focus();
+    })
 
+    var disable_scrolling = function(e){
+      switch(e.keyCode){
+        case 37: case 39: case 38:  case 40: // Arrow keys
+        case 32: e.preventDefault(); break; // Space
+        default: break; // do not block other keys
+      }
+    }
+    
+
+    $("#pages li").focusin(function() {
+      console.log("binding movement")
+      window.addEventListener("keyup", disable_scrolling, false);
+      $(this).bind('keydown', function(e) {
+        if (e.keyCode == 38)
+          $(this).prev("li").focus();
+        else if (e.keyCode == 40)
+          $(this).next("li").focus();
+        else if (e.keyCode == 13)
+          $(this).click();
+        else
+          return true;
+
+        e.preventDefault();
+        return false;
+      });
+    }/*, */).focusout(function() {
+      console.log("unbinding movement")
+      $(this).unbind('keydown');
+      window.removeEventListener("keyup", disable_scrolling, false);
+    });
 
     $("#new_page").click(function() {
       console.log("creating a page")
@@ -169,11 +223,11 @@
 <% end %>
 
 <div id="pages">
-  <a href="#" id="new_page">start a new page</a>
+  <a tabindex="1" href="#" id="new_page">start a new page</a>
   <input type="text" id="title_editor" hidden="hidden" />
   <ul>
-    <% logged_in? && @pages.each do |p| %>
-      <li id="page_<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></li>
+    <% logged_in? && @pages.each_with_index do |p, pidx| %>
+      <li tabindex="<%= pidx + 2 %>" id="page_<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></li>
     <% end %>
   </ul>
 
@@ -182,15 +236,8 @@
 --><div class="disabled" id="page_actions">
   <a href="#" title="Saves the content of this page (shortcut: Ctrl+S)" id="save_content">Save</a> &bullet;
   <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
-  <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet;<!--
-  --><!--<select title="The font used in the page editor" id="change_font">
-    <option value="ProximaNova-Light" selected="selected">Proxima Nova</option>
-    <option value="monospace">Monospace</option>
-    <option value="Arial">Arial</option>
-    <option value="Verdana">Verdana</option>
-    <option value="Helvetica Neue">Helvetica Neue</option>
-  </select>--><!--
-  --> <a target="Naughty - Preview" 
+  <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet;
+  <a target="Naughty - Preview" 
         title="View the current page in prettified HTML mode" 
         href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
   <a target="Naughty" 

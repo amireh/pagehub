@@ -103,7 +103,7 @@ h3 {
   display: block;
 
   /*background: rgba(255,180,11,0.1);*/
-  background: rgba(0,0,0,0.1);
+  /*background: rgba(0,0,0,0.1);*/
   /*background: #E5F04C;*/
   /*background: #FFB40B;*/
   /*background: #5C323E;*/
@@ -114,11 +114,12 @@ h3 {
   /*border: 1px solid #E1E6E5;*/
   border-top: none;
   padding: 20px 20px 5px 20px;
+  padding: 20px 0;
   /*box-shadow: 0px 0px 1px 1px #615B4E;*/
-  box-shadow: 0px 0px 25px 1px rgba(0,0,0,0.5) inset;
+  /*box-shadow: 0px 0px 25px 1px rgba(0,0,0,0.5) inset;*/
   border-bottom-right-radius: 10px;
   border-bottom-left-radius:  10px;
-  border: 1px solid #615b4e;
+  /*border: 1px solid #615b4e;*/
 }
 
 nav {
@@ -188,11 +189,12 @@ a#new_page:not(:hover) {
 }
 
 #page_editor {
-  width: 718px;
+  width: 740px;
   /*border-bottom-right-radius: 10px;*/
   background: transparent;
   margin-top: 40px;
   /*border-left-color: #F0F2EB;*/
+
 }
 
 #pages li:hover,
@@ -206,7 +208,6 @@ a#new_page:not(:hover) {
 
 #pages ul {
   list-style-type: none;
-  width: 241px;
   position: relative;
   left: -11px;
   padding: 0;
@@ -404,7 +405,7 @@ footer {
   /*color: #fff;*/
   width: 960px;
   margin: 0 auto;
-  text-align: center;
+  /*text-align: center;*/
 }
 #page_actions {
   position: absolute;
@@ -467,8 +468,8 @@ height: 29px;
   display: inline-block;
 }
 
-form section { padding-left: 10px; }
-form section h2:first-child { margin-left: -10px; }
+/*form section { padding-left: 10px; }*/
+/*form section h2:first-child { margin-left: -10px; }*/
 
 form#password input[type=password] {
   line-height: 22px;

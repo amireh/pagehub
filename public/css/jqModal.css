@@ -20,7 +20,7 @@
     padding: 12px;
 }
 
-.jqmOverlay { background-color: #000; }
+.jqmOverlay { background-color: rgba(0,0,0,0.5); }
 
 /* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
 * iframe.jqm {position:absolute;top:0;left:0;z-index:-1;
@@ -100,7 +100,7 @@ div.jqmConfirm .jqmClose {
   display:block;
   float:right;
   clear:right;
-  background:transparent url(confirm/close_icon_double.png) 0 0 no-repeat;
+  background:transparent  0 0 no-repeat;
 }
 
 div.jqmConfirm a.jqmClose:hover{ background-position: 0 -20px; }
@@ -116,10 +116,6 @@ div.jqmConfirmContent{
   /*letter-spacing:0px;*/
   /*background:#FFF url(confirm/darkgrid.png);*/
 }
-
-/*Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  clearing a float without additional markup
-   http://www.positioniseverything.net/easyclearing.html */
 
 .clearfix:after {
     content: "."; 
