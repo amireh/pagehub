@@ -1,9 +1,9 @@
 body {
-  font-family: "ProximaNova-Light", Arial, Verdana;
-  font-size: 18px;
+  font-family: "UbuntuRegular", "ProximaNova-Light", Arial, Verdana;
+  font-size: 14px;
   /*font-size: 1em;*/
   /*font-size: 14px;*/
-  line-height: 26px;
+  line-height: 22px;
   position: relative;
   /*background: #FFFFF7;*/
   /*background: #615B4E;*/
@@ -14,6 +14,18 @@ body {
   color: #F4FAD2;
   background: url(bg2.png) repeat;
   margin-bottom: 20px;
+}
+
+.funky {
+  font-family: "UbuntuMonoRegular";
+}
+body.print {
+  font-family: "ProximaNova-Light";
+  font-size: 16px;
+  line-height: 20px;
+}
+body.print .strikes {
+  display: none;
 }
 
 small {
@@ -44,7 +56,7 @@ hr {
 }
 .strikes hr {
   border-color: #615B4E;
-  margin: 19px -10px;
+  margin: 26px -10px;
   box-shadow: none;
 }
 
@@ -66,6 +78,7 @@ h1,h2,h3,
 h1 a,
 h1 a:visited {
   color: #FF4A58;
+  color: #E94E77;
   /*color: #FF4A58;*/
   /*color: #A82743;*/
 }
@@ -80,6 +93,7 @@ h3 {
 #content {
   /*float: left;*/
   /*width: 100%;*/
+  padding-bottom: 20px;
 }
 
 .stuff {
@@ -110,7 +124,12 @@ h3 {
 nav {
   position: absolute;
   right: 20px;
-  top: 15px;
+  /*top: 15px;*/
+  top: 2px;
+}
+
+nav a {
+  margin-left: 10px;
 }
 
 #actions {
@@ -164,7 +183,7 @@ a#new_page {
   font-size: 23px;
 }
 a#new_page:not(:hover) {
-  color: #F0AD11;
+  /*color: #F0AD11;*/
   /*color: #FFF;*/
 }
 
@@ -181,6 +200,7 @@ a#new_page:not(:hover) {
   /*background: #fffff7;*/
   color: #615B4E;
   color: #E2403D;
+  color: #E94E77;
   cursor: pointer;
 }
 
@@ -242,7 +262,8 @@ a#new_page:not(:hover) {
   top: 0;
 }
 
-a {
+a,
+#pages li {
   text-decoration: none;
   -webkit-transition: color 0.25s ease 0s;
   -moz-transition:    color 0.25s ease 0s;
@@ -256,6 +277,7 @@ a:visited:hover {
   cursor: pointer;
   color: #E2403D;
   color: #FF4A58;
+  color: #E94E77;
 }
 
 #page_actions select {
@@ -289,6 +311,20 @@ input[type=password] {
   line-height: 28px;
   outline: none;
   color: #fff;
+  box-shadow: 0 0 5px 0 black inset;
+  background: rgba(0,0,0,0.2);
+
+  -webkit-transition: background-color 0.25s ease 0s;
+  -moz-transition:    background-color 0.25s ease 0s;
+  -ms-transition:     background-color 0.25s ease 0s;
+  -o-transition:      background-color 0.25s ease 0s;
+  transition:         background-color 0.25s ease 0s;    
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus {
+  background: none;
 }
 
 form input[type=text],
@@ -331,7 +367,7 @@ background-image: -o-linear-gradient(#F93,#F93 25%,#B85C00);
 background-image: linear-gradient(#F93,#F93 25%,#B85C00);
 text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 border-color: #C60 #C60 #AD5700;
-border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.00);
+border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.3);
 
   text-transform: uppercase;
   font-weight: bold;
@@ -365,7 +401,7 @@ input[type=submit]:active {
 }
 
 footer {
-  color: #fff;
+  /*color: #fff;*/
   width: 960px;
   margin: 0 auto;
   text-align: center;
@@ -374,7 +410,8 @@ footer {
   position: absolute;
   top: 0;
   left: 0;
-  font-size: 14px;
+  font-size: 13px;
+  letter-spacing: 2px;
   z-index: 100;
   padding-left: 5px;
 }
@@ -405,7 +442,6 @@ img.loader {
   z-index: 1000;
   background: rgba(0, 0, 0, 0.2);
   padding: 10px;
-  min-height: 50px;
   width: 100%;
   -webkit-transition: all 1s ease 0s;
   -moz-transition:    all 1s ease 0s;
@@ -414,9 +450,12 @@ img.loader {
   transition:         all 1s ease 0s;    
 }
 #flashes button {
-  right: 7px;
-  position: absolute;
-  top: 7px;  
+right: 7px;
+position: absolute;
+top: 7px;
+line-height: 16px;
+padding: 5px;
+height: 29px;
 }
 #flashes.hidden {
   opacity: 0;
@@ -426,4 +465,22 @@ img.loader {
 #editor_container {
   position: relative;
   display: inline-block;
+}
+
+form section { padding-left: 10px; }
+form section h2:first-child { margin-left: -10px; }
+
+form#password input[type=password] {
+  line-height: 22px;
+}
+
+.flash.error, span.error { color: #E94E77; }
+.flash.notice, .success { color: #D4EE5E; }
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: none;
 }

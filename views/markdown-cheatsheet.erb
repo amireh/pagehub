@@ -1,0 +1,51 @@
+<% content_for :header do %>
+<h1>Markdown Tutorial</h1>
+<% end %>
+
+<% h = <<EOF
+
+## Headings
+
+Begin a line with a number of `#` to create a heading. You can combine 1-6 hashes
+to create one of 6 sizes of headings.
+
+```text
+# Animal facts
+
+A cat is not a dog.
+
+## Monkeys, however...
+
+Are not dogs, either.
+```
+
+Note: you must leave a line-break *after* each heading.
+
+## Marking up words
+
+* *Italicizing*: surround words with a single asterisk `*` to *emphasize them* -- `*emphasize them*`
+* **Boldifying**: surround words with double asterisks `**` to **make them bold** -- `**make them bold**`
+
+## Lists
+
+Simply prefix each list item with either an asterisk: \\*, or a number and a dot: 1., or a dash: -
+
+- this is bullet #1
+* this is bullet #2
+  * this is a nested list, I simply added two spaces before it (or used a tab)
+* back to bullet #3
+
+## Horizontal breaks
+
+Any of the following preceded and followed by line-breaks will cause a horizontal ruler:
+
+```text
+- - -
+=====
+* * *
+```
+
+EOF
+%>
+
+<%= h.to_markdown %>

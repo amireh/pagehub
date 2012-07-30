@@ -1,0 +1,24 @@
+/*
+  bg: #443a34;
+  fg: #F4FAD2;
+  h1: #E94E77;
+  h2: #D4EE5E;
+  h3, a: #F0AD11;
+*/
+
+body {
+  background: #443a34;
+  color: #F4FAD2;
+}
+
+h1 {
+  color: #E94E77;
+}
+
+h2 {
+  color: #D4EE5E;
+}
+
+h3,a, a:visited {
+  color: #F0AD11;
+}

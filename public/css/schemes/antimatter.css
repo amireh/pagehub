@@ -1,0 +1,34 @@
+body {
+  background: #111;
+  color: #fff;
+}
+
+.stuff {
+  background: none;
+  box-shadow: none;
+  border: none;
+}
+
+h1 {
+  color: #fff;
+}
+
+h2 {
+  color: #D4EE5E;
+}
+
+h3,a, a:visited {
+  color: #E1EDB9;
+}
+
+a {
+  text-decoration: underline;
+}
+
+hr {
+  border-color: #333;
+}
+
+#content {
+  padding-bottom: 0;
+}

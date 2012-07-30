@@ -1,0 +1,34 @@
+body {
+  background: #F0F2EB;
+  color: #1C140D;
+}
+
+.stuff {
+  background: none;
+  box-shadow: none;
+  border: none;
+}
+
+h1 {
+  color: #FF4242;
+}
+
+h2 {
+  color: #99173C;
+}
+
+h3,a, a:visited {
+  color: #5E8C6A;
+}
+
+hr {
+  box-shadow: none;
+  border-color: #aaa;
+}
+
+.highlight .nt { color: #5E8C6A; } /* Name.Tag */
+.highlight .cp { color: #555;}
+
+#content {
+  padding-bottom: 0;
+}

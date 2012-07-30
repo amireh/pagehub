@@ -1,0 +1,251 @@
+<% content_for :scripts do %>
+<script src="/js/codemirror-2.3/lib/codemirror.js"></script>
+<script src="/js/codemirror-2.3/mode/xml/xml.js"></script>
+<script src="/js/codemirror-2.3/mode/markdown/markdown.js"></script>
+<script src="/js/codemirror-2.3/mode/gfm/gfm.js"></script>
+
+<script src="/js/codemirror-2.3/mode/javascript/javascript.js"></script>
+<script src="/js/codemirror-2.3/mode/ruby/ruby.js"></script>
+<script src="/js/codemirror-2.3/mode/shell/shell.js"></script>
+<script src="/js/codemirror-2.3/mode/lua/lua.js"></script>
+<script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
+<% @theme = "neat" %>
+<link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
+<link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
+<link rel="stylesheet" href="/css/codemirror.css">
+
+<script>
+  $(function() {
+    $("#check_availability").click(function() {
+      var btn = $(this);
+      $.ajax({
+        url: "/users/nickname",
+        type: "POST",
+        data: { nickname: $("input[name=nickname]").attr("value") },
+
+        success: function(is_available) {
+          is_available = JSON.parse(is_available);
+          console.log(is_available)
+          if (is_available) {
+            btn.next("span").addClass("success").removeClass("error").html("available");
+          } else {
+            btn.next("span").addClass("error").removeClass("success").html("not available");
+          }
+        }
+
+      });
+      return false;
+    });
+
+    var colour_scheme_map = [ "Background", "Foreground", "Heading #1", "Heading #2", "Heading #3 and Links" ];
+    $("span.scheme_colours").hover(function() {
+      var idx = $(this).attr("class").substr(-1);
+      // $(this).addClass("zoom").html(colour_scheme_map[idx]);
+      $("#colour_explanation").html("Colour: " + colour_scheme_map[idx]);
+    }, function() {
+      $("#colour_explanation").html("Colour: &minus;");      
+      // $(this).removeClass("zoom").html("");
+    });
+
+
+
+    editor = CodeMirror.fromTextArea(document.getElementById("preview_editor"), {
+      mode: "markdown",
+      lineNumbers: false,
+      matchBrackets: true,
+      theme: "<%= @theme %>",
+      tabSize: 2,
+      gutter: false,
+      autoClearEmptyLines: false,
+      lineWrapping: true,
+      readOnly: true
+    });
+
+    $("input[type=radio][name*=editing]").change(function() { 
+      var ff = $(this).parent().css("font-family");
+      console.log(ff)
+      $(".CodeMirror").css("font-family", ff);
+    });
+    $("input[type=text][name*=editing\\\]\\\[font_size]").keyup(function(e) {
+      if (e.keyCode == 38) { $(this).attr("value", parseInt($(this).attr("value")) + 1);}
+      else if (e.keyCode == 40) { $(this).attr("value", parseInt($(this).attr("value")) - 1);}
+      $(".CodeMirror").css("font-size", parseInt($(this).attr("value") || 1) + "px");
+    });
+    $("input[type=text][name*=editing\\\]\\\[line_height]").keyup(function(e) {
+      if (e.keyCode == 38) { $(this).attr("value", parseInt($(this).attr("value")) + 1);}
+      else if (e.keyCode == 40) { $(this).attr("value", parseInt($(this).attr("value")) - 1);}
+      $(".CodeMirror").css("line-height", parseInt($(this).attr("value") || 1) + "px");
+    });
+  });
+</script>
+<style>
+  section.editor_preview {
+    position: absolute;
+    left: 320px;
+    top: 77px;
+    /*border-left: 1px solid #333;*/
+    padding: 0;
+    opacity: 0.5;
+  }
+  section.editor_preview .curly,
+  section.editor_preview small {
+    font-family: "UbuntuMonoRegular";
+    font-size: 196px;
+    position: absolute;
+    opacity: 0.1;
+    left: -164px;
+    font-weight: bold;
+    top: 100px;
+    -webkit-transform: rotate(-30deg);
+    -moz-transform: rotate(-30deg);
+  }
+  section.editor_preview small {
+    position: absolute;
+    left: -128px;
+    top: 110px;
+    z-index: 100;
+    opacity: 1;
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+
+  #editor_settings {
+    position: relative;
+  }
+  .CodeMirror {
+    width: 320px;
+    margin: 0;
+    max-height: 320px;
+    height: 320px;
+    overflow: inherit;
+  }
+</style>
+<% end %>
+
+<form id="preferences" action="/profile/preferences" method="POST">
+  <section>
+  <h2>Nickname</h2>
+  <label>
+    Your nickname is used in the links when sharing documents with people.
+    <br />
+    <br />
+    <input type="text" name="nickname" value="<%= current_user.nickname %>" />
+    <button id="check_availability">check availability</button>
+    <span></span>
+  </label>
+  <p>Links to your public pages will look something like this:
+    <br />
+    &rarr; <a><code>http://<%= request.host %>/<strong>your-nickname</strong>/<strong>page-title</strong></code></a>
+  </p>
+  </section>
+
+  <section>
+    <h2>Publishing settings</h2>
+
+    <p>These settings control the "pretty" versions of your pages.</p>
+
+    <h3>Colour scheme</h3>
+
+    <% schemes = {
+      "Hazzle Dazzle" => [ "443a34", "F4FAD2", "E94E77", "D4EE5E", "F0AD11" ],
+      "Simply White" => [ "F0F2EB", "1C140D", "FF4242", "99173C", "5E8C6A" ],
+      "Antimatter" => [ "111", "fff", "aaa", "bbb", "555" ]
+    } %>
+    <% schemes.each_pair do |scheme, colours| %>
+      <label style="vertical-align: middle; font-size: 18px; margin-bottom: 5px; display: inline-block;">
+        <% colours.each_with_index do |hex, idx| %>
+          <span class="scheme_colours colour_<%=idx%>"
+            style="vertical-align: middle; height: 36px; width: 36px; display: inline-block; background: #<%= hex %>; border: 1px solid #111"></span>
+        <% end %>
+        <input type="radio" 
+        style="vertical-align: middle;"
+        name="settings[pretty][scheme]" 
+        value="<%= scheme %>"
+        <%= (preferences["pretty"] || {})["scheme"] == scheme ? "checked='checked'" : "" %>
+        />
+        <%= scheme %>
+        <small><a href="/testdrive?scheme=<%=scheme%>" target="_blank">preview</a></small>
+      </label>
+      <br />
+    <% end %>
+      <span id="colour_explanation">Colour: &minus;</span>
+
+  </section>
+
+  <section id="editor_settings">
+  <h2>Editing settings</h2>
+
+  <p>These settings will apply only to Naughty's editor and <em>not</em>
+    to the pretty versions of your pages.</p>
+
+    <h3>Font face</h3>
+
+      <% Preferences::FontMap.each_pair do |name, font| %>
+        <label style="font-family: <%= font %>; font-size: 14px">
+          <input 
+          type="radio" name="settings[editing][font_face]" 
+          value="<%=name%>"
+          <%= (preferences["editing"] || {})["font_face"] == name ? "checked='checked'" : "" %>
+          ><%= name %></input>
+        </label>
+        <br />
+      <% end %>
+    <h3>Font size &times; Line height</h3>
+      <input 
+        type="text" name="settings[editing][font_size]"
+        autocomplete="off"
+        style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
+        value="<%= (preferences["editing"] || {})["font_size"] %>" /> 
+      <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
+      <input 
+        type="text" name="settings[editing][line_height]"
+        autocomplete="off"
+        style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
+        value="<%= (preferences["editing"] || {})["line_height"] %>" /> 
+      <span style="font-size: 18px;">px</span>
+
+    <section class="editor_preview">
+      <span class="curly">&rarr;</span>
+      <small>preview</small>
+      <!-- <h3>Editor preview</h3> -->
+      <textarea readonly="readonly" id="preview_editor"><%
+  %># A sample
+
+This is how text in the editor will look like using the font face you've chosen with the specified dimensions.
+
+* A chicken
+* A dog
+* A goose
+
+I'm **bold** and I'm *not*.
+</textarea>
+    </section>
+  </section>
+
+  <br />
+  <input type="submit" value="Update preferences" />
+</form>
+<br />
+<hr />
+<form id="password" method="POST" action="/profile/password">
+  <section>
+    <h2>Changing your password</h2>
+
+    <label>
+      Your current password:<br />
+      <input type="password" name="password[current]" />
+    </label>
+    <br />
+    
+    <span>
+      And a new one (type it twice to confirm it):<br />
+    </span>
+    <label>#1 &rarr; <input type="password" name="password[new]" /></label>
+    <br />
+    <label>#2 &rarr; <input type="password" name="password[confirmation]" /></label>
+
+  </section>
+
+  <br />
+  <input type="submit" value="Change password" />
+</form>

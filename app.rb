@@ -43,6 +43,18 @@ class String
   end
 end
 
+module Preferences
+  FontMap = { 
+    "Proxima Nova" => "ProximaNova-Light",
+    "Ubuntu" => "UbuntuRegular",
+    "Ubuntu Mono" => "UbuntuMonoRegular",
+    "Monospace" => "monospace, Courier New, courier, Mono",
+    "Arial" => "Arial",
+    "Verdana" => "Verdana",
+    "Helvetica Neue" => "Helvetica Neue"
+  }
+end
+
 configure do
   # enable :sessions
   use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
@@ -59,6 +71,8 @@ configure do
 
   DataMapper.finalize
   DataMapper.auto_upgrade!
+
+  set :default_preferences, JSON.parse(File.read("default_preferences.json"))
 end
 
 get '/' do
@@ -71,4 +85,16 @@ get '/' do
   end
 
   erb destination.to_sym
+end
+
+get '/tutorial' do
+  erb :"/tutorial.md", layout: :"print_layout"
+end
+
+get '/markdown-cheatsheet' do
+  erb :"/markdown-cheatsheet", layout: :"print_layout"
+end
+
+get '/testdrive' do
+  erb :"/tutorial.md", layout: :"print_layout"
 end
