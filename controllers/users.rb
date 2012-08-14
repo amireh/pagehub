@@ -31,12 +31,12 @@ helpers do
   end
 
   def current_user
-    if !logged_in? then
-      return nil
-    end
-
     if @user then
       return @user
+    end
+    
+    if !logged_in? then
+      return nil
     end
 
     @user = User.first(email: session[:email])

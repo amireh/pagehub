@@ -70,10 +70,10 @@ end
 
 # Retrieve a publicly accessible page.
 get '/:nickname/:title' do |nn, title|
-  user = User.first({ nickname: nn })
-  halt 404, "This seems to be an invalid link, sorry :(" if !user
-  @page = Page.first({ pretty_title: title, user_id: user.id })
-  halt 404, "This seems to be an invalid link, sorry :(" if !user
+  @user = User.first({ nickname: nn })
+  halt 404, "This seems to be an invalid link, sorry :(" if !@user
+  @page = Page.first({ pretty_title: title, user_id: @user.id })
+  halt 404, "This seems to be an invalid link, sorry :(" if !@page
   @public = true
   erb :"pretty", layout: :"print_layout"
 end
