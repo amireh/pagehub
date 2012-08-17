@@ -219,7 +219,9 @@
       return ui.action($(this).attr("id"));
     });
 
-    
+    var editor_h = $(window).height() - 123;
+    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+    editor.refresh();
   }); 
 </script>
   <!-- apply user preferences -->
@@ -237,7 +239,7 @@
 <% end %>
 
 <div id="pages">
-  <a tabindex="1" href="#" id="new_page">start a new page</a>
+  <a tabindex="1" href="#" id="new_page" class="button">start a new page</a>
   <input type="text" id="title_editor" hidden="hidden" />
   <ul>
     <% logged_in? && @pages.each_with_index do |p, pidx| %>

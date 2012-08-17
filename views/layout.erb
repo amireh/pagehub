@@ -32,16 +32,17 @@
 
 <body>
 
+    <div class="header_wrap">
+    </div>
+    <div class="action_bar_wrap">
+    </div>
+
   <div class="stuff">
 
-    <header>
-      <!-- <h1><a href="/">notebook.mxvt</a></h1> -->
-      <!-- <h1><a href="/">naughty.mxvt</a></h1> -->
-      <h1><a href="/">Naughty Notebook</a></h1>
-    </header>
-    
-    <div class="strikes">
-      <hr />
+      <header>
+        <h1><a href="/">Naughty Notebook</a></h1>
+      </header>
+      
       <nav>
         <% if logged_in? %>
           <div id="admin_actions">
@@ -52,9 +53,7 @@
           <a id="login" href="/login">login</a>
           <a href="/signup">signup</a>
         <% end %>
-      </nav>      
-      <hr />
-    </div>
+      </nav>
     
     <div id="content">
       <div id="status">
