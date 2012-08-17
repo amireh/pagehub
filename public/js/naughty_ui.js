@@ -64,10 +64,10 @@ naughty_ui = function() {
     // toggle autosaving
     function() {
       if (naughty.settings.editing.autosave) {
-        autosave_timer = setInterval("ui.save()", autosave_pulse * 1000);
+        autosave_timer = setInterval("ui.save(true)", autosave_pulse * 1000);
       }
 
-      ui.status("hi", "good");
+      // ui.status("hi", "good");
     }
   ];
 
@@ -147,7 +147,7 @@ naughty_ui = function() {
       return false;
     },
 
-    save: function() {
+    save: function(dont_show_status) {
       // ui.editor.save();
 
       var page_id = current_page_id();
@@ -155,11 +155,16 @@ naughty_ui = function() {
         return;
 
       var content = ui.editor.getValue();
+      var messages = null;
 
-      naughty.update(page_id, { content: content }, {
-        success: "Saved!",
-        error: "Unable to update page :("
-      });
+      if (!dont_show_status) {
+        messages = {
+          success: "Saved!",
+          error: "Unable to update page :("
+        }
+      }
+
+      naughty.update(page_id, { content: content }, messages);
     },
 
     save_title: function() {
