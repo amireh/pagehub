@@ -17,10 +17,24 @@ require "digest/sha1"
 require 'redcarpet'
 require 'json'
 require 'albino'
+require 'open-uri'
+
+def get_remote_resource(uri)
+  begin
+    return open(uri).string
+  rescue Exception => e
+    puts e
+    return ""
+  end
+end
 
 class HTMLwithAlbino < Redcarpet::Render::HTML
   def block_code(code, language)
-    Albino.colorize(code, language)
+    begin
+      return Albino.colorize(code, language)
+    rescue
+      return "-- INVALID CODE BLOCK, MAKE SURE YOU'VE SURROUNDED CODE WITH ``` --"
+    end
   end
 end
 
@@ -30,6 +44,11 @@ class String
   end
 
   def to_markdown
+
+    self.gsub!(/\[\!include\!\]\((.*)\)/) { 
+      get_remote_resource($1)
+    }
+
     markdown_opts = {
       autolink: true,
       space_after_headers: true,
