@@ -113,21 +113,35 @@
       ui.save();
     });
 
-    ui.on_action("zoom_in", function() {
-      $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
-      $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) + 2) + "px");
-    });
+    // ui.on_action("zoom_in", function() {
+    //   $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
+    //   $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) + 2) + "px");
+    // });
 
-    ui.on_action("zoom_out", function() {
-      $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) - 2);
-      $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) - 2) + "px");
-    });
+    // ui.on_action("zoom_out", function() {
+    //   $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) - 2);
+    //   $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) - 2) + "px");
+    // });
 
     ui.on_action("change_font", function() {
       var font = $("#page_actions select :selected").attr("value");
       console.log("Font: " + font);
       $(".CodeMirror").css("font-family", font);
     });
+
+    $("#increase_height").click(function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) + step) +"px");
+      editor.refresh();
+    });
+    $("#decrease_height").click(function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) - step) +"px");
+      editor.refresh();
+    });
+
 
     shortcut.add("ctrl+alt+s", function() { ui.save(); })
     shortcut.add("ctrl+alt+v", function() { ui.preview(); })
@@ -235,8 +249,10 @@
 
 --><div class="disabled" id="page_actions">
   <a href="#" title="Saves the content of this page (shortcut: Ctrl+S)" id="save_content">Save</a> &bullet;
-  <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
-  <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet;
+  <a href="#" title="Increase the height of the editor" id="increase_height">Increase height</a> &bullet;
+  <a href="#" title="Decrease the height of the editor" id="decrease_height">Decrease height</a> &bullet;
+<!--   <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
+  <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet; -->
   <a target="Naughty - Preview" 
         title="View the current page in prettified HTML mode" 
         href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
