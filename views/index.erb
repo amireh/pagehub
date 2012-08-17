@@ -248,13 +248,11 @@
 </div><div id="editor_container"><!--
 
 --><div class="disabled" id="page_actions">
-  <a href="#" title="Saves the content of this page (shortcut: Ctrl+S)" id="save_content">Save</a> &bullet;
-  <a href="#" title="Increase the height of the editor" id="increase_height">Increase height</a> &bullet;
-  <a href="#" title="Decrease the height of the editor" id="decrease_height">Decrease height</a> &bullet;
+  <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a> &bullet;
 <!--   <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
   <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet; -->
   <a target="Naughty - Preview" 
-        title="View the current page in prettified HTML mode" 
+        title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
         href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
   <a target="Naughty" 
       title="Make a public version of this page that you can share with people" 
@@ -262,7 +260,9 @@
   <a id="delete_page" class="confirm"
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="delete_page"
-     title="Deletes the page forever">Delete</a>
+     title="Deletes the page forever (Ctrl+Alt+D)">Delete</a> &bullet;
+  <a href="#" title="Increase the height of the editor" id="increase_height">Grow</a> &bullet;
+  <a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a>
 </div><textarea id="page_editor"><%= erb :"/tutorial" %></textarea>
 </div>
 <img class="loader" src="/css/ajax-loader.gif" />
