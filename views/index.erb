@@ -90,20 +90,20 @@
       tabSize: 2,
       gutter: false,
       autoClearEmptyLines: false,
-      lineWrapping: true,
-      onScroll: function(e) {
-        // console.log(e.cursorCoords(true, "page"));
-        var y = e.cursorCoords(true, "page").y;
-        if (y > $(window).height() - 40) {
-          console.log("i be scrolling to: " + (y - $(window).height() ));
-          window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
-        }
-        // e.refresh();
-        // var editor = e.getWrapperElement();
-        // var editorScroll = $(editor).find('.CodeMirror-scroll');
-        // if (editorScroll.length > 0)
-          // console.log($(editorScroll).css("height"))
-      }
+      lineWrapping: true//,
+      // onScroll: function(e) {
+      //   // console.log(e.cursorCoords(true, "page"));
+      //   var y = e.cursorCoords(true, "page").y;
+      //   if (y > $(window).height() - 40) {
+      //     console.log("i be scrolling to: " + (y - $(window).height() ));
+      //     window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
+      //   }
+      //   // e.refresh();
+      //   // var editor = e.getWrapperElement();
+      //   // var editorScroll = $(editor).find('.CodeMirror-scroll');
+      //   // if (editorScroll.length > 0)
+      //     // console.log($(editorScroll).css("height"))
+      // }
     });
 
     ui.editor = editor;

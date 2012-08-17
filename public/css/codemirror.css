@@ -16,7 +16,7 @@
 }
 .CodeMirror-scroll {
   min-height: 480px;
-  height: auto;
+  /*height: auto;*/
   overflow-y: hidden;
   overflow-x: auto;
 }

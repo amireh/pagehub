@@ -15,7 +15,9 @@ body {
   background: url(bg2.png) repeat;
   margin-bottom: 20px;
 }
-
+html {
+  background-color: transparent;
+}
 .funky {
   font-family: "UbuntuMonoRegular";
 }
@@ -193,6 +195,7 @@ a#new_page:not(:hover) {
   /*border-bottom-right-radius: 10px;*/
   background: transparent;
   margin-top: 40px;
+  max-height: 420px;
   /*border-left-color: #F0F2EB;*/
 
 }
@@ -484,4 +487,25 @@ input[type="button"]::-moz-focus-inner,
 input[type="submit"]::-moz-focus-inner,
 input[type="file"] > input[type="button"]::-moz-focus-inner {
     border: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+  height: 0px;
+  display: block;
+  background-color: transparent;
+}
+::-webkit-scrollbar-track-piece  {
+  background-color: rgba(0,0,0,0.15);
+  -webkit-border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:vertical {
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255,255,255,0.125);
+  -webkit-border-radius: 6px;
 }
