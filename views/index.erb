@@ -238,8 +238,12 @@
   Naughty
 <% end %>
 
+<% content_for :wraps do %>
+  <div class="action_bar_wrap"></div>
+<% end %>
+
 <div id="pages">
-  <a tabindex="1" href="#" id="new_page" class="button">start a new page</a>
+  <a tabindex="1" href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New</a>
   <input type="text" id="title_editor" hidden="hidden" />
   <ul>
     <% logged_in? && @pages.each_with_index do |p, pidx| %>

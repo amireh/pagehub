@@ -32,28 +32,27 @@
 
 <body>
 
-    <div class="header_wrap">
-    </div>
-    <div class="action_bar_wrap">
-    </div>
+  <div class="header_wrap">
+  </div>
+
+  <% yield_content :wraps %>
 
   <div class="stuff">
-
-      <header>
-        <h1><a href="/">Naughty Notebook</a></h1>
-      </header>
-      
-      <nav>
-        <% if logged_in? %>
-          <div id="admin_actions">
-            <a href="/profile">edit profile</a>
-            <a href="/logout">logout</a>
-          </div>
-        <% else %>
-          <a id="login" href="/login">login</a>
-          <a href="/signup">signup</a>
-        <% end %>
-      </nav>
+    <header>
+      <h1><a href="/">Naughty Notebook</a></h1>
+    </header>
+    
+    <nav>
+      <% if logged_in? %>
+        <div id="admin_actions">
+          <a href="/profile">edit profile</a>
+          <a href="/logout">logout</a>
+        </div>
+      <% else %>
+        <a id="login" href="/login">login</a>
+        <a href="/signup">signup</a>
+      <% end %>
+    </nav>
     
     <div id="content">
       <div id="status">

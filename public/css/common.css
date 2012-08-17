@@ -72,10 +72,13 @@ a:visited {
   /*color: #E15E32;*/
 }
 header {
-  margin-bottom: 30px;
+  /*margin-bottom: 30px;*/
+  max-height: 65px;
 }
+
 header h1 {
-  margin-top: 0;
+  margin: 0;
+  line-height: 65px;
 }
 header h1 a {
   text-decoration: none;
@@ -114,7 +117,7 @@ h3 {
   /*background: rgba(10,10,10,0.991);*/
   /*background: #000;*/
   border-top: none;
-  padding: 20px 0 0 0;
+  padding: 0;
 /*  border-bottom-right-radius: 10px;
   border-bottom-left-radius:  10px;*/
 }
@@ -143,13 +146,14 @@ footer {
 nav {
   position: absolute;
   right: 15px;
-  top: 18px;
+  top: 0;
   /*top: 2px;*/
 }
 
 nav a {
   margin-left: 10px;
   padding: 0;
+  line-height: 65px;
 }
 
 #actions {
@@ -183,8 +187,9 @@ input {
   border: none;
 }
 a#new_page {
-  /*font-size: 23px;*/
-  position: relative; top: 2px;
+  line-height: 40px;
+  display: inline-block;
+  clear: both;
 }
 a#new_page:not(:hover) {
   /*color: #F0AD11;*/
@@ -208,9 +213,7 @@ a#new_page:not(:hover) {
 }
 
 #pages ul {
-  list-style-type: none;
-  position: relative;
-  left: -11px;
+  /*list-style-type: none;*/
   padding: 0;
   margin: 10px 0 0 0;
 }
@@ -218,7 +221,9 @@ a#new_page:not(:hover) {
   display: inline-block;
   clear: both;
   width: 100%;
-  padding: 0 11px;
+  padding: 0;
+  line-height: 16px;
+  vertical-align: top;
 }
 
 #page_editor > *:first-child,
@@ -399,12 +404,14 @@ footer {
 }
 #page_actions {
   position: absolute;
-  top: 2px;
+  top: 0;
   left: 0;
   font-size: 13px;
   letter-spacing: 2px;
   z-index: 100;
   padding-left: 5px;
+  line-height: 40px;
+  display: block;
 }
 .disabled {
   opacity: 0.5;
