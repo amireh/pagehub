@@ -15,6 +15,9 @@ body {
   background: url(bg2.png) repeat;
   margin-bottom: 20px;
 }
+html,body {
+  height: 100%;
+}
 
 .funky {
   font-family: "UbuntuMonoRegular";
@@ -94,10 +97,12 @@ h3 {
   /*float: left;*/
   /*width: 100%;*/
   padding-bottom: 20px;
+  height: 87%;
 }
 
 .stuff {
   width: 960px;
+  height: 95%;
   margin: 0 auto;
   position: relative;
   display: block;
@@ -188,12 +193,22 @@ a#new_page:not(:hover) {
   /*color: #FFF;*/
 }
 
-#page_editor {
+#editor_container {
+  position: relative;
+  display: inline-block;
   width: 740px;
+  height: 100%;
+}
+
+#page_editor {
+  width: 100%;
   /*border-bottom-right-radius: 10px;*/
-  background: transparent;
-  margin-top: 40px;
+  /*background: transparent;*/
+  /*margin-top: 40px;*/
   /*border-left-color: #F0F2EB;*/
+  height: 90%;
+  top: 40px;
+  position: absolute;
 
 }
 
@@ -403,6 +418,7 @@ input[type=submit]:active {
 
 footer {
   /*color: #fff;*/
+  height: 5%;
   width: 960px;
   margin: 0 auto;
   /*text-align: center;*/
@@ -463,10 +479,7 @@ height: 29px;
   position: absolute;
   top: -150px;
 }
-#editor_container {
-  position: relative;
-  display: inline-block;
-}
+
 
 /*form section { padding-left: 10px; }*/
 /*form section h2:first-child { margin-left: -10px; }*/

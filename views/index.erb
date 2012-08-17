@@ -1,7 +1,7 @@
 <!-- <div id="actions">
 </div> -->
 <% content_for :scripts do %>
-<script src="/js/codemirror-2.3/lib/codemirror.js"></script>
+<!-- <script src="/js/codemirror-2.3/lib/codemirror.js"></script>
 <script src="/js/codemirror-2.3/mode/xml/xml.js"></script>
 <script src="/js/codemirror-2.3/mode/markdown/markdown.js"></script>
 <script src="/js/codemirror-2.3/mode/gfm/gfm.js"></script>
@@ -13,7 +13,9 @@
 <script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
 
 <script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
-
+ -->
+<script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/js/ace/theme-twilight.js" type="text/javascript" charset="utf-8"></script>
 <script src="/js/jqModal.js"></script>
 <script src="/js/naughty.js"></script>
 <script src="/js/naughty_ui.js"></script>
@@ -23,6 +25,7 @@
 <link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
 <link rel="stylesheet" href="/css/codemirror.css">
 <link rel="stylesheet" href="/css/jqModal.css">
+<link rel="stylesheet" href="/css/ace_monokai.css">
 
 <script type="text/javascript">
   // ui = naughty_ui();
@@ -65,46 +68,54 @@
 
     $("#pages li").click(get_page);
 
-    CodeMirror.keyMap.mxvt = {
-      "Ctrl-1": function(cm) { mxvt.markdown.heading(cm, 1) },
-      "Ctrl-2": function(cm) { mxvt.markdown.heading(cm, 2) },
-      "Ctrl-3": function(cm) { mxvt.markdown.heading(cm, 3) },
-      "Ctrl-4": function(cm) { mxvt.markdown.heading(cm, 4) },
-      "Ctrl-5": function(cm) { mxvt.markdown.heading(cm, 5) },
-      "Ctrl-6": function(cm) { mxvt.markdown.heading(cm, 6) },
-      // "Shift-Ctrl-S": function(cm) { ui.save(); },
-      // "Shift-Ctrl-V": function(cm) { ui.preview(); },
-      // "Shift-Ctrl-D": function(cm) { ui.delete_page(); },
-      "Ctrl-B": function(cm) { mxvt.markdown.strongify(cm) },
-      "Ctrl-I": function(cm) { mxvt.markdown.emphasize(cm) },
-      "Shift-Ctrl-K": function(cm) { cm.removeLine(cm.getCursor(true).line) },
-      fallthrough: ["default"]
-    };
+    editor = ace.edit("page_editor");
+    editor.renderer.setShowGutter(false);
+    editor.getSession().setUseWrapMode(true);
+    editor.getSession().setWrapLimitRange(120, 120);
+    editor.getSession().setMode("ace/mode/markdown");
+    editor.renderer.setPrintMarginColumn(-1);
+    editor.setTheme("ace/theme/twilight");
 
-    editor = CodeMirror.fromTextArea(document.getElementById("page_editor"), {
-      mode: "markdown",
-      lineNumbers: false,
-      matchBrackets: true,
-      theme: "<%=@theme %>",
-      keyMap: "mxvt",
-      tabSize: 2,
-      gutter: false,
-      autoClearEmptyLines: false,
-      lineWrapping: true,
-      onScroll: function(e) {
-        // console.log(e.cursorCoords(true, "page"));
-        var y = e.cursorCoords(true, "page").y;
-        if (y > $(window).height() - 40) {
-          console.log("i be scrolling to: " + (y - $(window).height() ));
-          window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
-        }
-        // e.refresh();
-        // var editor = e.getWrapperElement();
-        // var editorScroll = $(editor).find('.CodeMirror-scroll');
-        // if (editorScroll.length > 0)
-          // console.log($(editorScroll).css("height"))
-      }
-    });
+    // CodeMirror.keyMap.mxvt = {
+    //   "Ctrl-1": function(cm) { mxvt.markdown.heading(cm, 1) },
+    //   "Ctrl-2": function(cm) { mxvt.markdown.heading(cm, 2) },
+    //   "Ctrl-3": function(cm) { mxvt.markdown.heading(cm, 3) },
+    //   "Ctrl-4": function(cm) { mxvt.markdown.heading(cm, 4) },
+    //   "Ctrl-5": function(cm) { mxvt.markdown.heading(cm, 5) },
+    //   "Ctrl-6": function(cm) { mxvt.markdown.heading(cm, 6) },
+    //   // "Shift-Ctrl-S": function(cm) { ui.save(); },
+    //   // "Shift-Ctrl-V": function(cm) { ui.preview(); },
+    //   // "Shift-Ctrl-D": function(cm) { ui.delete_page(); },
+    //   "Ctrl-B": function(cm) { mxvt.markdown.strongify(cm) },
+    //   "Ctrl-I": function(cm) { mxvt.markdown.emphasize(cm) },
+    //   "Shift-Ctrl-K": function(cm) { cm.removeLine(cm.getCursor(true).line) },
+    //   fallthrough: ["default"]
+    // };
+
+    // editor = CodeMirror.fromTextArea(document.getElementById("page_editor"), {
+    //   mode: "markdown",
+    //   lineNumbers: false,
+    //   matchBrackets: true,
+    //   theme: "<%=@theme %>",
+    //   keyMap: "mxvt",
+    //   tabSize: 2,
+    //   gutter: false,
+    //   autoClearEmptyLines: false,
+    //   lineWrapping: true,
+    //   onScroll: function(e) {
+    //     // console.log(e.cursorCoords(true, "page"));
+    //     var y = e.cursorCoords(true, "page").y;
+    //     if (y > $(window).height() - 40) {
+    //       console.log("i be scrolling to: " + (y - $(window).height() ));
+    //       window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
+    //     }
+    //     // e.refresh();
+    //     // var editor = e.getWrapperElement();
+    //     // var editorScroll = $(editor).find('.CodeMirror-scroll');
+    //     // if (editorScroll.length > 0)
+    //       // console.log($(editorScroll).css("height"))
+    //   }
+    // });
 
     ui.editor = editor;
     ui.actions = $("#page_actions");
@@ -151,7 +162,6 @@
     
 
     $("#pages li").focusin(function() {
-      console.log("binding movement")
       window.addEventListener("keyup", disable_scrolling, false);
       $(this).bind('keydown', function(e) {
         if (e.keyCode == 38)
@@ -167,7 +177,6 @@
         return false;
       });
     }/*, */).focusout(function() {
-      console.log("unbinding movement")
       $(this).unbind('keydown');
       window.removeEventListener("keyup", disable_scrolling, false);
     });
@@ -210,7 +219,7 @@
 </script>
   <!-- apply user preferences -->
   <style>
-    .CodeMirror {
+    .ace_editor {
       font-family: <%= Preferences::FontMap[preferences["editing"]["font_face"]] %>;
       font-size: <%= preferences["editing"]["font_size"].to_i %>px;
       line-height: <%= preferences["editing"]["line_height"].to_i %>px;
@@ -247,7 +256,7 @@
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="delete_page"
      title="Deletes the page forever">Delete</a>
-</div><textarea id="page_editor"><%= erb :"/tutorial" %></textarea>
+</div><pre id="page_editor"><%= erb :"/tutorial" %></pre>
 </div>
 <img class="loader" src="/css/ajax-loader.gif" />
 

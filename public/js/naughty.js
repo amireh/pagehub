@@ -1,3 +1,9 @@
+foreach = function(arr, handler) {
+  arr = arr || []; for (var i = 0; i < arr.length; ++i) handler(arr[i]);
+}
+
+log = function(m, ctx) { ctx = ctx || "D"; console.log("[" + ctx + "] " + m); }
+
 naughty = function() { };
 
 naughty.prototype = {
