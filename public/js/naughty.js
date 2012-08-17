@@ -32,3 +32,6 @@ naughty.prototype = {
 
 // globally accessible instance
 naughty = new naughty();
+
+naughty.settings = naughty_settings;
+naughty_settings = null;

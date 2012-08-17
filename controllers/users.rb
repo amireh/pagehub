@@ -119,7 +119,7 @@ end
 post '/profile/preferences' do
   restricted!
 
-  p params.inspect
+  # p params.inspect
 
   # see if the nickname is available
   nickname, u = params[:nickname], nil
