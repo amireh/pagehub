@@ -90,20 +90,20 @@
       tabSize: 2,
       gutter: false,
       autoClearEmptyLines: false,
-      lineWrapping: true,
-      onScroll: function(e) {
-        // console.log(e.cursorCoords(true, "page"));
-        var y = e.cursorCoords(true, "page").y;
-        if (y > $(window).height() - 40) {
-          console.log("i be scrolling to: " + (y - $(window).height() ));
-          window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
-        }
-        // e.refresh();
-        // var editor = e.getWrapperElement();
-        // var editorScroll = $(editor).find('.CodeMirror-scroll');
-        // if (editorScroll.length > 0)
-          // console.log($(editorScroll).css("height"))
-      }
+      lineWrapping: true//,
+      // onScroll: function(e) {
+      //   // console.log(e.cursorCoords(true, "page"));
+      //   var y = e.cursorCoords(true, "page").y;
+      //   if (y > $(window).height() - 40) {
+      //     console.log("i be scrolling to: " + (y - $(window).height() ));
+      //     window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
+      //   }
+      //   // e.refresh();
+      //   // var editor = e.getWrapperElement();
+      //   // var editorScroll = $(editor).find('.CodeMirror-scroll');
+      //   // if (editorScroll.length > 0)
+      //     // console.log($(editorScroll).css("height"))
+      // }
     });
 
     ui.editor = editor;
@@ -113,21 +113,35 @@
       ui.save();
     });
 
-    ui.on_action("zoom_in", function() {
-      $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
-      $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) + 2) + "px");
-    });
+    // ui.on_action("zoom_in", function() {
+    //   $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
+    //   $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) + 2) + "px");
+    // });
 
-    ui.on_action("zoom_out", function() {
-      $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) - 2);
-      $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) - 2) + "px");
-    });
+    // ui.on_action("zoom_out", function() {
+    //   $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) - 2);
+    //   $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) - 2) + "px");
+    // });
 
     ui.on_action("change_font", function() {
       var font = $("#page_actions select :selected").attr("value");
       console.log("Font: " + font);
       $(".CodeMirror").css("font-family", font);
     });
+
+    $("#increase_height").click(function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) + step) +"px");
+      editor.refresh();
+    });
+    $("#decrease_height").click(function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) - step) +"px");
+      editor.refresh();
+    });
+
 
     shortcut.add("ctrl+alt+s", function() { ui.save(); })
     shortcut.add("ctrl+alt+v", function() { ui.preview(); })
@@ -205,7 +219,9 @@
       return ui.action($(this).attr("id"));
     });
 
-    
+    var editor_h = $(window).height() - 123;
+    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+    editor.refresh();
   }); 
 </script>
   <!-- apply user preferences -->
@@ -223,7 +239,7 @@
 <% end %>
 
 <div id="pages">
-  <a tabindex="1" href="#" id="new_page">start a new page</a>
+  <a tabindex="1" href="#" id="new_page" class="button">start a new page</a>
   <input type="text" id="title_editor" hidden="hidden" />
   <ul>
     <% logged_in? && @pages.each_with_index do |p, pidx| %>
@@ -234,11 +250,11 @@
 </div><div id="editor_container"><!--
 
 --><div class="disabled" id="page_actions">
-  <a href="#" title="Saves the content of this page (shortcut: Ctrl+S)" id="save_content">Save</a> &bullet;
-  <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
-  <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet;
+  <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a> &bullet;
+<!--   <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
+  <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet; -->
   <a target="Naughty - Preview" 
-        title="View the current page in prettified HTML mode" 
+        title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
         href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
   <a target="Naughty" 
       title="Make a public version of this page that you can share with people" 
@@ -246,7 +262,9 @@
   <a id="delete_page" class="confirm"
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="delete_page"
-     title="Deletes the page forever">Delete</a>
+     title="Deletes the page forever (Ctrl+Alt+D)">Delete</a> &bullet;
+  <a href="#" title="Increase the height of the editor" id="increase_height">Grow</a> &bullet;
+  <a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a>
 </div><textarea id="page_editor"><%= erb :"/tutorial" %></textarea>
 </div>
 <img class="loader" src="/css/ajax-loader.gif" />

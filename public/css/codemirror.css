@@ -5,20 +5,23 @@
   overflow: auto;
   font-size: 14px;
   line-height: 18px;
-  width: 698px;
   width: 740px;
   margin-right: 0;
   display: inline-block;
   height: auto;
   font-family: inherit;
-  margin-top: 26px;
+  margin-top: 38px;
   letter-spacing: 1px;
 }
 .CodeMirror-scroll {
-  min-height: 480px;
-  height: auto;
+  min-height: 492px;
+  /*height: auto;*/
   overflow-y: hidden;
   overflow-x: auto;
+}
+
+.CodeMirror-lines {
+  padding-top: 0;
 }
 
 .CodeMirror-gutter-text {
