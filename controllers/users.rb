@@ -119,7 +119,7 @@ end
 post '/profile/preferences' do
   restricted!
 
-  # p params.inspect
+  p params.inspect
 
   # see if the nickname is available
   nickname, u = params[:nickname], nil
@@ -143,6 +143,12 @@ post '/profile/preferences' do
     params[:settings][:editing][:font_size] = 30
   end
 
+  if params[:settings][:editing][:autosave] then
+    params[:settings][:editing][:autosave] = true
+  else
+    params[:settings][:editing][:autosave] = false
+  end
+  
   current_user.settings = params[:settings].to_json
 
   if current_user.save then

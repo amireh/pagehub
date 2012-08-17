@@ -2,7 +2,8 @@
   "editing": {
     "font_face": "Ubuntu",
     "font_size": 14,
-    "line_height": 18
+    "line_height": 18,
+    "autosave": true
   },
   "pretty": {
     "scheme": "Hazzle Dazzle"

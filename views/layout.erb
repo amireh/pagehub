@@ -28,6 +28,15 @@
   <% end %>
 
   <% yield_content :scripts %>
+  
+  <% if logged_in? then %>
+    <script>
+      $(function() {
+        naughty.settings = <%= preferences.to_json %>;
+      });
+    </script>
+  <% end %>
+
 </head>
 
 <body>

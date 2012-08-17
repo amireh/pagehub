@@ -82,7 +82,7 @@
   section.editor_preview {
     position: absolute;
     left: 320px;
-    top: 77px;
+    top: 160px;
     /*border-left: 1px solid #333;*/
     padding: 0;
     opacity: 0.5;
@@ -178,8 +178,15 @@
   <p>These settings will apply only to Naughty's editor and <em>not</em>
     to the pretty versions of your pages.</p>
 
-    <h3>Font face</h3>
+    <h3>Autosaving</h3>
+    <label>
+      <input type="checkbox" name="settings[editing][autosave]"
+              <%= (preferences["editing"] || {})["autosave"] ? "checked='checked'" : "" %> />
+      Automatically save while editing (every 30 seconds)
+    </label>
 
+    <h3>Font face</h3>
+    
       <% Preferences::FontMap.each_pair do |name, font| %>
         <label style="font-family: <%= font %>; font-size: 14px">
           <input 

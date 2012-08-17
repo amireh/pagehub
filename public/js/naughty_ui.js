@@ -34,10 +34,12 @@ naughty_ui = function() {
   var handlers = {
     on_entry: []
   };
-  var status_timer = null;
+  var status_timer = null,
+      autosave_timer = null;
   var anime_dur = 250;
   var status_shown = false;
   var status_queue = [];
+  var autosave_pulse = 30; /* autosave every half minute */
   var defaults = {
     status: 1
   };
@@ -56,7 +58,14 @@ naughty_ui = function() {
           e.preventDefault();
           ui.hide_title_editor();
         }
-      });      
+      });
+    },
+
+    // toggle autosaving
+    function() {
+      if (naughty.settings.editing.autosave) {
+        autosave_timer = setInterval("ui.save()", autosave_pulse * 1000);
+      }
     }
   ];
 
@@ -146,7 +155,7 @@ naughty_ui = function() {
       var content = ui.editor.getValue();
 
       naughty.update(page_id, { content: content }, {
-        success: "Page content updated!",
+        success: "Saved!",
         error: "Unable to update page :("
       });
     },
