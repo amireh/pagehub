@@ -66,6 +66,8 @@ naughty_ui = function() {
       if (naughty.settings.editing.autosave) {
         autosave_timer = setInterval("ui.save()", autosave_pulse * 1000);
       }
+
+      ui.status("hi", "good");
     }
   ];
 
