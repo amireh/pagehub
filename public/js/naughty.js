@@ -9,10 +9,12 @@ naughty.prototype = {
       url: "/pages/" + page_id,
       data: { attributes: attributes },
       success: function() {
-        ui.status(messages.success, "good");
+        if (messages && messages.success)
+          ui.status(messages.success, "good");
       },
       error: function(rc) {
-        ui.status(messages.error + " " + rc.responseText, "bad");
+        if (messages && messages.error)
+          ui.status(messages.error + " " + rc.responseText, "bad");
       },
       complete: function() { ui.mark_ready(); }
     })
