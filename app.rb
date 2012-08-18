@@ -18,6 +18,7 @@ require 'redcarpet'
 require 'json'
 require 'albino'
 require 'open-uri'
+require 'lib/toc'
 
 def get_remote_resource(uri)
   begin
@@ -27,6 +28,7 @@ def get_remote_resource(uri)
     return ""
   end
 end
+
 
 class HTMLwithAlbino < Redcarpet::Render::HTML
   def block_code(code, language)
@@ -45,8 +47,14 @@ class String
 
   def to_markdown
 
+    # Expand remote references, if any
     self.gsub!(/\[\!include\!\]\((.*)\)/) { 
       get_remote_resource($1)
+    }
+
+    # Create a ToC if invoked
+    self.gsub!(/\[\!toc\!\]/) {
+      TableOfContents.to_html TableOfContents.from_markdown(self)
     }
 
     markdown_opts = {
@@ -56,8 +64,7 @@ class String
       no_intra_emphasis: true
     }
 
-    markdown = Redcarpet::Markdown.new(HTMLwithAlbino, markdown_opts)
-    # markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, markdown_opts)
+    markdown = Redcarpet::Markdown.new(HTMLwithAlbino.new({ :with_toc_data => true }), markdown_opts)
     markdown.render(self)
   end
 end
