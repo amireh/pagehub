@@ -18,6 +18,10 @@
   
 </head>
 <body class="print">
+  <div id="top"></div>
+  
+  <a href="#top">top &uarr;</a>
+  <a href="#bottom">bottom &darr;</a>
 
   <div class="stuff">
     <header>
@@ -29,6 +33,7 @@
     </div>
     <div id="content">
       <%= yield %>
+      <div id="bottom"></div>
     </div>
   </div>
   <%= erb :"footer" %>

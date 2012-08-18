@@ -506,3 +506,23 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   border: 1px solid rgba(255,255,255,0.125);
   -webkit-border-radius: 6px;
 }
+
+
+a[href="#bottom"] {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: #33332d;
+  text-decoration: none;
+  opacity: 0.5;
+  z-index: 10;
+}
+a[href="#top"] {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  color: #33332d;
+  text-decoration: none;
+  opacity: 0.5;
+  z-index: 10;
+}

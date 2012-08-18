@@ -7,24 +7,28 @@ module TableOfContents
   # TableOfContents::to_html()
   #
   def self.from_markdown(markdown)
-    pat = /(\#+)\s(.*)\n/
-    index = markdown.index(pat)
-    headings = []
-    current = []
+    pat       = /(\#+)\s(.*)\n/
+    index     = markdown.index(pat)
+    headings  = []
+    current   = []
+    count     = 0
+
     while !index.nil? && index >= 0
-      
       level = $1.length
       title = $2
       
-      h = Heading.new(title, level)
+      h = Heading.new(title, level, count)
       headings << h
       current[level] = h
+      count += 1 # count is used for anchor generation
+
+      # if there's a parent, attach this heading as a child to it
       if current[level-1] then
         current[level-1] << h
       end
 
       # puts "##{index}:\t#{level} => #{title}"
-      
+
       index = markdown.index(/(\#+)\s(.*)\n/, index+title.length)
     end
 
@@ -53,13 +57,10 @@ module TableOfContents
   class Heading
     attr_accessor :level, :title, :children, :parent, :index
     
-    def initialize(title, level)
-      @@index ||= -1
-      @@index += 1
-      @index = @@index
-
+    def initialize(title, level, index)
       @title = title
       @level = level
+      @index = index
       @parent = nil
       @children = []
       super()
