@@ -9,6 +9,10 @@ body {
   border: none;
 }
 
+header h1 a {
+	color: #FF4242 !important;
+}
+
 h1 {
   color: #FF4242;
 }
