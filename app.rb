@@ -14,83 +14,21 @@ require 'sinatra/flash'
 require 'data_mapper'
 require 'dm-mysql-adapter'
 require "digest/sha1"
-require 'redcarpet'
 require 'json'
-require 'albino'
-require 'open-uri'
 require 'lib/toc'
-
-def get_remote_resource(uri)
-  begin
-    return open(uri).string
-  rescue Exception => e
-    puts e
-    return ""
-  end
-end
-
-
-class HTMLwithAlbino < Redcarpet::Render::HTML
-  def block_code(code, language)
-    begin
-      return Albino.colorize(code, language)
-    rescue
-      return "-- INVALID CODE BLOCK, MAKE SURE YOU'VE SURROUNDED CODE WITH ``` --"
-    end
-  end
-end
-
-class String
-  def sanitize
-    self.downcase.gsub(/\W/,'-').squeeze('-').chomp('-')
-  end
-
-  def to_markdown
-
-    # Expand remote references, if any
-    self.gsub!(/\[\!include\!\]\((.*)\)/) { 
-      get_remote_resource($1)
-    }
-
-    # Create a ToC if invoked
-    self.gsub!(/\[\!toc\!\]/) {
-      TableOfContents.to_html TableOfContents.from_markdown(self)
-    }
-
-    markdown_opts = {
-      autolink: true,
-      space_after_headers: true,
-      fenced_code_blocks: true,
-      no_intra_emphasis: true
-    }
-
-    markdown = Redcarpet::Markdown.new(HTMLwithAlbino.new({ :with_toc_data => true }), markdown_opts)
-    markdown.render(self)
-  end
-end
-
-module Preferences
-  FontMap = { 
-    "Proxima Nova" => "ProximaNova-Light",
-    "Ubuntu" => "UbuntuRegular",
-    "Ubuntu Mono" => "UbuntuMonoRegular",
-    "Monospace" => "monospace, Courier New, courier, Mono",
-    "Arial" => "Arial",
-    "Verdana" => "Verdana",
-    "Helvetica Neue" => "Helvetica Neue"
-  }
-end
+require 'lib/common'
 
 configure do
   # enable :sessions
   use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
 
+  # DataMapper::Logger.new($stdout, :debug)
+  DataMapper.setup(:default, 'mysql://root@localhost/notebook')
+
+  # load the models and controllers
   def load(directory)
     Dir.glob("#{directory}/*.rb").each { |f| require f }
   end
-
-  # DataMapper::Logger.new($stdout, :debug)
-  DataMapper.setup(:default, 'mysql://root@localhost/notebook')
 
   load "models"
   load "controllers"
@@ -106,7 +44,6 @@ get '/' do
 
   if logged_in?
     @pages = Page.all(user_id: current_user.id)
-
     destination = "index"
   end
 
