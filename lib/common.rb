@@ -27,7 +27,7 @@ class String
       uri = $2
 
       # parse the content source and args, if any
-      source = ($1 || "").split.first
+      source = ($1 || "").split.first || ""
       args = ($1 || "").split || []
       args = args[1..args.length].join(' ') unless args.empty? 
 
