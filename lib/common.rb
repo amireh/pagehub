@@ -7,7 +7,7 @@ class HTMLwithAlbino < Redcarpet::Render::HTML
     begin
       return Albino.colorize(code, language)
     rescue
-      return "-- INVALID CODE BLOCK, MAKE SURE YOU'VE SURROUNDED CODE WITH ``` --"
+      return "-- INVALID CODE BLOCK, MAKE SURE YOU'VE SURROUNDED CODE WITH ``` --\n\n#{code}"
     end
   end
 end
@@ -45,7 +45,9 @@ class String
         content << " (**Source**: [#{$2}](#{$2}))\n\n"
       end
 
-      content = "<div data-embedded=true>#{content.to_s.to_markdown}</div>".to_markdown
+      # content = "<div data-embedded=true>#{content.to_s.to_markdown}</div>".to_markdown
+      # content = "#{content}"
+      content
     }
 
     # Build ToC from Markdown
