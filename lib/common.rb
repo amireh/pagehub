@@ -1,16 +1,5 @@
 require 'redcarpet'
 require 'albino'
-require 'open-uri'
-
-# downloads a remote resource
-def get_remote_resource(uri)
-  begin
-    return open(uri).string
-  rescue Exception => e
-    puts e
-    return ""
-  end
-end
 
 # a renderer that uses Albino to highlight syntax
 class HTMLwithAlbino < Redcarpet::Render::HTML
@@ -30,37 +19,61 @@ class String
 
   def to_markdown
 
-    # Expand remote references, if any
-    self.gsub!(/\[\!include\!\]\((.*)\)/) { 
-      get_remote_resource($1)
+    # Embed remote references, if any
+    has_embedded_html = false
+    self.gsub!(/\[\!include\s?(.*)\!\]\((.*)\)/) { 
+      content = ""
+      
+      uri = $2
+
+      # parse the content source and args, if any
+      source = ($1 || "").split.first
+      args = ($1 || "").split || []
+      args = args[1..args.length].join(' ') unless args.empty? 
+
+      begin
+        content = Embedder.get_resource(uri, source, args)
+        has_embedded_html = true
+      rescue Embedder::InvalidSizeError => e
+        content << "**Embedding error**: the file you tried to embed is too big - #{e.message.to_i} bytes."
+        content << " (**Source**: [#{$2}](#{$2}))\n\n"
+      rescue Embedder::InvalidTypeError => e
+        content << "**Embedding error**: the file type you tried to embed (`#{e.message}`) is not supported."
+        content << " (**Source**: [#{$2}](#{$2}))\n\n"
+      rescue Embedder::EmbeddingError => e
+        content << "**Embedding error**: #{e.message}."
+        content << " (**Source**: [#{$2}](#{$2}))\n\n"
+      end
+
+      content = "<div data-embedded=true>#{content.to_s.to_markdown}</div>".to_markdown
     }
 
-    # Create a ToC if invoked
-    self.gsub!(/\[\!toc\!\]/) {
-      TableOfContents.to_html TableOfContents.from_markdown(self)
-    }
+    # Build ToC from Markdown
+    # unless has_embedded_html then
+      self.gsub!(/\[\!toc(.*)\!\]/) {
+        TableOfContents.to_html TableOfContents.from_markdown(self, $1.empty? ? 6 : $1.strip.to_i)
+      }
+    # end
 
+
+    # Render the Markdown as HTML
     markdown_opts = {
       autolink: true,
       space_after_headers: true,
       fenced_code_blocks: true,
       no_intra_emphasis: true
     }
-
     markdown = Redcarpet::Markdown.new(HTMLwithAlbino.new({ :with_toc_data => true }), markdown_opts)
     markdown.render(self)
-  end
-end
 
-module Preferences
-  # mapping of displayable font names to actual CSS font-family names
-  FontMap = { 
-    "Proxima Nova" => "ProximaNova-Light",
-    "Ubuntu" => "UbuntuRegular",
-    "Ubuntu Mono" => "UbuntuMonoRegular",
-    "Monospace" => "monospace, Courier New, courier, Mono",
-    "Arial" => "Arial",
-    "Verdana" => "Verdana",
-    "Helvetica Neue" => "Helvetica Neue"
-  }
+    # Build ToC from the rendered HTML, if extra content was embedded
+    # if has_embedded_html then
+      # html = TableOfContents.repair_links(html)
+      # html.gsub!(/\[\!toc(.*)\!\]/) {
+      #   TableOfContents.to_html TableOfContents.from_html(html, $1.empty? ? 6 : $1.strip.to_i)
+      # }
+    # end
+
+    # html
+  end
 end

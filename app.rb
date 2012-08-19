@@ -1,4 +1,4 @@
-$ROOT = File.dirname(__FILE__)
+$ROOT ||= File.dirname(__FILE__)
 $LOAD_PATH << $ROOT
 
 gem 'sinatra'
@@ -15,9 +15,24 @@ require 'data_mapper'
 require 'dm-mysql-adapter'
 require "digest/sha1"
 require 'json'
-require 'lib/toc'
 require 'lib/common'
+require 'lib/toc'
+require 'lib/embedder'
 
+helpers do
+  module Preferences
+    # mapping of displayable font names to actual CSS font-family names
+    FontMap = { 
+      "Proxima Nova" => "ProximaNova-Light",
+      "Ubuntu" => "UbuntuRegular",
+      "Ubuntu Mono" => "UbuntuMonoRegular",
+      "Monospace" => "monospace, Courier New, courier, Mono",
+      "Arial" => "Arial",
+      "Verdana" => "Verdana",
+      "Helvetica Neue" => "Helvetica Neue"
+    }
+  end
+end
 configure do
   # enable :sessions
   use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
@@ -36,7 +51,7 @@ configure do
   DataMapper.finalize
   DataMapper.auto_upgrade!
 
-  set :default_preferences, JSON.parse(File.read("default_preferences.json"))
+  set :default_preferences, JSON.parse(File.read(File.join($ROOT, "default_preferences.json")))
 end
 
 get '/' do

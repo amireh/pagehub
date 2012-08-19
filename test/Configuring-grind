@@ -1,0 +1,705 @@
+  
+
+
+<!DOCTYPE html>
+<html>
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# githubog: http://ogp.me/ns/fb/githubog#">
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Configuring grind · amireh/grind Wiki · GitHub</title>
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub" />
+    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-144.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144.png" />
+
+    
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.png" />
+
+    <meta content="authenticity_token" name="csrf-param" />
+<meta content="3fuKShtvt2TarUGUw1CsVXDbig6bnkdFEXob30KSRhk=" name="csrf-token" />
+
+    <link href="https://a248.e.akamai.net/assets.github.com/assets/github-aa74dacf5339666c7dda6ce74842247a83f06cc4.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="https://a248.e.akamai.net/assets.github.com/assets/github2-def06fa279d68b9344adf199366051353dd73b03.css" media="screen" rel="stylesheet" type="text/css" />
+    
+
+
+    <script src="https://a248.e.akamai.net/assets.github.com/assets/frameworks-cc8431500f70fcd18c6da029472b59d6c39d0d95.js" type="text/javascript"></script>
+    
+    <script defer="defer" src="https://a248.e.akamai.net/assets.github.com/assets/github-e27f717bc476cbb19d572328b3925ecb6bbadb40.js" type="text/javascript"></script>
+    
+    
+
+      <script defer="defer" src="https://a248.e.akamai.net/assets.github.com/assets/wiki-b1dac2fb8f79699637499184009b95a82d8282e9.js" type="text/javascript"></script>
+    <meta property="og:title" content="grind"/>
+    <meta property="og:type" content="githubog:gitrepository"/>
+    <meta property="og:url" content="https://github.com/amireh/grind"/>
+    <meta property="og:image" content="https://a248.e.akamai.net/assets.github.com/images/gravatars/gravatar-140.png?1334862345"/>
+    <meta property="og:site_name" content="GitHub"/>
+    <meta property="og:description" content="A log aggregation and analysis UNIX tool. Contribute to grind development by creating an account on GitHub."/>
+
+    <meta name="description" content="A log aggregation and analysis UNIX tool. Contribute to grind development by creating an account on GitHub." />
+
+  <link href="https://github.com/amireh/grind/commits/master.atom" rel="alternate" title="Recent Commits to grind:master" type="application/atom+xml" />
+
+  </head>
+
+
+  <body class="logged_out   vis-public env-production ">
+    <div id="wrapper">
+
+    
+    
+
+      <div id="header" class="true clearfix">
+        <div class="container clearfix">
+          <a class="site-logo" href="https://github.com/">
+            <img alt="GitHub" class="github-logo-4x" height="30" src="https://a248.e.akamai.net/assets.github.com/images/modules/header/logov7@4x.png?1337118066" />
+            <img alt="GitHub" class="github-logo-4x-hover" height="30" src="https://a248.e.akamai.net/assets.github.com/images/modules/header/logov7@4x-hover.png?1337118066" />
+          </a>
+
+
+                  <!--
+      make sure to use fully qualified URLs here since this nav
+      is used on error pages on other domains
+    -->
+    <ul class="top-nav logged_out">
+        <li class="pricing"><a href="https://github.com/plans">Signup and Pricing</a></li>
+        <li class="explore"><a href="https://github.com/explore">Explore GitHub</a></li>
+      <li class="features"><a href="https://github.com/features">Features</a></li>
+        <li class="blog"><a href="https://github.com/blog">Blog</a></li>
+      <li class="login"><a href="https://github.com/login?return_to=%2Famireh%2Fgrind%2Fwiki%2FConfiguring-grind">Sign in</a></li>
+    </ul>
+
+
+
+          
+        </div>
+      </div>
+
+      
+
+      
+
+            <div class="site hfeed" itemscope itemtype="http://schema.org/WebPage">
+      <div class="container hentry">
+        <div class="pagehead repohead instapaper_ignore readability-menu">
+        <div class="title-actions-bar">
+          
+
+
+
+              <ul class="pagehead-actions">
+
+
+
+          <li>
+            <span class="star-button"><a href="/login?return_to=%2Famireh%2Fgrind" class="minibutton btn-star js-toggler-target entice tooltipped leftwards" title="You must be signed in to use this feature" rel="nofollow">Star</a><a class="social-count js-social-count" href="/amireh/grind/stargazers">2</a></span>
+          </li>
+          <li>
+            <a href="/login?return_to=%2Famireh%2Fgrind" class="minibutton btn-fork js-toggler-target fork-button entice tooltipped leftwards"  title="You must be signed in to fork a repository" rel="nofollow">Fork</a><a href="/amireh/grind/network" class="social-count">1</a>
+          </li>
+    </ul>
+
+          <h1 itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public">
+            <span class="repo-label"><span>public</span></span>
+            <span class="mega-icon mega-icon-public-repo"></span>
+            <span class="author vcard">
+<a href="/amireh" class="url fn" itemprop="url" rel="author">              <span itemprop="title">amireh</span>
+              </a></span> /
+            <strong><a href="/amireh/grind" class="js-current-repository">grind</a></strong>
+          </h1>
+        </div>
+
+          
+
+  <ul class="tabs">
+    <li><a href="/amireh/grind" highlight="repo_sourcerepo_downloadsrepo_commitsrepo_tagsrepo_branches">Code</a></li>
+    <li><a href="/amireh/grind/network" highlight="repo_network">Network</a>
+    <li><a href="/amireh/grind/pulls" highlight="repo_pulls">Pull Requests <span class='counter'>0</span></a></li>
+
+      <li><a href="/amireh/grind/issues" highlight="repo_issues">Issues <span class='counter'>8</span></a></li>
+
+      <li><a href="/amireh/grind/wiki" class="selected" highlight="repo_wiki">Wiki</a></li>
+
+    <li><a href="/amireh/grind/graphs" highlight="repo_graphsrepo_contributors">Graphs</a></li>
+
+
+  </ul>
+  
+  
+  
+  <div class="tabnav">
+  <ul class="tabnav-tabs">
+    <li><a href="/amireh/grind/wiki" class="tabnav-tab">Home</a></li>
+    <li><a href="/amireh/grind/wiki/_pages" class="tabnav-tab">Pages</a></li>
+    <li><a href="/amireh/grind/wiki/_history" class="tabnav-tab">Wiki History</a></li>
+    <li><a href="/amireh/grind/wiki/_access" class="tabnav-tab">Git Access</a></li>
+  </ul>
+</div>
+
+
+
+          
+
+        </div><!-- /.repohead -->
+
+        <div id="js-repo-pjax-container" data-pjax-container>
+          
+
+
+
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1 class="instapaper_title">Configuring grind</h1>
+  <ul class="wiki-actions readability-extra">
+    <li class="gollum-minibutton"><a href="/amireh/grind/wiki/Configuring-grind/_history"
+       class="minibutton bigger action-page-history">
+       Page History
+     </a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+  <div class="wrap">
+  <div id="wiki-body" class="gollum-markdown-content instapaper_body">
+    <div class="markdown-body">
+      <h2>The core</h2>
+
+<p>By default the core configuration script is installed to <code>/etc/grind/config.lua</code> and it contains some initializing routines along with some settings you need to configure manually. The configuration part is outlined below (and it is in the beginning of that script):</p>
+
+<div class="highlight"><pre><span class="c1">-- This needs to point to the directory that contains grind.lua,</span>
+<span class="c1">-- by default it is in the scripts/ directory within the grind</span>
+<span class="c1">-- repository root.</span>
+<span class="kd">local</span> <span class="n">root</span> <span class="o">=</span> <span class="s2">"</span><span class="s">/home/kandie/Workspace/Projects/grind/scripts"</span>
+
+<span class="kd">local</span> <span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">kernel</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1">-- the ethernet interface to use for accepting feeders</span>
+    <span class="n">feeder_interface</span> <span class="o">=</span> <span class="s2">"</span><span class="s">127.0.0.1"</span><span class="p">,</span>
+    <span class="c1">-- the ethernet interface to use for accepting watchers</span>
+    <span class="n">watcher_interface</span> <span class="o">=</span> <span class="s2">"</span><span class="s">127.0.0.1"</span><span class="p">,</span>
+    <span class="c1">-- the port to use for watcher connections</span>
+    <span class="n">watcher_port</span> <span class="o">=</span> <span class="s2">"</span><span class="s">11142"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Optionally, if the script couldn't be found in <code>/etc</code> then it's looked for in:</p>
+
+<ul>
+<li><code>/usr/share/grind/config.lua</code></li>
+<li><code>/usr/local/share/grind/config.lua</code></li>
+</ul><p>It can also be overridden by running grind with the <code>-c</code> option:</p>
+
+<div class="highlight"><pre>grind -c /path/to/config.lua
+</pre></div>
+
+<p>That's it, the rest of the configuration is the actual scripts you need to define for your application groups, klasses, and views as explained in <a href="https://github.com/amireh/grind/wiki/Grind-overview">this article</a> and in the <a href="https://github.com/amireh/grind/wiki/Tutorial-1:-Birth-of-the-chimp">tutorials</a>.</p>
+
+<h2>Watchers</h2>
+
+<h3>The Ruby HTML5 Watcher</h3>
+
+<p>This watcher can be configured from the interface itself, or directly in the file called <code>config.json</code> found in the root directory where the other scripts lie (like <code>app.rb</code> or <code>server.rb</code>). Primarily, the watcher needs to know two pieces of information:</p>
+
+<ul>
+<li>the address &amp; port of the grind instance to connect to (the <code>watcher_interface</code> and <code>watcher_port</code> explained in the core configuration section)</li>
+<li>the address &amp; port of the WebSocket server (the <code>server.rb</code> script) which, by default, are set to <code>127.0.0.1</code> and port <strong>8181</strong>
+</li>
+</ul><h2>Keepers</h2>
+
+<h3>The MongoDB Ruby Keeper</h3>
+
+<p>Not yet configurable.</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="gollum-footer">
+  <p id="last-edit">
+    Last edited by amireh, <time class="js-relative-date" datetime="2012-07-18T02:49:18-07:00" title="2012-07-18 02:49:18">July 18, 2012</time>
+  </p>
+</div>
+</div>
+
+
+        </div>
+      </div>
+      <div class="context-overlay"></div>
+    </div>
+
+      <div id="footer-push"></div><!-- hack for sticky footer -->
+    </div><!-- end of wrapper - hack for sticky footer -->
+
+      <!-- footer -->
+      <div id="footer" >
+        
+  <div class="upper_footer">
+     <div class="container clearfix">
+
+       <!--[if IE]><h4 id="blacktocat_ie">GitHub Links</h4><![endif]-->
+       <![if !IE]><h4 id="blacktocat">GitHub Links</h4><![endif]>
+
+       <ul class="footer_nav">
+         <h4>GitHub</h4>
+         <li><a href="https://github.com/about">About</a></li>
+         <li><a href="https://github.com/blog">Blog</a></li>
+         <li><a href="https://github.com/features">Features</a></li>
+         <li><a href="https://github.com/contact">Contact &amp; Support</a></li>
+         <li><a href="https://github.com/training">Training</a></li>
+         <li><a href="http://enterprise.github.com/">GitHub Enterprise</a></li>
+         <li><a href="http://status.github.com/">Site Status</a></li>
+       </ul>
+
+       <ul class="footer_nav">
+         <h4>Clients</h4>
+         <li><a href="http://mac.github.com/">GitHub for Mac</a></li>
+         <li><a href="http://windows.github.com/">GitHub for Windows</a></li>
+         <li><a href="http://eclipse.github.com/">GitHub for Eclipse</a></li>
+         <li><a href="http://mobile.github.com/">GitHub Mobile Apps</a></li>
+       </ul>
+
+       <ul class="footer_nav">
+         <h4>Tools</h4>
+         <li><a href="http://get.gaug.es/">Gauges: Web analytics</a></li>
+         <li><a href="http://speakerdeck.com">Speaker Deck: Presentations</a></li>
+         <li><a href="https://gist.github.com">Gist: Code snippets</a></li>
+
+         <h4 class="second">Extras</h4>
+         <li><a href="http://jobs.github.com/">Job Board</a></li>
+         <li><a href="http://shop.github.com/">GitHub Shop</a></li>
+         <li><a href="http://octodex.github.com/">The Octodex</a></li>
+       </ul>
+
+       <ul class="footer_nav">
+         <h4>Documentation</h4>
+         <li><a href="http://help.github.com/">GitHub Help</a></li>
+         <li><a href="http://developer.github.com/">Developer API</a></li>
+         <li><a href="http://github.github.com/github-flavored-markdown/">GitHub Flavored Markdown</a></li>
+         <li><a href="http://pages.github.com/">GitHub Pages</a></li>
+       </ul>
+
+     </div><!-- /.site -->
+  </div><!-- /.upper_footer -->
+
+<div class="lower_footer">
+  <div class="container clearfix">
+    <!--[if IE]><div id="legal_ie"><![endif]-->
+    <![if !IE]><div id="legal"><![endif]>
+      <ul>
+          <li><a href="https://github.com/site/terms">Terms of Service</a></li>
+          <li><a href="https://github.com/site/privacy">Privacy</a></li>
+          <li><a href="https://github.com/security">Security</a></li>
+      </ul>
+
+      <p>&copy; 2012 <span title="0.08532s from fe13.rs.github.com">GitHub</span> Inc. All rights reserved.</p>
+    </div><!-- /#legal or /#legal_ie-->
+
+  </div><!-- /.site -->
+</div><!-- /.lower_footer -->
+
+      </div><!-- /#footer -->
+
+    
+
+<div id="keyboard_shortcuts_pane" class="instapaper_ignore readability-extra" style="display:none">
+  <h2>Keyboard Shortcuts <small><a href="#" class="js-see-all-keyboard-shortcuts">(see all)</a></small></h2>
+
+  <div class="columns threecols">
+    <div class="column first">
+      <h3>Site wide shortcuts</h3>
+      <dl class="keyboard-mappings">
+        <dt>s</dt>
+        <dd>Focus site search</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt>?</dt>
+        <dd>Bring up this help dialog</dd>
+      </dl>
+    </div><!-- /.column.first -->
+
+    <div class="column middle" style='display:none'>
+      <h3>Commit list</h3>
+      <dl class="keyboard-mappings">
+        <dt>j</dt>
+        <dd>Move selection down</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt>k</dt>
+        <dd>Move selection up</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt>c <em>or</em> o <em>or</em> enter</dt>
+        <dd>Open commit</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt>y</dt>
+        <dd>Expand URL to its canonical form</dd>
+      </dl>
+    </div><!-- /.column.first -->
+
+    <div class="column last js-hidden-pane" style='display:none'>
+      <h3>Pull request list</h3>
+      <dl class="keyboard-mappings">
+        <dt>j</dt>
+        <dd>Move selection down</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt>k</dt>
+        <dd>Move selection up</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt>o <em>or</em> enter</dt>
+        <dd>Open issue</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt><span class="platform-mac">⌘</span><span class="platform-other">ctrl</span> <em>+</em> enter</dt>
+        <dd>Submit comment</dd>
+      </dl>
+      <dl class="keyboard-mappings">
+        <dt><span class="platform-mac">⌘</span><span class="platform-other">ctrl</span> <em>+</em> shift p</dt>
+        <dd>Preview comment</dd>
+      </dl>
+    </div><!-- /.columns.last -->
+
+  </div><!-- /.columns.equacols -->
+
+  <div class="js-hidden-pane" style='display:none'>
+    <div class="rule"></div>
+
+    <h3>Issues</h3>
+
+    <div class="columns threecols">
+      <div class="column first">
+        <dl class="keyboard-mappings">
+          <dt>j</dt>
+          <dd>Move selection down</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>k</dt>
+          <dd>Move selection up</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>x</dt>
+          <dd>Toggle selection</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>o <em>or</em> enter</dt>
+          <dd>Open issue</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt><span class="platform-mac">⌘</span><span class="platform-other">ctrl</span> <em>+</em> enter</dt>
+          <dd>Submit comment</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt><span class="platform-mac">⌘</span><span class="platform-other">ctrl</span> <em>+</em> shift p</dt>
+          <dd>Preview comment</dd>
+        </dl>
+      </div><!-- /.column.first -->
+      <div class="column last">
+        <dl class="keyboard-mappings">
+          <dt>c</dt>
+          <dd>Create issue</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>l</dt>
+          <dd>Create label</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>i</dt>
+          <dd>Back to inbox</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>u</dt>
+          <dd>Back to issues</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>/</dt>
+          <dd>Focus issues search</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="js-hidden-pane" style='display:none'>
+    <div class="rule"></div>
+
+    <h3>Issues Dashboard</h3>
+
+    <div class="columns threecols">
+      <div class="column first">
+        <dl class="keyboard-mappings">
+          <dt>j</dt>
+          <dd>Move selection down</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>k</dt>
+          <dd>Move selection up</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>o <em>or</em> enter</dt>
+          <dd>Open issue</dd>
+        </dl>
+      </div><!-- /.column.first -->
+    </div>
+  </div>
+
+  <div class="js-hidden-pane" style='display:none'>
+    <div class="rule"></div>
+
+    <h3>Network Graph</h3>
+    <div class="columns equacols">
+      <div class="column first">
+        <dl class="keyboard-mappings">
+          <dt><span class="badmono">←</span> <em>or</em> h</dt>
+          <dd>Scroll left</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt><span class="badmono">→</span> <em>or</em> l</dt>
+          <dd>Scroll right</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt><span class="badmono">↑</span> <em>or</em> k</dt>
+          <dd>Scroll up</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt><span class="badmono">↓</span> <em>or</em> j</dt>
+          <dd>Scroll down</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>t</dt>
+          <dd>Toggle visibility of head labels</dd>
+        </dl>
+      </div><!-- /.column.first -->
+      <div class="column last">
+        <dl class="keyboard-mappings">
+          <dt>shift <span class="badmono">←</span> <em>or</em> shift h</dt>
+          <dd>Scroll all the way left</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>shift <span class="badmono">→</span> <em>or</em> shift l</dt>
+          <dd>Scroll all the way right</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>shift <span class="badmono">↑</span> <em>or</em> shift k</dt>
+          <dd>Scroll all the way up</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>shift <span class="badmono">↓</span> <em>or</em> shift j</dt>
+          <dd>Scroll all the way down</dd>
+        </dl>
+      </div><!-- /.column.last -->
+    </div>
+  </div>
+
+  <div class="js-hidden-pane" style='display:none'>
+    <div class="rule"></div>
+    <div class="columns threecols">
+      <div class="column first js-hidden-pane" style='display:none'>
+        <h3>Source Code Browsing</h3>
+        <dl class="keyboard-mappings">
+          <dt>t</dt>
+          <dd>Activates the file finder</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>l</dt>
+          <dd>Jump to line</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>w</dt>
+          <dd>Switch branch/tag</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>y</dt>
+          <dd>Expand URL to its canonical form</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="js-hidden-pane" style='display:none'>
+    <div class="rule"></div>
+    <div class="columns threecols">
+      <div class="column first">
+        <h3>Browsing Commits</h3>
+        <dl class="keyboard-mappings">
+          <dt><span class="platform-mac">⌘</span><span class="platform-other">ctrl</span> <em>+</em> enter</dt>
+          <dd>Submit comment</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>escape</dt>
+          <dd>Close form</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>p</dt>
+          <dd>Parent commit</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>o</dt>
+          <dd>Other parent commit</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="js-hidden-pane" style='display:none'>
+    <div class="rule"></div>
+    <h3>Notifications</h3>
+
+    <div class="columns threecols">
+      <div class="column first">
+        <dl class="keyboard-mappings">
+          <dt>j</dt>
+          <dd>Move selection down</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>k</dt>
+          <dd>Move selection up</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>o <em>or</em> enter</dt>
+          <dd>Open notification</dd>
+        </dl>
+      </div><!-- /.column.first -->
+
+      <div class="column second">
+        <dl class="keyboard-mappings">
+          <dt>e <em>or</em> shift i <em>or</em> y</dt>
+          <dd>Mark as read</dd>
+        </dl>
+        <dl class="keyboard-mappings">
+          <dt>shift m</dt>
+          <dd>Mute thread</dd>
+        </dl>
+      </div><!-- /.column.first -->
+    </div>
+  </div>
+
+</div>
+
+    <div id="markdown-help" class="instapaper_ignore readability-extra">
+  <h2>Markdown Cheat Sheet</h2>
+
+  <div class="cheatsheet-content">
+
+  <div class="mod">
+    <div class="col">
+      <h3>Format Text</h3>
+      <p>Headers</p>
+      <pre>
+# This is an &lt;h1&gt; tag
+## This is an &lt;h2&gt; tag
+###### This is an &lt;h6&gt; tag</pre>
+     <p>Text styles</p>
+     <pre>
+*This text will be italic*
+_This will also be italic_
+**This text will be bold**
+__This will also be bold__
+
+*You **can** combine them*
+</pre>
+    </div>
+    <div class="col">
+      <h3>Lists</h3>
+      <p>Unordered</p>
+      <pre>
+* Item 1
+* Item 2
+  * Item 2a
+  * Item 2b</pre>
+     <p>Ordered</p>
+     <pre>
+1. Item 1
+2. Item 2
+3. Item 3
+   * Item 3a
+   * Item 3b</pre>
+    </div>
+    <div class="col">
+      <h3>Miscellaneous</h3>
+      <p>Images</p>
+      <pre>
+![GitHub Logo](/images/logo.png)
+Format: ![Alt Text](url)
+</pre>
+     <p>Links</p>
+     <pre>
+http://github.com - automatic!
+[GitHub](http://github.com)</pre>
+<p>Blockquotes</p>
+     <pre>
+As Kanye West said:
+
+> We're living the future so
+> the present is our past.
+</pre>
+    </div>
+  </div>
+  <div class="rule"></div>
+
+  <h3>Code Examples in Markdown</h3>
+  <div class="col">
+      <p>Syntax highlighting with <a href="http://github.github.com/github-flavored-markdown/" title="GitHub Flavored Markdown" target="_blank">GFM</a></p>
+      <pre>
+```javascript
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+```</pre>
+    </div>
+    <div class="col">
+      <p>Or, indent your code 4 spaces</p>
+      <pre>
+Here is a Python code example
+without syntax highlighting:
+
+    def foo:
+      if not bar:
+        return true</pre>
+    </div>
+    <div class="col">
+      <p>Inline code for comments</p>
+      <pre>
+I think you should use an
+`&lt;addr&gt;` element here instead.</pre>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+
+    <div id="ajax-error-message">
+      <span class="mini-icon mini-icon-exclamation"></span>
+      Something went wrong with that request. Please try again.
+      <a href="#" class="ajax-error-dismiss">Dismiss</a>
+    </div>
+
+    <div id="logo-popup">
+      <h2>Looking for the GitHub logo?</h2>
+      <ul>
+        <li>
+          <h4>GitHub Logo</h4>
+          <a href="http://github-media-downloads.s3.amazonaws.com/GitHub_Logos.zip"><img alt="Github_logo" src="https://a248.e.akamai.net/assets.github.com/images/modules/about_page/github_logo.png?1334862345" /></a>
+          <a href="http://github-media-downloads.s3.amazonaws.com/GitHub_Logos.zip" class="minibutton btn-download download">Download</a>
+        </li>
+        <li>
+          <h4>The Octocat</h4>
+          <a href="http://github-media-downloads.s3.amazonaws.com/Octocats.zip"><img alt="Octocat" src="https://a248.e.akamai.net/assets.github.com/images/modules/about_page/octocat.png?1334862345" /></a>
+          <a href="http://github-media-downloads.s3.amazonaws.com/Octocats.zip" class="minibutton btn-download download">Download</a>
+        </li>
+      </ul>
+    </div>
+
+    
+    
+    <span id='server_response_time' data-time='0.08772' data-host='fe13'></span>
+  </body>
+</html>
+

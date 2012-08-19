@@ -5,32 +5,37 @@ module TableOfContents
   # Builds a tree of headings from a given block of Markdown
   # text, the returned list can be turned into HTML using
   # TableOfContents::to_html()
-  #
-  def self.from_markdown(markdown)
-    pat       = /(\#+)\s(.*)\n/
-    index     = markdown.index(pat)
+  def self.from_markdown(markdown, threshold = 6)
+    self.from_content(/(#+)\s([^\n]+)/, lambda { |l, t| return l.length, t }, markdown, threshold)
+  end
+
+  # Builds a tree of headings from a given block of HTML,
+  # the returned list can be turned into an HTML list using
+  # TableOfContents::to_html()
+  # def self.from_html(html, threshold = 6)
+  #   self.from_content(/<h([1-6]).*>(.*)<\/h\1>/, lambda { |l,t| return l.to_i, t }, html, threshold)
+  # end
+
+  def self.from_content(pattern, formatter, content, threshold)
     headings  = []
     current   = []
-    count     = 0
+    toc_index = 0
+    content.scan(pattern).each { |l, t|
+      level,title = formatter.call(l, t)
+      # puts "\t#{level} => #{title}"
 
-    while !index.nil? && index >= 0
-      level = $1.length
-      title = $2
-      
-      h = Heading.new(title, level, count)
-      headings << h
-      current[level] = h
-      count += 1 # count is used for anchor generation
+      if level <= threshold 
+        h = Heading.new(title, level, toc_index)
+        headings << h
+        current[level] = h
+        toc_index += 1 # toc_index is used for hyperlinking
 
-      # if there's a parent, attach this heading as a child to it
-      if current[level-1] then
-        current[level-1] << h
+        # if there's a parent, attach this heading as a child to it
+        if current[level-1] then
+          current[level-1] << h
+        end
       end
-
-      # puts "##{index}:\t#{level} => #{title}"
-
-      index = markdown.index(/(\#+)\s(.*)\n/, index+title.length)
-    end
+    }
 
     toc = []
     headings.each { |h|
