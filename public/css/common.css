@@ -182,8 +182,8 @@ input {
 }
 
 #pages hr {
-  margin-top: 0;
-  border: none;
+  /*margin-top: 0;*/
+  border: 1px dotted #eee;
 }
 a#new_page {
   line-height: 40px;
@@ -553,4 +553,30 @@ a.button:hover {
   text-align: justify;
   width: 480px;
   margin: 0 auto;
+}
+
+#pages .scroller {
+  max-height: 480px;
+  overflow-y: auto;
+}
+#pages .wrapper {
+  position: relative;
+}
+#pages hr {
+  margin: 30px 0;
+}
+
+#pages h3,
+#pages h3 * {
+  font-size: 0.9em;
+}
+#pages .useful_links {
+  margin: 0;
+  margin-top: 10px;
+  text-transform: lowercase;
+}
+#pages .useful_links small {
+  display: block;
+  clear: both;
+  font-style: italic;
 }

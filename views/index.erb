@@ -43,7 +43,7 @@
 
       $("#page_actions").removeClass("disabled");
 
-      $("#pages .selected").removeClass("selected");
+      $("#page_listing .selected").removeClass("selected");
       $(this).addClass("selected");
 
       // ui.status("Loading page...", "pending");
@@ -67,7 +67,7 @@
         }
       });
     }
-    $("#pages li").click(get_page);
+    $("#page_listing li").click(get_page);
     // Creating a new page
     $("#new_page").click(function() {
       console.log("creating a page")
@@ -79,11 +79,11 @@
         success: function(page_id) {
           console.log("page created successfully")
           var new_page = "<li id=\"page_" + page_id + "\">page #" + page_id + "</li>";
-          $("#pages ul").prepend(new_page);
-          $("#pages li.selected").removeClass("selected");
-          $("#pages ul li:first").click(get_page);
+          $("#page_listing").prepend(new_page);
+          $("#page_listing li.selected").removeClass("selected");
+          $("#page_listing li:first").click(get_page);
           ui.editor.setValue("Write your text here.");
-          $("#pages ul li:first").click();
+          $("#page_listing li:first").click();
         },
         error: function(e) {
           console.log("smth bad happened")
@@ -143,10 +143,10 @@
     shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
     shortcut.add("ctrl+alt+r", function() { editor.refresh(); })
     shortcut.add("ctrl+alt+a", function() { 
-      if ($("#pages li.selected").length == 1)
-        $("#pages li.selected").focus();
+      if ($("#page_listing li.selected").length == 1)
+        $("#page_listing li.selected").focus();
       else
-        $("#pages li:first").focus();
+        $("#page_listing li:first").focus();
     })
 
     /* -------- ---------- *
@@ -159,7 +159,7 @@
         default: break; // do not block other keys
       }
     }
-    $("#pages li").focusin(function() {
+    $("#page_listing li").focusin(function() {
       window.addEventListener("keyup", disable_scrolling, false);
       $(this).bind('keydown', function(e) {
         if (e.keyCode == 38)
@@ -197,18 +197,18 @@
       $("#confirm").find(':submit[value=Yes]').focus()
     }
 
-    $(function() {
-      $('#confirm').jqm({overlay: 88, modal: true, trigger: false});
-      
-      $('a.confirm').click(function() { 
-        var a = $(this);
-        confirm(a.attr("data-confirmation"), function() {
-          ui[a.attr("data-confirmation-cb")]();
-        });
-
-        return false;
+    $('#confirm').jqm({overlay: 88, modal: true, trigger: false});
+    
+    $('a.confirm').click(function() { 
+      var a = $(this);
+      confirm(a.attr("data-confirmation"), function() {
+        ui[a.attr("data-confirmation-cb")]();
       });
-    })
+
+      return false;
+    });
+
+    $("#pages .scroller").css("max-height", $(window).height() - 113);  
 
   }); 
 </script>
@@ -224,13 +224,29 @@
 
 <div id="pages">
   <a tabindex="1" href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New</a>
-  <input type="text" id="title_editor" hidden="hidden" />
-  <ul>
-    <% logged_in? && @pages.each_with_index do |p, pidx| %>
-      <li tabindex="<%= pidx + 2 %>" id="page_<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></li>
-    <% end %>
-  </ul>
+  <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
+  <div class="scroller">
 
+    <!-- the wrappers are used to pivot the absolute <h3> -->
+      <!-- <h3 class="your_pages">Your Pages &rarr;</h3> -->
+      <input type="text" id="title_editor" hidden="hidden" />
+      <ul id="page_listing">
+        <% 1.times do %>
+        <% logged_in? && @pages.each_with_index do |p, pidx| %>
+          <li tabindex="<%= pidx + 2 %>" id="page_<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></li>
+        <% end %>
+        <% end %>
+      </ul>
+
+    <hr />
+      <h3 class="useful_links">Useful Links &darr;<small>open in new tab</small></h3>
+      <ul>
+        <li><a target="_blank" href="http://www.pagehub.org/pagehub/news">PageHub News</a></li>
+        <li><a target="_blank" href="http://www.pagehub.org/pagehub/tips-tricks">PageHub Tips &amp; Tricks</a></li>
+        <li><a target="_blank" href="http://daringfireball.net/projects/markdown/">Markdown Reference</a></li>
+        <li><a target="_blank" href="http://www.pagehub.org/pagehub/markdown-cheatsheet">Markdown Tutorial</a></li>
+      </ul>
+    </div>
 </div><div id="editor_container"><!--
 
 --><div class="disabled" id="page_actions">

@@ -79,3 +79,11 @@ form input[type=password] {
 #flashes {
   background: transparent;
 }
+
+#pages hr {
+  border-color: rgba(0,0,0,0.25);
+}
+
+#pages .useful_links {
+  color: #F4FAD2;
+}

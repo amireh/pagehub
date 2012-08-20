@@ -44,10 +44,10 @@ pagehub_ui = function() {
       ];
 
   function current_page_id() {
-    if ($("#pages .selected").length == 0)
+    if ($("#page_listing .selected").length == 0)
       return null;
 
-    return $("#pages .selected").attr("id").replace("page_", "");
+    return $("#page_listing .selected").attr("id").replace("page_", "");
   }
 
   return {
@@ -174,7 +174,7 @@ pagehub_ui = function() {
     },
 
     show_title_editor: function() {
-      var li = $("#pages li.selected");
+      var li = $("#page_listing li.selected");
       var txtbox = $("#title_editor");
 
       li.hide();
@@ -186,7 +186,7 @@ pagehub_ui = function() {
     },
 
     hide_title_editor: function(update_title) {
-      var li = $("#pages li.selected");
+      var li = $("#page_listing li.selected");
       var txtbox = $("#title_editor");
 
       if (update_title)
@@ -201,14 +201,14 @@ pagehub_ui = function() {
       if (!page_id)
         return;
 
-      var entry = $("#pages .selected");
+      var entry = $("#page_listing .selected");
       var page_title = entry.html();
       pagehub.delete(page_id, function() {
         ui.status("Page " + page_title + " is now dead :(", "good");
         entry.remove();
         ui.editor.setValue("");
         ui.actions.addClass("disabled");
-        $("#pages li:last").click();
+        $("#page_listing li:last").click();
       }, function() {
         ui.status("Page could not be deleted! Please try again.", "bad");
       });
