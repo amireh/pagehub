@@ -122,7 +122,7 @@
     Your nickname is used in the links when sharing documents with people.
     <br />
     <br />
-    <input type="text" name="nickname" value="<%= current_user.nickname %>" />
+    <input type="text" name="nickname" class="very_fat" value="<%= current_user.nickname %>" />
     <button id="check_availability">check availability</button>
     <span></span>
   </label>
@@ -195,12 +195,14 @@
       <input 
         type="text" name="settings[editing][font_size]"
         autocomplete="off"
+        class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
         value="<%= (preferences["editing"] || {})["font_size"] %>" /> 
       <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
       <input 
         type="text" name="settings[editing][line_height]"
         autocomplete="off"
+        class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
         value="<%= (preferences["editing"] || {})["line_height"] %>" /> 
       <span style="font-size: 18px;">px</span>
@@ -234,16 +236,16 @@ I'm **bold** and I'm *not*.
 
     <label>
       Your current password:<br />
-      <input type="password" name="password[current]" />
+      <input type="password" class="fat" name="password[current]" />
     </label>
     <br />
     
     <span>
       And a new one (type it twice to confirm it):<br />
     </span>
-    <label>#1 &rarr; <input type="password" name="password[new]" /></label>
+    <label>#1 &rarr; <input type="password" class="fat" name="password[new]" style="margin-bottom: 5px;" /></label>
     <br />
-    <label>#2 &rarr; <input type="password" name="password[confirmation]" /></label>
+    <label>#2 &rarr; <input type="password" class="fat" name="password[confirmation]" /></label>
 
   </section>
 

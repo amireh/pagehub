@@ -1,16 +1,25 @@
+<% content_for :title do %>
+  PageHub - Free, quick, and easy Markdown page editing
+<% end %>
+
 <% h = <<EOF
-### Hi there. I'm Naughty, and I'll be your notebook
+## A reliable page / document / note editor 
 
-* INSTANTLY write what you need to write without having to worry about
-  titles, URLs, or navigating a complicated interface
-* Format your documents using the simple and effective [Markdown](daringfireball.net/projects/markdown/)
-* Look up your documents easily
-* Read your pages in clean, easy-to-read `plain-text` mode
-* Engage the "pretty" mode and transform your plain document into **BEAUTIFUL** HTML pages
-* Do it quickly; Naughty is equipped with keybindings for common formatting operations
- (headings, *emphasized text*, etc.) and for saving
+  * **INSTANTLY** write what you need to write without having to worry about
+    titles, URLs, or navigating a complicated interface
+  * Format your documents using the simple and effective [Markdown](daringfireball.net/projects/markdown/)
+  * Look up your documents easily
+  * Read your pages in clean, easy-to-read `plain-text` mode
+  * Engage the "pretty" mode and transform your plain document into **BEAUTIFUL** HTML pages
+  * Customize the colors of the pages you share with people
+  * **EMBED** documents inside others; no longer will you need to maintain multiple versions
+    of documents that reference each other
+  * Do it quickly; PageHub is equipped with keybindings for common operations
 
-[Get started](/signup) now!
+## [Click here](/signup) to get started
+
+> *Signing up is made as pain-free as possible; all 
+> you need is an email address and a password.*
 EOF
 %>
 <%= h.strip.to_markdown %>

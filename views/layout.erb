@@ -11,6 +11,7 @@
   <link href="/css/fonts/ubuntu/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/fonts/ubuntu-mono/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/common.css" rel="stylesheet" type="text/css" />
+  <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
 
   <% if !flash.empty? %>
     <script type="text/javascript">
@@ -20,6 +21,7 @@
         $("#flashes button").click(function() {
           $(this).parent().next("hr:first").remove();
           $(this).parent().addClass("hidden");
+          $(".flash_wrap").addClass("hidden");
         });
       });
 
@@ -48,12 +50,14 @@
 
   <div class="header_wrap">
   </div>
+  <div class="flash_wrap <%= flash.empty? ? 'hidden' : '' %>">
+  </div>
 
   <% yield_content :wraps %>
 
   <div class="stuff">
     <header>
-      <h1><a href="/">pagehub</a></h1>
+      <h1><a href="/">PageHub</a></h1>
     </header>
     
     <nav>
@@ -67,7 +71,7 @@
         <a href="/signup">signup</a>
       <% end %>
     </nav>
-    
+
     <div id="content">
       <div id="status">
       </div>

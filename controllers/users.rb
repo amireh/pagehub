@@ -48,6 +48,10 @@ helpers do
   end
 
   def preferences
+    if not current_user then
+      return settings.default_preferences
+    end
+    
     @preferences ||= JSON.parse(current_user.settings || "{}")
     settings.default_preferences.deep_merge(@preferences)
     # set_defaults(settings.default_preferences, @preferences)

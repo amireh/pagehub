@@ -11,8 +11,8 @@ body {
   padding: 0;
   /*color: #312D21;*/
   color: #615B4E;
-  color: #F4FAD2;
-  background: url(bg.png) repeat;
+  /*color: #F4FAD2;*/
+  /*background: url(bg.png) repeat;*/
   /*background: url(striped_brown_baige.png) repeat;*/
   /*background: #101010;*/
   /*margin-bottom: 20px;*/
@@ -82,7 +82,7 @@ header h1 {
 }
 header h1 a {
   text-decoration: none;
-  color: #FFFEDF !important;
+  /*color: #FFFEDF !important;*/
 }
 
 h1,h2,h3,
@@ -123,19 +123,21 @@ h3 {
 }
 
 .header_wrap,
-.action_bar_wrap {
+.action_bar_wrap,
+.flash_wrap {
   width: 100%;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.05);
   height: 65px;
   position: absolute;
   top: 0;
   z-index: -100;
 }
 
-.action_bar_wrap {
+.action_bar_wrap,
+.flash_wrap {
   top: 65px;
   height: 40px;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.025);
 }
 
 .stuff,
@@ -265,6 +267,9 @@ a#new_page:not(:hover) {
   background: rgba(240,173,17,0.5);
 }
 
+.hidden {
+  display: none;
+}
 #status.hidden {
   left: 100%;
 }
@@ -311,94 +316,12 @@ a:visited:hover {
   background: #615B4E;
 }
 
-input[type=text],
-input[type=email],
-input[type=password] {
-  border-radius: 8px;
-  background: none;
-  border: 1px solid #615B4E;
-  padding: 5px 10px;
-  line-height: 28px;
-  outline: none;
-  color: #fff;
-  box-shadow: 0 0 5px 0 black inset;
-  background: rgba(0,0,0,0.2);
-
-  -webkit-transition: background-color 0.25s ease 0s;
-  -moz-transition:    background-color 0.25s ease 0s;
-  -ms-transition:     background-color 0.25s ease 0s;
-  -o-transition:      background-color 0.25s ease 0s;
-  transition:         background-color 0.25s ease 0s;    
-}
-
-input[type=text]:focus,
-input[type=email]:focus,
-input[type=password]:focus {
-  background: none;
-}
-
-form input[type=text],
-form input[type=email],
-form input[type=password] {
-  width: 320px;
-  line-height: 40px;
-}
-
 #title_editor {
   width: 200px;
   margin-left: 10px;  
 }
 
 
-input[type=submit],
-button,
-a.button {
-  line-height: 22px;
-  color: #312d21;
-  margin: 0;
-  cursor: pointer;
-
-  padding: 5px 10px;
-
-  color: white;
-  background-color: #B85C00;
-  background-repeat: no-repeat;
-  background-image: -webkit-gradient(linear,0 0,0 100%,from(#F93),color-stop(25%,#F93),to(#B85C00));
-  background-image: -webkit-linear-gradient(#F93,#F93 25%,#B85C00);
-  background-image: -moz-linear-gradient(top,#F93,#F93 25%,#B85C00);
-  background-image: -ms-linear-gradient(#F93,#F93 25%,#B85C00);
-  background-image: -o-linear-gradient(#F93,#F93 25%,#B85C00);
-  background-image: linear-gradient(#F93,#F93 25%,#B85C00);
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-
-  border: 2px solid #000;
-  border-color: #C60 #C60 #AD5700;
-  border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.3);
-
-  text-transform: uppercase;
-  font-weight: bold;
-
-  -webkit-transition: all 0.25s ease 0s;
-  -moz-transition:    all 0.25s ease 0s;
-  -ms-transition:     all 0.25s ease 0s;
-  -o-transition:      all 0.25s ease 0s;
-  transition:         all 0.25s ease 0s;  
-}
-
-button:hover, 
-input[type=submit]:hover,
-a.button:hover {
-  color: #EEE;
-  background-position: 0 -15px;
-  padding: 5px 20px;
-}
-
-button:active,
-input[type=submit]:active,
-a.button:active {
-  background: #FFFFF7;
-  color: #312D21;
-}
 
 footer {
   width: 960px;
@@ -443,20 +366,15 @@ img.loader {
   z-index: 1000;
   background: rgba(0, 0, 0, 0.2);
   padding: 10px;
-  width: 100%;
-  -webkit-transition: all 1s ease 0s;
-  -moz-transition:    all 1s ease 0s;
-  -ms-transition:     all 1s ease 0s;
-  -o-transition:      all 1s ease 0s;
-  transition:         all 1s ease 0s;    
+  width: 100%; 
 }
 #flashes button {
   right: 7px;
   position: absolute;
   top: 7px;
-  line-height: 16px;
+  line-height: 12px;
   padding: 5px;
-  height: 29px;
+  height: 25px;
 }
 #flashes.hidden {
   opacity: 0;
@@ -498,7 +416,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 ::-webkit-scrollbar-track-piece  {
   background-color: rgba(0,0,0,0.15);
-  -webkit-border-radius: 6px;
+  -webkit-border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:vertical {
   height: 30px;

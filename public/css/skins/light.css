@@ -1,0 +1,118 @@
+h2,
+.cm-s-neat span.cm-header,
+.flash.notice, 
+.success {
+  color: #8FBE00;
+}
+
+hr {
+  box-shadow: none;
+  border-color: #ddd;
+}
+
+input[type=submit],
+button,
+a.button {
+  line-height: 22px;
+  color: #312d21;
+  margin: 0;
+  cursor: pointer;
+
+  padding: 5px 10px;
+
+  color: white;
+  background-color: #B85C00;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#F93),color-stop(25%,#F93),to(#B85C00));
+  background-image: -webkit-linear-gradient(#F93,#F93 25%,#B85C00);
+  background-image: -moz-linear-gradient(top,#F93,#F93 25%,#B85C00);
+  background-image: -ms-linear-gradient(#F93,#F93 25%,#B85C00);
+  background-image: -o-linear-gradient(#F93,#F93 25%,#B85C00);
+  background-image: linear-gradient(#F93,#F93 25%,#B85C00);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+  /*border: none;*/
+  border: 1px solid #000;
+  border-color: #C60 #C60 #AD5700;
+  /*border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.3);*/
+  /*border-color: rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.10) rgba(0, 0, 0, 0.05);*/
+
+  text-transform: uppercase;
+  font-weight: bold;
+
+  -webkit-transition: all 0.25s ease 0s;
+  -moz-transition:    all 0.25s ease 0s;
+  -ms-transition:     all 0.25s ease 0s;
+  -o-transition:      all 0.25s ease 0s;
+  transition:         all 0.25s ease 0s;  
+}
+
+button:hover, 
+input[type=submit]:hover,
+a.button:hover {
+  color: #EEE;
+  background-position: 0 -15px;
+  padding: 5px 20px;
+}
+
+button:active,
+input[type=submit]:active,
+a.button:active {
+  background: #FFFFF7;
+  color: #312D21;
+}
+
+
+input[type=text],
+input[type=email],
+input[type=password] {
+  border-radius: 8px;
+  background: none;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  /*line-height: 52px;*/
+  /*height: 52px;*/
+  outline: none;
+  /*color: #fff;*/
+  /*box-shadow: 0 0 5px 0 yellow inset;*/
+  background: rgba(0,0,0,0.025);
+
+  -webkit-transition: background-color 0.25s ease 0s;
+  -moz-transition:    background-color 0.25s ease 0s;
+  -ms-transition:     background-color 0.25s ease 0s;
+  -o-transition:      background-color 0.25s ease 0s;
+  transition:         background-color 0.25s ease 0s;    
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus {
+  background: none;
+}
+
+form input[type=text],
+form input[type=email],
+form input[type=password] {
+  width: 320px;
+  /*line-height: 40px;*/
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+input.fat,
+form input.fat {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+input.very_fat,
+form input.very_fat {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.flash_wrap {
+  background-color: rgba(0,0,0,0.10);
+}
+#flashes {
+  background: transparent;
+}
