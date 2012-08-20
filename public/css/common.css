@@ -398,21 +398,21 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   border: none;
 }
 
-::-webkit-scrollbar {
+.stuff ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-::-webkit-scrollbar-button:start:decrement,
-::-webkit-scrollbar-button:end:increment  {
+.stuff ::-webkit-scrollbar-button:start:decrement,
+.stuff ::-webkit-scrollbar-button:end:increment  {
   height: 0px;
   display: block;
   background-color: transparent;
 }
-::-webkit-scrollbar-track-piece  {
+.stuff ::-webkit-scrollbar-track-piece  {
   background-color: rgba(0,0,0,0.15);
   -webkit-border-radius: 0;
 }
-::-webkit-scrollbar-thumb:vertical {
+.stuff ::-webkit-scrollbar-thumb:vertical {
   height: 30px;
   background-color: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255,255,255,0.125);
