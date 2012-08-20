@@ -13,22 +13,30 @@
 <script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
 
 <script src="/js/jqModal.js"></script>
-<script src="/js/naughty.js"></script>
-<script src="/js/naughty_ui.js"></script>
 
-<% @theme = "neat" %>
 <link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
 <link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
 <link rel="stylesheet" href="/css/codemirror.css">
 <link rel="stylesheet" href="/css/jqModal.css">
 
+<!-- apply user preferences -->
+<style>
+  .CodeMirror {
+    font-family: <%= Preferences::FontMap[preferences["editing"]["font_face"]] %>;
+    font-size: <%= preferences["editing"]["font_size"].to_i %>px;
+    line-height: <%= preferences["editing"]["line_height"].to_i %>px;
+  }
+</style>
+
 <script type="text/javascript">
-  // ui = naughty_ui();
-  // naughty = new naughty;
 
   $(function() {
     var editor = null;
 
+    /* ---- -------- *
+     * Page Handling *
+     * ---- -------- */
+    // Loading a page
     function get_page() {
       if ($(this).hasClass("selected"))
         return ui.show_title_editor();
@@ -42,13 +50,12 @@
       ui.mark_pending();
 
       editor.save();
-      // var title = $(this).html();
+
       var title = $(this).attr("id").replace("page_", "");
       $.ajax({
         type: "GET",
         url: "/pages/" + title + ".json",
         success: function(content) {
-          // $("#page_editor").html(content);
           editor.clearHistory();
           editor.setValue(content);
           $("#preview").attr("href", "/pages/" + title + "/pretty");
@@ -60,73 +67,53 @@
         }
       });
     }
-
     $("#pages li").click(get_page);
+    // Creating a new page
+    $("#new_page").click(function() {
+      console.log("creating a page")
+      ui.status("Creating a new page...", "pending");
 
-    CodeMirror.keyMap.mxvt = {
-      "Ctrl-1": function(cm) { mxvt.markdown.heading(cm, 1) },
-      "Ctrl-2": function(cm) { mxvt.markdown.heading(cm, 2) },
-      "Ctrl-3": function(cm) { mxvt.markdown.heading(cm, 3) },
-      "Ctrl-4": function(cm) { mxvt.markdown.heading(cm, 4) },
-      "Ctrl-5": function(cm) { mxvt.markdown.heading(cm, 5) },
-      "Ctrl-6": function(cm) { mxvt.markdown.heading(cm, 6) },
-      // "Shift-Ctrl-S": function(cm) { ui.save(); },
-      // "Shift-Ctrl-V": function(cm) { ui.preview(); },
-      // "Shift-Ctrl-D": function(cm) { ui.delete_page(); },
-      "Ctrl-B": function(cm) { mxvt.markdown.strongify(cm) },
-      "Ctrl-I": function(cm) { mxvt.markdown.emphasize(cm) },
-      "Shift-Ctrl-K": function(cm) { cm.removeLine(cm.getCursor(true).line) },
-      fallthrough: ["default"]
-    };
-
-    editor = CodeMirror.fromTextArea(document.getElementById("page_editor"), {
-      mode: "markdown",
-      lineNumbers: false,
-      matchBrackets: true,
-      theme: "<%=@theme %>",
-      keyMap: "mxvt",
-      tabSize: 2,
-      gutter: false,
-      autoClearEmptyLines: false,
-      lineWrapping: true//,
-      // onScroll: function(e) {
-      //   // console.log(e.cursorCoords(true, "page"));
-      //   var y = e.cursorCoords(true, "page").y;
-      //   if (y > $(window).height() - 40) {
-      //     console.log("i be scrolling to: " + (y - $(window).height() ));
-      //     window.scrollTo(0, e.cursorCoords(true, "page").y - $(window).height() + 40)
-      //   }
-      //   // e.refresh();
-      //   // var editor = e.getWrapperElement();
-      //   // var editorScroll = $(editor).find('.CodeMirror-scroll');
-      //   // if (editorScroll.length > 0)
-      //     // console.log($(editorScroll).css("height"))
-      // }
+      $.ajax({
+        url: "/pages",
+        type: "POST",
+        success: function(page_id) {
+          console.log("page created successfully")
+          var new_page = "<li id=\"page_" + page_id + "\">page #" + page_id + "</li>";
+          $("#pages ul").prepend(new_page);
+          $("#pages li.selected").removeClass("selected");
+          $("#pages ul li:first").click(get_page);
+          ui.editor.setValue("Write your text here.");
+          $("#pages ul li:first").click();
+        },
+        error: function(e) {
+          console.log("smth bad happened")
+          console.log(e)
+        }
+      });
     });
 
-    ui.editor = editor;
+    /* --- ------ *
+     * The Editor *
+     * --- ------ */
+    ui.editor = editor = ui.create_editor("page_editor");
     ui.actions = $("#page_actions");
 
+    // Resize it to fill up the remainder of the screen's height
+    var editor_h = $(window).height() - 123;
+    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+    editor.refresh();
+
+    /* ------ -------- *
+     * Action bindings *
+     * ------ -------- */
     ui.on_action("save_content", function() {
       ui.save();
     });
-
-    // ui.on_action("zoom_in", function() {
-    //   $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) + 2);
-    //   $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) + 2) + "px");
-    // });
-
-    // ui.on_action("zoom_out", function() {
-    //   $(".CodeMirror").css("font-size", parseInt($(".CodeMirror").css("font-size")) - 2);
-    //   $(".CodeMirror").css("line-height", (parseInt($(".CodeMirror").css("line-height")) - 2) + "px");
-    // });
-
     ui.on_action("change_font", function() {
       var font = $("#page_actions select :selected").attr("value");
       console.log("Font: " + font);
       $(".CodeMirror").css("font-family", font);
     });
-
     $("#increase_height").click(function() {
       var step = parseInt($(".CodeMirror").css("line-height"));
       $(".CodeMirror-scroll").css("min-height", 
@@ -139,13 +126,22 @@
         (parseInt($(".CodeMirror-scroll").css("min-height")) - step) +"px");
       editor.refresh();
     });
+    ui.on_action("refresh_editor", function() {
+      editor.refresh();
+    });
+    $("#page_actions a").click(function() {
+      return ui.action($(this).attr("id"));
+    });
 
-
+    /* ----------- *
+     * Keybindings *
+     * ----------- */
     shortcut.add("ctrl+alt+s", function() { ui.save(); })
     shortcut.add("ctrl+alt+v", function() { ui.preview(); })
     shortcut.add("ctrl+alt+d", function() { ui.delete(); })
     shortcut.add("ctrl+alt+c", function() { $("#new_page").click(); })
     shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
+    shortcut.add("ctrl+alt+r", function() { editor.refresh(); })
     shortcut.add("ctrl+alt+a", function() { 
       if ($("#pages li.selected").length == 1)
         $("#pages li.selected").focus();
@@ -153,6 +149,9 @@
         $("#pages li:first").focus();
     })
 
+    /* -------- ---------- *
+     * Document Navigation *
+     * -------- ---------- */
     var disable_scrolling = function(e){
       switch(e.keyCode){
         case 37: case 39: case 38:  case 40: // Arrow keys
@@ -160,10 +159,7 @@
         default: break; // do not block other keys
       }
     }
-    
-
     $("#pages li").focusin(function() {
-      console.log("binding movement")
       window.addEventListener("keyup", disable_scrolling, false);
       $(this).bind('keydown', function(e) {
         if (e.keyCode == 38)
@@ -178,58 +174,44 @@
         e.preventDefault();
         return false;
       });
-    }/*, */).focusout(function() {
-      console.log("unbinding movement")
+    }).focusout(function() {
       $(this).unbind('keydown');
       window.removeEventListener("keyup", disable_scrolling, false);
     });
 
-    $("#new_page").click(function() {
-      console.log("creating a page")
-      ui.status("Creating a new page...", "pending");
 
-      $.ajax({
-        url: "/pages",
-        type: "POST",
-        success: function(page_id) {
-          console.log("page created successfully")
-          var new_page = "<li id=\"page_" + page_id + "\">page #" + page_id + "</li>";
-          $("#pages ul").prepend(new_page);
-          $("#pages li.selected").removeClass("selected");
-          // $("#pages ul li:first").addClass("selected").click(get_page);
-          $("#pages ul li:first").click(get_page);
-          // $("#page_actions").removeClass("disabled");
-          ui.editor.setValue("Write your text here.");
-          // ui.editor.focus();
-          $("#pages ul li:first").click();
-        },
-        error: function(e) {
-          console.log("smth bad happened")
-          console.log(e)
-        }
+    function confirm(msg,callback) {
+      $('#confirm')
+        .jqmShow()
+        .find('p.jqmConfirmMsg')
+          .html(msg)
+        .end()
+        .find(':submit:visible')
+          .click(function(){
+            if(this.value == 'Yes')
+              (typeof callback == 'string') ?
+                window.location.href = callback :
+                callback();
+            $('#confirm').jqmHide();
+          });
+      $("#confirm").find(':submit[value=Yes]').focus()
+    }
+
+    $(function() {
+      $('#confirm').jqm({overlay: 88, modal: true, trigger: false});
+      
+      $('a.confirm').click(function() { 
+        var a = $(this);
+        confirm(a.attr("data-confirmation"), function() {
+          ui[a.attr("data-confirmation-cb")]();
+        });
+
+        return false;
       });
-    });
+    })
 
-    $("#page_actions a").click(function() {
-      return ui.action($(this).attr("id"));
-    });
-    $("#page_actions select").change(function() {
-      return ui.action($(this).attr("id"));
-    });
-
-    var editor_h = $(window).height() - 123;
-    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
-    editor.refresh();
   }); 
 </script>
-  <!-- apply user preferences -->
-  <style>
-    .CodeMirror {
-      font-family: <%= Preferences::FontMap[preferences["editing"]["font_face"]] %>;
-      font-size: <%= preferences["editing"]["font_size"].to_i %>px;
-      line-height: <%= preferences["editing"]["line_height"].to_i %>px;
-    }
-  </style>
 <% end %>
 
 <% content_for :title do %>
@@ -253,20 +235,19 @@
 
 --><div class="disabled" id="page_actions">
   <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a> &bullet;
-<!--   <a href="#" title="Increases the font size of the editor" id="zoom_in">Zoom in</a> &bullet;
-  <a href="#" title="Decreases the font size of the editor" id="zoom_out">Zoom out</a> &bullet; -->
   <a target="Naughty - Preview" 
-        title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
-        href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
+     title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
+     href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
   <a target="Naughty" 
-      title="Make a public version of this page that you can share with people" 
-      href="/pages/x/share" id="share">Share this</a> &bullet;
+     title="Make a public version of this page that you can share with people" 
+     href="/pages/x/share" id="share">Share this</a> &bullet;
   <a id="delete_page" class="confirm"
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="delete_page"
      title="Deletes the page forever (Ctrl+Alt+D)">Delete</a> &bullet;
   <a href="#" title="Increase the height of the editor" id="increase_height">Grow</a> &bullet;
-  <a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a>
+  <a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a> &bullet;
+  <a href="#" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a>
 </div><textarea id="page_editor"><%= erb :"/tutorial" %></textarea>
 </div>
 <img class="loader" src="/css/ajax-loader.gif" />

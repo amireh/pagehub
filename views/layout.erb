@@ -19,7 +19,6 @@
       $(function() {
         $("#flashes button").click(function() {
           $(this).parent().next("hr:first").remove();
-          // $(this).parent().remove();
           $(this).parent().addClass("hidden");
         });
       });
@@ -29,12 +28,20 @@
 
   <% if logged_in? then %>
     <script>
-        naughty_settings = <%= preferences.to_json %>;
+      naughty_settings = <%= preferences.to_json %>;
+
+      $(function() {
+        ui.theme = "<%= @theme %>";
+      });
+
     </script>
+
+    <script src="/js/naughty.js"></script>
+    <script src="/js/naughty_ui.js"></script>
+    
   <% end %>
 
   <% yield_content :scripts %>
-
 </head>
 
 <body>

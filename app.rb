@@ -33,6 +33,7 @@ helpers do
     }
   end
 end
+
 configure do
   # enable :sessions
   use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
@@ -52,6 +53,11 @@ configure do
   DataMapper.auto_upgrade!
 
   set :default_preferences, JSON.parse(File.read(File.join($ROOT, "default_preferences.json")))
+end
+
+before do
+  # CodeMirror theme
+  @theme = @cm_theme = "neat"
 end
 
 get '/' do

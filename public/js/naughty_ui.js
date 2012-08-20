@@ -1,75 +1,47 @@
-function confirm(msg,callback) {
-  $('#confirm')
-    .jqmShow()
-    .find('p.jqmConfirmMsg')
-      .html(msg)
-    .end()
-    .find(':submit:visible')
-      .click(function(){
-        if(this.value == 'Yes')
-          (typeof callback == 'string') ?
-            window.location.href = callback :
-            callback();
-        $('#confirm').jqmHide();
-      });
-  $("#confirm").find(':submit[value=Yes]').focus()
-}
-
-$(function() {
-  $('#confirm').jqm({overlay: 88, modal: true, trigger: false});
-  
-  $('a.confirm').click(function() { 
-    var a = $(this);
-    confirm(a.attr("data-confirmation"), function() {
-      ui[a.attr("data-confirmation-cb")]();
-    });
-
-    return false;
-  });
-})
-
-
 // status = ui.status;
 naughty_ui = function() {
   var handlers = {
-    on_entry: []
-  };
-  var status_timer = null,
-      autosave_timer = null;
-  var anime_dur = 250;
-  var status_shown = false;
-  var status_queue = [];
-  var autosave_pulse = 30; /* autosave every half minute */
-  var defaults = {
-    status: 1
-  };
-  var actions = {};
+        on_entry: []
+      },
+      status_timer = null,
+      autosave_timer = null,
+      theme = "",
+      anime_dur = 250,
+      status_shown = false,
+      status_queue = [],
+      autosave_pulse = 30, /* autosave every half minute */
+      defaults = {
+        status: 1
+      },
+      actions = {},
+      hooks = [
+        // Bind the title editor's key presses:
+        // 1. on RETURN: update the page and the entry
+        // 2. on ESCAPE: hide the editor and reset the title
+        function() {
+          $("#title_editor").keyup(function(e) {
+            if ( e.which == 13 ) {
+              e.preventDefault();
+              ui.save_title();
+            } else if (e.which == 27) {
+              e.preventDefault();
+              ui.hide_title_editor();
+            }
+          });
+        },
 
-  var hooks = [
-    // Bind the title editor's key presses:
-    // 1. on RETURN: update the page and the entry
-    // 2. on ESCAPE: hide the editor and reset the title
-    function() {
-      $("#title_editor").keyup(function(e) {
-        if ( e.which == 13 ) {
-          e.preventDefault();
-          ui.save_title();
-        } else if (e.which == 27) {
-          e.preventDefault();
-          ui.hide_title_editor();
+        // toggle autosaving
+        function() {
+          if (naughty !== undefined) {
+            if (naughty.settings.editing.autosave) {
+              autosave_timer = setInterval("ui.save(true)", autosave_pulse * 1000);
+            }
+            
+          }
+
+          // ui.status("hi", "good");
         }
-      });
-    },
-
-    // toggle autosaving
-    function() {
-      if (naughty.settings.editing.autosave) {
-        autosave_timer = setInterval("ui.save(true)", autosave_pulse * 1000);
-      }
-
-      // ui.status("hi", "good");
-    }
-  ];
+      ];
 
   function current_page_id() {
     if ($("#pages .selected").length == 0)
@@ -80,6 +52,24 @@ naughty_ui = function() {
 
   return {
     hooks: hooks,
+    theme: theme,
+
+    create_editor: function(textarea_id, opts) {
+      opts = opts || {};
+      var editor = CodeMirror.fromTextArea(document.getElementById(textarea_id), $.extend({
+        mode: "markdown",
+        lineNumbers: false,
+        matchBrackets: true,
+        theme: ui.theme,
+        tabSize: 2,
+        gutter: false,
+        autoClearEmptyLines: false,
+        lineWrapping: true
+      }, opts));
+
+      return editor;
+    },
+
     clear_status: function(cb) {
       if (!$("#status").is(":visible"))
         return (cb || function() {})();

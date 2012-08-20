@@ -9,7 +9,8 @@
 <script src="/js/codemirror-2.3/mode/shell/shell.js"></script>
 <script src="/js/codemirror-2.3/mode/lua/lua.js"></script>
 <script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
-<% @theme = "neat" %>
+<script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
+
 <link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
 <link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
 <link rel="stylesheet" href="/css/codemirror.css">
@@ -48,16 +49,7 @@
     });
 
 
-
-    editor = CodeMirror.fromTextArea(document.getElementById("preview_editor"), {
-      mode: "markdown",
-      lineNumbers: false,
-      matchBrackets: true,
-      theme: "<%= @theme %>",
-      tabSize: 2,
-      gutter: false,
-      autoClearEmptyLines: false,
-      lineWrapping: true,
+    ui.editor = editor = ui.create_editor("preview_editor", {
       readOnly: true
     });
 
@@ -78,6 +70,7 @@
     });
   });
 </script>
+
 <style>
   section.editor_preview {
     position: absolute;
@@ -151,6 +144,7 @@
       "Simply White" => [ "F0F2EB", "1C140D", "FF4242", "99173C", "5E8C6A" ],
       "Antimatter" => [ "111", "fff", "aaa", "bbb", "555" ]
     } %>
+    
     <% schemes.each_pair do |scheme, colours| %>
       <label style="vertical-align: middle; font-size: 18px; margin-bottom: 5px; display: inline-block;">
         <% colours.each_with_index do |hex, idx| %>
@@ -168,15 +162,15 @@
       </label>
       <br />
     <% end %>
-      <span id="colour_explanation">Colour: &minus;</span>
+    <span id="colour_explanation">Colour: &minus;</span>
 
   </section>
 
   <section id="editor_settings">
-  <h2>Editing settings</h2>
+    <h2>Editing settings</h2>
 
-  <p>These settings will apply only to Naughty's editor and <em>not</em>
-    to the pretty versions of your pages.</p>
+    <p>These settings will apply only to Naughty's editor and <em>not</em>
+      to the pretty versions of your pages.</p>
 
     <h3>Autosaving</h3>
     <label>
