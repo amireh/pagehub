@@ -312,7 +312,7 @@ a:visited:hover {
 
 #title_editor {
   width: 200px;
-  margin-left: 10px;  
+  margin-left: -10px;  
 }
 
 
