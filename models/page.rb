@@ -17,7 +17,8 @@ class Page
     true
   end
 
-  def public_url
-    "http://pagehub.mxvt.net/#{self.user.nickname}/#{self.pretty_title}"
+  def public_url(relative = false)
+    prefix = relative ? "" : "http://www.pagehub.org"
+    "#{prefix}/#{self.user.nickname}/#{self.pretty_title}"
   end
 end
