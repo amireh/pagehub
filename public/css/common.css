@@ -101,12 +101,6 @@ h3 {
   color: #F0AD11;
 }
 
-#content {
-  /*float: left;*/
-  /*width: 100%;*/
-  /*padding-bottom: 20px;*/
-}
-
 .stuff {
   width: 960px;
   margin: 0 auto;
@@ -443,4 +437,99 @@ a[href="#top"] {
   text-decoration: none;
   opacity: 0.5;
   z-index: 10;
+}
+
+#skin_switcher {
+  position: absolute;
+  bottom: 10px;
+  /*z-index: 0;*/
+  /*left: 10px;*/
+}
+
+#skin_switcher a {
+  font-size: 0;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #222;
+}
+
+#switch_skin_dark {
+  background: #333;
+}
+
+#switch_skin_light {
+  background: #ddd;
+}
+
+
+
+
+
+
+input[type=text],
+input[type=email],
+input[type=password] {
+  border-radius: 8px;
+  padding: 5px 10px;
+  outline: none;
+
+  -webkit-transition: background-color 0.25s ease 0s;
+  -moz-transition:    background-color 0.25s ease 0s;
+  -ms-transition:     background-color 0.25s ease 0s;
+  -o-transition:      background-color 0.25s ease 0s;
+  transition:         background-color 0.25s ease 0s;    
+}
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus {
+  background: none;
+}
+
+form input[type=text],
+form input[type=email],
+form input[type=password] {
+  width: 320px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+input.fat,
+form input.fat {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+input.very_fat,
+form input.very_fat {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+
+input[type=submit],
+button,
+a.button {
+  line-height: 22px;
+  margin: 0;
+  cursor: pointer;
+
+  padding: 5px 10px;
+
+  border: none;
+ 
+  text-transform: uppercase;
+  font-weight: bold;
+
+  -webkit-transition: all 0.25s ease 0s;
+  -moz-transition:    all 0.25s ease 0s;
+  -ms-transition:     all 0.25s ease 0s;
+  -o-transition:      all 0.25s ease 0s;
+  transition:         all 0.25s ease 0s;  
+}
+
+button:hover, 
+input[type=submit]:hover,
+a.button:hover {
+  background-position: 0 -15px;
+  padding: 5px 20px;
 }

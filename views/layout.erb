@@ -91,15 +91,19 @@
           <% end %>
           <button>&times;</button>
         </div>
-        <hr />
       <% end %>
 
       <%= yield %>
     </div>
 
-  </div>
-  <%= erb :"footer" %>
+    <% if logged_in? %>
+      <%= erb(:"_skin_switcher") %>
+    <% end %>
 
+  </div>
+
+  <%= erb :"footer" %>
+  
 </body>
 
 </html>

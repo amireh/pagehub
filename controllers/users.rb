@@ -120,6 +120,27 @@ get '/profile' do
   erb :"/users/edit"
 end
 
+get '/profile/skin/:skin' do |skin|
+  restricted!
+
+  if ["dark", "light"].include? skin
+    curr_prefs = preferences
+    curr_prefs["pagehub"] ||= {}
+    curr_prefs["pagehub"]["skin"] = skin
+
+    current_user.settings = curr_prefs.to_json
+    if current_user.save
+      flash[:notice] = "Switched to #{skin} skin."
+    else
+      flash[:error] = "I'm sorry, something wrong happened while updating your preferences."
+    end
+  else
+    flash[:error] = "That skin is unavailable, try with 'light' or 'dark'"
+  end
+
+  redirect back
+end
+
 post '/profile/preferences' do
   restricted!
 
