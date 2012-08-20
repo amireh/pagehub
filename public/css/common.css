@@ -535,3 +535,7 @@ a.button:hover {
   background-position: 0 -15px;
   padding: 5px 20px;
 }
+
+#content img {
+  width: 100%;
+}

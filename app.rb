@@ -7,6 +7,7 @@ gem 'sinatra-flash'
 gem "data_mapper", ">=1.2.0"
 gem 'redcarpet'
 gem 'albino'
+gem 'nokogiri'
 
 require 'sinatra'
 require 'sinatra/content_for'
