@@ -101,6 +101,9 @@ h3 {
   color: #F0AD11;
 }
 
+h1,h2,h3,h4,h5,h6 {
+  font-family: "ProximaNova-Light";
+}
 .stuff {
   width: 960px;
   margin: 0 auto;
@@ -536,6 +539,6 @@ a.button:hover {
   padding: 5px 20px;
 }
 
-#content img {
+#content.print img {
   width: 100%;
 }

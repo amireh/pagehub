@@ -111,7 +111,7 @@ get '/logout' do
   session[:email] = nil
 
   flash[:notice] = "Bye!"
-  redirect back
+  redirect :"/"
 end
 
 get '/profile' do
