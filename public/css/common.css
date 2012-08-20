@@ -261,7 +261,7 @@ a#new_page:not(:hover) {
   background: #BF0606;
 }
 #status.pending {
-  background: rgba(240,173,17,0.5);
+  background: rgba(240,173,17,0.95);
 }
 
 .hidden {
@@ -269,9 +269,11 @@ a#new_page:not(:hover) {
 }
 #status.hidden {
   left: 100%;
+  display: block;
 }
 #status.visible {
   left: 0;
+  display: block;
 }
 
 a,
@@ -323,7 +325,11 @@ a:visited:hover {
 footer {
   width: 960px;
   margin: 0 auto;
+  border-top: 1px dotted black;
   display: none;
+}
+footer p {
+  margin: 5px 0;
 }
 #page_actions {
   position: absolute;
@@ -541,4 +547,10 @@ a.button:hover {
 
 #content.print img {
   width: 100%;
+}
+
+.landing_page {
+  text-align: justify;
+  width: 480px;
+  margin: 0 auto;
 }

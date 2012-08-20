@@ -3,23 +3,49 @@
 <% end %>
 
 <% h = <<EOF
-## A reliable page / document / note editor 
 
-  * **INSTANTLY** write what you need to write without having to worry about
+## What it is
+
+[PageHub](www.pagehub.org) is an online text editing tool that's handy for
+writing quick notes or even lengthy documents. The pages you create on
+[PageHub](www.pagehub.org) can be shared with other people, or be kept
+private to yourself.
+
+[Markdown](http://daringfireball.net/projects/markdown/) is used by PageHub as
+the editing format, and you will have to spend several minutes to learn
+how to write documents using it. Writing in Markdown allows you to stay focused
+on *writing* content instead of how to make it look good, among many other
+benefits.
+
+## Features
+
+  * **Instantly** write what you need to write without having to worry about
     titles, URLs, or navigating a complicated interface
-  * Format your documents using the simple and effective [Markdown](daringfireball.net/projects/markdown/)
   * Look up your documents easily
-  * Read your pages in clean, easy-to-read `plain-text` mode
-  * Engage the "pretty" mode and transform your plain document into **BEAUTIFUL** HTML pages
-  * Customize the colors of the pages you share with people
-  * **EMBED** documents inside others; no longer will you need to maintain multiple versions
-    of documents that reference each other
-  * Do it quickly; PageHub is equipped with keybindings for common operations
+  * Engage the "pretty" mode and transform your plain documents into
+    **beautiful** HTML pages
+  * Customize the looks of the pages you share with people
+  * **EMBED** documents inside others; no longer will you need to
+    maintain multiple versions of documents that reference each other
+  * Utilize the keyboard; [PageHub](www.pagehub.org) is equipped with keybindings
+    for common operations
 
 ## [Click here](/signup) to get started
 
-> *Signing up is made as pain-free as possible; all 
-> you need is an email address and a password.*
+*Signing up is made as pain-free as possible; all 
+you need is an email address and a password.*
+
+## And it's totally free
+
+You can check out the [source code on GitHub](https://github.com/amireh/pagehub)
+and host it yourself if you'd like to. PageHub is currently hosted on my
+own personal server and would probably not be able to hold much traffic.
+
+*****
+
+Developed by [Amireh](http://www.mxvt.net)
 EOF
 %>
-<%= h.strip.to_markdown %>
+<div class="landing_page">
+  <%= h.strip.to_markdown %>
+</div>

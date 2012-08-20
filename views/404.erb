@@ -1,3 +1,11 @@
 <h2>404</h2>
 
-<%= response.body.first %>
+<p>
+<% error = response.body.first || "" %>
+<% if !error.to_s.include?("\n") then %>
+  <%= error %>
+<% else %>
+  The page you were looking for does not exist!
+<% end %>
+
+</p>

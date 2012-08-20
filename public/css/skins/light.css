@@ -1,8 +1,11 @@
+
 h2,
-.cm-s-neat span.cm-header,
+.cm-s-neat span.cm-header {
+  color: #8FBE00;
+}
 .flash.notice, 
 .success {
-  color: #8FBE00;
+  color: #333;
 }
 
 hr {
@@ -57,4 +60,8 @@ input[type=password] {
 }
 #flashes {
   background: transparent;
+}
+
+footer {
+  border-color: #ccc;
 }

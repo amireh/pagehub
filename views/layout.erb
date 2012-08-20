@@ -28,6 +28,10 @@
   <% end %>
 
   <% if logged_in? then %>
+    <style>
+      footer { display: none; }
+    </style>
+
     <script>
       pagehub_settings = <%= preferences.to_json %>;
 
