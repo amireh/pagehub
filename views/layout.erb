@@ -28,7 +28,7 @@
 
   <% if logged_in? then %>
     <script>
-      naughty_settings = <%= preferences.to_json %>;
+      pagehub_settings = <%= preferences.to_json %>;
 
       $(function() {
         ui.theme = "<%= @theme %>";
@@ -36,8 +36,8 @@
 
     </script>
 
-    <script src="/js/naughty.js"></script>
-    <script src="/js/naughty_ui.js"></script>
+    <script src="/js/pagehub.js"></script>
+    <script src="/js/pagehub_ui.js"></script>
     
   <% end %>
 
@@ -53,7 +53,7 @@
 
   <div class="stuff">
     <header>
-      <h1><a href="/">Naughty Notebook</a></h1>
+      <h1><a href="/">pagehub</a></h1>
     </header>
     
     <nav>

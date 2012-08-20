@@ -164,14 +164,14 @@ module Embedder
 
   end
 
-  # Extracts content from Naughty shared documents
+  # Extracts content from PageHub shared documents
   #
   # Bound keys:
-  # => "naughty"
-  # => URI([...]naughty.mxvt.net/[...])
-  class NaughtyProcessor < Processor
+  # => "pagehub"
+  # => URI([...]pagehub.mxvt.net/[...])
+  class PageHubProcessor < Processor
     def initialize()
-      super(["naughty", /naughty.mxvt.net/])
+      super(["pagehub", /pagehub.mxvt.net/])
     end
 
     def process(content, args = "")
@@ -183,5 +183,5 @@ module Embedder
   end
 
   register_processor(GithubWikiProcessor.new)
-  register_processor(NaughtyProcessor.new)
+  register_processor(PageHubProcessor.new)
 end

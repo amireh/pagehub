@@ -1,5 +1,5 @@
 // status = ui.status;
-naughty_ui = function() {
+pagehub_ui = function() {
   var handlers = {
         on_entry: []
       },
@@ -32,8 +32,8 @@ naughty_ui = function() {
 
         // toggle autosaving
         function() {
-          if (naughty !== undefined) {
-            if (naughty.settings.editing.autosave) {
+          if (pagehub !== undefined) {
+            if (pagehub.settings.editing.autosave) {
               autosave_timer = setInterval("ui.save(true)", autosave_pulse * 1000);
             }
             
@@ -154,7 +154,7 @@ naughty_ui = function() {
         }
       }
 
-      naughty.update(page_id, { content: content }, messages);
+      pagehub.update(page_id, { content: content }, messages);
     },
 
     save_title: function() {
@@ -167,7 +167,7 @@ naughty_ui = function() {
 
 
       ui.status("Saving page title...", "pending");
-      naughty.update(page_id, { title: title }, {
+      pagehub.update(page_id, { title: title }, {
         success: "Page title updated!",
         error: "Unable to update the page's title :("
       });
@@ -203,7 +203,7 @@ naughty_ui = function() {
 
       var entry = $("#pages .selected");
       var page_title = entry.html();
-      naughty.delete(page_id, function() {
+      pagehub.delete(page_id, function() {
         ui.status("Page " + page_title + " is now dead :(", "good");
         entry.remove();
         ui.editor.setValue("");
@@ -233,7 +233,7 @@ naughty_ui = function() {
 }
 
 // globally accessible instance
-ui = new naughty_ui();
+ui = new pagehub_ui();
 
 $(function() {
   foreach(ui.hooks, function(hook) { hook(); });

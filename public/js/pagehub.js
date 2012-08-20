@@ -1,6 +1,6 @@
-naughty = function() { };
+pagehub = function() { };
 
-naughty.prototype = {
+pagehub.prototype = {
 
   update: function(page_id, attributes, messages) {
     ui.mark_pending();
@@ -33,7 +33,7 @@ naughty.prototype = {
 }
 
 // globally accessible instance
-naughty = new naughty();
+pagehub = new pagehub();
 
-naughty.settings = naughty_settings;
-naughty_settings = null;
+pagehub.settings = pagehub_settings;
+pagehub_settings = null;

@@ -18,6 +18,6 @@ class Page
   end
 
   def public_url
-    "http://naughty.mxvt.net/#{self.user.nickname}/#{self.pretty_title}"
+    "http://pagehub.mxvt.net/#{self.user.nickname}/#{self.pretty_title}"
   end
 end
