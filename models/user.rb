@@ -14,6 +14,7 @@ class User
   property :oauth_token, Text
   property :oauth_secret, Text
   property :extra, Text
+  property :auto_nickname, Boolean, default: false
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   # has n, :notebooks

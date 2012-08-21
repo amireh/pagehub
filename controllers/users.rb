@@ -56,7 +56,12 @@ helpers do
     settings.default_preferences.deep_merge(@preferences)
     # set_defaults(settings.default_preferences, @preferences)
   end
+end
 
+before do
+  if current_user && current_user.auto_nickname && flash.empty?
+    flash[:notice] = "You have an auto-generated nickname, please go to your profile page and update it."
+  end
 end
 
 get '/signup' do
@@ -102,6 +107,26 @@ end
       uparams[:oauth_secret] = auth.credentials.secret if auth.credentials.secret
       if auth.extra.raw_info then
         uparams[:extra] = auth.extra.raw_info.to_json.to_s
+      end
+
+      fix_nickname = false
+      nickname = ""
+
+      # Make sure the nickname isn't taken
+      if uparams.has_key?(:nickname) then
+        if User.first({ nickname: uparams[:nickname] }) then
+          nickname = uparams[:nickname] # just add the salt to it
+          fix_nickname = true
+        end
+      else
+        # Assign a default nickname based on their name
+        nickname = auth.info.name.to_s.sanitize
+      end
+
+      if fix_nickname
+        salt = Base64.urlsafe_encode64(Random.rand(12345 * 1000).to_s)
+        uparams[:nickname] = "#{nickname}_#{salt}"
+        uparams[:auto_nickname] = true
       end
 
       puts "Creating a new user from #{provider} with params: \n#{uparams.inspect}"
@@ -203,6 +228,7 @@ post '/profile/preferences' do
       flash[:error] = "That nickname isn't available! Please choose another one."
     else
       current_user.nickname = nickname
+      current_user.auto_nickname = false
     end
   end
 

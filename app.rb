@@ -10,6 +10,7 @@ gem 'albino'
 gem 'nokogiri'
 gem 'omniauth'
 gem 'omniauth-facebook'
+gem 'omniauth-github'
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -23,6 +24,7 @@ require 'lib/toc'
 require 'lib/embedder'
 require 'omniauth'
 require 'omniauth-facebook'
+require 'omniauth-github'
 require 'openid/store/filesystem' 
 
 helpers do
@@ -46,6 +48,7 @@ configure do
   use OmniAuth::Builder do
     provider :developer if settings.development?
     provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
+    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
     # use OmniAuth::Strategies::Developer
   end
