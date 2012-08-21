@@ -87,3 +87,8 @@ form input[type=password] {
 #pages .useful_links {
   color: #F4FAD2;
 }
+
+.stuff ::-webkit-scrollbar-thumb:vertical {
+  background: rgba(0,0,0,0.1);
+  border-color: rgba(0,0,0,0.1);
+}

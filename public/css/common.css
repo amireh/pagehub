@@ -16,9 +16,11 @@ body {
   /*background: url(striped_brown_baige.png) repeat;*/
   /*background: #101010;*/
   /*margin-bottom: 20px;*/
+  height: 100%;
 }
 html {
   background-color: transparent;
+  height: 100%;
 }
 .funky {
   font-family: "UbuntuMonoRegular";
@@ -418,12 +420,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   background-color: transparent;
 }
 .stuff ::-webkit-scrollbar-track-piece  {
-  background-color: rgba(0,0,0,0.15);
-  -webkit-border-radius: 0;
+  /*background-color: rgba(0,0,0,0.15);*/
+  /*background-color: #ddd;*/
 }
 .stuff ::-webkit-scrollbar-thumb:vertical {
   height: 30px;
-  background-color: rgba(0, 0, 0, 0.25);
+  /*background-color: rgba(0, 0, 0, 0.25);*/
+  background-color: #ddd;
   border: 1px solid rgba(255,255,255,0.125);
   -webkit-border-radius: 6px;
 }

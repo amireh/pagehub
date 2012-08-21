@@ -10,18 +10,18 @@
   display: inline-block;
   height: auto;
   font-family: inherit;
-  margin-top: 50px;
+  margin-top: 40px;
   letter-spacing: 1px;
 }
 .CodeMirror-scroll {
   min-height: 492px;
   /*height: auto;*/
-  overflow-y: hidden;
-  overflow-x: auto;
+  /*overflow-y: hidden;*/
+  /*overflow-x: auto;*/
 }
 
 .CodeMirror-lines {
-  padding-top: 0;
+  /*padding-top: 0;*/
 }
 
 .CodeMirror-gutter-text {

@@ -1,3 +1,6 @@
+body {
+  background: url(/images/grid-18px-masked.png) repeat-x center center;
+}
 h2,
 .cm-s-neat span.cm-header {
   color: #8FBE00;
