@@ -13,7 +13,7 @@ gem 'addressable'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-github'
-gem 'omniauth-twitter', :git => 'https://github.com/arunagw/omniauth-twitter.git'
+gem 'omniauth-twitter', '0.0.9'
 
 require 'sinatra'
 require 'sinatra/content_for'
