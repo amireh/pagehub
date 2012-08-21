@@ -12,6 +12,11 @@ gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-github'
 gem 'omniauth-google-oauth2'
+gem 'multi_json'
+gem 'addressable'
+# require 'multi_json'
+# require 'addressable/uri'
+gem 'omniauth-twitter', :git => 'https://github.com/arunagw/omniauth-twitter.git'
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -27,6 +32,7 @@ require 'omniauth'
 require 'omniauth-facebook'
 require 'omniauth-github'
 require 'omniauth-google-oauth2'
+require 'omniauth-twitter'
 require 'openid/store/filesystem' 
 
 helpers do
@@ -52,6 +58,7 @@ configure do
     provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
     provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
+    provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET'] 
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
     # use OmniAuth::Strategies::Developer
   end
