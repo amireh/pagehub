@@ -11,6 +11,7 @@ gem 'nokogiri'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-github'
+gem 'omniauth-google-oauth2'
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -25,6 +26,7 @@ require 'lib/embedder'
 require 'omniauth'
 require 'omniauth-facebook'
 require 'omniauth-github'
+require 'omniauth-google-oauth2'
 require 'openid/store/filesystem' 
 
 helpers do
@@ -49,6 +51,7 @@ configure do
     provider :developer if settings.development?
     provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
+    provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
     # use OmniAuth::Strategies::Developer
   end
