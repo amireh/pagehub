@@ -21,7 +21,7 @@ class String
 
     # Embed remote references, if any
     has_embedded_html = false
-    self.gsub!(/\[\!include\s?(.*)\!\]\((.*)\)/) { 
+    self.gsub!(/^\B\[\!include\s?(.*)\!\]\((.*)\)/) { 
       content = ""
       
       uri = $2
@@ -52,7 +52,7 @@ class String
 
     # Build ToC from Markdown
     # unless has_embedded_html then
-      self.gsub!(/\[\!toc(.*)\!\]/) {
+      self.gsub!(/^\B\[\!toc(.*)\!\]/) {
         TableOfContents.to_html TableOfContents.from_markdown(self, $1.empty? ? 6 : $1.strip.to_i)
       }
     # end
