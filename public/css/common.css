@@ -552,6 +552,7 @@ a.button:hover {
 .landing_page {
   text-align: justify;
   width: 480px;
+  width: 620px;
   margin: 0 auto;
 }
 
@@ -579,4 +580,24 @@ a.button:hover {
   display: block;
   clear: both;
   font-style: italic;
+}
+
+.landing_page span#login_buttons a
+ {
+  display: inline-block;
+  padding: 20px 5px 20px 60px;
+  margin: 0 5px 0 0;
+}
+.landing_page span#login_buttons a:first-of-type {
+  background: url(/images/54_facebook.png) no-repeat 0 center;
+}
+
+.landing_page span#login_buttons a:nth-of-type(2) {
+  background: white url(/images/64_github.png) no-repeat 0 center;
+  padding-left: 70px;
+}
+
+.landing_page span#login_buttons a:last-of-type {
+  background: url(/images/64_twitter.png) no-repeat 0px center;
+  padding-left: 70px;
 }
