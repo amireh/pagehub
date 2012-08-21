@@ -222,7 +222,7 @@ get '/profile/skin/:skin' do |skin|
     if current_user.save
       flash[:notice] = "Switched to #{skin} skin."
     else
-      flash[:error] = "I'm sorry, something wrong happened while updating your preferences."
+      flash[:error] = "Something wrong happened while updating your preferences."
     end
   else
     flash[:error] = "That skin is unavailable, try with 'light' or 'dark'"
@@ -300,7 +300,7 @@ post '/profile/password' do
       if current_user.save then
         flash[:notice] = "Your password has been changed."
       else
-        flash[:error] = "Something bad happened while updating your password :("
+        flash[:error] = "Something bad happened while updating your password!"
       end
     else
       flash[:error] = "The passwords you've entered do not match!"

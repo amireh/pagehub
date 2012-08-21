@@ -103,9 +103,9 @@ end
 # Retrieve a publicly accessible page.
 get '/:nickname/:title.raw' do |nn, title|
   @user = User.first({ nickname: nn })
-  halt 404, "This seems to be an invalid link, sorry :(" if !@user
+  halt 404, "This seems to be an invalid link!" if !@user
   @page = Page.first({ pretty_title: title, user_id: @user.id })
-  halt 404, "This seems to be an invalid link, sorry :(" if !@page
+  halt 404, "This seems to be an invalid link!" if !@page
   @public = true
   @page.content
 end
@@ -113,11 +113,11 @@ end
 # Retrieve a publicly accessible page.
 get '/:nickname/:title' do |nn, title|
   @user = User.first({ nickname: nn })
-  halt 404, "This seems to be an invalid link, sorry :(" if !@user
+  halt 404, "This seems to be an invalid link!" if !@user
   @page = Page.first({ pretty_title: title, user_id: @user.id })
-  halt 404, "This seems to be an invalid link, sorry :(" if !@page
+  halt 404, "This seems to be an invalid link!" if !@page
   @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
-  halt 403, "This page can only be viewed by its auther. Sorry :(" if !@pp
+  halt 403, "This page can only be viewed by its author." if !@pp
   @public = true
   erb :"pretty", layout: :"print_layout"
 end
