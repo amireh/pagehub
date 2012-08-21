@@ -1,28 +1,33 @@
-Warden::Strategies.add(:pagehub) do
-  def valid?
-    [ "email", "password" ].each { |field|
-      if !params.has_key?(field) || params[field].empty? then
-        return false
-      end
-    }
-    true
-  end
-
-  def authenticate!
-    puts "Authenticating user: #{params["email"]} with password #{params["password"]}"
-    u = User.authenticate(params["email"], params["password"])
-    u.nil? ? fail!("Login failed. Please verify your credentials and try again.") : success!(u)
-  end
-end
+require 'lib/strategies/pagehub'
+require 'lib/strategies/facebook'
 
 class Session < PageHub
 
+  # facebook callback
+  def facebook
+    warden.authenticate!(:facebook)
+    return login!
+  end
+
+  # Twitter callback
+  # def twitter
+  #   warden.authenticate!(:twitter)
+  #   return login!
+  # end  
+
+  # # openid callback (yahoo, google)
+  # def openid
+  #   warden.authenticate!(:openid)
+  #   return login!
+  # end
+
   get '/' do
-    erb :"login"
+    erb :"/login"
   end
 
   post '/' do
-    env['warden'].authenticate!(:pagehub)
+    puts params.inspect
+    env['warden'].authenticate!
     flash[:success] = 'Successfully logged in!'
     redirect '/'
   end
