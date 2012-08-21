@@ -552,7 +552,7 @@ a.button:hover {
 .landing_page {
   text-align: justify;
   width: 480px;
-  width: 620px;
+  width: 600px;
   margin: 0 auto;
 }
 
@@ -595,9 +595,11 @@ a.button:hover {
 .landing_page span#login_buttons a:nth-of-type(2) {
   background: white url(/images/64_github.png) no-repeat 0 center;
   padding-left: 70px;
+  margin: 0;
 }
 
 .landing_page span#login_buttons a:last-of-type {
   background: url(/images/64_twitter.png) no-repeat 0px center;
   padding-left: 70px;
+  margin: 0;
 }

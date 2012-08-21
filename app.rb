@@ -8,14 +8,11 @@ gem "data_mapper", ">=1.2.0"
 gem 'redcarpet'
 gem 'albino'
 gem 'nokogiri'
+gem 'multi_json'
+gem 'addressable'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-github'
-gem 'omniauth-google-oauth2'
-gem 'multi_json'
-gem 'addressable'
-# require 'multi_json'
-# require 'addressable/uri'
 gem 'omniauth-twitter', :git => 'https://github.com/arunagw/omniauth-twitter.git'
 
 require 'sinatra'
@@ -31,9 +28,9 @@ require 'lib/embedder'
 require 'omniauth'
 require 'omniauth-facebook'
 require 'omniauth-github'
-require 'omniauth-google-oauth2'
 require 'omniauth-twitter'
-require 'openid/store/filesystem' 
+# require 'omniauth-google-oauth2'
+# require 'openid/store/filesystem' 
 
 helpers do
   module Preferences
@@ -57,10 +54,9 @@ configure do
     provider :developer if settings.development?
     provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
-    provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
     provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET'] 
+    # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
-    # use OmniAuth::Strategies::Developer
   end
 
   # DataMapper::Logger.new($stdout, :debug)
@@ -78,12 +74,6 @@ configure do
   DataMapper.auto_upgrade!
 
   set :default_preferences, JSON.parse(File.read(File.join($ROOT, "default_preferences.json")))
-
-
-  # p = {:uid=>"626495602", :provider=>"facebook", :name=>"Ahmad Amireh", :email=>"ahmad.amireh@gmail.com", :nickname=>"amireh.ahmad", 
-    # :oauth_token=>"AAAEhChSOfToBAJsAoffiTVp1cZATBRaYQ0PQLAlRd8i8ZAbfZA2ftApxSu7ssSD9jHSIfcXa4kZBZBr1Gfx5cAh4zBkTxmnoalg5LhpHBaAZDZD", 
-    # :extra=>"{\"id\":\"626495602\",\"name\":\"Ahmad Amireh\",\"first_name\":\"Ahmad\",\"last_name\":\"Amireh\",\"link\":\"http://www.facebook.com/amireh.ahmad\",\"username\":\"amireh.ahmad\",\"gender\":\"male\",\"email\":\"ahmad.amireh@gmail.com\",\"timezone\":3,\"locale\":\"en_US\",\"verified\":true,\"updated_time\":\"2012-08-21T05:10:57+0000\"}"}
-  # User.create(p)
 end
 
 before do
