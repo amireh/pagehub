@@ -56,6 +56,7 @@ pagehub_ui = function() {
 
     create_editor: function(textarea_id, opts) {
       opts = opts || {};
+      mxvt.markdown.setup_bindings();
       var editor = CodeMirror.fromTextArea(document.getElementById(textarea_id), $.extend({
         mode: "markdown",
         lineNumbers: false,
@@ -64,7 +65,8 @@ pagehub_ui = function() {
         tabSize: 2,
         gutter: false,
         autoClearEmptyLines: false,
-        lineWrapping: true
+        lineWrapping: true,
+        keyMap: "mxvt"
       }, opts));
 
       return editor;
