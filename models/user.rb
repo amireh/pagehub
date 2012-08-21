@@ -20,6 +20,8 @@ class User
   # has n, :notebooks
   has n, :pages
 
+  validates_presence_of :name, :provider, :uid
+
   before :valid? do |_|
     self.nickname = self.name.to_s.sanitize if self.nickname.empty?
 

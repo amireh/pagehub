@@ -1,4 +1,5 @@
 require 'json'
+require 'uuid'
 
 class Hash
 
@@ -58,6 +59,14 @@ helpers do
   end
 end
 
+private
+
+def nickname_salt
+  Base64.urlsafe_encode64(Random.rand(12345 * 1000).to_s)
+end
+
+public
+
 before do
   if current_user && current_user.auto_nickname && flash.empty?
     flash[:notice] = "You have an auto-generated nickname, please go to your profile page and update it."
@@ -69,24 +78,42 @@ get '/signup' do
 end
 
 post '/signup' do
-  if User.first(email: params[:email]) then
-    flash[:error] = "That email is already registered!"
-    return redirect "/signup"
-  end
+  p = params
+  
+  # Validate input
+  {
+    "That email is already registered" => User.first(email: p[:email]),
+    "You must fill in your name" => !p[:name] || p[:name].empty?,
+    "You must type the same password twice" => p[:password].empty? || p[:password_confirmation].empty?,
+    "The passwords you entered do not match" => p[:password] != p[:password_confirmation],
+    "Passwords must be at least 5 characters long." => p[:password].length <= 4
+  }.each_pair { |msg, cnd|
+    if cnd then
+      flash[:error] = msg
+      return redirect "/signup"
+    end
+  }
 
+  # Encrypt the password
   params[:password] = Digest::SHA1.hexdigest(params[:password])
 
-  u = User.create(params)
-  if u then
-    flash[:notice] = "Congratulations! Your new personal account has been registered."
-  else
-    flash[:error] = "Oops! We're sorry but something bad happened while creating your \
-    new account, please try again."
+  nickname = params[:name].to_s.sanitize
+  auto_nn = false
+  if User.first({ nickname: nickname }) then
+    nickname = "#{nickname}_#{nickname_salt}"
+    auto_nn = true
+  end
+
+  params.delete("password_confirmation")
+
+  # Create the user with a UUID
+  unless u = User.create!(params.merge({ uid: UUID.generate, nickname: nickname, auto_nickname: auto_nn, provider: "pagehub" }))
+    flash[:error] = "Something bad happened while creating your new account, please try again."
     return redirect "/signup"
   end
 
-  session[:authorized] = true
-  session[:email] = u.email
+  flash[:notice] = "Welcome to PageHub! Your new personal account has been registered."
+  session[:id] = u.id
 
   redirect '/'
 end
@@ -95,7 +122,6 @@ end
 %w(get post).each do |method|
   send(method, "/auth/:provider/callback") do |provider|
     auth = env['omniauth.auth']
-    puts auth.inspect
 
     # create the user if it's their first time
     unless u = User.first({ uid: auth.uid, provider: provider, name: auth.info.name })
@@ -124,12 +150,11 @@ end
       end
 
       if fix_nickname
-        salt = Base64.urlsafe_encode64(Random.rand(12345 * 1000).to_s)
-        uparams[:nickname] = "#{nickname}_#{salt}"
+        uparams[:nickname] = "#{nickname}_#{nickname_salt}"
         uparams[:auto_nickname] = true
       end
 
-      puts "Creating a new user from #{provider} with params: \n#{uparams.inspect}"
+      # puts "Creating a new user from #{provider} with params: \n#{uparams.inspect}"
       u = User.create(uparams)
       if u then
         flash[:notice] = "Welcome to PageHub! You have successfully signed up using your #{provider} account."
@@ -143,11 +168,10 @@ end
       end
     end
 
-    puts "User seems to already exist: #{u.id}"
+    # puts "User seems to already exist: #{u.id}"
     session[:id] = u.id
 
     redirect '/'
-    # redirect "/auth/#{provider}"
   end
 end
 
@@ -156,30 +180,24 @@ get '/auth/failure' do
   redirect '/'
 end
 
-# get '/login' do
-#   erb :"/login"
-# end
+get '/login' do
+  erb :"/login"
+end
 
-# post '/login' do
-#   if provider == "pagehub" then
-#     pw = Digest::SHA1.hexdigest(params[:password])
-#     u = User.first({ password: pw, email: params[:email] })
-#     if u then
-#       session[:authorized] = true
-#       session[:email] = u.email
-#     else
-#       flash[:error] = "Incorrect email or password, please try again."
-#       return redirect "/login"
-#     end
-#   end
+post '/login' do
+  pw = Digest::SHA1.hexdigest(params[:password])
 
-#   # flash[:notice] = "Welcome #{u.name.split.first}! You're now logged in."
-#   redirect '/'
-# end
+  unless u = User.first({ password: pw, email: params[:email] })
+    flash[:error] = "Incorrect email or password, please try again."
+    return redirect "/login"
+  end
+
+  session[:id] = u.id
+  redirect '/'
+end
 
 
 get '/logout' do
-  # session[:authorized] = false
   session[:id] = nil
 
   flash[:notice] = "Successfully logged out."
