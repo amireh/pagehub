@@ -240,6 +240,7 @@ post '/profile/preferences' do
   nickname, u = params[:nickname], nil
   if nickname.empty? then
     flash[:error] = "A nickname can't be empty!"
+    return redirect :"/profile"
   else
     u = User.first(nickname: nickname)
     if u && u.email != current_user.email then
@@ -265,12 +266,12 @@ post '/profile/preferences' do
     params[:settings][:editing][:autosave] = false
   end
   
-  current_user.settings = params[:settings].to_json
+  current_user.settings = params[:settings].to_json.to_s
 
   if current_user.save then
     flash[:notice] = "Your preferences were updated!"
   else
-    flash[:error] = "Something bad happened while updating your preferences :("
+    flash[:error] = "Something bad happened while updating your preferences."
   end
 
   redirect :"/profile"
