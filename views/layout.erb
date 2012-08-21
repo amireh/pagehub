@@ -70,10 +70,10 @@
         <div id="admin_actions">
           <a href="/pages/public">public pages</a>
           <a href="/profile">edit profile</a>
-          <a href="/logout">logout</a>
+          <a href="/session/destroy">logout</a>
         </div>
       <% else %>
-        <a id="login" href="/login">login</a>
+        <a id="login" href="/session">login</a>
         <a href="/signup">signup</a>
       <% end %>
     </nav>
@@ -83,6 +83,7 @@
       </div>
 
       <% if !flash.empty? %>
+        <% puts flash.inspect %>
         <div id="flashes">
           <% if flash.size > 1 then %>
             <ol>

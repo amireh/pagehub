@@ -18,4 +18,9 @@ class User
     true
   end
 
+  def self.authenticate(email, password)
+    pw = Digest::SHA1.hexdigest(password)
+    User.first({ password: pw, email: email })
+  end
+
 end
