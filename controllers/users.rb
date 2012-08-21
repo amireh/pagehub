@@ -27,7 +27,7 @@ end
 
 helpers do
   def logged_in?
-    session[:authorized]
+    session[:id]
   end
 
   def current_user
@@ -39,7 +39,7 @@ helpers do
       return nil
     end
 
-    @user = User.first(email: session[:email])
+    @user = User.get(session[:id])
     @user
   end
 
@@ -86,31 +86,78 @@ post '/signup' do
   redirect '/'
 end
 
-get '/login' do
-  erb :"/login"
+# Support both GET and POST for callbacks
+%w(get post).each do |method|
+  send(method, "/auth/:provider/callback") do |provider|
+    auth = env['omniauth.auth']
+    puts auth.inspect
+
+    # create the user if it's their first time
+    unless u = User.first({ uid: auth.uid, provider: provider, name: auth.info.name })
+      
+      uparams = { uid: auth.uid, provider: provider, name: auth.info.name }
+      uparams[:email] = auth.info.email if auth.info.email
+      uparams[:nickname] = auth.info.nickname if auth.info.nickname
+      uparams[:oauth_token] = auth.credentials.token if auth.credentials.token
+      uparams[:oauth_secret] = auth.credentials.secret if auth.credentials.secret
+      if auth.extra.raw_info then
+        uparams[:extra] = auth.extra.raw_info.to_json.to_s
+      end
+
+      puts "Creating a new user from #{provider} with params: \n#{uparams.inspect}"
+      u = User.create(uparams)
+      if u then
+        flash[:notice] = "Welcome to PageHub! You have successfully signed up using your #{provider} account."
+
+        session[:id] = u.id
+
+        return redirect '/'
+      else
+        flash[:error] = "Sorry! Something wrong happened while signing you up. Please try again."
+        return redirect "/auth/#{provider}"
+      end
+    end
+
+    puts "User seems to already exist: #{u.id}"
+    session[:id] = u.id
+
+    redirect '/'
+    # redirect "/auth/#{provider}"
+  end
 end
 
-post '/login' do
-  pw = Digest::SHA1.hexdigest(params[:password])
-  u = User.first({ password: pw, email: params[:email] })
-  if u then
-    session[:authorized] = true
-    session[:email] = u.email
-  else
-    flash[:error] = "Incorrect email or password, please try again."
-    return redirect "/login"
-  end
-
-  # flash[:notice] = "Welcome #{u.name.split.first}! You're now logged in."
+get '/auth/failure' do
+  flash[:error] = params[:message]
   redirect '/'
 end
 
+# get '/login' do
+#   erb :"/login"
+# end
+
+# post '/login' do
+#   if provider == "pagehub" then
+#     pw = Digest::SHA1.hexdigest(params[:password])
+#     u = User.first({ password: pw, email: params[:email] })
+#     if u then
+#       session[:authorized] = true
+#       session[:email] = u.email
+#     else
+#       flash[:error] = "Incorrect email or password, please try again."
+#       return redirect "/login"
+#     end
+#   end
+
+#   # flash[:notice] = "Welcome #{u.name.split.first}! You're now logged in."
+#   redirect '/'
+# end
+
 
 get '/logout' do
-  session[:authorized] = false
-  session[:email] = nil
+  # session[:authorized] = false
+  session[:id] = nil
 
-  flash[:notice] = "Bye!"
+  flash[:notice] = "Successfully logged out."
   redirect :"/"
 end
 

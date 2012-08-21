@@ -8,6 +8,8 @@ gem "data_mapper", ">=1.2.0"
 gem 'redcarpet'
 gem 'albino'
 gem 'nokogiri'
+gem 'omniauth'
+gem 'omniauth-facebook'
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -19,6 +21,9 @@ require 'json'
 require 'lib/common'
 require 'lib/toc'
 require 'lib/embedder'
+require 'omniauth'
+require 'omniauth-facebook'
+require 'openid/store/filesystem' 
 
 helpers do
   module Preferences
@@ -38,6 +43,12 @@ end
 configure do
   # enable :sessions
   use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+  use OmniAuth::Builder do
+    provider :developer if settings.development?
+    provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
+    # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
+    # use OmniAuth::Strategies::Developer
+  end
 
   # DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, 'mysql://root@localhost/notebook')
@@ -54,6 +65,12 @@ configure do
   DataMapper.auto_upgrade!
 
   set :default_preferences, JSON.parse(File.read(File.join($ROOT, "default_preferences.json")))
+
+
+  # p = {:uid=>"626495602", :provider=>"facebook", :name=>"Ahmad Amireh", :email=>"ahmad.amireh@gmail.com", :nickname=>"amireh.ahmad", 
+    # :oauth_token=>"AAAEhChSOfToBAJsAoffiTVp1cZATBRaYQ0PQLAlRd8i8ZAbfZA2ftApxSu7ssSD9jHSIfcXa4kZBZBr1Gfx5cAh4zBkTxmnoalg5LhpHBaAZDZD", 
+    # :extra=>"{\"id\":\"626495602\",\"name\":\"Ahmad Amireh\",\"first_name\":\"Ahmad\",\"last_name\":\"Amireh\",\"link\":\"http://www.facebook.com/amireh.ahmad\",\"username\":\"amireh.ahmad\",\"gender\":\"male\",\"email\":\"ahmad.amireh@gmail.com\",\"timezone\":3,\"locale\":\"en_US\",\"verified\":true,\"updated_time\":\"2012-08-21T05:10:57+0000\"}"}
+  # User.create(p)
 end
 
 before do

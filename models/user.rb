@@ -2,11 +2,18 @@ class User
   include DataMapper::Resource
 
   property :id, Serial
-  property :email, String, required: true
+  
   property :name, String, required: true
+  property :provider, String, required: true
+  property :uid, String, required: true
+
+  property :email, String, default: ""
   property :nickname, String, default: ""
   property :password, String
   property :settings, Text, default: "{}"
+  property :oauth_token, Text
+  property :oauth_secret, Text
+  property :extra, Text
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   # has n, :notebooks
