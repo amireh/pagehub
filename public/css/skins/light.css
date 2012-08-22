@@ -3,7 +3,8 @@ body {
 }
 h2,
 .cm-s-neat span.cm-header {
-  color: #8FBE00;
+  /*color: #8FBE00;*/
+  color: #7ea800;
 }
 .flash.notice, 
 .success {

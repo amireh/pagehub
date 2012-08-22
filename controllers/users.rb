@@ -54,7 +54,8 @@ helpers do
     end
     
     @preferences ||= JSON.parse(current_user.settings || "{}")
-    settings.default_preferences.deep_merge(@preferences)
+    defaults = settings.default_preferences.dup
+    defaults.deep_merge(@preferences)
     # set_defaults(settings.default_preferences, @preferences)
   end
 end

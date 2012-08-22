@@ -83,13 +83,15 @@ end
 
 get '/' do
   destination = "greeting"
+  layout = "layouts/guest"
 
   if logged_in?
     @pages = Page.all(user_id: current_user.id)
     destination = "index"
+    layout = "layout"
   end
 
-  erb destination.to_sym
+  erb destination.to_sym, layout: layout.to_sym
 end
 
 get '/tutorial' do
