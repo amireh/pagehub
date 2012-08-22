@@ -37,6 +37,24 @@
 
       $(function() {
         ui.theme = "<%= @theme %>";
+
+        $("a[id].listlike").click(function() {
+          $("a[id!=" + $(this).attr("id") + "].selected").removeClass("selected");
+          $("ol[id!=" + $(this).attr("id").replace("_links", "") + "]").hide();
+          var list = $(this).next("ol");
+          list.toggle();
+          $(this).toggleClass("selected");
+
+          if (list.width() < $(this).width()) {
+            var my_width = 
+              $(this).width() 
+              + parseInt($(this).css("padding-left"))
+              + parseInt($(this).css("padding-right"));
+            list.css("width", (my_width) + "px")
+          }
+
+          return false;
+        })
       });
 
     </script>
@@ -62,15 +80,18 @@
 
   <div class="stuff">
     <header>
-      <h1><a href="/">Page<em>Hub</em></h1>
+      <h1><a href="/">Page<em>Hub</em></a></h1>
     </header>
     
     <nav>
       <% if logged_in? %>
         <div id="admin_actions">
-          <a href="/pages/public">public pages</a>
-          <a href="/profile">edit profile</a>
-          <a href="/logout">logout</a>
+          <a class="listlike" id="help_articles_links" href="/help">
+            help
+          </a>
+          <%= erb :"/shared/_nav_help_links" %>
+          <a class="listlike" id="account_settings_links" href="/account">account</a>
+          <%= erb :"/shared/_nav_account_links" %>
         </div>
       <% else %>
         <a id="login" href="/login">login</a>

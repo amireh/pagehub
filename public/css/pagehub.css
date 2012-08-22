@@ -32,6 +32,9 @@ body * {
      -moz-box-sizing: border-box;
           box-sizing: border-box;
 }
+body a {
+  outline: none;
+}
 
 hr {
   border: none;
@@ -127,7 +130,7 @@ footer {
 }
 nav {
   position: absolute;
-  right: 15px;
+  right: 0px;
   top: 0;
   /*top: 2px;*/
 }
@@ -172,10 +175,6 @@ a#new_page {
   line-height: 40px;
   display: inline-block;
   clear: both;
-}
-a#new_page:not(:hover) {
-  /*color: #F0AD11;*/
-  /*color: #FFF;*/
 }
 
 #page_editor {
@@ -269,33 +268,11 @@ a,
   transition:         color 0.25s ease 0s;      
 }
 a:hover,
-a:visited:hover {
+a:visited:hover,
+a.selected {
   /*text-decoration: underline;*/
   cursor: pointer;
-  color: #E2403D;
-  color: #FF4A58;
   color: #E94E77;
-}
-
-#page_actions select {
-  /*background: #fffff7;*/
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #F0AD11;
-  font-size: 13px;
-  border-color: yellow;
-  text-align: center;
-}
-#page_actions select:hover {
-  color: #E2403D;
-  color: #FF4A58;
-  cursor: pointer;
-}
-
-#page_actions select option {
-  /*background: #fffff7;*/
-  background: #615B4E;
 }
 
 #title_editor {
@@ -322,7 +299,6 @@ footer p {
   letter-spacing: 2px;
   z-index: 100;
   padding-left: 5px;
-  line-height: 40px;
   display: block;
 }
 .disabled {
@@ -456,11 +432,6 @@ a[href="#top"] {
 #switch_skin_light {
   background: #ddd;
 }
-
-
-
-
-
 
 input[type=text],
 input[type=email],
@@ -607,4 +578,47 @@ a img {
 
 .member header h1 a em {
   font-style: normal;
+}
+
+nav a {
+  padding: 0 15px;
+  margin: 0;
+  height: 65px;
+  display: inline-block;
+}
+
+nav {
+  min-width: 220px;
+  text-align: right;
+}
+a.listlike {
+  padding: 0 10px;
+}
+a.listlike.selected,
+ol.listlike {
+  background: rgba(0,0,0,0.65);
+}
+ol.listlike { 
+  /*min-width: 180px;*/
+  display: none; 
+  position: absolute; 
+  list-style-type: none;
+  margin: 0; 
+  /*padding: 5px 10px 5px 0;*/
+  padding: 10px 0;
+  z-index: 101; /* to be active on top of the page action bar */
+  right: 0;
+  text-align: left;
+  color: white;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  /*min-width: 160px;*/
+}
+ol.listlike li { padding: 0; margin: 0; line-height: inherit; height: auto;  }
+ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px;}
+
+#page_actions > a {
+  display: inline-block;
+  line-height: 40px;
+  height: 40px;
+  margin: 0;
 }

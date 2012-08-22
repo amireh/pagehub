@@ -106,6 +106,16 @@ get '/testdrive' do
   erb :"/tutorial.md", layout: :"print_layout"
 end
 
+get '/account' do
+  @legacy = true
+  erb :"/shared/_nav_account_links"
+end
+
+get '/help' do
+  @legacy = true
+  erb :"/shared/_nav_help_links"
+end
+
 not_found do
   erb :"404"
 end
