@@ -165,6 +165,19 @@
     <% end %>
     <span id="colour_explanation">Colour: &minus;</span>
 
+    <h3>Page width</h3>
+    <input 
+      type="text" name="settings[pretty][width]" class="very_fat" 
+      value="<%= preferences["pretty"]["width"] %>"
+      style="width: 70px; text-align: center;" />
+      px
+
+    <h3>Text Alignment: J u s t i f y</h3>
+    <label>
+      <input type="checkbox" name="settings[pretty][justified]"
+      <%= preferences["pretty"]["justified"] ? 'checked="checked"' : '' %> />
+      Stretch out the spacing between words so they span the full width of the line, when possible.
+    </label>
   </section>
 
   <section id="editor_settings">

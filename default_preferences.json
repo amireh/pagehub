@@ -6,7 +6,9 @@
     "autosave": true
   },
   "pretty": {
-    "scheme": "Hazzle Dazzle"
+    "scheme": "Hazzle Dazzle",
+    "width": "960",
+    "justified": false
   },
   "pagehub": {
     "skin": "light"

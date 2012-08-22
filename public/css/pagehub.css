@@ -41,6 +41,9 @@ hr {
   border-top: 1px solid #ddd;
 }
 
+code {
+  font-size: 14px;
+}
 .strikes {
   position: relative;
   width: 962px;
@@ -621,4 +624,19 @@ ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px;}
   line-height: 40px;
   height: 40px;
   margin: 0;
+}
+
+
+.guest .block {
+  width: 50%;
+}
+.guest .block.left {
+  margin-right: auto;
+}
+.guest .block.right {
+  margin-left: auto;
+}
+
+iframe {
+  width: 100%;
 }

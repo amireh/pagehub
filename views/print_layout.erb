@@ -15,6 +15,13 @@
   <% else %>
     <link href="/css/schemes/<%= preferences["pretty"]["scheme"].sanitize %>.css" rel="stylesheet" type="text/css" />
   <% end %>
+
+  <style>
+    .stuff {
+      width: <%= preferences["pretty"]["width"].to_i %>px;
+      text-align: <%= preferences["pretty"]["justified"] ? 'justify' : 'left' %>;
+    }
+  </style>
   
 </head>
 <body class="print">

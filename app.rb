@@ -123,3 +123,9 @@ end
 error 403 do
   erb :"403"
 end
+
+helpers do
+  def md(content)
+    content.to_s.strip.to_markdown
+  end
+end
