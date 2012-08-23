@@ -35,13 +35,37 @@
 
     // List of registered users (their nicknames)
     var users = [];
+    var admins = <%= @group.admin_nicknames.to_json %>;
 
     // Appends a <li> containing the nickname and a remove button
     // to the registered user listing - #users
     var add_user = function(nn) {
       var html = '<input type="hidden" name="users[]" value="' + nn + '" />';
       $("form").append(html);
-      $("#users").append("<li><span>" + nn + "</span> <small title='remove member'><strong>[ X ]</strong></small></li>");
+      var user = $("div[data-template=user]").clone();
+      
+      user.children().each(function() {
+        $.each($(this).get(0).attributes, function(i, pair) {
+          // // console.log("changing attribute '" + pair.name + "' (" + pair.value + ")")
+          try {
+            child.attr(pair.name,pair.value.replace(/%NICKNAME%/g, nn));
+          } catch (e) {
+            // ignore properties that can't be changed
+          }
+        });
+        $(this).html($(this).html().replace(/%NICKNAME%/g, nn));
+      });
+
+      // toggle the admin checkbox if the user is an admin
+      for (var i = 0; i < admins.length; ++i) {
+        if (admins[i] == nn) {
+          user.find("input[type=checkbox][name*=admins]").attr("checked", "checked");
+          break;
+        }
+      }
+
+      // $("#users").append("<li><span>" + nn + "</span> <small title='remove member'><strong>[ X ]</strong></small></li>");
+      $("#users").append(user.children());
       users.push(nn);
       $("#users li:last small").click(function() {
         rem_user($(this).prev("span").html());
@@ -116,12 +140,16 @@
     });
 
     <% if @editing %>
-      var cloned = $("#users").clone();
-      $("#users").empty();
-      cloned.find("li").each(function() {
-        var nn = $(this).html();
-        add_user(nn);
-      });
+      <% @group.users.each do |u| %>
+        <% next if u == current_user %>
+        add_user("<%= u.nickname %>");
+      <% end %>
+      // var cloned = $("#users").clone();
+      // $("#users").empty();
+      // cloned.find("li").each(function() {
+      //   var nn = $(this).html();
+      //   add_user(nn);
+      // });
     <% end %>
   });
 </script>
@@ -166,8 +194,15 @@
   </label>
   <ul id="user_listing"></ul>
   <h4>Registered members</h4>
+  <div data-template="user" hidden="hidden">
+    <li>
+      <span>%NICKNAME%</span> <small><strong>[ X ]</strong></small>
+      <label> - admin?<input type="checkbox" name="admins[]" value="%NICKNAME%" /></label>
+    </li>
+    <input type="hidden" name="users[]" value="%NICKNAME%" />
+  </div>
   <ol id="users">
-    <% @group.users.each do |u| %>
+    <% false && @group.users.each do |u| %>
       <li><%= u.nickname %></li>
     <% end %>
   </ol>

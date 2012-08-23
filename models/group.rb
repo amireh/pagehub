@@ -10,6 +10,7 @@ class Group
   # has n, :notebooks
   has n, :users, :through => Resource
   has n, :pages, :through => Resource
+  belongs_to :admin, 'User', key: true
 
   validates_presence_of :name
 
@@ -34,5 +35,16 @@ class Group
 
   def is_admin?(user)
     GroupUser.first({ group_id: self.id, user_id: user.id }).is_admin
+  end
+
+  def admins()
+    users = []
+    GroupUser.all({ group_id: self.id, is_admin: true }).each { |gu| users << gu.user }
+    users
+  end
+  def admin_nicknames
+    users = self.admins
+    users.each_with_index { |u, i| users[i] = u.nickname }
+    users
   end
 end
