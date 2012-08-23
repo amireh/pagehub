@@ -40,6 +40,11 @@ pagehub_ui = function() {
           }
 
           // ui.status("hi", "good");
+        },
+
+        // disable all links attributed with data-disabled
+        function() {
+          $("a[data-disabled]").click(function(e) { e.preventDefault(); return false; });
         }
       ];
 

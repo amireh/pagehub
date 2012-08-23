@@ -278,6 +278,19 @@ post '/profile/preferences' do
   redirect :"/profile"
 end
 
+get '/users/nickname' do
+  restricted!
+  nn = params[:nickname]
+
+  return [].to_json if nn.empty?
+
+  nicknames = []
+  User.all(:nickname.like => "#{nn}%", limit: 10).each { |u|
+    nicknames << u.nickname
+  }
+  nicknames.to_json
+end
+
 # Returns whether params[:nickname] is available or not
 post '/users/nickname' do
   restricted!

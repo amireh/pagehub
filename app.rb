@@ -72,7 +72,10 @@ configure do
   end
 
   load "models"
-  load "controllers"
+  # load "controllers"
+  require 'controllers/groups'
+  require 'controllers/users'
+  require 'controllers/pages'
 
   DataMapper.finalize
   DataMapper.auto_upgrade!

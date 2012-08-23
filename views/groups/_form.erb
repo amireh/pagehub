@@ -1,0 +1,179 @@
+<% content_for :scripts do %>
+<script>
+  $(function() {
+    var lookup_timer = null;
+    var lookup_pulse = <%= preferences["groups"]["lookup_pulse"] %>;
+
+    // Checks whether the typed in group name is available
+    $("#check_availability").click(function() {
+      var btn = $(this);
+      var name = $("input[name=name]").attr("value");
+
+      if (name.length == 0) {
+        btn.next("span").addClass("error").html("invalid name");
+        return false;
+      }
+
+      $.ajax({
+        url: "/groups/name",
+        type: "POST",
+        data: { name: $("input[name=name]").attr("value") },
+
+        success: function(is_available) {
+          is_available = JSON.parse(is_available);
+          console.log(is_available)
+          if (is_available) {
+            btn.next("span").addClass("success").removeClass("error").html("available");
+          } else {
+            btn.next("span").addClass("error").removeClass("success").html("not available");
+          }
+        }
+
+      });
+      return false;
+    });
+
+    // List of registered users (their nicknames)
+    var users = [];
+
+    // Appends a <li> containing the nickname and a remove button
+    // to the registered user listing - #users
+    var add_user = function(nn) {
+      var html = '<input type="hidden" name="users[]" value="' + nn + '" />';
+      $("form").append(html);
+      $("#users").append("<li><span>" + nn + "</span> <small title='remove member'><strong>[ X ]</strong></small></li>");
+      users.push(nn);
+      $("#users li:last small").click(function() {
+        rem_user($(this).prev("span").html());
+        $(this).parent().remove();
+      })      
+    }
+    // Removes a registered user from users[]
+    var rem_user = function(nn) {
+      $("form input[type=hidden][name*=users][value=" + nn + "]").remove();
+      for (var i = 0; i < users.length; ++i) {
+        if (users[i] == nn) {
+          users[i] = null;
+          break;
+        }
+      }
+    }
+
+    // Clicking on a received nickname will add it
+    // to the registered members listing - #users
+    var bind_user_listing = function(list) {
+      list.find("li").click(function() {
+        var nn = $(this).html();
+        
+        // don't add a user twice
+        log(users + " => " + nn )
+        for (var i = 0; i < users.length; ++i) {
+          if (users[i] == nn)
+            return false;
+        }
+
+        list.empty();
+        add_user(nn);
+      });
+
+    }
+
+    // Populates the #user_listing with all the nicknames
+    // starting with $("#user_search").attr("value")
+    lookup_user = function(nn) {
+      var list = $("#user_listing");
+
+      $.ajax({
+        url: "/users/nickname",
+        method: "GET",
+        data: { nickname: nn },
+        success: function(users) {
+          var users = JSON.parse(users);
+          
+          list.empty();
+          
+          if (users.length > 0) {
+            for (var i = 0; i < users.length; ++i) {
+              list.append("<li>" + users[i] + "</li>");
+            }
+          }
+
+          bind_user_listing(list);
+        }
+      })
+    }
+
+    // Queues a lookup after lookup_pulse milliseconds
+    $("#user_search").keyup(function() {
+      var nn = $(this).attr("value");
+
+      if (lookup_timer) {
+        clearTimeout(lookup_timer);
+        lookup_timer = null;
+      }
+
+      lookup_timer = setTimeout("lookup_user('" + nn + "')", lookup_pulse);
+    });
+
+    <% if @editing %>
+      var cloned = $("#users").clone();
+      $("#users").empty();
+      cloned.find("li").each(function() {
+        var nn = $(this).html();
+        add_user(nn);
+      });
+    <% end %>
+  });
+</script>
+
+<style>
+  #user_listing > li:hover {
+    cursor: pointer;
+    color: red;
+  }
+  #users > li > small > strong {
+    cursor: pointer;
+  }
+</style>
+<% end %>
+
+<% conditionals = {
+  heading: @editing ? "Group Management" : "Group Registration",
+  form_action: @editing ? "/groups/#{@group.name}" : "/groups",
+  submit_label: @editing ? "Update Group" : "Register Group",
+  members_label: @editing ?
+    'Look for members using the text box below, or click the [ X ] near their nicknames to remove current ones.'
+    : 'You can assign the initial members of this group. Of course, you can always add and remove members later.'
+}
+%>
+
+<h2><%= conditionals[:heading] %></h2>
+
+<form method="POST" action="<%= conditionals[:form_action] %>">
+  <h3>Name</h3>
+  <label>The group name must be unique and it will be used for accessing pages and user management.
+    <br /><br />
+    <input type="text" name="name" class="very_fat" value="<%= @group.title %>" />
+    <button id="check_availability">check availability</button>
+    <span></span>
+  </label>
+
+  <h3>Members</h3>
+  <label>
+    <%= conditionals[:members_label] %>
+    <br /><br />
+    <input type="text" id="user_search" autocomplete="off" class="very_fat" /> <small><em>(search by nickname)</em></small>
+  </label>
+  <ul id="user_listing"></ul>
+  <h4>Registered members</h4>
+  <ol id="users">
+    <% @group.users.each do |u| %>
+      <li><%= u.nickname %></li>
+    <% end %>
+  </ol>
+
+  <hr />
+  <br />
+
+  <input type="submit" value="<%= conditionals[:submit_label] %>" />
+</form>

@@ -12,5 +12,9 @@
   },
   "pagehub": {
     "skin": "light"
+  },
+
+  "groups": {
+    "lookup_pulse": 250
   }
 }

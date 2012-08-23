@@ -38,8 +38,10 @@
      * ---- -------- */
     // Loading a page
     function get_page() {
-      if ($(this).hasClass("selected"))
-        return ui.show_title_editor();
+      if ($(this).hasClass("selected")) {
+        ui.show_title_editor();
+        return false;
+      }
 
       $("#page_actions").removeClass("disabled");
 
@@ -55,17 +57,43 @@
       $.ajax({
         type: "GET",
         url: "/pages/" + title + ".json",
-        success: function(content) {
+        success: function(page) {
+          var page = JSON.parse(page);
+          var content = page.content;
+          var groups = page.groups;
           editor.clearHistory();
           editor.setValue(content);
           $("#preview").attr("href", "/pages/" + title + "/pretty");
-          $("#share").attr("href", "/pages/" + title + "/share");
+          $("#share_everybody").attr("href", 
+            "/pages/" + title + "/share");
+
+          // Disable the group share links for all the groups this page
+          // is already shared with
+          $("a[data-action=share][data-group]").each(function() {
+            var group = $(this).attr("data-group");
+            var already_shared = false;
+            for (var i = 0; i < groups.length; ++i) {
+              if (groups[i] == group) {
+                $(this).attr("data-disabled", true);
+                already_shared = true;
+                break;
+              }
+            }
+
+            if (!already_shared) {
+              $(this).attr("href", "/pages/" + title + "/share/" + group);
+              $(this).attr("data-disabled", null);
+            }
+          });
+
           editor.focus();
         },
         complete: function() {
           ui.mark_ready();          
         }
       });
+
+      return false;
     }
     $("#page_listing li").click(get_page);
     // Creating a new page
@@ -233,7 +261,9 @@
       <ul id="page_listing">
         <% 1.times do %>
         <% logged_in? && @pages.each_with_index do |p, pidx| %>
-          <li tabindex="<%= pidx + 2 %>" id="page_<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></li>
+          <li tabindex="<%= pidx + 2 %>" id="page_<%= p.id %>">
+            <a href="/pages/<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></a>
+            </li>
         <% end %>
         <% end %>
       </ul>
@@ -244,14 +274,28 @@
     </div>
 </div><div id="editor_container"><!--
 
---><div class="disabled" id="page_actions">
+--><div class="disabledZ" id="page_actions">
   <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a> &bullet;
   <a target="PageHub - Preview" 
      title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
      href="/pages/x/pretty" id="preview">Pretty Version</a> &bullet;
-  <a target="PageHub" 
-     title="Make a public version of this page that you can share with people" 
-     href="/pages/x/share" id="share">Share this</a> &bullet;
+  <a class="listlike" id="page_share_links">Share</a>
+  <ol class="listlike" id="page_share">
+    <li><a  target="PageHub" 
+            title="Make a public version of this page that you can share with people" 
+            href="/pages/x/share"
+            id="share_everybody">With Everybody
+        </a>
+    </li>
+    <% current_user.groups.each do |g| %>
+    <li>
+      <a  target="PageHub"
+          href="/pages/x/share/<%= g.name %>"
+          data-action="share"
+          data-group="<%= g.name %>">With <%= g.title %></a>
+    </li>
+    <% end %>
+  </ol>
   <a id="delete_page" class="confirm"
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="delete_page"

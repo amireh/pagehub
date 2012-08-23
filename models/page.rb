@@ -10,6 +10,7 @@ class Page
   # belongs_to :notebook
   belongs_to :user
   has n, :tags, :through => Resource
+  has n, :groups, :through => Resource
 
   before :valid? do |_|
     self.pretty_title = self.title.sanitize
@@ -20,5 +21,9 @@ class Page
   def public_url(relative = false)
     prefix = relative ? "" : "http://www.pagehub.org"
     "#{prefix}/#{self.user.nickname}/#{self.pretty_title}"
+  end
+
+  def group_names()
+    groups = []; self.groups.each { |g| groups << g.name }; groups
   end
 end

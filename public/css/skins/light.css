@@ -68,11 +68,3 @@ input[type=password] {
 footer {
   border-color: #ccc;
 }
-
-#pages hr {
-  border-color: #eee;
-}
-#pages .useful_links,
-#pages .your_pages {
-  color: #333;
-}

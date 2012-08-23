@@ -272,7 +272,9 @@ a,
 }
 a:hover,
 a:visited:hover,
-a.selected {
+a.selected,
+.selected a,
+.selected {
   /*text-decoration: underline;*/
   cursor: pointer;
   color: #E94E77;
@@ -304,10 +306,12 @@ footer p {
   padding-left: 5px;
   display: block;
 }
-.disabled {
+.disabled,
+[data-disabled] {
   opacity: 0.5;
 }
-.disabled * {
+.disabled *,
+[data-disabled], [data-disabled] * {
   color: gray !important;
   cursor: default !important;
 }
@@ -599,7 +603,19 @@ a.listlike {
 }
 a.listlike.selected,
 ol.listlike {
-  background: rgba(0,0,0,0.65);
+  /*background: rgba(0,0,0,0.65);*/
+  background: #fff;
+  /*border: 1px solid #ddd;*/
+  box-shadow: 0 0 0px 1px #ddd inset;
+}
+a.listlike:after {
+  content: "\2193";
+}
+a.listlike.selected:after {
+  content: "\2191";
+}
+a.listlike.selected {
+  border: none;
 }
 ol.listlike { 
   /*min-width: 180px;*/
@@ -610,10 +626,13 @@ ol.listlike {
   /*padding: 5px 10px 5px 0;*/
   padding: 10px 0;
   z-index: 101; /* to be active on top of the page action bar */
-  right: 0;
+  right: 0%;
+  left: 0%;
+  top: 98%;
   text-align: left;
   color: white;
-  border-top: 1px solid rgba(0,0,0,0.1);
+  /*border-top: 1px solid rgba(0,0,0,0.1);*/
+  /*border-top: none;*/
   /*min-width: 160px;*/
 }
 ol.listlike li { padding: 0; margin: 0; line-height: inherit; height: auto;  }

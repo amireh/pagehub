@@ -86,6 +86,8 @@
     <nav>
       <% if logged_in? %>
         <div id="admin_actions">
+          <span>hi <%= current_user.nickname %></span>
+          <a href="/groups">groups</a>
           <a class="listlike" id="help_articles_links" href="/help">
             help
           </a>

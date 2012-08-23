@@ -7,7 +7,7 @@ get '/pages/:id.json' do |id|
     return "Sorry, I was unable to find the page :("
   end
 
-  p.content
+  { content: p.content, groups: p.group_names }.to_json
 end
 
 put '/pages/:id' do |id|
@@ -73,11 +73,32 @@ get '/pages/:id/share' do |id|
 
   @page = Page.first({ id: id, user_id: current_user.id })
 
-  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
+  halt 404, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
 
   @pp = PublicPage.first_or_create({ page_id: @page.id, user_id: @page.user_id })
 
   redirect "/#{@page.user.nickname}/#{@page.title.sanitize}"
+end
+
+get '/pages/:id/share/:group' do |id, group_name|
+  restricted!
+
+  unless g = Group.first(name: group_name)
+    halt 400, "There's no group named #{group_name}."
+  end
+
+  halt 403, "You do not belong to that group" unless g.has_member?(current_user)
+
+  @page = Page.first({ id: id, user_id: current_user.id })
+
+  halt 404, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
+
+  unless g.has_page?(@page)
+    g.pages << @page
+    g.save
+  end
+
+  redirect "/#{g.name}/#{@page.title.sanitize}"
 end
 
 # Removes the public status of a page, it will no longer
@@ -100,24 +121,66 @@ get '/pages/:id/unshare' do |id|
   redirect :"/pages/public"
 end
 
-# Retrieve a publicly accessible page.
-get '/:nickname/:title.raw' do |nn, title|
-  @user = User.first({ nickname: nn })
-  halt 404, "This seems to be an invalid link!" if !@user
-  @page = Page.first({ pretty_title: title, user_id: @user.id })
-  halt 404, "This seems to be an invalid link!" if !@page
-  @public = true
-  @page.content
+# Removes the public status of a page, it will no longer
+# be viewable by others.
+get '/pages/:id/unshare/:group_id' do |id, group_id|
+  restricted!
+
+  gp = GroupPage.first({ page_id: id, group_id: group_id })
+
+  halt 501, "That page doesn't seem to be shared with that group." if !gp
+ 
+  gp.destroy
+  flash[:notice] = "Page un-shared with group."
+  redirect :"/pages/public"
 end
+
 
 # Retrieve a publicly accessible page.
 get '/:nickname/:title' do |nn, title|
+  # try a public-shared page
   @user = User.first({ nickname: nn })
-  halt 404, "This seems to be an invalid link!" if !@user
-  @page = Page.first({ pretty_title: title, user_id: @user.id })
-  halt 404, "This seems to be an invalid link!" if !@page
-  @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
-  halt 403, "This page can only be viewed by its author." if !@pp
-  @public = true
-  erb :"pages/pretty", layout: :"layouts/print"
+  if @user
+    unless @page = Page.first({ pretty_title: title, user_id: @user.id })
+      halt 404, "No page with title #{title} could be found."
+    end
+
+    @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
+    halt 403, "This page can only be viewed by its author." if !@pp
+
+    @public = true
+    return erb :"pages/pretty", layout: :"layouts/print"
+  end
+
+  # try a group shared page    
+  if @group = Group.first({ name: nn })
+    if current_user
+      # the user must belong to this group
+      if !@group.has_member?(current_user)
+        halt 403, "You do not have access to the pages of this group."
+      end
+
+      # locate the page
+      pages = Page.all({ pretty_title: title })
+      pages.each { |p| 
+        group_page = GroupPage.first({ group_id: @group.id, page_id: p.id })
+        if group_page
+          @page = p
+          break
+        end
+      }
+
+      if @page then
+        @public = true
+        return erb :"pages/pretty", layout: :"layouts/print"
+      end
+
+      halt 404, "No page with title #{title} for the group #{nn} could be found."
+    else
+      # not logged in
+      halt 403, "You must be logged in as a member of the group #{@group.title} to view this page."
+    end
+  end
+
+  halt 404, "This seems to be an invalid link."
 end

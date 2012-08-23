@@ -1,0 +1,13 @@
+<h2>Groups</h2>
+
+<a href="/groups/new">Create a new group</a>
+
+<% if current_user.groups.empty? %>
+  <p>You do not currently belong to any group.</p>
+<% else %>
+  <ol>
+    <% current_user.groups.each do |group| %>
+      <li><a href="/groups/<%= group.name %>"><%= group.title %></a></li>
+    <% end %>
+  </ol>
+<% end %>

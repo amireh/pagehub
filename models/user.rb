@@ -19,6 +19,7 @@ class User
 
   # has n, :notebooks
   has n, :pages
+  has n, :groups, :through => Resource
 
   validates_presence_of :name, :provider, :uid
 
