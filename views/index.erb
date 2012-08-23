@@ -180,32 +180,32 @@
     /* -------- ---------- *
      * Document Navigation *
      * -------- ---------- */
-    var disable_scrolling = function(e){
-      switch(e.keyCode){
-        case 37: case 39: case 38:  case 40: // Arrow keys
-        case 32: e.preventDefault(); break; // Space
-        default: break; // do not block other keys
-      }
-    }
-    $("#page_listing li").focusin(function() {
-      window.addEventListener("keyup", disable_scrolling, false);
-      $(this).bind('keydown', function(e) {
-        if (e.keyCode == 38)
-          $(this).prev("li").focus();
-        else if (e.keyCode == 40)
-          $(this).next("li").focus();
-        else if (e.keyCode == 13)
-          $(this).click();
-        else
-          return true;
+    // var disable_scrolling = function(e){
+    //   switch(e.keyCode){
+    //     case 37: case 39: case 38:  case 40: // Arrow keys
+    //     case 32: e.preventDefault(); break; // Space
+    //     default: break; // do not block other keys
+    //   }
+    // }
+    // $("#page_listing li").focusin(function() {
+    //   window.addEventListener("keyup", disable_scrolling, false);
+    //   $(this).bind('keydown', function(e) {
+    //     if (e.keyCode == 38)
+    //       $(this).prev("li").focus();
+    //     else if (e.keyCode == 40)
+    //       $(this).next("li").focus();
+    //     else if (e.keyCode == 13)
+    //       $(this).click();
+    //     else
+    //       return true;
 
-        e.preventDefault();
-        return false;
-      });
-    }).focusout(function() {
-      $(this).unbind('keydown');
-      window.removeEventListener("keyup", disable_scrolling, false);
-    });
+    //     e.preventDefault();
+    //     return false;
+    //   });
+    // }).focusout(function() {
+    //   $(this).unbind('keydown');
+    //   window.removeEventListener("keyup", disable_scrolling, false);
+    // });
 
 
 
