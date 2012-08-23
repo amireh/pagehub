@@ -211,4 +211,14 @@
   <br />
 
   <input type="submit" value="<%= conditionals[:submit_label] %>" />
+
+  <% if current_user == @group.admin %>
+    <a href="/groups/<%= @group.name %>/destroy"
+       class="button bad confirm"
+       data-confirmation="Are you sure you want this group to be FOREVER destroyed?"
+       data-confirmation-cb="delete_group"
+       >Destroy this group</a>
+  <% end %>
+
+  <%= erb :"/shared/_confirmation_dlg" %>
 </form>

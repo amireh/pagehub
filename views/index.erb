@@ -12,12 +12,9 @@
 
 <script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
 
-<script src="/js/jqModal.js"></script>
-
 <link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
 <link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
 <link rel="stylesheet" href="/css/codemirror.css">
-<link rel="stylesheet" href="/css/jqModal.css">
 
 <!-- apply user preferences -->
 <style>
@@ -83,6 +80,9 @@
             if (!already_shared) {
               $(this).attr("href", "/pages/" + title + "/share/" + group);
               $(this).attr("data-disabled", null);
+            } else {
+              $(this).attr("href", null);
+              $(this).attr("data-disabled", true);
             }
           });
 
@@ -208,33 +208,6 @@
     });
 
 
-    function confirm(msg,callback) {
-      $('#confirm')
-        .jqmShow()
-        .find('p.jqmConfirmMsg')
-          .html(msg)
-        .end()
-        .find(':submit:visible')
-          .click(function(){
-            if(this.value == 'Yes')
-              (typeof callback == 'string') ?
-                window.location.href = callback :
-                callback();
-            $('#confirm').jqmHide();
-          });
-      $("#confirm").find(':submit[value=Yes]').focus()
-    }
-
-    $('#confirm').jqm({overlay: 88, modal: true, trigger: false});
-    
-    $('a.confirm').click(function() { 
-      var a = $(this);
-      confirm(a.attr("data-confirmation"), function() {
-        ui[a.attr("data-confirmation-cb")]();
-      });
-
-      return false;
-    });
 
     $("#pages .scroller").css("max-height", $(window).height() - 123);  
 
@@ -274,7 +247,7 @@
     </div>
 </div><div id="editor_container"><!--
 
---><div class="disabledZ" id="page_actions">
+--><div class="disabled" id="page_actions">
   <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a> &bullet;
   <a target="PageHub - Preview" 
      title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
@@ -310,20 +283,4 @@
 </div>
 <img class="loader" src="/css/ajax-loader.gif" />
 
-<!-- Confirm Dialog -->
-<div class="jqmConfirm" id="confirm">
-  <div id="ex3b" class="jqmConfirmWindow">
-      <div class="jqmConfirmTitle clearfix">
-      <h1>Confirm your action</h1><a href="#" class="jqmClose"><em>X</em></a>
-    </div>
-    
-    <div class="jqmConfirmContent">
-    <p class="jqmConfirmMsg"></p>
-    <!-- <p>Continue?</p> -->
-    </div>
-    
-    <input type="submit" value="Cancel" />
-    <input type="submit" value="Yes" />
-    
-  </div>
-</div>
+<%= erb :"/shared/_confirmation_dlg" %>

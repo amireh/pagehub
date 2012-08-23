@@ -295,7 +295,7 @@ end
 post '/users/nickname' do
   restricted!
 
-  User.first(nickname: params[:nickname]).nil?.to_json
+  name_available?(params[:nickname]).to_json
 end
 
 post '/profile/password' do

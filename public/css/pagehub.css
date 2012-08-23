@@ -150,7 +150,8 @@ nav a {
 
 textarea,
 #page_editor,
-input {
+input,
+a.button {
   border-radius: 2px;
 }
 
@@ -334,7 +335,7 @@ img.loader {
   position: relative;
   z-index: 1000;
   background: rgba(0, 0, 0, 0.2);
-  padding: 10px;
+  padding: 9px 0;
   width: 100%; 
 }
 #flashes button {
@@ -362,7 +363,7 @@ form#password input[type=password] {
   line-height: 22px;
 }
 
-.flash.error, span.error { color: #E94E77; }
+.flash.error, span.error, .bad { color: #E94E77; }
 .flash.notice, .success { color: #D4EE5E; }
 
 button::-moz-focus-inner,
@@ -492,6 +493,7 @@ a.button {
  
   text-transform: uppercase;
   font-weight: bold;
+  display: inline-block;
 
   -webkit-transition: all 0.25s ease 0s;
   -moz-transition:    all 0.25s ease 0s;
@@ -624,7 +626,7 @@ ol.listlike {
   list-style-type: none;
   margin: 0; 
   /*padding: 5px 10px 5px 0;*/
-  padding: 10px 0;
+  padding: 0;
   z-index: 101; /* to be active on top of the page action bar */
   right: 0%;
   left: 0%;
@@ -635,8 +637,9 @@ ol.listlike {
   /*border-top: none;*/
   /*min-width: 160px;*/
 }
-ol.listlike li { padding: 0; margin: 0; line-height: inherit; height: auto;  }
-ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px;}
+ol.listlike li { padding: 5px 0; margin: 0; line-height: inherit; height: auto; border-bottom: 1px solid #ddd;  }
+ol.listlike li:last-of-type { border-bottom: none;  }
+ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px; }
 
 #page_actions > a {
   display: inline-block;

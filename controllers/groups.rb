@@ -34,20 +34,41 @@ get '/groups/:name/edit' do |name|
   erb :"/groups/edit"
 end
 
+get '/groups/:name/destroy' do |name|
+  restricted!
+
+  unless @group = Group.first(name: name.to_s)
+    halt 404, "There is no such group called #{name}."
+  end
+
+  halt 403, "You do not belong to this group." unless @group.has_member?(current_user)
+  halt 403, "You are not the creator of this group." unless @group.is_master_admin?(current_user)
+
+
+  if @group.destroy!
+    flash[:notice] = "Group #{name} has been destroyed."
+  else
+    flash[:error] = "Group #{name} could not be destroyed!"
+  end
+
+  redirect '/groups'
+end
+
+
 # Returns whether group name is available or not
 post '/groups/name' do
   restricted!
 
-  # we need this name to not break the route
-  false.to_json if params[:name] == 'name'
-
-  Group.first(name: params[:name].to_s.sanitize).nil?.to_json
+  name_available?(params[:name]).to_json
 end
 
 post '/groups' do
   restricted!
 
-  if Group.first(name: params[:name].to_s.sanitize) || params[:name] == 'name'
+  if params[:name].to_s.empty?
+    flash[:error] = "Group name must be specified."
+    return redirect '/groups/new'
+  elsif !name_available?(params[:name])
     flash[:error] = "That group name is unavailable."
     return redirect '/groups/new'
   end
@@ -74,16 +95,20 @@ post '/groups' do
   redirect :"/groups/#{g.name}"
 end
 
-post '/groups/:_' do |_|
+post '/groups/:current_name' do |current_name|
   restricted!
 
   puts params.inspect
-  name = params[:name].to_s.sanitize
-  unless g = Group.first({ name: name })
-    halt 400, "There is no such group named #{name}!"    
+  unless g = Group.first({ name: current_name })
+    halt 400, "There is no such group named #{current_name}!"
   end
 
-  g.update!({ name: name })
+  if !name_available?(params[:name])
+    flash[:error] = "That group name is unavailable."
+    return redirect :"/groups/#{g.name}/edit"
+  end
+
+  g.update!({ name: params[:name].to_s.sanitize, title: params[:name] })
 
   params[:admins] ||= []
   params[:admins] << current_user.nickname

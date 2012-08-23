@@ -42,9 +42,15 @@ class Group
     GroupUser.all({ group_id: self.id, is_admin: true }).each { |gu| users << gu.user }
     users
   end
+
   def admin_nicknames
     users = self.admins
     users.each_with_index { |u, i| users[i] = u.nickname }
     users
   end
+
+  def is_master_admin?(user)
+    user.id == self.admin.id
+  end
+
 end

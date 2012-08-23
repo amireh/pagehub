@@ -221,6 +221,11 @@ pagehub_ui = function() {
       });
     },
 
+    delete_group: function(a) {
+      window.location.href = $(a).attr("href");
+      return false;
+    },
+
     delete: function() {
       var page_id = current_page_id();
       if (!page_id)

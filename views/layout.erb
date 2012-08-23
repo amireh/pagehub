@@ -39,19 +39,21 @@
         ui.theme = "<%= @theme %>";
 
         $("a[id].listlike").click(function() {
-          $("a[id!=" + $(this).attr("id") + "].selected").removeClass("selected");
-          $("ol[id!=" + $(this).attr("id").replace("_links", "") + "]").hide();
+          $("a.listlike[id!=" + $(this).attr("id") + "].selected").removeClass("selected");
+          $("ol.listlike[id!=" + $(this).attr("id").replace("_links", "") + "]").hide();
           var list = $(this).next("ol");
           list.toggle();
           $(this).toggleClass("selected");
 
-          if (list.width() < $(this).width()) {
-            var my_width = 
-              $(this).width() 
-              + parseInt($(this).css("padding-left"))
-              + parseInt($(this).css("padding-right"));
-            list.css("width", (my_width) + "px")
-          }
+          // if (list.width() < $(this).width()) {
+          //   var my_width = 
+          //     $(this).width() 
+          //     + parseInt($(this).css("padding-left"))
+          //     + parseInt($(this).css("padding-right"));
+          //   list.css("width", (my_width) + "px");
+          // }
+
+          list.css("left", $(this).position().left)
 
           return false;
         })
@@ -86,11 +88,15 @@
     <nav>
       <% if logged_in? %>
         <div id="admin_actions">
-          <span>hi <%= current_user.nickname %></span>
-          <a href="/groups">groups</a>
-          <a class="listlike" id="help_articles_links" href="/help">
-            help
-          </a>
+          <span>Hi <%= current_user.nickname %></span>
+          <a class="listlike" id="groups_links" href="/groups">groups</a>
+          <ol class="listlike" id="groups">
+            <li><a href="/groups/new">New group</a></li>
+            <% current_user.groups.each do |g| %>
+              <li><a href="/groups/<%= g.name %>"><%= g.title %></a></li>
+            <% end %>
+          </ol>
+          <a class="listlike" id="help_articles_links" href="/help">help</a>
           <%= erb :"/shared/_nav_help_links" %>
           <a class="listlike" id="account_settings_links" href="/account">account</a>
           <%= erb :"/shared/_nav_account_links" %>
