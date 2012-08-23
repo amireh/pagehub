@@ -11,6 +11,7 @@
   <link href="/css/fonts/ubuntu/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/fonts/ubuntu-mono/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
+  <link href="/css/guest.css" rel="stylesheet" type="text/css" />
 
   <% if !flash.empty? %>
     <script type="text/javascript">
@@ -47,7 +48,7 @@
   <% end %>
 
   <% yield_content :scripts %>
-  <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
+  <link href="/css/skins/light.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="guest">

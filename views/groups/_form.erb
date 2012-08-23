@@ -214,7 +214,7 @@
 
   <% if current_user == @group.admin %>
     <a href="/groups/<%= @group.name %>/destroy"
-       class="button bad confirm"
+       class="button bad confirm thin"
        data-confirmation="Are you sure you want this group to be FOREVER destroyed?"
        data-confirmation-cb="delete_group"
        >Destroy this group</a>

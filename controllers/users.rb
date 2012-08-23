@@ -75,7 +75,7 @@ before do
 end
 
 get '/signup' do
-  erb :"/users/new"
+  erb :"/users/new", layout: "layouts/guest".to_sym
 end
 
 post '/signup' do
@@ -182,7 +182,7 @@ get '/auth/failure' do
 end
 
 get '/login' do
-  erb :"/login"
+  erb :"/login", layout: "layouts/guest".to_sym
 end
 
 post '/login' do

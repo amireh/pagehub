@@ -103,12 +103,19 @@ post '/groups/:current_name' do |current_name|
     halt 400, "There is no such group named #{current_name}!"
   end
 
-  if !name_available?(params[:name])
-    flash[:error] = "That group name is unavailable."
-    return redirect :"/groups/#{g.name}/edit"
-  end
+  name_changed = params[:name].to_s.sanitize != current_name
 
-  g.update!({ name: params[:name].to_s.sanitize, title: params[:name] })
+  if g.is_master_admin?(current_user) 
+    if name_changed && !name_available?(params[:name])
+      flash[:error] = "That group name is unavailable."
+      return redirect :"/groups/#{g.name}/edit"
+    end
+    g.update!({ name: params[:name].to_s.sanitize, title: params[:name] })
+  else
+    if name_changed
+      flash[:error] = "Only the group creator can change its name."
+    end
+  end
 
   params[:admins] ||= []
   params[:admins] << current_user.nickname

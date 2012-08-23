@@ -74,11 +74,27 @@ form input[type=password] {
 }
 
 
-.flash_wrap {
+/*.flash_wrap {
   background-color: rgba(0,0,0,0.10);
 }
 #flashes {
   background: transparent;
+}*/
+#flashes {
+  box-shadow: 0 0 1px 1px #000;
+  background: rgba(0,0,0,0.85);
+  border-color: rgba(0,0,0,0.85);
+}
+
+#flashes button {
+  background: #000;
+  border: none;
+  top: 0;
+  right: 0;
+  color: #fff;
+  font-size: 24px;
+  line-height: inherit;
+  height: 100%;
 }
 
 #pages hr {
@@ -92,4 +108,13 @@ form input[type=password] {
 .stuff ::-webkit-scrollbar-thumb:vertical {
   background: rgba(0,0,0,0.1);
   border-color: rgba(0,0,0,0.1);
+}
+
+a.listlike.selected,
+ol.listlike {
+  background: rgba(0,0,0,0.85);
+  box-shadow: 0 0 0px 1px #111 inset;
+}
+ol.listlike li {
+  border-color: #111;
 }
