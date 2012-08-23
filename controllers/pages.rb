@@ -129,9 +129,13 @@ get '/pages/:id/unshare/:group_id' do |id, group_id|
   gp = GroupPage.first({ page_id: id, group_id: group_id })
 
   halt 501, "That page doesn't seem to be shared with that group." if !gp
- 
+
+  page = Page.get(gp.page_id)
+  group = Group.first({ id: gp.group_id })
+
   gp.destroy
-  flash[:notice] = "Page un-shared with group."
+
+  flash[:notice] = "Page #{page.title} is no longer shared with the group #{group.title}."
   redirect :"/pages/public"
 end
 

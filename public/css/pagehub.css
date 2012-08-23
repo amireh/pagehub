@@ -1,6 +1,8 @@
 body {
-  font-family: "UbuntuRegular", "ProximaNova-Light", Arial, Verdana;
+  font-family: "UbuntuLight", "ProximaNova-Light", Arial, Verdana;
+  /*font-family: "ProximaNova-Light", "UbuntuRegular", Arial, Verdana;*/
   font-size: 14px;
+  /*font-size: 15px;*/
   line-height: 22px;
   position: relative;
   margin: 0;
@@ -429,6 +431,7 @@ a[href="#top"] {
   /*z-index: 0;*/
   left: -64px;
   opacity: 0.75;
+  z-index: 102;
 }
 
 #skin_switcher a {
@@ -628,7 +631,7 @@ ol.listlike {
   /*background: rgba(0,0,0,0.65);*/
   background: #fff;
   /*border: 1px solid #ddd;*/
-  box-shadow: 0 0 0px 1px #ddd inset;
+  box-shadow: 0 -1px 0px 1px #ddd inset;
 }
 a.listlike:after {
   content: "\2193";
@@ -666,6 +669,10 @@ ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px; }
   line-height: 40px;
   height: 40px;
   margin: 0;
+  padding: 0 10px;
+}
+#page_actions > a:first-of-type {
+  padding-left: 0;
 }
 
 

@@ -1,5 +1,28 @@
+body {
+  /*font-family: "ProximaNova-Light", Arial, Verdana;*/
+  /*font-size: 15px;*/
+  font-weight: 100;
+}
+header {
+  padding: 15px 0 0 0;
+  max-height: inherit;
+}
 
+.header_wrap {
+  height: 120px;
+}
+header h1 {
+  margin: 0;
+}
 #flashes {
   width: 640px;
   margin-left: -20px;
+}
+
+a {
+  /*font-weight: bold;*/
+}
+#login_buttons {
+  /*font-size: 14px;*/
+  /*font-weight: bold;*/
 }

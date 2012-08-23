@@ -63,7 +63,7 @@ configure do
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
   end
 
-  DataMapper::Logger.new($stdout, :debug)
+  # DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, 'mysql://root@localhost/notebook')
 
   # load the models and controllers

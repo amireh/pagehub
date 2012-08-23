@@ -39,6 +39,9 @@
         ui.theme = "<%= @theme %>";
 
         $("a[id].listlike").click(function() {
+          if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
+            return false;
+
           $("a.listlike[id!=" + $(this).attr("id") + "].selected").removeClass("selected");
           $("ol.listlike[id!=" + $(this).attr("id").replace("_links", "") + "]").hide();
           var list = $(this).next("ol");
@@ -89,16 +92,16 @@
       <% if logged_in? %>
         <div id="admin_actions">
           <span>Hi <%= current_user.nickname %></span>
-          <a class="listlike" id="groups_links" href="/groups">groups</a>
+          <a class="listlike" id="groups_links" href="/groups">Groups</a>
           <ol class="listlike" id="groups">
             <li><a href="/groups/new">New group</a></li>
             <% current_user.groups.each do |g| %>
               <li><a href="/groups/<%= g.name %>"><%= g.title %></a></li>
             <% end %>
           </ol>
-          <a class="listlike" id="help_articles_links" href="/help">help</a>
+          <a class="listlike" id="help_articles_links" href="/help">Help</a>
           <%= erb :"/shared/_nav_help_links" %>
-          <a class="listlike" id="account_settings_links" href="/account">account</a>
+          <a class="listlike" id="account_settings_links" href="/account">Account</a>
           <%= erb :"/shared/_nav_account_links" %>
         </div>
       <% else %>

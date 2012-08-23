@@ -1,5 +1,30 @@
+.header_wrap {
+  background: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+  box-shadow: 0 -1px 10px 0px black;
+  z-index: 101;
+}
+header { position: relative; }
+header, nav { z-index: 102; }
 body {
   background: url(/images/grid-18px-masked.png) repeat-x center center;
+}
+header h1 a:visited,
+header h1 a{
+  letter-spacing: 5px;
+  font-weight: 100;
+  color: #333;
+  font-family: inherit;
+}
+header h1 a:visited em,
+header h1 a em {
+  color: #333;
 }
 h2,
 .cm-s-neat span.cm-header {
