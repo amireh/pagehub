@@ -29,7 +29,7 @@ get '/pages/:id/pretty' do |id|
 
   halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
 
-  erb :"pretty", layout: :"print_layout"
+  erb :"pages/pretty", layout: :"layouts/print"
 end
 
 # Creates a blank new page
@@ -119,5 +119,5 @@ get '/:nickname/:title' do |nn, title|
   @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
   halt 403, "This page can only be viewed by its author." if !@pp
   @public = true
-  erb :"pretty", layout: :"print_layout"
+  erb :"pages/pretty", layout: :"layouts/print"
 end

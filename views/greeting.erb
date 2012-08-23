@@ -1,8 +1,8 @@
 <% content_for :title do %>
-  PageHub - Free, quick, and easy Markdown page editing
+  PageHub - An online Markdown text editor
 <% end %>
 
-<% h = <<EOF
+<%= md <<-EOF
 
 ## What it is
 
@@ -50,8 +50,7 @@ own personal server and would probably not be able to hold much traffic.
 
 *****
 
-Developed by [Amireh](http://www.mxvt.net)
+Developed by [Amireh](http://www.mxvt.net)  
+&nbsp;
 EOF
 %>
-
-<%= h.strip.to_markdown %>

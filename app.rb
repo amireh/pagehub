@@ -45,6 +45,10 @@ helpers do
       "Helvetica Neue" => "Helvetica Neue"
     }
   end
+
+  def md(content)
+    content.to_s.to_markdown
+  end
 end
 
 configure do
@@ -81,6 +85,14 @@ before do
   @theme = @cm_theme = "neat"
 end
 
+not_found do
+  erb :"404"
+end
+
+error 403 do
+  erb :"403"
+end
+
 get '/' do
   destination = "greeting"
   layout = "layouts/guest"
@@ -94,18 +106,13 @@ get '/' do
   erb destination.to_sym, layout: layout.to_sym
 end
 
-get '/tutorial' do
-  erb :"/tutorial.md", layout: :"print_layout"
-end
+%w(/tutorial /testdrive).each { |uri|
+  send("get", uri) do
+    erb :"/tutorial.md", layout: :"layouts/print"
+  end
+}
 
-get '/markdown-cheatsheet' do
-  erb :"/markdown-cheatsheet", layout: :"print_layout"
-end
-
-get '/testdrive' do
-  erb :"/tutorial.md", layout: :"print_layout"
-end
-
+# Legacy support
 get '/account' do
   @legacy = true
   erb :"/shared/_nav_account_links"
@@ -114,18 +121,4 @@ end
 get '/help' do
   @legacy = true
   erb :"/shared/_nav_help_links"
-end
-
-not_found do
-  erb :"404"
-end
-
-error 403 do
-  erb :"403"
-end
-
-helpers do
-  def md(content)
-    content.to_s.strip.to_markdown
-  end
 end

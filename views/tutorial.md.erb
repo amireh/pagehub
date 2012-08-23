@@ -6,4 +6,4 @@
   <h1>The PageHub Tutorial</h1>
 <% end %>
 
-<%= File.read(File.join(settings.views, "tutorial.erb")).to_markdown %>
+<%= md File.read(File.join(settings.views, "tutorial.md")) %>
