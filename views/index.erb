@@ -166,7 +166,7 @@
      * ----------- */
     shortcut.add("ctrl+alt+s", function() { ui.save(); })
     shortcut.add("ctrl+alt+v", function() { ui.preview(); })
-    shortcut.add("ctrl+alt+d", function() { ui.delete(); })
+    shortcut.add("ctrl+alt+d", function() { ui.destroy(); })
     shortcut.add("ctrl+alt+c", function() { $("#new_page").click(); })
     shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
     shortcut.add("ctrl+alt+r", function() { editor.refresh(); })
@@ -252,9 +252,9 @@
   <a target="PageHub - Preview" 
      title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
      href="/pages/x/pretty" id="preview">Pretty Version</a>
-  <a id="delete_page" class="confirm"
+  <a id="destroy_page" class="confirm"
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
-     data-confirmation-cb="delete_page"
+     data-confirmation-cb="destroy_page"
      title="Deletes the page forever (Ctrl+Alt+D)">Delete</a>
   <a class="listlike" id="page_share_links">Share</a>
   <ol class="listlike" id="page_share">

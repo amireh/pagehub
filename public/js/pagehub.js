@@ -26,7 +26,7 @@ pagehub.prototype = {
     })
   },
 
-  delete: function(page_id, on_success, on_error) {
+  destroy: function(page_id, on_success, on_error) {
     ui.mark_pending();
     $.ajax({
       type: "DELETE",

@@ -203,35 +203,35 @@ pagehub_ui = function() {
       li.show();
     },
 
-    delete_page: function() {
+    destroy_page: function() {
       var page_id = current_page_id();
       if (!page_id)
         return;
 
       var entry = $("#page_listing .selected");
       var page_title = entry.html();
-      pagehub.delete(page_id, function() {
+      pagehub.destroy(page_id, function() {
         ui.status("Page " + page_title + " is now dead :(", "good");
         entry.remove();
         ui.editor.setValue("");
         ui.actions.addClass("disabled");
         $("#page_listing li:last").click();
       }, function() {
-        ui.status("Page could not be deleted! Please try again.", "bad");
+        ui.status("Page could not be destroyed! Please try again.", "bad");
       });
     },
 
-    delete_group: function(a) {
+    destroy_group: function(a) {
       window.location.href = $(a).attr("href");
       return false;
     },
 
-    delete: function() {
+    destroy: function() {
       var page_id = current_page_id();
       if (!page_id)
         return;
 
-      $("a.confirm#delete_page").click();      
+      $("a.confirm#destroy_page").click();      
     },
 
     preview: function() {
