@@ -5,6 +5,7 @@ gem 'sinatra'
 gem 'sinatra-content-for'
 gem 'sinatra-flash'
 gem "data_mapper", ">=1.2.0"
+gem "dm-migrations", ">=1.2.0"
 gem 'redcarpet'
 gem 'albino'
 gem 'nokogiri'
@@ -19,6 +20,8 @@ require 'sinatra'
 require 'sinatra/content_for'
 require 'sinatra/flash'
 require 'data_mapper'
+require 'dm-migrations'
+require 'dm-migrations/migration_runner'
 require 'dm-mysql-adapter'
 require "digest/sha1"
 require 'json'
@@ -78,6 +81,8 @@ configure do
   require 'controllers/users'
   require 'controllers/pages'
 
+  require 'lib/migrations'
+
   DataMapper.finalize
   DataMapper.auto_upgrade!
 
@@ -103,7 +108,7 @@ get '/' do
 
   if logged_in?
     @pages = Page.all(user_id: current_user.id)
-    destination = "index"
+    destination = "pages/index"
     layout = "layout"
   end
 

@@ -185,7 +185,7 @@ pagehub_ui = function() {
       var txtbox = $("#title_editor");
 
       li.hide();
-      txtbox.show().attr("value", li.html());
+      txtbox.show().attr("value", li.find("a").html());
       li.after(txtbox);
       txtbox.focus();
 

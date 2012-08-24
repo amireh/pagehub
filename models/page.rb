@@ -1,11 +1,11 @@
 class Page
   include DataMapper::Resource
 
-  property :id, Serial
-  property :title, String, default: "Untitled"
-  property :pretty_title, String, default: lambda { |r, _| r.title.sanitize }
-  property :content, Text, default: "This page is empty!"
-  property :created_at, DateTime, default: lambda { |*_| DateTime.now }
+  property :id,           Serial
+  property :title,        String, length: 120, default: "Untitled"
+  property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
+  property :content,      Text, default: "This page is empty!"
+  property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
   # belongs_to :notebook
   belongs_to :user

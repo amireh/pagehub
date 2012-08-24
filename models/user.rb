@@ -3,19 +3,19 @@ class User
 
   property :id, Serial
   
-  property :name, String, required: true
-  property :provider, String, required: true
-  property :uid, String, required: true
+  property :name,     String, length: 255, required: true
+  property :provider, String, length: 255, required: true
+  property :uid,      String, length: 255, required: true
 
-  property :email, String, default: ""
-  property :nickname, String, default: ""
-  property :password, String
-  property :settings, Text, default: "{}"
-  property :oauth_token, Text
-  property :oauth_secret, Text
-  property :extra, Text
-  property :auto_nickname, Boolean, default: false
-  property :created_at, DateTime, default: lambda { |*_| DateTime.now }
+  property :email,          String, length: 255, default: ""
+  property :nickname,       String, length: 120, default: ""
+  property :password,       String, length: 64
+  property :settings,       Text, default: "{}"
+  property :oauth_token,    Text
+  property :oauth_secret,   Text
+  property :extra,          Text
+  property :auto_nickname,  Boolean, default: false
+  property :created_at,     DateTime, default: lambda { |*_| DateTime.now }
 
   # has n, :notebooks
   has n, :pages

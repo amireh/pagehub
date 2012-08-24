@@ -3,8 +3,8 @@ class Group
 
   property :id, Serial
   
-  property :name, String, unique: true, required: true
-  property :title, String
+  property :name,       String, length: 120, unique: true, required: true
+  property :title,      String, length: 120
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   # has n, :notebooks
