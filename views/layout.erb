@@ -43,31 +43,40 @@
           if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
             return false;
 
-          var selected = $("a.listlike.selected");
-          selected.removeClass("selected");
-          selected.next("ol").hide();
-          selected.bind('click', show_list);
+          hide_list($("a.listlike.selected"));
 
           $(this).next("ol").show().
             css("left", $(this).position().left);
           $(this).addClass("selected");
           $(this).unbind('click');
-          $(this).bind('click', hide_list);
+          $(this).bind('click', hide_list_callback);
+
 
           return false;
         }
 
-        var hide_list = function(e) {
-          $(this).removeClass("selected");
-          $(this).next("ol").hide();
-
+        var hide_list_callback = function(e) {
           e.preventDefault();
 
-          $(this).bind('click', show_list);
+          hide_list($(this));
+
           return false;
+        }
+
+        var hide_list = function(el) {
+          $(el).removeClass("selected");
+          $(el).next("ol").hide();
+          $(el).bind('click', show_list);
         }
         
         $("a.listlike:not(.selected)").click(show_list);
+        $("ol.listlike li:not(.sticky)").click(function() {
+          var anchor = $(this).parent().prev("a.listlike");
+          if (anchor.hasClass("selected"))
+            hide_list(anchor);
+
+          return true; // let the event propagate
+        });
       });
 
     </script>
