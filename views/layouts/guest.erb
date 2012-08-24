@@ -27,32 +27,33 @@
     </script>
   <% end %>
 
-
-  <script>
+  <script type="text/javascript">
     $(function() {
       $("nav a[href='<%=request.path%>']").addClass("selected");
     });
 
   </script>
     
-
   <% yield_content :scripts %>
+
   <link href="/css/skins/light.css" rel="stylesheet" type="text/css" />
   <link href="/css/guest.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="guest">
 
+  <div class="nav_wrap"></div>
   <div class="stuff">
+    <nav>
+      <a href="/features">Features</a> &nbsp;
+      <a href="/about">About</a> &nbsp;
+      <a id="login" href="/login">Sign in</a>
+    </nav>
+
     <header>
       <h1><a href="/"><img src="/images/Logo-black-without-glass.png" alt="PageHub Logo" /></a></h1>
     </header>
     
-    <nav>
-      <a href="/features"><strong>Features</strong></a> &nbsp;
-      <a id="login" href="/login"><strong>Sign in</strong></a>
-    </nav>
-
     <div id="content">
       <div id="status">
       </div>

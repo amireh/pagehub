@@ -1,4 +1,5 @@
-.header_wrap {
+.header_wrap,
+.guest .nav_wrap {
   background: rgb(255,255,255); /* Old browsers */
   background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */

@@ -112,7 +112,8 @@ h1,h2,h3,h4,h5,h6 {
 
 .header_wrap,
 .action_bar_wrap,
-.flash_wrap {
+.flash_wrap,
+.nav_wrap {
   width: 100%;
   background: rgba(0,0,0,0.05);
   height: 65px;
@@ -614,8 +615,9 @@ a img {
 
 nav a {
   padding: 0 15px;
-  margin: 0;
-  height: 65px;
+  margin: -1px 0 0 0; /* to disable the top part of the box shadow */
+  height: 66px;
+  line-height: 66px;
   display: inline-block;
 }
 
@@ -623,15 +625,13 @@ nav {
   min-width: 220px;
   text-align: right;
 }
-a.listlike {
-  padding: 0 10px;
-}
 a.listlike.selected,
 ol.listlike {
-  /*background: rgba(0,0,0,0.65);*/
   background: #fff;
-  /*border: 1px solid #ddd;*/
-  box-shadow: 0 -1px 0px 1px #ddd inset;
+  box-shadow: 0 0px 0px 1px #ddd inset;
+}
+a.listlike {
+  padding: 0 10px;
 }
 a.listlike:after {
   content: "\2193";
@@ -648,7 +648,6 @@ ol.listlike {
   position: absolute; 
   list-style-type: none;
   margin: 0; 
-  /*padding: 5px 10px 5px 0;*/
   padding: 0;
   z-index: 101; /* to be active on top of the page action bar */
   right: 0%;
@@ -656,9 +655,6 @@ ol.listlike {
   top: 98%;
   text-align: left;
   color: white;
-  /*border-top: 1px solid rgba(0,0,0,0.1);*/
-  /*border-top: none;*/
-  /*min-width: 160px;*/
 }
 ol.listlike li { padding: 5px 0; margin: 0; line-height: inherit; height: auto; border-bottom: 1px solid #ddd;  }
 ol.listlike li:last-of-type { border-bottom: none;  }

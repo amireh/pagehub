@@ -126,6 +126,11 @@ get '/help' do
   @legacy = true
   erb :"/shared/_nav_help_links"
 end
+
 get '/features' do
   erb :"/features", layout: :"/layouts/guest"
+end
+
+get '/about' do
+  erb :"/about", layout: :"/layouts/guest"
 end
