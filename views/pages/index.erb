@@ -224,7 +224,12 @@
 <% end %>
 
 <div id="pages">
-  <a tabindex="1" href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New</a>
+  <a class="listlike" tabindex="1">New</a>
+  <ol class="listlike">
+    <li><a href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
+    <li><a href="#" id="new_folder" title="Create a new folder">New folder</a></li>
+  </ol>
+
   <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
   <div class="scroller">
 
@@ -256,8 +261,8 @@
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
      data-confirmation-cb="destroy_page"
      title="Deletes the page forever (Ctrl+Alt+D)">Delete</a>
-  <a class="listlike" id="page_share_links">Share</a>
-  <ol class="listlike" id="page_share">
+  <a class="listlike">Share</a>
+  <ol class="listlike">
     <li><a  target="PageHub" 
             title="Make a public version of this page that you can share with people" 
             href="/pages/x/share"
@@ -273,8 +278,8 @@
     </li>
     <% end %>
   </ol>
-  <a class="listlike" id="editor_actions_links">Editor Actions</a>
-  <ol class="listlike" id="editor_actions">
+  <a class="listlike">Editor Actions</a>
+  <ol class="listlike">
     <li><a href="#" title="Increase the height of the editor" id="increase_height">Grow</a></li>
     <li><a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
     <li><a href="#" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
