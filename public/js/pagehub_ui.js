@@ -9,6 +9,7 @@ pagehub_ui = function() {
       anime_dur = 250,
       status_shown = false,
       status_queue = [],
+      animation_dur = 1000,
       autosave_pulse = 30, /* autosave every half minute */
       defaults = {
         status: 1
@@ -107,7 +108,7 @@ pagehub_ui = function() {
       if (status_timer)
         clearTimeout(status_timer)
 
-      status_timer = setTimeout("ui.clear_status()", 2000);
+      status_timer = setTimeout("ui.clear_status()", animation_dur);
       $("#status").removeClass("pending good bad").addClass(status + " visible").html(text);
       status_shown = true;
     },

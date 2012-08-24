@@ -13,13 +13,13 @@
         .end()
         .find(':submit:visible')
           .click(function(){
+            $('#confirm').jqmHide();
+
             if($(this).attr("id") == 'confirm_accepted') {
               return (typeof callback == 'string') ?
                 window.location.href = callback :
                 callback();
             }
-
-            $('#confirm').jqmHide();
 
             return false;
           });
