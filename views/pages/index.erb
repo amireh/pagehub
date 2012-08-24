@@ -42,6 +42,8 @@
 
       $("#page_actions").removeClass("disabled");
 
+      ui.hide_title_editor();
+      
       $("#page_listing .selected").removeClass("selected");
       $(this).addClass("selected");
 
@@ -97,7 +99,25 @@
     }
     $("#page_listing li").click(get_page);
     // Creating a new page
-    $("#new_page").click(function() {
+    // $("#new_page").click(function() {
+      
+    // });
+
+    /* --- ------ *
+     * The Editor *
+     * --- ------ */
+    ui.editor = editor = ui.create_editor("page_editor");
+    ui.actions = $("#page_actions");
+
+    // Resize it to fill up the remainder of the screen's height
+    var editor_h = $(window).height() - 123;
+    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+    editor.refresh();
+
+    /* ------ -------- *
+     * Action bindings *
+     * ------ -------- */
+    ui.on_action("new_page", function() {
       console.log("creating a page")
       ui.status("Creating a new page...", "pending");
 
@@ -118,22 +138,9 @@
           console.log(e)
         }
       });
-    });
 
-    /* --- ------ *
-     * The Editor *
-     * --- ------ */
-    ui.editor = editor = ui.create_editor("page_editor");
-    ui.actions = $("#page_actions");
-
-    // Resize it to fill up the remainder of the screen's height
-    var editor_h = $(window).height() - 123;
-    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
-    editor.refresh();
-
-    /* ------ -------- *
-     * Action bindings *
-     * ------ -------- */
+      return true;
+    }, { is_editor_action: false }); // action[new_page]
     ui.on_action("save_content", function() {
       ui.save();
     });
@@ -142,13 +149,13 @@
       console.log("Font: " + font);
       $(".CodeMirror").css("font-family", font);
     });
-    $("#increase_height").click(function() {
+    ui.on_action("increase_height", function() {
       var step = parseInt($(".CodeMirror").css("line-height"));
       $(".CodeMirror-scroll").css("min-height", 
         (parseInt($(".CodeMirror-scroll").css("min-height")) + step) +"px");
       editor.refresh();
     });
-    $("#decrease_height").click(function() {
+    ui.on_action("decrease_height", function() {
       var step = parseInt($(".CodeMirror").css("line-height"));
       $(".CodeMirror-scroll").css("min-height", 
         (parseInt($(".CodeMirror-scroll").css("min-height")) - step) +"px");
@@ -157,7 +164,19 @@
     ui.on_action("refresh_editor", function() {
       editor.refresh();
     });
-    $("#page_actions a").click(function() {
+
+    ui.on_action("destroy_page", function() {
+      var page = $("#page_listing .selected");
+      var page_title = page.find("a").html();
+
+      $("#destroy_page").attr("data-confirmation",
+        "Are you sure you want to delete the page '" + page_title + "'?");
+
+      return true;
+    });
+
+    $(".actions a[id], #page_actions a[id]").click(function() {
+      log("An action was clicked: " + $(this).attr("id"))
       return ui.action($(this).attr("id"));
     });
 

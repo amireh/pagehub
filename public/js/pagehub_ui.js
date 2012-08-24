@@ -126,21 +126,31 @@ pagehub_ui = function() {
       return !$("#page_actions").hasClass("disabled");
     },
 
-    on_action: function(action, handler) {
-      if (!actions[action])
-        actions[action] = [];
+    on_action: function(action, handler, props) {
+      
+      var defaults = {
+        is_editor_action: true
+      }
 
-      actions[action].push( handler );
+      var props = $.extend(defaults, props || {});
+
+      if (!actions[action])
+        actions[action] = { props: props, handlers: [] };
+
+      actions[action].handlers.push( handler );
+      log("Registered action: " + action);
     },
 
-    action: function(action) {
-      if (!ui.is_editing())
-        return false;
+    action: function(action_id) {
+      var action = actions[action_id];
 
-      if (!actions[action])
+      if (!action)
         return true;
 
-      foreach( actions[action], function(h) { h() } );
+      if (!ui.is_editing() && action.props.is_editor_action)
+        return false;
+
+      foreach( action.handlers, function(h) { h() } );
 
       return false;
     },
@@ -173,7 +183,6 @@ pagehub_ui = function() {
       
       ui.hide_title_editor(true);
 
-
       ui.status("Saving page title...", "pending");
       pagehub.update(page_id, { title: title }, {
         success: "Page title updated!",
@@ -190,6 +199,8 @@ pagehub_ui = function() {
       li.after(txtbox);
       txtbox.focus();
 
+      $(window).bind('click', ui.save_title);
+
       return true;
     },
 
@@ -202,6 +213,8 @@ pagehub_ui = function() {
 
       txtbox.hide();
       li.show();
+
+      $(window).unbind('click', ui.save_title);
     },
 
     destroy_page: function() {
@@ -212,11 +225,12 @@ pagehub_ui = function() {
       var entry = $("#page_listing .selected");
       var page_title = entry.html();
       pagehub.destroy(page_id, function() {
-        ui.status("Page " + page_title + " is now dead :(", "good");
+        ui.status("Page " + page_title + " has been deleted.", "good");
         entry.remove();
         ui.editor.setValue("");
         ui.actions.addClass("disabled");
         $("#page_listing li:last").click();
+        hide_title_editor();
       }, function() {
         ui.status("Page could not be destroyed! Please try again.", "bad");
       });
