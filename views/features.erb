@@ -1,0 +1,74 @@
+<% content_for :title do %>
+Features - PageHub
+<% end %>
+
+<%= md <<-EOF
+
+## **Document embedding**
+
+  > Embed external documents *inside* the pages that you
+  > write; snippets of code, GitHub Wiki content, documentation, etc.
+  > Embedding will relieve you of the trouble of maintaining
+  > all documents that reference each other when one
+  > gets updated.
+
+## Table of Content generation
+
+  > The [Markdown](http://daringfireball.net/projects/markdown/)
+  > renderer is extended to support generating a ToC
+  > for your pages. And it's dead simple:
+  >
+  > `[!toc!]`
+
+## **Keybinding support**
+  
+  > Actions that you'll do regularly such as saving and
+  > previewing can be quickly done using 
+  > [keybindings](http://www.pagehub.org/pagehub/keybindings).
+
+## **Customizable everything**
+
+  > PageHub offers several built-in themes for the rendered
+  > versions of your pages. It also lets you customize things
+  > like text justification, the page width, etc.
+  >
+  > The editor is also customizable in its font face,
+  > size, and line-height.
+
+## **Autosaving**
+
+  > Every 30 seconds as you're editing a page, PageHub will
+  > automatically save it for you.
+
+## **Syntax highlighting**
+  
+  > Thanks to [CodeMirror](http://codemirror.net) being awesome, 
+  > the editor supports real-time highlighting of the Markdown you
+  > write as well as, to an extent, code written in other languages.
+  >
+  > Rendered versions also include a syntax formatter and highlighter.
+
+## **Sharing & Groups**
+
+  > You can choose to share the pages that you write with
+  > either everybody, or only certain *groups* of people, like
+  > your colleagues, school friends, etc.
+
+## It's Open-Source!
+
+  > You can check out the [source code on GitHub](https://github.com/amireh/pagehub)
+  > and host it yourself if you'd like to. PageHub is currently
+  > hosted on my own personal server and would probably not be 
+  > able to hold much traffic.
+
+*****
+
+And here's what's planned for future revisions:
+
+  * Page revision control & backtracking support
+  * Syncing from git repositories and local documents for offline editing
+  * Collaborative editing
+
+EOF
+%>
+<br />

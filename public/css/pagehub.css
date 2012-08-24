@@ -676,16 +676,6 @@ ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px; }
 }
 
 
-.guest .block {
-  width: 50%;
-}
-.guest .block.left {
-  margin-right: auto;
-}
-.guest .block.right {
-  margin-left: auto;
-}
-
 iframe {
   width: 100%;
 }

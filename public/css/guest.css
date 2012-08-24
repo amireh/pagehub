@@ -6,10 +6,17 @@ body {
 header {
   padding: 15px 0 0 0;
   max-height: inherit;
+  height: 140px;
 }
 
 .header_wrap {
-  height: 120px;
+  height: 160px;
+  background: none;
+  box-shadow: none;
+}
+
+header img {
+  margin-left: -15px;
 }
 header h1 {
   margin: 0;
@@ -19,10 +26,36 @@ header h1 {
   margin-left: -20px;
 }
 
-a {
-  /*font-weight: bold;*/
+nav a:last-of-type {
+  float: right;
 }
-#login_buttons {
-  /*font-size: 14px;*/
-  /*font-weight: bold;*/
+
+nav {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  clear:  both;
+}
+nav a { padding: 0; line-height: inherit; height: auto; }
+.guest .block {
+  width: 45%;
+  clear: none;
+  vertical-align: top;
+}
+.guest .block.left {
+  float: left;
+}
+.guest .block.right {
+  float: right;
+}
+
+.block {
+  width: 45%;
+  display: inline-block;
+}
+.spanner {
+  display: block;
+  width: 100%;
+  clear: both;
 }

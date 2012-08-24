@@ -27,24 +27,14 @@
     </script>
   <% end %>
 
-  <% if logged_in? then %>
-    <style>
-      footer { display: none; }
-    </style>
 
-    <script>
-      pagehub_settings = <%= preferences.to_json %>;
+  <script>
+    $(function() {
+      $("nav a[href='<%=request.path%>']").addClass("selected");
+    });
 
-      $(function() {
-        ui.theme = "<%= @theme %>";
-      });
-
-    </script>
-
-    <script src="/js/pagehub.js"></script>
-    <script src="/js/pagehub_ui.js"></script>
+  </script>
     
-  <% end %>
 
   <% yield_content :scripts %>
   <link href="/css/skins/light.css" rel="stylesheet" type="text/css" />
@@ -53,28 +43,14 @@
 
 <body class="guest">
 
-  <div class="header_wrap"></div>
-  <div class="flash_wrap <%= flash.empty? ? 'hidden' : '' %>">
-  </div>
-
-  <% yield_content :wraps %>
-
   <div class="stuff">
     <header>
-      <h1><a href="/"><img src="/images/logo.png" alt="PageHub Logo" /></a></h1>
+      <h1><a href="/"><img src="/images/Logo-black-without-glass.png" alt="PageHub Logo" /></a></h1>
     </header>
     
     <nav>
-      <% if logged_in? %>
-        <div id="admin_actions">
-          <a href="/pages/public">public pages</a>
-          <a href="/profile">edit profile</a>
-          <a href="/logout">logout</a>
-        </div>
-      <% else %>
-        <a id="login" href="/login">login</a>
-        <a href="/signup">signup</a>
-      <% end %>
+      <a href="/features"><strong>Features</strong></a> &nbsp;
+      <a id="login" href="/login"><strong>Sign in</strong></a>
     </nav>
 
     <div id="content">

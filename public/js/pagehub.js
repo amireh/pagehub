@@ -6,6 +6,13 @@ log = function(m, ctx) { ctx = ctx || "D"; console.log("[" + ctx + "] " + m); }
 
 pagehub = function() { };
 
+// Replaces [ and ] with \\\[ and \\\] respectively.
+// This is required for jQuery selectors locating attribute values that
+// contain any bracket
+function jquery_escape_query(str) {
+  return str.replace(/\[/g, '\\\[').replace(/\]/g, '\\\]');
+}
+
 pagehub.prototype = {
 
   update: function(page_id, attributes, messages) {
