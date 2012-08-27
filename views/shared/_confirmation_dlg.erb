@@ -5,24 +5,30 @@
 <script>
   $(function() {
 
-    function confirm(msg,callback) {
+    pagehub.confirm = function(msg, heading, callback) {
       $('#confirm')
         .jqmShow()
+        .find('h1')
+        .html(heading)
+        .end()
         .find('p.jqmConfirmMsg')
         .html(msg)
         .end()
         .find(':submit:visible')
-          .click(function(){
-            $('#confirm').jqmHide();
+        .unbind('click')
+        .click(function() {
+          $('#confirm').jqmHide();
 
-            if($(this).attr("id") == 'confirm_accepted') {
-              return (typeof callback == 'string') ?
-                window.location.href = callback :
-                callback();
+          if($(this).attr("id") == 'confirm_accepted') {
+            if (typeof callback == "string") {
+              window.location.href = callback;
+            } else {
+              callback();
             }
+          }
 
-            return false;
-          });
+          return false;
+        });
 
       $("#confirm").find(':submit#confirm_accepted').focus()
     }
@@ -33,8 +39,13 @@
       log("intercepting confirmation")
 
       var a = $(this);
-      confirm(a.attr("data-confirmation"), function() {
-        return ui[a.attr("data-confirmation-cb")](a);
+      pagehub.confirm(a.attr("data-confirmation"), a.attr("data-confirmation-heading"), function() {
+        var method = dynamism.utility.lookup_method(a.attr("data-confirmation-cb"));
+        if (method) {
+          return method(a);
+        } else {
+          console.log("ERROR: invalid confirmation callback: " + a.attr("data-confirmation-cb"));
+        }
       });
 
       return false;
@@ -47,13 +58,13 @@
 <!-- Confirm Dialog -->
 <div class="jqmConfirm" id="confirm">
   <div id="ex3b" class="jqmConfirmWindow">
-      <div class="jqmConfirmTitle clearfix">
-      <h1>Confirm your action</h1><a href="#" class="jqmClose"><em>X</em></a>
+    <div class="jqmConfirmTitle clearfix">
+      <h1>Confirm your action</h1>
+      <a href="#" class="jqmClose"><em>X</em></a>
     </div>
     
     <div class="jqmConfirmContent">
     <p class="jqmConfirmMsg"></p>
-    <!-- <p>Continue?</p> -->
     </div>
     
     <input type="submit" id="confirm_rejected" value="Cancel" />

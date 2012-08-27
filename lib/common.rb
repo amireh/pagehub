@@ -57,6 +57,9 @@ class String
       }
     # end
 
+    self.gsub!(/\<script(.*)\>/i) {
+      "&lt;script#{$1}&gt;"
+    }
 
     # Render the Markdown as HTML
     markdown_opts = {

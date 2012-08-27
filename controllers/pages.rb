@@ -7,7 +7,7 @@ get '/pages/:id.json' do |id|
     return "Sorry, I was unable to find the page :("
   end
 
-  { content: p.content, groups: p.group_names }.to_json
+  { id: p.id, content: p.content, groups: p.group_names, folder: p.folder ? p.folder.id : 0 }.to_json
 end
 
 put '/pages/:id' do |id|
@@ -19,7 +19,7 @@ put '/pages/:id' do |id|
 
   p.update(params[:attributes])
 
-  true.to_json
+  p.to_json
 end
 
 get '/pages/:id/pretty' do |id|
@@ -36,7 +36,7 @@ end
 post '/pages' do
   restricted!
 
-  Page.create({ user_id: current_user.id }).id.to_json
+  Page.create({ user_id: current_user.id }).to_json
 end
 
 delete '/pages/:id' do |id|

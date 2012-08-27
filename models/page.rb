@@ -9,6 +9,7 @@ class Page
 
   # belongs_to :notebook
   belongs_to :user
+  belongs_to :folder, required: false
   has n, :tags, :through => Resource
   has n, :groups, :through => Resource
 
@@ -25,5 +26,13 @@ class Page
 
   def group_names()
     groups = []; self.groups.each { |g| groups << g.name }; groups
+  end
+
+  def serialize
+    { id: id, title: title, folder: folder_id || 0 }
+  end
+
+  def to_json(*args)
+    serialize.to_json
   end
 end

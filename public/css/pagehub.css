@@ -169,7 +169,7 @@ a.button {
 }
 
 #pages {
-  width: 200px;
+  width: 240px;
   padding-top: 0;
   padding-left: 0;
 }
@@ -180,7 +180,7 @@ a.button {
 }
 
 /* New page & New folder link list */
-#pages .actions {
+#pages > .actions {
   position: relative;
   left: -10px; /* because the <a> is padded 10px to the left */
 }
@@ -192,28 +192,34 @@ a.button {
 }
 
 #page_editor {
-  width: 740px;
+  width: 720px;
   /*border-bottom-right-radius: 10px;*/
   background: transparent;
   margin-top: 50px;
   max-height: 420px;
 }
 
-#pages li:hover,
+#pages li a:hover,
 #pages .selected {
   color: #615B4E;
   color: #E2403D;
   color: #E94E77;
   cursor: pointer;
 }
-
-#pages ul {
-  /*list-style-type: none;*/
+#page_listing {
+  position: relative;
   padding: 0;
-  margin: 10px 0 0 0;
+  margin-right: 5px;
 }
-#pages ul li {
+#page_listing ul,
+#page_listing ol {
+  /*list-style-type: none;*/
+  padding: 0 0 0 15px;
+  /*margin: 10px 0 0 0;*/
+}
+#pages ul li:not([hidden]) {
   display: inline-block;
+  position: relative;
   clear: both;
   width: 100%;
   padding: 0;
@@ -229,7 +235,8 @@ a.button {
 #status {
   position: fixed;
   /*top: -100px;*/
-  top: 65px;
+  /*top: 65px;*/
+  bottom: 0;
   background: #FFFFF7;
   /*border-bottom: 1px solid #DDD;*/
   width: 100%;
@@ -256,14 +263,12 @@ a.button {
 }
 #status.bad {
   background: #BF0606;
+  color: #fff;
 }
 #status.pending {
   background: rgba(240,173,17,0.95);
 }
 
-.hidden {
-  display: none;
-}
 #status.hidden {
   left: 100%;
   display: block;
@@ -292,12 +297,25 @@ a.selected,
   color: #E94E77;
 }
 
-#title_editor {
+#resource_editor {
   width: 100%;
-  /*margin-left: -10px;  */
+  /*text-align: center;*/
 }
-
-
+.dialog input[type=text],
+.dialog select {
+  width: 100%;
+  text-align: left;
+}
+.dialog input[type=text],
+.dialog button {
+  border-radius: 0;
+}
+.dialog .actions {
+  margin-bottom: 5px;
+}
+.dialog .actions button {
+  width: 49%;
+}
 
 footer {
   width: 960px;
@@ -501,7 +519,8 @@ form input.very_fat {
 
 a.button.thin,
 input .thin,
-form input.thin {
+form input.thin,
+button.thin {
   padding: 5px;
   font-size: 12px;
   line-height: 14px;
@@ -642,10 +661,10 @@ a.listlike {
   padding: 0 10px;
 }
 a.listlike:after {
-  content: "\2193";
+  content: "\00a0\2193";
 }
 a.listlike.selected:after {
-  content: "\2191";
+  content: "\00a0\2191";
 }
 a.listlike.selected {
   border: none;
@@ -700,4 +719,74 @@ a.button.bad:not(:active) {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
 
   border-color: rgba(0,0,0,0.3);
+}
+
+
+.folder_pages {
+  position: relative;
+}
+.folder_actions {
+  position: absolute;
+  right: 0;
+  top: -24px;
+}
+
+button.edit_folder,
+button.remove_folder {
+  padding: 0;
+  background: transparent;
+  color: #333;
+  border: none;
+  font-weight: normal;
+}
+button.edit_folder {
+  right: 12px;
+}
+
+#pages li.folder.general-folder > ol {
+  padding: 0; margin: 0;
+}
+#pages li.folder.general-folder span {
+  display: none;
+}
+
+.hidden, [hidden=hidden] {
+  display: none;
+}
+
+#pages li.folder {
+  position: relative;
+}
+#pages li.folder > span {
+  display: block;
+  /*margin-bottom: 5px;*/
+  font-weight: bold;
+  padding-left: 10px;
+  margin-left: -10px;
+  border-top-left-radius:     8px;
+  border-bottom-left-radius:  8px;
+}
+#pages li.folder > span:hover {
+  background: rgba(0,0,0,0.075);
+  cursor: pointer;
+}
+#pages li.folder > button[data-dyn-action=remove] {
+  position: absolute;
+  padding: 0 10px;
+  right: -5px; top: -1px;
+  background: none;
+  color: #ddd;
+  border: none;
+}
+
+#indicator {
+  display: none;
+  position: absolute;
+  top: 2px;
+  left: -12px;
+  width: 0; 
+  height: 0; 
+  border-top:     7px solid transparent;
+  border-bottom:  7px solid transparent;
+  border-left:    7px solid #ddd;
 }

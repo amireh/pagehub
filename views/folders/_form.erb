@@ -1,0 +1,17 @@
+<% @f ||= Folder.new %>
+
+<form id="folder_form" action="/folders">
+  <label>Title: <br />
+    <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= @f.title || "Personal" %>" />
+  </label>
+  <br />
+  <label>Parent folder:<br />
+    <select name="folder_id">
+      <option value="0">None</option>
+      <% current_user.folders.each do |f| %>
+        <option value="<%= f.id %>"
+          <%= 'selected="selected"' if @f.folder_id == f.id %>><%= f.title %></option>
+      <% end %>
+    </select>
+  </label>
+</form>

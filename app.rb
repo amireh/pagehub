@@ -20,8 +20,10 @@ require 'sinatra'
 require 'sinatra/content_for'
 require 'sinatra/flash'
 require 'data_mapper'
+require 'dm-serializer'
 require 'dm-migrations'
 require 'dm-migrations/migration_runner'
+require 'dm-constraints'
 require 'dm-mysql-adapter'
 require "digest/sha1"
 require 'json'
@@ -79,6 +81,7 @@ configure do
   require 'controllers/helpers'
   require 'controllers/groups'
   require 'controllers/users'
+  require 'controllers/folders'
   require 'controllers/pages'
 
   require 'lib/migrations'

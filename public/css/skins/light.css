@@ -14,7 +14,7 @@
 header { position: relative; }
 header, nav { z-index: 102; }
 body {
-  background: url(/images/grid-18px-masked.png) repeat-x center center;
+  background: url(/images/grid-18px-masked.png) repeat-x bottom center;
 }
 header h1 a:visited,
 header h1 a{

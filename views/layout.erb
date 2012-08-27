@@ -35,7 +35,8 @@
 
     <script>
       pagehub_settings = <%= preferences.to_json %>;
-
+      last_error = null;
+      
       $(function() {
         ui.theme = "<%= @theme %>";
 

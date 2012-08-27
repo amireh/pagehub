@@ -11,6 +11,7 @@
 <script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
 
 <script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
+<script src="/js/dynamism.js"></script>
 
 <link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
 <link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
@@ -29,79 +30,7 @@
 
   $(function() {
     var editor = null;
-
-    /* ---- -------- *
-     * Page Handling *
-     * ---- -------- */
-    // Loading a page
-    function get_page() {
-      if ($(this).hasClass("selected")) {
-        ui.show_title_editor();
-        return false;
-      }
-
-      $("#page_actions").removeClass("disabled");
-
-      ui.hide_title_editor();
-      
-      $("#page_listing .selected").removeClass("selected");
-      $(this).addClass("selected");
-
-      // ui.status("Loading page...", "pending");
-      ui.mark_pending();
-
-      editor.save();
-
-      var title = $(this).attr("id").replace("page_", "");
-      $.ajax({
-        type: "GET",
-        url: "/pages/" + title + ".json",
-        success: function(page) {
-          var page = JSON.parse(page);
-          var content = page.content;
-          var groups = page.groups;
-          editor.clearHistory();
-          editor.setValue(content);
-          $("#preview").attr("href", "/pages/" + title + "/pretty");
-          $("#share_everybody").attr("href", 
-            "/pages/" + title + "/share");
-
-          // Disable the group share links for all the groups this page
-          // is already shared with
-          $("a[data-action=share][data-group]").each(function() {
-            var group = $(this).attr("data-group");
-            var already_shared = false;
-            for (var i = 0; i < groups.length; ++i) {
-              if (groups[i] == group) {
-                $(this).attr("data-disabled", true);
-                already_shared = true;
-                break;
-              }
-            }
-
-            if (!already_shared) {
-              $(this).attr("href", "/pages/" + title + "/share/" + group);
-              $(this).attr("data-disabled", null);
-            } else {
-              $(this).attr("href", null);
-              $(this).attr("data-disabled", true);
-            }
-          });
-
-          editor.focus();
-        },
-        complete: function() {
-          ui.mark_ready();          
-        }
-      });
-
-      return false;
-    }
-    $("#page_listing li").click(get_page);
-    // Creating a new page
-    // $("#new_page").click(function() {
-      
-    // });
+    dynamism.configure({ debug: false })
 
     /* --- ------ *
      * The Editor *
@@ -113,25 +42,30 @@
     var editor_h = $(window).height() - 123;
     $(".CodeMirror-scroll").css("min-height", editor_h + "px");
     editor.refresh();
+    // and the page listing
+    $("#pages .scroller").css("max-height", $(window).height() - 123);  
 
     /* ------ -------- *
      * Action bindings *
      * ------ -------- */
     ui.on_action("new_page", function() {
-      console.log("creating a page")
-      ui.status("Creating a new page...", "pending");
+      ui.status.show("Creating a new page...", "pending");
 
       $.ajax({
         url: "/pages",
         type: "POST",
-        success: function(page_id) {
+        success: function(page) {
           console.log("page created successfully")
-          var new_page = "<li id=\"page_" + page_id + "\">page #" + page_id + "</li>";
-          $("#page_listing").prepend(new_page);
-          $("#page_listing li.selected").removeClass("selected");
-          $("#page_listing li:first").click(get_page);
-          ui.editor.setValue("Write your text here.");
-          $("#page_listing li:first").click();
+          var page = JSON.parse(page);
+          console.log(page);
+          dynamism.inject({ folders: [ { pages: [ page ] } ] }, $("#page_listing"));
+          $("#page_" + page.id).click();
+          // var new_page = "<li><a id=\"page_" + page_id + "\">page #" + page_id + "</a></li>";
+          // $("#page_listing").prepend(new_page);
+          // ui.dehighlight();
+          // $("#page_listing li:first a").click(get_page).click();
+
+          ui.editor.setValue("Preparing newly created page... hold on.");
         },
         error: function(e) {
           console.log("smth bad happened")
@@ -139,16 +73,52 @@
         }
       });
 
+      // roll up the option list
+      $("a.listlike.selected").click();
+
       return true;
     }, { is_editor_action: false }); // action[new_page]
-    ui.on_action("save_content", function() {
-      ui.save();
-    });
-    ui.on_action("change_font", function() {
-      var font = $("#page_actions select :selected").attr("value");
-      console.log("Font: " + font);
-      $(".CodeMirror").css("font-family", font);
-    });
+
+    // $.jqm({ trigger: $("#new_folder")})
+    ui.on_action("new_folder", function() {
+      console.log("new_folder() called")
+      try {
+        $.ajax({
+          url: "/folders/new.js",
+          success: function(html) {
+            pagehub.confirm(html, "Create a new folder", function(foo) {
+              console.log($("#confirm form#folder_form").serialize())
+
+              console.log("creating a folder")
+              ui.status.show("Creating a new folder...", "pending");
+
+              $.ajax({
+                url: "/folders",
+                type: "POST",
+                data: $("#confirm form#folder_form").serialize(),
+                success: function(folder) {
+                  var folder = JSON.parse(folder);
+                  dynamism.inject({ folders: [ folder ] }, $("#page_listing"));
+                },
+                error: function(e) {
+                  ui.status.show(e.responseText, "bad");
+                }
+              });
+
+            });            
+          }
+        })
+      } catch(err) {
+        log(err);
+      }
+
+      // roll up the option list
+      $("a.listlike.selected").click();
+
+      return false;
+    }, { is_editor_action: false }); // action[new_page]
+
+    ui.on_action("save_content", ui.pages.save);
     ui.on_action("increase_height", function() {
       var step = parseInt($(".CodeMirror").css("line-height"));
       $(".CodeMirror-scroll").css("min-height", 
@@ -166,14 +136,15 @@
     });
 
     ui.on_action("destroy_page", function() {
-      var page = $("#page_listing .selected");
-      var page_title = page.find("a").html();
+      var page = ui.current_page(),
+          page_title = page.html();
 
       $("#destroy_page").attr("data-confirmation",
         "Are you sure you want to delete the page '" + page_title + "'?");
 
       return true;
     });
+    $("a[data-action=move]").click(ui.pages.move);
 
     $(".actions a[id], #page_actions a[id]").click(function() {
       log("An action was clicked: " + $(this).attr("id"))
@@ -183,95 +154,100 @@
     /* ----------- *
      * Keybindings *
      * ----------- */
-    shortcut.add("ctrl+alt+s", function() { ui.save(); })
-    shortcut.add("ctrl+alt+v", function() { ui.preview(); })
-    shortcut.add("ctrl+alt+d", function() { ui.destroy(); })
+    shortcut.add("ctrl+alt+s", function() { ui.pages.save(); })
+    shortcut.add("ctrl+alt+v", function() { ui.pages.preview(); })
+    shortcut.add("ctrl+alt+d", function() { $("a[id=destroy_page]").click(); })
     shortcut.add("ctrl+alt+c", function() { $("#new_page").click(); })
     shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
-    shortcut.add("ctrl+alt+r", function() { editor.refresh(); })
-    shortcut.add("ctrl+alt+a", function() { 
-      if ($("#page_listing li.selected").length == 1)
-        $("#page_listing li.selected").focus();
-      else
-        $("#page_listing li:first").focus();
-    })
+    shortcut.add("ctrl+alt+r", function() { ui.editor.refresh(); })
 
-    /* -------- ---------- *
-     * Document Navigation *
-     * -------- ---------- */
-    // var disable_scrolling = function(e){
-    //   switch(e.keyCode){
-    //     case 37: case 39: case 38:  case 40: // Arrow keys
-    //     case 32: e.preventDefault(); break; // Space
-    //     default: break; // do not block other keys
-    //   }
-    // }
-    // $("#page_listing li").focusin(function() {
-    //   window.addEventListener("keyup", disable_scrolling, false);
-    //   $(this).bind('keydown', function(e) {
-    //     if (e.keyCode == 38)
-    //       $(this).prev("li").focus();
-    //     else if (e.keyCode == 40)
-    //       $(this).next("li").focus();
-    //     else if (e.keyCode == 13)
-    //       $(this).click();
-    //     else
-    //       return true;
+    data = <%= current_user.all_pages.to_json %>;
+    dynamism.inject(data, $("#page_listing"));
 
-    //     e.preventDefault();
-    //     return false;
-    //   });
-    // }).focusout(function() {
-    //   $(this).unbind('keydown');
-    //   window.removeEventListener("keyup", disable_scrolling, false);
-    // });
-
-
-
-    $("#pages .scroller").css("max-height", $(window).height() - 123);  
+    <%# puts current_user.all_pages %>;
 
   }); 
 </script>
 <% end %>
 
 <% content_for :title do %>
-  PageHub
+  <%= current_user.nickname %> | PageHub
 <% end %>
 
 <% content_for :wraps do %>
   <div class="action_bar_wrap"></div>
 <% end %>
 
+<div id="indicator"></div>
 <div id="pages">
   <div class="actions">
     <a class="listlike" tabindex="1">New</a>
     <ol class="listlike">
       <li><a href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
-      <li><a href="#" id="new_folder" title="Create a new folder">New folder</a></li>
+      <li><a href="/folders/new" id="new_folder" title="Create a new folder">New folder</a></li>
     </ol>
   </div>
 
   <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
   <div class="scroller">
 
-    <!-- the wrappers are used to pivot the absolute <h3> -->
-      <!-- <h3 class="your_pages">Your Pages &rarr;</h3> -->
-      <input type="text" id="title_editor" hidden="hidden" />
-      <ul id="page_listing">
-        <% 1.times do %>
-        <% logged_in? && @pages.each_with_index do |p, pidx| %>
-          <li tabindex="<%= pidx + 2 %>" id="page_<%= p.id %>">
-            <a href="/pages/<%= p.id %>"><%= p.title == "Untitled" ? "page ##{p.id}" : p.title %></a>
-            </li>
-        <% end %>
-        <% end %>
-      </ul>
-
-    <!-- <hr /> -->
-      <!-- <h3 class="useful_links">Useful Links &darr;<small>open in new tab</small></h3> -->
-
+    <div hidden="hidden" class="dialog" id="resource_editor">
+      <input type="text" name="title" />
+      <div hidden="hidden" id="parent_folder_selection">
+        <label>Parent folder:<br />
+          <select name="folder_id">
+            <option value="folder_0" selected="selected">None</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="thin" id="update_title">Update</button>
+        <button class="thin" id="cancel_title_editing">Cancel</button>
+      </div>
     </div>
-</div><div id="editor_container"><!--
+
+    <ul id="page_listing" data-dyn-hook="post-injection, ui.folders.arrange">
+
+      <li data-dyn-entity="folder"
+          data-dyn-spawn-on="folders"
+          data-dyn-hook="post-injection, ui.folders.on_injection,
+                         removal, ui.folders.on_removal"
+          data-dyn-inject="@id, folders.id, @data-parent, folders.parent"
+          data-parent="%parent"
+          id="folder_%id"
+          class="folder">
+          <span data-dyn-inject="@text, folders.title"
+                data-dyn-hook="click, ui.folders.edit_title"
+                class="folder_title">
+                %title
+          </span>
+          <button data-dyn-action="remove">X</button>
+          <a href="/folders/%id/add/x"
+             data-action="move"
+             data-folder="%id"
+             data-dyn-inject="@data-folder, folders.id,
+                              @text,        folders.title,
+                              @href,        folders.id"
+             data-dyn-hook="click, ui.pages.move">
+             %title
+          </a>
+          <ol>
+            <li>This folder is empty.</li>
+            <li data-dyn-entity="folder[-1][pages]"
+                data-dyn-spawn-on="folders.pages">
+                <a href="/pages/%id"
+                   id="page_%id"
+                   data-dyn-inject="@text, folders.pages.title,
+                                    @href, folders.pages.id,
+                                    @id, folders.pages.id"
+                   data-dyn-hook="click, ui.pages.load">%title</a></li>
+          </ol>
+      </li>
+    </ul>
+  </div>
+</div><!--
+
+--><div id="editor_container"><!--
 
 --><div class="disabled" id="page_actions">
   <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a>
@@ -280,7 +256,8 @@
      href="/pages/x/pretty" id="preview">Pretty Version</a>
   <a id="destroy_page" class="confirm"
      data-confirmation="Are you sure you want this page to be FOREVER deleted?"
-     data-confirmation-cb="destroy_page"
+     data-confirmation-heading="Delete Page"
+     data-confirmation-cb="ui.pages.destroy"
      title="Deletes the page forever (Ctrl+Alt+D)">Delete</a>
   <a class="listlike">Share</a>
   <ol class="listlike">
@@ -299,6 +276,12 @@
     </li>
     <% end %>
   </ol>
+  
+  <a class="listlike">Move</a>
+  <ol class="listlike" id="movement_listing">
+    <li><a data-action="move" data-folder="0" href="/folders/x/add/y">Top folder</a></li>
+  </ol>
+
   <a class="listlike">Editor Actions</a>
   <ol class="listlike">
     <li class="sticky"><a href="#" title="Increase the height of the editor" id="increase_height">Grow</a></li>
