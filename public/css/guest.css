@@ -66,3 +66,7 @@ nav a { padding: 0; line-height: 40px; height: 40px; vertical-align: middle; hei
   width: 100%;
   clear: both;
 }
+
+.features h2 {
+  text-transform: capitalize;
+}

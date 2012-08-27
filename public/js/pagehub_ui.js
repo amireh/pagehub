@@ -370,7 +370,6 @@ pagehub_ui = function() {
       arrange: function(ul) {
         ui.status.mark_pending();
 
-        console.log("arranging folders")
         ul.prepend(ul.find('[data-parent=\\\%parent]:visible'));
 
         ul.find('> li.folder[data-parent]:not([data-parent=\\\%parent]):visible').each(function() {
@@ -429,9 +428,6 @@ pagehub_ui = function() {
         var folder_id = el.attr("id").replace("folder_", "");
 
         if (!removed[el.attr("id")]) {
-          console.log("folder#" + folder_id +" is being removed")
-          console.log(btn);
-
           pagehub.folders.destroy(folder_id,
             // success handler
             function() {
@@ -489,8 +485,6 @@ pagehub_ui = function() {
             var page    = JSON.parse(page),
                 content = page.content,
                 groups  = page.groups;
-
-                console.log(page)
 
             ui.editor.clearHistory();
             ui.editor.setValue(content);
@@ -598,21 +592,10 @@ pagehub_ui = function() {
           type: "PUT",
           success: function(page) {
             var page    = JSON.parse(page),
-                folder  = null;
-            console.log(page);
-            // dynamism.inject({ folders: [{ id: page.folder, pages: [ page ] }] }, $("#page_listing"));
-            // if (!page.folder) {
-            //   // $("#page_listing .folder.general-folder").append(page_li);
-            //   // return true;
-            //   folder = $("#page_listing .folder.general-folder");
-            // } else {
-              folder = $("#folder_" + page.folder);              
-            // }
+                folder  = $("#folder_" + page.folder);
 
             var current_listing = page_li.parent();
 
-            console.log("moving page to folder:")
-            console.log(folder)
             // 1. move the page <li> to the folder's
             folder.find("> ol > li:not(.folder):last").after(page_li);
             // 2. remove the folder's empty status if it's empty

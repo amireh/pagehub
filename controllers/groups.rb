@@ -98,7 +98,7 @@ end
 post '/groups/:current_name' do |current_name|
   restricted!
 
-  puts params.inspect
+  # puts params.inspect
   unless g = Group.first({ name: current_name })
     halt 400, "There is no such group named #{current_name}!"
   end

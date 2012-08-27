@@ -23,10 +23,10 @@ post '/folders' do
   restricted!
 
   # folder title must not be empty nor taken
-  puts "Validating title emptiness"
+  # puts "Validating title emptiness"
   halt 400, "Folder title must not be empty" if !params[:title] || params[:title].empty?
 
-  puts "Validating title"
+  # puts "Validating title"
   pretty_title = params[:title].sanitize
   if current_user.folders.first({ pretty_title: pretty_title })
     halt 400, "That folder name is unavailable."
@@ -35,10 +35,10 @@ post '/folders' do
   parent = nil
   if params[:folder_id] && params[:folder_id].to_i != 0 then
     parent = Folder.first({ id: params[:folder_id] })
-    puts "\tParent folder:#{parent.inspect}"
+    # puts "\tParent folder:#{parent.inspect}"
   end
 
-  puts "Creating folder"
+  # puts "Creating folder"
   f = Folder.create!({ 
     title: params[:title], 
     pretty_title: pretty_title, 
@@ -46,7 +46,7 @@ post '/folders' do
     folder: parent
   })
 
-  puts f.inspect
+  # puts f.inspect
 
   halt 501, "Unable to create folder #{params[:title]}." unless f
 
@@ -57,7 +57,7 @@ end
 put '/folders/:id' do |folder_id|
   restricted!
 
-  puts params.inspect
+  # puts params.inspect
 
   f = current_user.folders.first({ id: folder_id })
 
@@ -80,7 +80,7 @@ put '/folders/:id' do |folder_id|
   else
     parent = Folder.first({ id: parent_id })
     halt 500, "No such parent folder with the id #{parent_id}" if !parent
-    puts "\tParent folder:#{parent.inspect}"
+    # puts "\tParent folder:#{parent.inspect}"
   end
 
   unless f.update({ title: params[:title], pretty_title: pretty_title, folder: parent })
@@ -144,8 +144,8 @@ delete '/folders/:id' do |folder_id|
     halt 400, "That folder does not exist."
   end
 
-  puts "Deleting folder##{f.id}"
+  # puts "Deleting folder##{f.id}"
   rc = f.destroy
-  puts rc
+  # puts rc
   rc.to_json
 end

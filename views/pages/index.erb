@@ -30,7 +30,25 @@
 
   $(function() {
     var editor = null;
-    dynamism.configure({ debug: false })
+    dynamism.configure({ debug: false, logging: false })
+
+    var last_folder = null;
+    dynamism.register_factory("folders", function(el, folder) {
+      last_folder = folder;
+      var existing_folder = $("#folder_" + folder.id);
+      if (existing_folder.length == 1) {
+        // the folder exists, don't create another one
+        return existing_folder;
+      }
+
+      var target = $("[data-dyn-spawn-on='folders'][data-dyn-index=-1]");
+      if (target.length == 1) {
+        return dynamism.add(target);
+      }
+
+      return null;
+    });
+
 
     /* --- ------ *
      * The Editor *
@@ -58,7 +76,7 @@
           console.log("page created successfully")
           var page = JSON.parse(page);
           console.log(page);
-          dynamism.inject({ folders: [ { pages: [ page ] } ] }, $("#page_listing"));
+          dynamism.inject({ folders: [ { id: 0, pages: [ page ] } ] }, $("#page_listing"));
           $("#page_" + page.id).click();
           // var new_page = "<li><a id=\"page_" + page_id + "\">page #" + page_id + "</a></li>";
           // $("#page_listing").prepend(new_page);

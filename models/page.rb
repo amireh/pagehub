@@ -2,7 +2,7 @@ class Page
   include DataMapper::Resource
 
   property :id,           Serial
-  property :title,        String, length: 120, default: "Untitled"
+  property :title,        String, length: 120, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
   property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
   property :content,      Text, default: "This page is empty!"
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
@@ -22,6 +22,10 @@ class Page
   def public_url(relative = false)
     prefix = relative ? "" : "http://www.pagehub.org"
     "#{prefix}/#{self.user.nickname}/#{self.pretty_title}"
+  end
+
+  def self.random_suffix
+    Base64.urlsafe_encode64(Random.rand(12345 * 100).to_s)
   end
 
   def group_names()
