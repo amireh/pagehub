@@ -6,6 +6,22 @@
   $(function() {
 
     pagehub.confirm = function(msg, heading, callback) {
+
+      var accept_dialogue = function() {
+        console.log($(this));
+        if($(this).attr("id") == 'confirm_accepted') {
+          if (typeof callback == "string") {
+            window.location.href = callback;
+          } else {
+            callback();
+          }
+        }
+
+        $('#confirm').jqmHide();
+
+        return false;
+      }
+
       $('#confirm')
         .jqmShow()
         .find('h1')
@@ -16,28 +32,21 @@
         .end()
         .find(':submit:visible')
         .unbind('click')
-        .click(function() {
-          $('#confirm').jqmHide();
+        .click(accept_dialogue);
 
-          if($(this).attr("id") == 'confirm_accepted') {
-            if (typeof callback == "string") {
-              window.location.href = callback;
-            } else {
-              callback();
-            }
-          }
+      $("#confirm form").submit(function(e) {
+        e.preventDefault();
+        $("#confirm_accepted").click();
+        return false;
+      });
 
-          return false;
-        });
-
-      $("#confirm").find(':submit#confirm_accepted').focus()
+      // $("#confirm").find(':submit#confirm_accepted').focus();
+      $("#confirm").find('input[type=text]:first').focus();
     }
 
     $('#confirm').jqm({overlay: 88, modal: true, trigger: false});
     
     $('a.confirm').click(function(e) { 
-      log("intercepting confirmation")
-
       var a = $(this);
       pagehub.confirm(a.attr("data-confirmation"), a.attr("data-confirmation-heading"), function() {
         var method = dynamism.utility.lookup_method(a.attr("data-confirmation-cb"));
