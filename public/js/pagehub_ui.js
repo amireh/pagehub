@@ -215,6 +215,12 @@ pagehub_ui = function() {
           form.find("select :selected").attr("selected", null);
           form.find("select option[value=folder_" + parent + "]")
                 .attr("selected", "selected");
+
+          // we have to hide any children folders from the parent
+          // selection because that's not allowed
+          li.parent().find("li.folder").add(li.parent()).each(function() {
+            form.find("select option[value=" + $(this).attr("id") + "]").hide();
+          });
         }
         // $(window).bind('click', ui.save_title);
 
@@ -241,6 +247,7 @@ pagehub_ui = function() {
         if (ui.is_folder_selected()) {
           li.siblings("button[data-dyn-action=remove]:hidden").show();
           ui.dehighlight("folder");
+          form.find("option:hidden").show();
           $("#parent_folder_selection").hide();
         }
 
@@ -262,14 +269,14 @@ pagehub_ui = function() {
           resource_id   = current_folder_id(),
           parent_folder = $("#parent_folder_selection select :selected").attr("value").replace("folder_", "");
 
-          ui.status.show("Updating folder title...", "pending");
+          ui.status.show("Updating folder...", "pending");
           pagehub.folders.update(resource_id, title, parent_folder,
             function(f) {
               var f = JSON.parse(f);
               ui.folders.on_update(f);
             },
             function(rc) {
-              ui.status.show("Unable to update folder title" + rc.responseText, "bad");
+              ui.status.show("Unable to update folder: " + rc.responseText, "bad");
             });
 
         } else {
@@ -559,7 +566,7 @@ pagehub_ui = function() {
         if (!dont_show_status) {
           messages = {
             success: "Saved!",
-            error: "Unable to update page :("
+            error: "Unable to update page!"
           }
         }
 

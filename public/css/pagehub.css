@@ -196,13 +196,13 @@ a.button {
   color: #E94E77;
   cursor: pointer;
 }
-#page_listing {
+.listing {
   position: relative;
   padding: 0;
   margin-right: 5px;
 }
-#page_listing ul,
-#page_listing ol {
+.listing ul,
+.listing ol {
   /*list-style-type: none;*/
   padding: 0 0 0 15px;
   /*margin: 10px 0 0 0;*/

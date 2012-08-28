@@ -182,7 +182,7 @@
     data = <%= current_user.all_pages.to_json %>;
     dynamism.inject(data, $("#page_listing"));
 
-    <%# puts current_user.all_pages %>;
+    <% puts current_user.all_pages %>;
 
   }); 
 </script>
@@ -224,7 +224,7 @@
       </div>
     </div>
 
-    <ul id="page_listing" data-dyn-hook="post-injection, ui.folders.arrange">
+    <ul id="page_listing" class="listing" data-dyn-hook="post-injection, ui.folders.arrange">
 
       <li data-dyn-entity="folder"
           data-dyn-spawn-on="folders"
@@ -261,6 +261,22 @@
                    data-dyn-hook="click, ui.pages.load">%title</a></li>
           </ol>
       </li>
+    </ul>
+
+    <ul class="listing" id="group_listing">
+      <% current_user.groups.each do |g| %>
+        <% folderless_pages = g.pages.all({ :folder_id => nil }) %>
+        <% unless folderless_pages.empty? then %>
+          <li class="folder">
+            <span class="folder_title"><%= g.title %></span>
+            <ol>
+              <% folderless_pages.each do |p| %>
+                <li><%= p.title %></li>
+              <% end %>
+            </ol>
+          </li>
+        <% end %>
+      <% end %>
     </ul>
   </div>
 </div><!--
