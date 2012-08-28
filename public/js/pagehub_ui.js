@@ -460,7 +460,6 @@ pagehub_ui = function() {
 
       highlight: function() {
         var span = $(this);
-        console.log("Highlighting folders");
         if ($(this).hasClass("highlighted")) {
           $("span.folder_title.highlighted").removeClass("highlighted");
         } else {
