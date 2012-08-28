@@ -1,3 +1,4 @@
+# Forcing some sane limits on fields
 migration 1, :change_string_lengths do
   up do
     adapter = DataMapper.repository(:default).adapter
@@ -16,12 +17,102 @@ migration 1, :change_string_lengths do
     }.each_pair { |table, entries|
       entries.each_pair { |col, sz|
         query = "ALTER TABLE #{table} MODIFY COLUMN #{col} varchar(#{sz});"
-        puts query
         adapter.execute(query)
       }
     }
   end
 
   down do
+  end
+end
+
+# Folder and Page models are no longer separate entities
+# but instead inherit from the Resource model, so DataMapper
+# by default uses a joined table (called `resources`) to hold
+# both types of records (identified by the unique `type` field).
+#
+# What this migration has to do is fool DM into using the old
+# recordset (tables `folders` and `pages`), get the old records
+# and convert them into Resources (by adding the required `type`).
+migration 2, :convert_to_resources do
+  up do
+    adapter = DataMapper.repository(:default).adapter
+
+    # migrate pages
+    begin; adapter.execute("ALTER TABLE pages DROP type;"); rescue; end
+    # and folders
+    begin; adapter.execute("ALTER TABLE folders DROP type;"); rescue; end
+
+    adapter.execute("ALTER TABLE pages ADD COLUMN type VARCHAR(50);")
+    adapter.execute("ALTER TABLE folders ADD COLUMN type VARCHAR(50);")
+    adapter.execute("UPDATE pages set type='Page';")
+    adapter.execute("UPDATE folders set type='Folder';")
+
+    class Folder; storage_names[:default] = "folders"; end
+    class Page; storage_names[:default] = "pages"; end
+
+    # recreate all the folders...
+    old_folders = []
+    Folder.all.each { |f|
+      old_folders << { 
+        id:           f.id,
+        title:        f.title,
+        pretty_title: f.pretty_title,
+        user_id:      f.user_id,
+        folder_id:    f.folder_id,
+        created_at:   f.created_at
+      }
+      of = old_folders.last
+      puts "\tOld folder: #{of[:id]} #{of[:title]} #{of[:pretty_title]} => #{of[:user_id]} #{of[:folder]}"
+    }
+    puts "Migrating #{old_folders.size} old folders"
+    class Folder; storage_names[:default] = "resources"; end
+    old_folders.each { |of|
+      if !Folder.create(of)
+        puts "ERROR: unable to create folder #{of}"
+        break
+      end
+    }
+    # folders need to be re-linked after creation,
+    # because looking them up in the loop above will
+    # not work as they would not have been created yet
+    puts "Linking folders"
+    old_folders.each { |of|
+      if of[:folder_id] then
+        Folder.get(of[:id]).update(folder_id: of[:folder_id])
+      end
+    }
+
+    old_pages = []
+    Page.all.each { |p|
+      old_pages << { 
+        id: p.id,
+        title: p.title,
+        pretty_title: p.pretty_title,
+        content: p.content,
+        user: p.user,
+        folder: p.folder,
+        created_at: p.created_at,
+        type: "Page"
+      }
+      op = old_pages.last
+      puts "\tOld page: #{op[:id]} #{op[:title]} #{op[:pretty_title]} => \
+            user: #{op[:user_id]} folder: #{op[:folder_id]}, #{op[:content] ? op[:content].size : ''}"
+    }
+    puts "Migrating #{old_pages.size} old pages"
+    class Page; storage_names[:default] = "resources"; end
+    old_pages.each { |op|
+      if !Page.create(op)
+        puts "ERROR: unable to create page #{op}"
+        break
+      end
+    }
+
+  end
+  down do
+    adapter = DataMapper.repository(:default).adapter
+    begin adapter.execute("ALTER TABLE pages DROP type;"); rescue; end
+    begin adapter.execute("ALTER TABLE folders DROP type;"); rescue; end
+    begin adapter.execute("TRUNCATE resources;"); rescue; end
   end
 end

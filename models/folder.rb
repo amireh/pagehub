@@ -1,17 +1,9 @@
-class Folder
-  include DataMapper::Resource
-
-  property :id, Serial
-  
-  property :title,        String, length: 120, required: true
-  property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
-  property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
+# Folders are a grouping of pages and folders.
+class Folder < PageHub::Resource
 
   has n, :pages, :constraint => :set_nil
-  belongs_to :user
-  belongs_to :folder, default: 0, required: false
-
-  validates_presence_of :title
+  has n, :groups, :through => DataMapper::Resource
+  belongs_to :folder, default: nil, required: false
 
   def serialize(*args)
     pages = []
@@ -20,11 +12,22 @@ class Folder
     }
     { id: id, parent: folder_id, title: title, pages: pages }
   end
+  
   def to_json(*args)
     serialize.to_json
   end
 
-  # def self.to_json
-  #   {}.to_json
-  # end
+  def child_folders(all_folders = [])
+    all_folders = []
+    self.folders.each { ||}
+  end
+
+  def is_child_of?(in_folder)
+    if self.folder then
+      return self.folder == in_folder ? true : self.folder.is_child_of?(in_folder)
+    end
+
+    false
+  end
+  
 end

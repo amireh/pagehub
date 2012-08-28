@@ -19,7 +19,7 @@ class User
 
   # has n, :notebooks
   has n, :pages
-  has n, :groups, :through => Resource
+  has n, :groups, :through => DataMapper::Resource
   has n, :folders
 
   validates_presence_of :name, :provider, :uid
@@ -31,12 +31,14 @@ class User
   end
 
   def all_pages
-    pages = { folders: [] }
-    self.folders.each { |f| pages[:folders] << f.serialize }
+    c = { folders: [] }
+    folders.each { |f| c[:folders] << f.serialize }
 
+    # pages in no folder
     folderless = { title: "None", id: 0, pages: [] }
-    self.pages.all(folder_id: nil).each { |p| folderless[:pages] << p.serialize }
-    pages[:folders] << folderless
-    pages
+    pages.all(folder_id: nil).each { |p| folderless[:pages] << p.serialize }
+    c[:folders] << folderless
+
+    c
   end
 end

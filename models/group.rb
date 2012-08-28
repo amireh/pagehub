@@ -10,9 +10,18 @@ class Group
   # has n, :notebooks
   has n, :users, :through => Resource
   has n, :pages, :through => Resource
+  has n, :folders, :through => Resource
   belongs_to :admin, 'User', key: true
 
   validates_presence_of :name
+
+  def serialize
+    { id: id, name: name, pages: serialize_pages }
+  end
+
+  def serialize_pages
+    pages = []; pages.each { |p| pages << { id: p.id, title: p.title } }; pages
+  end
 
   def has_member?(user)
     self.users.each { |u| return true if user.nickname == u.nickname }
