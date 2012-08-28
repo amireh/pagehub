@@ -456,6 +456,17 @@ pagehub_ui = function() {
           // don't let dynamism remove the listing just yet
           throw "Halting.";
         }
+      }, // pagehub_ui.folders.on_removal
+
+      highlight: function() {
+        var span = $(this);
+        console.log("Highlighting folders");
+        if ($(this).hasClass("highlighted")) {
+          $("span.folder_title.highlighted").removeClass("highlighted");
+        } else {
+          $(this).addClass("highlighted");
+          $(this).parents(".folder").find("> span.folder_title").addClass("highlighted");
+        }
       }
     },
 

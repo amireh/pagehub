@@ -64,12 +64,6 @@ code {
   box-shadow: none;
 }
 
-a,
-a:visited {
-  color: #D4EE5E;
-  color: #F0AD11;
-  /*color: #E15E32;*/
-}
 header {
   /*margin-bottom: 30px;*/
   max-height: 65px;
@@ -84,14 +78,10 @@ header h1 a {
   /*color: #FFFEDF !important;*/
 }
 
-h1,h2,h3,
-h1 a,
-h1 a:visited {
-  color: #E94E77;
-}
+header { position: relative; }
+header, nav { z-index: 102; }
 
-h2,
-.member header h1 a em {
+h2 {
   color: #7ea800;
 }
 h3 {
@@ -223,6 +213,7 @@ a.button {
   clear: both;
   width: 100%;
   padding: 0;
+  max-width: 210px;
   line-height: 18px;
   vertical-align: top;
   margin-bottom: 5px;
@@ -279,7 +270,8 @@ a.button {
 }
 
 a,
-#pages li {
+#pages li,
+.highlighted {
   text-decoration: none;
   -webkit-transition: color 0.25s ease 0s;
   -moz-transition:    color 0.25s ease 0s;
@@ -759,21 +751,23 @@ button.edit_folder {
 }
 #pages li.folder > span {
   display: block;
-  /*margin-bottom: 5px;*/
+  margin-bottom: 5px;
   font-weight: bold;
-  padding-left: 10px;
-  margin-left: -10px;
-  border-top-left-radius:     8px;
-  border-bottom-left-radius:  8px;
+  padding: 5px 0;
+  /*padding-left: 10px;*/
+  /*margin-left: -10px;*/
+  /*border-top-left-radius:     8px;*/
+  /*border-bottom-left-radius:  8px;*/
 }
 #pages li.folder > span:hover {
-  background: rgba(0,0,0,0.075);
+  /*background: rgba(0,0,0,0.05);*/
+  /*box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);*/
   cursor: pointer;
 }
 #pages li.folder > button[data-dyn-action=remove] {
   position: absolute;
   padding: 0 10px;
-  right: -5px; top: -1px;
+  right: -5px; top: 4px;
   background: none;
   color: #ddd;
   border: none;

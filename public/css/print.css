@@ -1,0 +1,10 @@
+header {
+  max-height: inherit;
+  margin-top: 15px;
+}
+body #content {
+  padding-bottom: 10px;
+}
+header h1 {
+  line-height: normal;
+}

@@ -14,6 +14,28 @@ body {
   background: rgba(0,0,0,0.1);
 }
 
+a,
+a:visited {
+  /*color: #D4EE5E;*/
+  color: #F0AD11;
+  /*color: #008cdd;*/
+}
+.highlighted {
+  color: #E15E32;  
+}
+
+header h1 a:visited,
+header h1 a {
+  letter-spacing: 5px;
+  font-weight: 100;
+  color: inherit;
+  font-family: inherit;
+}
+
+header h1 a em {
+  color: #F4FAD2;
+}
+
 hr {
   box-shadow: none;
   border-color: rgba(0,0,0,0.2);

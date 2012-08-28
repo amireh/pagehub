@@ -1,5 +1,8 @@
+# encoding: UTF-8
+
 require 'redcarpet'
 require 'albino'
+require 'addressable/uri'
 
 # a renderer that uses Albino to highlight syntax
 class HTMLwithAlbino < Redcarpet::Render::HTML
@@ -14,7 +17,12 @@ end
 
 class String
   def sanitize
-    self.downcase.gsub(/\W/,'-').squeeze('-').chomp('-')
+    Addressable::URI.
+      parse(self.
+            downcase.
+            gsub(/[[:^word:]]/u,'-').
+            squeeze('-').chomp('-')
+      ).normalized_path
   end
 
   def to_markdown

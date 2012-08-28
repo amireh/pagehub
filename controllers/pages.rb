@@ -145,7 +145,9 @@ get '/:nickname/:title' do |nn, title|
   # try a public-shared page
   @user = User.first({ nickname: nn })
   if @user
-    unless @page = Page.first({ pretty_title: title, user_id: @user.id })
+    unless @page = Page.first({ pretty_title: title.sanitize, user_id: @user.id })
+      puts "ERROR: public page could not be found with sane title: #{title.sanitize}"
+
       halt 404, "No page with title #{title} could be found."
     end
 
@@ -165,7 +167,7 @@ get '/:nickname/:title' do |nn, title|
       end
 
       # locate the page
-      pages = Page.all({ pretty_title: title })
+      pages = Page.all({ pretty_title: title.sanitize })
       pages.each { |p| 
         group_page = GroupPage.first({ group_id: @group.id, page_id: p.id })
         if group_page
