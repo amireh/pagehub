@@ -20,8 +20,6 @@ class User
   has n, :pages
   has n, :groups, :through => DataMapper::Resource
   has n, :folders
-  has n, :shares, :through => :pages, :as => :page_shares
-  has n, :shares, :through => :folders, :as => :folder_shares
 
   validates_presence_of :name, :provider, :uid
 
@@ -31,15 +29,22 @@ class User
     true
   end
 
+  def page_shares(args = {})
+    shares = []
+    pages.each { |p| p.shares(args).each { |s| shares << s } }
+    shares
+  end
+
   def all_pages
     c = { folders: [] }
     folders.each { |f| c[:folders] << f.serialize }
 
     # pages in no folder
     folderless = { title: "None", id: 0, pages: [] }
-    pages.all(folder_id: nil).each { |p| folderless[:pages] << p.serialize }
+    pages.all(folder: nil).each { |p| folderless[:pages] << p.serialize }
     c[:folders] << folderless
 
     c
   end
+
 end

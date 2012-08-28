@@ -11,7 +11,7 @@ class Folder < PageHub::Resource
     self.pages.each { |p|
       pages << { title: p.title, id: p.id }
     }
-    super().merge({ parent: folder_id, pages: pages })
+    super().merge({ parent: self.folder_id, pages: pages })
   end
   
   def is_child_of?(in_folder)

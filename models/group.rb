@@ -9,12 +9,21 @@ class Group
 
   # has n, :notebooks
   has n, :users, :through =>    DataMapper::Resource
-  has n, :pages, :through =>    DataMapper::Resource
-  has n, :folders, :through =>  DataMapper::Resource
+  # has n, :pages, :through =>    :shares
+  # has n, :folders, :through =>  DataMapper::Resource
+  has n, :resources, PageHub::Resource, :through => :shares
   has n, :shares
   belongs_to :admin, 'User', key: true
 
   validates_presence_of :name
+
+  def pages
+    resources.all({ type: "Page" })
+  end
+
+  def folders
+    resources.all({ type: "Folder" })
+  end
 
   def serialize
     { id: id, name: name, pages: serialize_pages }

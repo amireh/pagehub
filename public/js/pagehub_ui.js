@@ -381,7 +381,8 @@ pagehub_ui = function() {
 
         ul.find('> li.folder[data-parent]:not([data-parent=\\\%parent]):visible').each(function() {
           var parent_id = parseInt($(this).attr("data-parent"));
-          var parent = $("#folder_" + parent_id);
+          var parent = $("#" 
+            + (ul.attr("id") == "group_listing" ? "g" : "") + "folder_" + parent_id);
           if (parent.length == 1) {
             // parent.append('<ul></ul>');
             parent.find("> ol").append($(this));

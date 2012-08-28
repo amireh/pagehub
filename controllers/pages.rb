@@ -4,7 +4,7 @@ get '/pages/:id.json' do |id|
   p = Page.first(id: id, user_id: current_user.id)
 
   if !p
-    return "Sorry, I was unable to find the page :("
+    halt 404, "Page could not be found."
   end
 
   { id: p.id, content: p.content, groups: p.group_names, folder: p.folder ? p.folder.id : 0 }.to_json
@@ -111,14 +111,18 @@ get '/pages/:id/share/:group' do |id, group_name|
 
   halt 403, "You do not belong to that group" unless g.has_member?(current_user)
 
-  @page = Page.first({ id: id, user_id: current_user.id })
-
-  halt 404, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
-
-  unless g.has_page?(@page)
-    g.pages << @page
-    g.save
+  unless @page = Page.first({ id: id, user_id: current_user.id })
+    halt 404, "This link seems to point to a non-existent page, you sure you got it right?"
   end
+
+  if @page.shares.first({ group: g })
+    flash[:error] = "This resource is already shared with the group #{g.title}."
+    return redirect "/groups/#{g.name}"
+  end
+
+  Share.create({ resource: @page, group: g })
+  
+  flash[:notice] = "Resource #{@page.title} is now shared with #{g.title}."
 
   redirect "/#{g.name}/#{@page.title.sanitize}"
 end
@@ -128,14 +132,13 @@ end
 get '/pages/:id/unshare' do |id|
   restricted!
 
-  @page = Page.first({ id: id, user_id: current_user.id })
+  page = Page.first({ id: id })
 
-  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
-
-  @pp = PublicPage.first({ page_id: @page.id, user_id: @page.user_id })
-  if @pp then
-    @pp.destroy
-    flash[:notice] = "The page titled #{@page.title} is no longer publicly shared."
+  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !page
+  
+  if share = Share.first({ resource: page, group: nil, user: nil }) then
+    share.destroy
+    flash[:notice] = "The page titled #{page.title} is no longer publicly shared."
   else
     flash[:error] = "This page does not seem to be publicly shared, are you sure you've shared it?"
   end
@@ -148,14 +151,19 @@ end
 get '/pages/:id/unshare/:group_id' do |id, group_id|
   restricted!
 
-  gp = GroupPage.first({ page_id: id, group_id: group_id })
+  unless page = Page.get(id)
+    halt 501, "This link seems to point to a non-existent page, you sure you got it right?"
+  end
 
-  halt 501, "That page doesn't seem to be shared with that group." if !gp
+  unless group = Group.first({ id: group_id })
+    halt 501, "No such group."
+  end
 
-  page = Page.get(gp.page_id)
-  group = Group.first({ id: gp.group_id })
-
-  gp.destroy
+  unless share = Share.first({ resource: page, group: group })
+    halt 501, "That page doesn't seem to be shared with that group."
+  end
+  
+  share.destroy
 
   flash[:notice] = "Page #{page.title} is no longer shared with the group #{group.title}."
   redirect :"/pages/public"
@@ -167,16 +175,26 @@ get '/:nickname/:title' do |nn, title|
   # try a public-shared page
   @user = User.first({ nickname: nn })
   if @user
-    unless @page = Page.first({ pretty_title: title.sanitize, user_id: @user.id })
+    @pages = Page.all({ pretty_title: title.sanitize, user_id: @user.id })
+
+    if @pages.empty?
       puts "ERROR: public page could not be found with sane title: #{title.sanitize}"
 
       halt 404, "No page with title #{title} could be found."
     end
 
     # @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
-    share = Share.first({ resource: @page, user: nil, group: nil })
-
-    halt 403, "This page can only be viewed by its author." if !share
+    puts "Looking for a public share for #{@page.inspect}"
+    shared = false
+    @pages.each { |p|
+      @page = p
+      if Share.first({ resource: @page, user: nil, group: nil })
+        shared = true
+        break
+      end
+    }
+    
+    halt 403, "This page can only be viewed by its author." unless shared
 
     @public = true
     return erb :"pages/pretty", layout: :"layouts/print"
@@ -184,32 +202,30 @@ get '/:nickname/:title' do |nn, title|
 
   # try a group shared page    
   if @group = Group.first({ name: nn })
-    if current_user
-      # the user must belong to this group
-      if !@group.has_member?(current_user)
-        halt 403, "You do not have access to the pages of this group."
-      end
-
-      # locate the page
-      pages = Page.all({ pretty_title: title.sanitize })
-      pages.each { |p| 
-        group_page = GroupPage.first({ group_id: @group.id, page_id: p.id })
-        if group_page
-          @page = p
-          break
-        end
-      }
-
-      if @page then
-        @public = true
-        return erb :"pages/pretty", layout: :"layouts/print"
-      end
-
-      halt 404, "No page with title #{title} for the group #{nn} could be found."
-    else
+    if !current_user
       # not logged in
       halt 403, "You must be logged in as a member of the group #{@group.title} to view this page."
     end
+
+    # the user must belong to this group
+    if !@group.has_member?(current_user)
+      halt 403, "You do not have access to the pages of this group."
+    end
+
+    # locate the page
+    @page = nil
+    title = title.sanitize
+    Share.all({ group: @group, user: nil }).each { |share|
+      if share.resource.pretty_title == title
+        @page = share.resource
+        break
+      end
+    }
+
+    halt 403, "No page with title #{title} for the group #{nn} could be found." if !@page
+
+    @public = true
+    return erb :"pages/pretty", layout: :"layouts/print"
   end
 
   halt 404, "This seems to be an invalid link."

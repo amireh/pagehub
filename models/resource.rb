@@ -10,9 +10,10 @@ module PageHub
     property :type,         Discriminator
     property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
+    belongs_to :folder, default: nil
     belongs_to :user
     has n, :shares
-    
+
     validates_presence_of :title
 
     # before :valid? do
@@ -22,7 +23,7 @@ module PageHub
     # end
 
     def serialize(*args)
-      { id: id, title: title }
+      { id: self.id, title: self.title }
     end
 
     def to_json(*args)

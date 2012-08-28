@@ -4,7 +4,9 @@
   Clicking on them will take you to the public link that you can share with others.</p>
 
 <ol>
-<% @pages.each do |p| %>
+  <%= "You have shared no pages with the public." if current_user.page_shares({ user: nil, group: nil }).empty? %>
+<% current_user.pages.each do |p| %>
+  <% next if p.shares.empty? %>
   <li><a href="<%= p.public_url true %>"><%= p.title %></a>
     <small>
       -
@@ -18,7 +20,7 @@
 
 <h3>Group Shares</h3>
 <% current_user.groups.each do |g| %>
-  <% user_group_pages = g.pages.all({ user_id: current_user.id }) %>
+  <% user_group_pages = g.pages.all(user: current_user) %>
   <h4><%= g.title %> <small>(<%= user_group_pages.size %> pages shared)</small></h4>
   <ol>
   <% user_group_pages.each do |p| %>
