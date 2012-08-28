@@ -7,9 +7,8 @@ class Group
   property :title,      String, length: 120
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
-  # has n, :notebooks
-  has n, :users, :through => Resource
-  has n, :pages, :through => Resource
+  has n,     :users, :through => Resource
+  has n,     :pages, :through => Resource
   belongs_to :admin, 'User', key: true
 
   validates_presence_of :name

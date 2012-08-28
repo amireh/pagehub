@@ -80,6 +80,10 @@ put '/folders/:id' do |folder_id|
   else
     parent = Folder.first({ id: parent_id })
     halt 500, "No such parent folder with the id #{parent_id}" if !parent
+    
+    if parent.is_child_of?(f) then
+      halt 500, "You cannot add the folder #{f.title} to #{parent.title}."
+    end
     # puts "\tParent folder:#{parent.inspect}"
   end
 

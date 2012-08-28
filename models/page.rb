@@ -7,11 +7,9 @@ class Page
   property :content,      Text, default: "This page is empty!"
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
-  # belongs_to :notebook
-  belongs_to :user
-  belongs_to :folder, required: false
-  has n, :tags, :through => Resource
-  has n, :groups, :through => Resource
+  belongs_to  :user
+  belongs_to  :folder, required: false
+  has n,      :groups, :through => Resource
 
   before :valid? do |_|
     self.pretty_title = self.title.sanitize
