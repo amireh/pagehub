@@ -63,6 +63,14 @@ get '/pages/public' do
   erb :"pages/public"
 end
 
+helpers do
+  def collect_errors(resource)
+    errors = []
+    resource.errors.each { |e| errors << e }
+    errors
+  end
+end
+
 # Creates a publicly accessible version of the given page.
 # The public version will be accessible at:
 # => /user-nickname/pretty-article-title
@@ -73,9 +81,23 @@ get '/pages/:id/share' do |id|
 
   @page = Page.first({ id: id, user_id: current_user.id })
 
+  if existing_share = Share.first({ resource: @page, group: nil, user: nil }) then
+    flash[:notice] = "This page seems to already be shared with the public."
+    return redirect "/#{@page.user.nickname}/#{@page.title.sanitize}"
+  end
+
   halt 404, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
 
-  @pp = PublicPage.first_or_create({ page_id: @page.id, user_id: @page.user_id })
+  share = Share.new({ resource: @page })
+
+  if !share.valid?
+    halt 500, "Unable to share page: share error: #{collect_errors(share)}"
+  end
+
+  share.save
+
+  # @pp = PublicPage.first_or_create({ page_id: @page.id, user_id: @page.user_id })
+  # halt 500, "Testing"
 
   redirect "/#{@page.user.nickname}/#{@page.title.sanitize}"
 end
@@ -151,8 +173,10 @@ get '/:nickname/:title' do |nn, title|
       halt 404, "No page with title #{title} could be found."
     end
 
-    @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
-    halt 403, "This page can only be viewed by its author." if !@pp
+    # @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
+    share = Share.first({ resource: @page, user: nil, group: nil })
+
+    halt 403, "This page can only be viewed by its author." if !share
 
     @public = true
     return erb :"pages/pretty", layout: :"layouts/print"

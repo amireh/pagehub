@@ -17,10 +17,11 @@ class User
   property :auto_nickname,  Boolean, default: false
   property :created_at,     DateTime, default: lambda { |*_| DateTime.now }
 
-  # has n, :notebooks
   has n, :pages
   has n, :groups, :through => DataMapper::Resource
   has n, :folders
+  has n, :shares, :through => :pages, :as => :page_shares
+  has n, :shares, :through => :folders, :as => :folder_shares
 
   validates_presence_of :name, :provider, :uid
 

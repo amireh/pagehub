@@ -116,3 +116,52 @@ migration 2, :convert_to_resources do
     begin adapter.execute("TRUNCATE resources;"); rescue; end
   end
 end
+
+migration 3, :default_folders do
+  up do
+    User.all.each { |u|
+      f = Folder.new({ title: "None", user: u, is_default: true })
+      f.folder = f
+      f.save
+
+      if !f.valid?
+        puts "ERROR: Default folder could not be created:"
+        puts eidx = 1
+        f.errors.each { |e|
+          puts "\t#{eidx} => #{e}"
+          eidx += 1
+        }
+
+        raise RuntimeError.new("Default folder creation failed")
+      end
+
+      puts "Default folder: #{f.inspect}"
+
+      # link folderless pages to the default one
+      puts "#{u.pages.count({ folder: nil })} orphaned pages"
+      u.pages.all({ folder: nil }).each { |p|
+        p.update({ folder: f })
+      }
+      puts "#{u.pages.count({ folder: nil })} orphaned pages remain."
+
+      # link folders to the default one
+      puts "#{u.folders.count({ folder: nil })} orphaned folders"
+      u.folders.all({ folder: nil }).each { |orphan_f|
+        orphan_f.update({ folder: f })
+      }
+      puts "#{u.folders.count({ folder: nil })} orphaned folders remain."
+
+
+    }
+  end
+
+  down do
+    User.all.each { |u|
+      f = u.default_folder
+      if f
+        u.folders.all({ folder_id: f.id }).each { |child_f| child_f.update!(folder: nil) }
+        f.destroy
+      end
+   }
+  end
+end

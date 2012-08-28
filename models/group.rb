@@ -8,9 +8,10 @@ class Group
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   # has n, :notebooks
-  has n, :users, :through => Resource
-  has n, :pages, :through => Resource
-  has n, :folders, :through => Resource
+  has n, :users, :through =>    DataMapper::Resource
+  has n, :pages, :through =>    DataMapper::Resource
+  has n, :folders, :through =>  DataMapper::Resource
+  has n, :shares
   belongs_to :admin, 'User', key: true
 
   validates_presence_of :name

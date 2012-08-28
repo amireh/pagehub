@@ -13,12 +13,32 @@
 # Shares callbacks:
 # => notification when a share is revoked
 
-# class Share
-#   include DataMapper::Resource
+class Share
+  include DataMapper::Resource
 
-#   property :id, Serial
+  property :id, Serial
+  property :permissions, Flag[ :read, :write, :append ], default: :read
+  property :created_at,     DateTime, default: lambda { |*_| DateTime.now }
   
-#   belongs_to :user
-#   property :permissions, Flag [ :read, :write, :append ]
-#   property :created_at,     DateTime, default: lambda { |*_| DateTime.now }
-# end
+  belongs_to :user, required: false
+  belongs_to :group, required: false
+  belongs_to :resource, PageHub::Resource
+  # has 1, :user, :through => :resource, :as => :source
+  # has 1, :share_target
+
+  def target
+    user || group
+  end
+
+  def group_share?
+    !group.nil?
+  end
+
+  def user_share?
+    !user.nil?
+  end
+
+  def public_share?
+    !user && !group
+  end
+end

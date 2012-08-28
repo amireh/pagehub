@@ -11,13 +11,22 @@ module PageHub
     property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
     belongs_to :user
-
+    has n, :shares
+    
     validates_presence_of :title
 
-    before :valid? do |_|
-      self.pretty_title = self.title.sanitize
+    # before :valid? do
+    #   self.pretty_title = self.title.sanitize
 
-      true
+    #   true
+    # end
+
+    def serialize(*args)
+      { id: id, title: title }
+    end
+
+    def to_json(*args)
+      serialize.to_json
     end
 
     def self.random_suffix
