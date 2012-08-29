@@ -213,7 +213,9 @@ pagehub_ui = function() {
 
         if (ui.is_folder_selected()) {
           var parent = li.parent().attr("data-parent");
-          parent = parent == "%parent" ? 0 : parent;
+          if (!parent)
+            parent = "0";
+          
 
           form.find("select :selected").attr("selected", null);
           form.find("select option[value=folder_" + parent + "]")
@@ -221,9 +223,9 @@ pagehub_ui = function() {
 
           // we have to hide any children folders from the parent
           // selection because that's not allowed
-          // li.parent().find("li.folder").add(li.parent()).each(function() {
-          //   form.find("select option[value=" + $(this).attr("id") + "]").hide();
-          // });                
+          li.parent().find("li.folder").add(li.parent()).each(function() {
+            form.find("select option[value=" + $(this).attr("id") + "]").hide();
+          });
         }
         // $(window).bind('click', ui.save_title);
 
@@ -269,7 +271,12 @@ pagehub_ui = function() {
         
         // is it a folder?
         if (ui.is_folder_selected()) {
-          resource_id   = current_folder_id(),
+          resource_id   = current_folder_id();
+          
+          if ($("#parent_folder_selection select :selected").length == 0) {
+            $("#parent_folder_selection select option:first").attr("selected", "selected");
+          }
+
           parent_folder = $("#parent_folder_selection select :selected").attr("value").replace("folder_", "");
 
           ui.status.show("Updating folder...", "pending");
@@ -381,7 +388,11 @@ pagehub_ui = function() {
         // if its parent has changed, we need to reorder
         // it and re-sort the folder listing
         var folder = $("#folder_" + f.id);
-        folder.attr("data-parent", f.parent || "%parent");
+        if (f.parent)
+          folder.attr("data-parent", f.parent);
+        else
+          folder.attr("data-parent", null);
+
         folder.find("> span:first").html(f.title);
         ui.folders.arrange($("#page_listing"));
 
@@ -429,7 +440,7 @@ pagehub_ui = function() {
         ul.prepend(ul.find('li.folder:not([data-parent]):visible'));
 
         ul.find('li.folder[data-parent]:visible').each(function() {
-          var parent_id = parseInt($(this).attr("data-parent"));
+          var parent_id = parseInt($(this).attr("data-parent") || "0");
           var parent = $("#folder_" + parent_id);
           if (parent.length == 1) {
             // parent.append('<ul></ul>');

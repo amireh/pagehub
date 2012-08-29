@@ -40,7 +40,11 @@ class Folder
 
   def serialize
     pages = []; self.pages.each { |p| pages << p.serialize.delete!(:folder) }
-    { id: id, parent: folder ? folder.id : nil, title: title, pages: pages }
+    out = { id: id, title: title, pages: pages }
+    if folder
+      out[:parent] = folder.id
+    end
+    out
   end
 
   def to_json
