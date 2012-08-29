@@ -65,36 +65,8 @@
     /* ------ -------- *
      * Action bindings *
      * ------ -------- */
-    ui.on_action("new_page", function() {
-      ui.status.show("Creating a new page...", "pending");
+    ui.on_action("new_page", ui.pages.create, { is_editor_action: false }); // action[new_page]
 
-      $.ajax({
-        url: "/pages",
-        type: "POST",
-        success: function(page) {
-          console.log("page created successfully")
-          var page = JSON.parse(page);
-          console.log(page);
-          dynamism.inject({ folders: [ { id: 0, pages: [ page ] } ] }, $("#page_listing"));
-          $("#page_" + page.id).click();
-          // var new_page = "<li><a id=\"page_" + page_id + "\">page #" + page_id + "</a></li>";
-          // $("#page_listing").prepend(new_page);
-          // ui.dehighlight();
-          // $("#page_listing li:first a").click(get_page).click();
-
-          ui.editor.setValue("Preparing newly created page... hold on.");
-        },
-        error: function(e) {
-          console.log("smth bad happened")
-          console.log(e)
-        }
-      });
-
-      // roll up the option list
-      $("a.listlike.selected").click();
-
-      return true;
-    }, { is_editor_action: false }); // action[new_page]
 
     // $.jqm({ trigger: $("#new_folder")})
     // ui.on_action("new_folder", function() {
@@ -234,7 +206,6 @@
           data-dyn-hook="post-injection, ui.folders.on_injection,
                          removal, ui.folders.on_removal"
           data-dyn-inject="@id, folders.id, @data-parent, folders.parent"
-          data-parent="%parent"
           id="folder_%id"
           class="folder">
           <span data-dyn-inject="@text, folders.title"

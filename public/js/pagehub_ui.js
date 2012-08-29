@@ -376,6 +376,8 @@ pagehub_ui = function() {
       on_update: function(f) {
         ui.status.show("Folder updated!", "good");
 
+        console.log(f);
+
         // if its parent has changed, we need to reorder
         // it and re-sort the folder listing
         var folder = $("#folder_" + f.id);
@@ -423,19 +425,24 @@ pagehub_ui = function() {
       arrange: function(ul) {
         ui.status.mark_pending();
 
-        // Parent-less folders go to the top
-        ul.prepend(ul.find('[data-parent=\\\%parent]:visible'));
+        console.log("arranging folders...");
 
-        ul.find('> li.folder[data-parent]:not([data-parent=\\\%parent]):visible').each(function() {
+        // Parent-less folders go to the top
+        ul.prepend(ul.find('li.folder:not([data-parent]):visible'));
+
+        log("Arranging " + ul.find('> li.folder[data-parent]:visible').length + " folders")
+        ul.find('li.folder[data-parent]:visible').each(function() {
           var parent_id = parseInt($(this).attr("data-parent"));
           var parent = $("#folder_" + parent_id);
           if (parent.length == 1) {
             // parent.append('<ul></ul>');
             parent.find("> ol").append($(this));
           } else {
-            console.log("[ERROR]: Unknown parent!")
+            console.log("[ERROR]: Unknown parent " + parent_id + "!")
+            console.log($(this))
           }
         });
+
 
         // sort the folders alphabetically
         // code adapted from: http://www.onemoretake.com/2009/02/25/sorting-elements-with-jquery/
@@ -457,8 +464,7 @@ pagehub_ui = function() {
           = $("#page_listing").find(".folder.general-folder");
             $("#page_listing").append(general_folder);
 
-        ui.status.mark_ready();
-     
+        ui.status.mark_ready();     
       },
 
       edit_title: function() {
