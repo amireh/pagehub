@@ -29,11 +29,8 @@
 
   $(function() {
     var editor = null;
-    dynamism.configure({ debug: false, logging: false })
 
-    var last_folder = null;
     dynamism.register_factory("folders", function(el, folder) {
-      last_folder = folder;
       var existing_folder = $("#folder_" + folder.id);
       if (existing_folder.length == 1) {
         // the folder exists, don't create another one
@@ -47,6 +44,24 @@
 
       return null;
     });
+
+    // dynamism.register_factory("folders.pages", function(el, page) {
+    //   var existing_page = $("#page_" + page.id);
+    //   if (existing_page.length == 1) {
+    //     console.log("Page " + page.id + " already exists :D")
+    //     return existing_page;
+    //   }
+
+    //   var target =
+    //     $("#folder_" + last_folder.id)
+    //     .find("> ol > [data-dyn-spawn-on='folders.pages'][data-dyn-index=-1]");
+
+    //   if (target.length == 1) {
+    //     return dynamism.add(target);
+    //   }
+
+    //   return null;
+    // });
 
 
     /* --- ------ *
@@ -67,45 +82,6 @@
      * ------ -------- */
     ui.on_action("new_page", ui.pages.create, { is_editor_action: false }); // action[new_page]
 
-
-    // $.jqm({ trigger: $("#new_folder")})
-    // ui.on_action("new_folder", function() {
-    //   console.log("new_folder() called")
-    //   try {
-    //     $.ajax({
-    //       url: "/folders/new",
-    //       success: function(html) {
-    //         pagehub.confirm(html, "Create a new folder", function(foo) {
-    //           console.log($("#confirm form#folder_form").serialize())
-
-    //           console.log("creating a folder")
-    //           ui.status.show("Creating a new folder...", "pending");
-
-    //           $.ajax({
-    //             url: "/folders",
-    //             type: "POST",
-    //             data: $("#confirm form#folder_form").serialize(),
-    //             success: function(folder) {
-    //               var folder = JSON.parse(folder);
-    //               dynamism.inject({ folders: [ folder ] }, $("#page_listing"));
-    //             },
-    //             error: function(e) {
-    //               ui.status.show(e.responseText, "bad");
-    //             }
-    //           });
-
-    //         });            
-    //       }
-    //     })
-    //   } catch(err) {
-    //     log(err);
-    //   }
-
-    //   // roll up the option list
-    //   $("a.listlike.selected").click();
-
-    //   return false;
-    // }, { is_editor_action: false }); // action[new_page]
     ui.on_action("new_folder", ui.folders.create, { is_editor_action: false }); // action[new_page]
 
     ui.on_action("save_content", ui.pages.save);
@@ -137,7 +113,6 @@
     $("a[data-action=move]").click(ui.pages.move);
 
     $(".actions a[id], #page_actions a[id]").click(function() {
-      log("An action was clicked: " + $(this).attr("id"))
       return ui.action($(this).attr("id"));
     });
 
@@ -153,8 +128,6 @@
 
     data = <%= current_user.all_pages.to_json %>;
     dynamism.inject(data, $("#page_listing"));
-
-    <%# puts current_user.all_pages %>;
 
   }); 
 </script>

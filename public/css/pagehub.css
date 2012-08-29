@@ -261,10 +261,10 @@ a.button {
   box-shadow: 0 0px 3px 0px #615B4E;
   font-size: 14px;
 }
-#status.good {
+/*#status.good {
   background: #C0D23E;
   color: #111;
-}
+}*/
 #status.bad {
   background: #BF0606;
   color: #fff;

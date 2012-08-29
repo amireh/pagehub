@@ -79,17 +79,50 @@ def add_to_folder(fid, pid, gid = nil)
   p.to_json  
 end
 
+def __dump_folder(f, out)
+  out << f.serialize
+
+  f.folders.each { |of| __dump_folder(of, out)
+    # orphans[:folders] << of.serialize.delete!(:parent)
+  }
+end
+
 def delete_folder(fid, gid = nil)
   unless f = @scope.folders.first({ id: fid })
     halt 400, "That folder does not exist."
   end
 
   f.operating_user = current_user
+  parent = f.folder
+  orphans = {}
+  if !parent then
+    orphans = { folders: [] }
+
+    f.folders.each { |of|
+      __dump_folder(of, orphans[:folders])
+    }
+    orphans[:folders].each { |of|
+      of.delete(:parent) if of[:parent] == f.id
+    }
+
+    general_folder = { id: 0, title: "None", pages: [] }
+    f.pages.each { |p|
+      general_folder[:pages] << p.serialize.delete!(:folder)
+    }
+
+    orphans[:folders] << general_folder
+  end
+
   unless f.destroy
     halt 500, f.collect_errors
   end
 
-  true
+  if parent
+    return { folders: [ parent.serialize ] }.to_json
+  else
+
+    return orphans.to_json
+  end
 end
 
 get '/folders/new', :auth => :user do

@@ -7,7 +7,6 @@
 
     pagehub.confirm = function(msg, heading, callback) {
       var accept_dialogue = function() {
-        console.log($(this));
         if($(this).attr("id") == 'confirm_accepted') {
           if (typeof callback == "string") {
             window.location.href = callback;
@@ -67,12 +66,10 @@
         });
       } catch (e) {
         console.log("ERROR: something bad happened while showing the cnfm dialog: ")
-        console.log(e)
-
-
+        console.log(e);
 
         $("#confirm").jqmHide();
-        ui.status.show("A script error has been encountered, please report this issue.", "bad")
+        ui.report_error(e)
       }
 
       return false;

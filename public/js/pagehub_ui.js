@@ -232,7 +232,7 @@ pagehub_ui = function() {
 
       hide: function(update_title) {
         if (!ui.is_folder_selected() && !ui.is_page_selected()) {
-          console.log("ERROR: nothing is selected, can't show resource editor");
+          // console.log("ERROR: nothing is selected, can't hide resource editor");
           return;
         }
 
@@ -425,12 +425,9 @@ pagehub_ui = function() {
       arrange: function(ul) {
         ui.status.mark_pending();
 
-        console.log("arranging folders...");
-
         // Parent-less folders go to the top
         ul.prepend(ul.find('li.folder:not([data-parent]):visible'));
 
-        log("Arranging " + ul.find('> li.folder[data-parent]:visible').length + " folders")
         ul.find('li.folder[data-parent]:visible').each(function() {
           var parent_id = parseInt($(this).attr("data-parent"));
           var parent = $("#folder_" + parent_id);
@@ -490,20 +487,23 @@ pagehub_ui = function() {
         if (!removed[el.attr("id")]) {
           pagehub.folders.destroy(folder_id,
             // success handler
-            function() {
+            function(new_parent) {
+              var new_parent = JSON.parse(new_parent);
+
+              ui.status.show("Re-building the entire page listing,"
+                           + "this could take a while...", "pending");
+
               // now remove it
               removed[el.attr("id")] = true;
 
-              // orphanize its pages into the general folder
-              $("#page_listing li.folder.general-folder")
-                .append(el.find("> ol li[data-dyn-entity]:visible"));
+              el.find("li[data-dyn-entity=folder]").add(el).each(function() {
+                var child_id = $(this).attr("id").replace("folder_", "");
+                $("a[data-action=move][data-folder=" + child_id + "]").parent().remove();
+                $("#resource_editor option[value=folder_" + child_id + "]").remove();
+              });
 
               btn.click();
-
-              // remove the Move-To link
-              $("a[data-action=move][data-folder=" + folder_id + "]").parent().remove();
-              // and the resource editor parent folder selection option
-              $("#resource_editor option[value=folder_" + folder_id + "]").remove();
+              dynamism.inject(new_parent, $("#page_listing"));
 
               ui.status.show("Folder deleted.", "good");
             },
@@ -535,15 +535,13 @@ pagehub_ui = function() {
 
         pagehub.pages.create({
           success: function(page) {
-            console.log("page created successfully")
             var page = JSON.parse(page);
-            console.log(page);
+
+            // Inject it
             dynamism.inject({ folders: [ { id: 0, pages: [ page ] } ] }, $("#page_listing"));
+
+            // And load it
             $("#page_" + page.id).click();
-            // var new_page = "<li><a id=\"page_" + page_id + "\">page #" + page_id + "</a></li>";
-            // $("#page_listing").prepend(new_page);
-            // ui.dehighlight();
-            // $("#page_listing li:first a").click(get_page).click();
 
             ui.editor.setValue("Preparing newly created page... hold on.");
           },

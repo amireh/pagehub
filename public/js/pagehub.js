@@ -22,9 +22,6 @@ pagehub = function() {
       create: function(handlers) {
         var uri = pagehub.namespace + "/pages";
 
-
-        console.log("Creating a page from " + uri);
-
         $.ajax({
           url: uri,
           type: "POST",

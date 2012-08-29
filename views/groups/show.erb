@@ -35,9 +35,7 @@
     var editor = null;
     dynamism.configure({ debug: false, logging: false })
 
-    var last_folder = null;
     dynamism.register_factory("folders", function(el, folder) {
-      last_folder = folder;
       var existing_folder = $("#folder_" + folder.id);
       if (existing_folder.length == 1) {
         // the folder exists, don't create another one
@@ -119,8 +117,6 @@
 
     data = <%= @group.all_pages.to_json %>;
     dynamism.inject(data, $("#page_listing"));
-
-    <%# puts @group.all_pages %>;
 
   }); 
 </script>
