@@ -30,6 +30,27 @@ The embedding module allows for the definition of *content processors* that hand
 
 I've tested PageHub only on the latest Chrome, Firefox, and Opera under Linux. I'm not sure if it works on IE.
 
+## Technical notes
+
+### Ruby objects pollution
+
+**`Hash`**
+
+* `delete!(key)` that removes a key from the Hash and returns itself instead of the removed value
+
+See `lib/common.rb` for more info.
+
+**`String`**
+
+* `to_markdown` will render its content as markdown with no side-effects
+* `sanitize` normalizes a string to be safely used in URIs (Unicode aware)
+
+See `lib/common.rb` for more info.
+
+**`DataMapper::Resource`**
+
+See `models/datamapper_resource.rb` for more info.
+
 ## Bugs, feature requests, etc.
 
 You can either use the GitHub issue tracking system or email me directly, I'll be happy to hear any feedback.

@@ -2,16 +2,7 @@
 def create_folder(gid = nil)
   r = @group || current_user
 
-  # folder title must not be empty nor taken
-  # puts "Validating title emptiness"
-  halt 400, "Folder title must not be empty" if !params[:title] || params[:title].empty?
-
-  # puts "Validating title"
-  pretty_title = params[:title].sanitize
-  if r.folders.first({ pretty_title: pretty_title })
-    halt 400, "That folder name is unavailable."
-  end
-
+  # locate parent folder, if any
   parent = nil
   if params[:folder_id] && params[:folder_id].to_i != 0 then
     parent = r.folders.first({ id: params[:folder_id] })
@@ -20,13 +11,16 @@ def create_folder(gid = nil)
   end
 
   f = r.folders.create({ 
-    title: params[:title], 
-    pretty_title: pretty_title, 
+    title: params[:title],
     user: current_user,
     folder: parent
   })
 
-  halt 501, "Unable to create folder #{params[:title]}." unless f
+  # see models/datamapper_resource.rb for DataMapper::Resource.persisted?
+  unless f.persisted?
+    halt 500, "Unable to create folder: #{f.collect_errors}"
+  end
+
   f.to_json
 end
 
@@ -38,15 +32,9 @@ def update_folder(fid, gid = nil)
     halt 400, "That folder does not exist."
   end
 
-  # doesn't want to update the title
-  if !params[:title].nil? && !params[:title].empty? then
-    pretty_title = params[:title].sanitize
-    if taken_folder = r.folders.first(pretty_title: pretty_title, :id.not => f.id)
-      halt 400, "That folder name is unavailable."
-    end
-
+  # should the title be updated?
+  unless params[:title].nil? || params[:title].empty?
     f.title = params[:title]
-    f.pretty_title = pretty_title
   end
 
   parent_id = params[:folder_id].to_i
@@ -57,15 +45,11 @@ def update_folder(fid, gid = nil)
       halt 500, "No such parent folder with the id #{parent_id}"
     end
     
-    if parent.id == f.id || parent.is_child_of?(f) then
-      halt 500, "You cannot add the folder #{f.title} to #{parent.title}."
-    end
-
     f.folder = parent
   end
 
   unless f.save
-    halt 500, "Something bad happened while updating the folder."
+    halt 500, f.collect_errors
   end
 
   f.to_json
@@ -95,7 +79,7 @@ def add_to_folder(fid, pid, gid = nil)
   f.pages << p
   
   unless f.save
-    halt 500, "Unable to update the page."
+    halt 500, f.collect_errors
   end
 
   p.to_json  
@@ -109,10 +93,6 @@ def delete_folder(fid, gid = nil)
   end
 
   f.state = { user: current_user, group: @group }
-
-  # unless f.deletable_by? current_user
-  #   halt 403, f.errors
-  # end
 
   unless f.destroy
     halt 500, "#{f.collect_errors}" 
@@ -150,7 +130,7 @@ put "/groups/:gid/folders/:id", :auth => :group_editor do |gid, id|
 end
 
 # User page to folder addition
-put '/folders/:id/add/:page_id', :auth => :user do |folder_id, page_id|
+put '/folders/:id/add/:page_id', :auth => :user do |fid, pid|
   add_to_folder(fid, pid)
 end
 

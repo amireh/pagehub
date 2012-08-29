@@ -79,6 +79,7 @@ configure do
   end
 
   load "models"
+  load "helpers"
   # load "controllers"
   require 'controllers/helpers'
   require 'controllers/groups'

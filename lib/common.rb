@@ -15,6 +15,14 @@ class HTMLwithAlbino < Redcarpet::Render::HTML
   end
 end
 
+class Hash
+  # Removes a key from the hash and returns the hash
+  def delete!(key)
+    self.delete(key)
+    self
+  end
+end
+
 class String
   def sanitize
     Addressable::URI.

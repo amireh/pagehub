@@ -186,7 +186,10 @@ pagehub_ui = function() {
       if (!ui.is_editing() && action.props.is_editor_action)
         return false;
 
-      foreach( action.handlers, function(h) { h() } );
+      for (var i = 0; i < action.handlers.length; ++i) {
+        action.handlers[i]();
+      }
+      // foreach( action.handlers, function(h) { h() } );
 
       return false;
     },
@@ -218,9 +221,9 @@ pagehub_ui = function() {
 
           // we have to hide any children folders from the parent
           // selection because that's not allowed
-          li.parent().find("li.folder").add(li.parent()).each(function() {
-            form.find("select option[value=" + $(this).attr("id") + "]").hide();
-          });                
+          // li.parent().find("li.folder").add(li.parent()).each(function() {
+          //   form.find("select option[value=" + $(this).attr("id") + "]").hide();
+          // });                
         }
         // $(window).bind('click', ui.save_title);
 
@@ -238,8 +241,8 @@ pagehub_ui = function() {
             form    = $("#resource_editor"),
             txtbox  = form.find("input[type=text][name=title]");
 
-        if (update_title)
-          li.html(txtbox.attr("value"));
+        // if (update_title)
+        //   li.html(txtbox.attr("value"));
 
         form.hide();
         li.show();
@@ -285,8 +288,10 @@ pagehub_ui = function() {
           // nope, a page
           ui.status.show("Saving page title...", "pending");
           pagehub.pages.update(resource_id, { title: title }, {
-            success: "Page title updated!",
-            error: "Unable to update page."
+            success: ui.pages.on_update,
+            error: function(e) {
+              ui.status.show("Unable to update page: " + e.responseText, "bad");
+            }
           });
         }
 
@@ -629,7 +634,7 @@ pagehub_ui = function() {
 
         var page_id   = current_page_id(),
             content   = ui.editor.getValue(),
-            messages  = null;
+            messages  = {};
 
         if (!dont_show_status) {
           messages = {
@@ -640,6 +645,17 @@ pagehub_ui = function() {
 
         pagehub.pages.update(page_id, { content: content }, messages);
       }, // pagehub_ui.pages.save
+
+      on_update: function(p) {
+        var p = JSON.parse(p);
+
+        ui.status.show("Page updated!", "good");
+
+        // if its parent has changed, we need to reorder
+        // it and re-sort the folder listing
+        var page = $("#page_" + p.id);
+        page.html(p.title);
+      },
 
       destroy: function() {
         if (!ui.is_page_selected())
@@ -719,5 +735,8 @@ pagehub_ui = function() {
 ui = new pagehub_ui();
 
 $(function() {
-  foreach(ui.hooks, function(hook) { hook(); });
+  // foreach(ui.hooks, function(hook) { hook(); });
+  for (var i = 0; i < ui.hooks.length; ++i) {
+    ui.hooks[i]();
+  }
 })

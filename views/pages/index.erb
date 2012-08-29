@@ -102,7 +102,7 @@
       console.log("new_folder() called")
       try {
         $.ajax({
-          url: "/folders/new.js",
+          url: "/folders/new",
           success: function(html) {
             pagehub.confirm(html, "Create a new folder", function(foo) {
               console.log($("#confirm form#folder_form").serialize())

@@ -6,14 +6,20 @@ log = function(m, ctx) { ctx = ctx || "D"; console.log("[" + ctx + "] " + m); }
 
 pagehub = function() {
   var config = { resource: "" };
+  $(document).ajaxStart(function() {
+    ui.status.mark_pending();
+  });
+  $(document).ajaxComplete(function(xhr) {
+    ui.status.mark_ready();
+  });
+
   return {
     config: config,
-    
+
     pages: {
       create: function(handlers) {
         var uri = config.resource + "/pages";
 
-        ui.status.mark_pending();
 
         console.log("Creating a page from " + uri);
 
@@ -21,41 +27,30 @@ pagehub = function() {
           url: uri,
           type: "POST",
           success: handlers.success,
-          error: handlers.error,
-          complete: function() { ui.status.mark_ready(); }
+          error: handlers.error
         });
       },
 
-      update: function(page_id, attributes, messages) {
+      update: function(page_id, attributes, handlers) {
         var uri = config.resource + "/pages/" + page_id;
 
-        ui.status.mark_pending();
         $.ajax({
           type: "PUT",
           url: uri,
           data: { attributes: attributes },
-          success: function() {
-            if (messages && messages.success)
-              ui.status.show(messages.success, "good");
-          },
-          error: function(rc) {
-            if (messages && messages.error)
-              ui.status.show(messages.error + " " + rc.responseText, "bad");
-          },
-          complete: function() { ui.status.mark_ready(); }
+          success: handlers.success,
+          error: handlers.error
         })
       },
       
       destroy: function(page_id, on_success, on_error) {
         var uri = config.resource + "/pages/" + page_id;
 
-        ui.status.mark_pending();
         $.ajax({
           type: "DELETE",
           url: uri,
           success: on_success,
-          error: on_error,
-          complete: function() { ui.status.mark_ready(); }
+          error: on_error
         });
       },
     },
@@ -64,29 +59,25 @@ pagehub = function() {
     folders: {
       create: function(data, handlers) {
         var uri = config.resource + "/folders";
-        ui.status.mark_pending();
 
         $.ajax({
           url: uri,
           type: "POST",
           data: data,
           success: handlers.success,
-          error: handlers.error,
-          complete: function() { ui.status.mark_ready(); }        
+          error: handlers.error    
         });
       },
 
       update: function(folder_id, title, parent, on_success, on_error) {
         var uri = config.resource + "/folders/" + folder_id;
 
-        ui.status.mark_pending();
         $.ajax({
           type: "PUT",
           url: uri,
           data: { title: title, folder_id: parent },
           success: on_success,
-          error: on_error,
-          complete: function() { ui.status.mark_ready(); }
+          error: on_error
         })
       },
 
@@ -103,13 +94,11 @@ pagehub = function() {
           throw "bad id given to pagehub.folders.destroy: " + in_id;
         }
 
-        ui.status.mark_pending();
         $.ajax({
           type: "DELETE",
           url: uri,
           success: on_success,
-          error: on_error,
-          complete: function() { ui.status.mark_ready(); }
+          error: on_error
         });
       }
     }
