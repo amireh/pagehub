@@ -215,7 +215,7 @@ pagehub_ui = function() {
           var parent = li.parent().attr("data-parent");
           if (!parent)
             parent = "0";
-          
+
 
           form.find("select :selected").attr("selected", null);
           form.find("select option[value=folder_" + parent + "]")
@@ -554,6 +554,9 @@ pagehub_ui = function() {
             // And load it
             $("#page_" + page.id).click();
 
+            // If it's the first in the folder, hide the empty label
+            $(".general-folder li:not([data-dyn-entity]):first").hide();
+
             ui.editor.setValue("Preparing newly created page... hold on.");
           },
           error: function(e) {
@@ -695,6 +698,10 @@ pagehub_ui = function() {
             ui.editor.setValue("");
             ui.actions.addClass("disabled");
             ui.resource_editor.hide();
+
+            if ($(".general-folder > ol > li:visible").length == 0) {
+              $(".general-folder > ol > li:hidden:first").show();
+            }
           },
           function(e) {
             ui.status.show("Page could not be destroyed: " + e.responseText, "bad");
