@@ -23,6 +23,15 @@ module RoleInspector
       puts "User #{current_user.nickname} is a #{role} of the group #{g.name}."
       g
     end
+
+    define_method "group_#{role}?" do# do |params|
+      if g = locate_group(params)
+        return false unless g.send("has_#{role}?".to_sym, current_user)
+      else
+        halt 400, "No such group."
+      end
+      true
+    end
   }
   # def group_admin!(params)
   #   if g = locate_group(params)
@@ -56,20 +65,29 @@ module RoleInspector
       # in all cases, the user must be logged in
       restricted!
 
+      @scope = current_user
+
       # puts "Params in :auth => #{params.inspect}"
       # puts "Roles in :auth => #{roles.inspect}"
 
       if roles.include?(:group_creator)
-        @group = group_creator! params
+        @scope = @group = group_creator! params
       elsif roles.include?(:group_admin)
-        @group = group_admin! params
+        @scope = @group = group_admin! params
       elsif roles.include?(:group_member)
-        @group = group_member! params
+        @scope = @group = group_member! params
       elsif roles.include?(:group_editor)
-        @group = group_editor! params
+        @scope = @group = group_editor! params
       elsif roles.include?(:user)
       end
     end
+  end
+
+  def current_user
+    return @user if @user
+    return nil unless logged_in?
+
+    @user = User.get(session[:id])
   end
 
   private
@@ -97,12 +115,7 @@ helpers do
     session[:id]
   end
 
-  def current_user
-    return @user if @user
-    return nil unless logged_in?
 
-    @user = User.get(session[:id])
-  end
 
   # Loads the user's preferences merging them with the defaults
   # for any that were not overridden.

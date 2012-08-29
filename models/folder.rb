@@ -1,7 +1,7 @@
 class Folder
   include DataMapper::Resource
 
-  attr_accessor :state
+  attr_writer :operating_user
 
   property :id, Serial
   
@@ -12,8 +12,8 @@ class Folder
   belongs_to :user
   belongs_to :folder, default: nil, required: false
   belongs_to :group,  default: nil, required: false
-  has n, :pages,    :constraint => :set_nil
-  has n, :folders,  :constraint => :set_nil
+  has n, :pages,    :constraint => :skip
+  has n, :folders,  :constraint => :skip
 
   validates_presence_of :title
   validates_length_of   :title, :within => 3..120
@@ -24,21 +24,13 @@ class Folder
 
   # Only the folder creator can destroy it, and only if it
   # doesn't contain folders created by others  
-  before :destroy do |context|
-    # @state ||= group.state
-
-    puts "Folder: in #{context.state} checking if i can be deleted, my state: #{@state.inspect}"
-    # throw :halt unless deletable_by? @state[:user]
-  end
+  before :destroy, :deletable_by? 
+  before :destroy, :nullify_references 
 
   [ :save, :update ].each { |advice|
     before advice.to_sym do |*args|
-      # puts "Validating folder in #{advice}..."
-
       validate_hierarchy!
       validate_title!
-
-      # puts "#{errors.empty? ? 'is valid!' : 'isn\'t valid!'}"
       
       throw :halt unless errors.empty?
 
@@ -63,22 +55,40 @@ class Folder
     false
   end
 
-  # Folders are deletable only by their authors and
-  # only when all their children are owned by that same author.
-  def deletable_by?(u)
-    if user != u 
+  private
+
+  # pre-destroy validation hook:
+  #
+  # Folders are deletable only by their authors and  only when all their 
+  # children are owned by that same author.
+  def deletable_by?(context = :default)
+    if user != @operating_user
       errors.add :_, "You are not authorized to delete folders created by others."
-    elsif folders.count({ :user.not => u }) != 0
+    elsif folders.count({ :user.not => @operating_user }) != 0
       errors.add :_, "The folder contains others created by someone else, they must be removed first."
     end
 
-    if errors.empty?
-      puts "Folder #{id} can be deleted"
-    else
-      puts "Folder #{id} can NOT be deleted because: #{collect_errors}"
-    end
+    # puts "Folder: in #{context.state} checking if i can be deleted, my state: #{@state.inspect}"
 
-    errors.empty?
+    # if errors.empty?
+      # puts "Folder #{id} can be deleted"
+    # else
+      # puts "Folder #{id} can NOT be deleted because: #{collect_errors}"
+    # end
+
+    throw :halt unless errors.empty?
+  end
+
+  # pre-destroy hook:
+  #
+  # If this folder is attached to another, we will
+  # move all its children pages and folders to that parent,
+  # otherwise they are orphaned into the general folder.
+  def nullify_references(context = :default)
+    new_parent = self.folder 
+
+    self.pages.update!(folder: new_parent)
+    self.folders.update!(folder: new_parent)
   end
 
   # Folder title must be unique within its scope (user or group)

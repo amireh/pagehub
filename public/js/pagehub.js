@@ -6,6 +6,7 @@ log = function(m, ctx) { ctx = ctx || "D"; console.log("[" + ctx + "] " + m); }
 
 pagehub = function() {
   var config = { resource: "" };
+  var namespace = "";
   $(document).ajaxStart(function() {
     ui.status.mark_pending();
   });
@@ -15,10 +16,11 @@ pagehub = function() {
 
   return {
     config: config,
+    namespace: namespace,
 
     pages: {
       create: function(handlers) {
-        var uri = config.resource + "/pages";
+        var uri = pagehub.namespace + "/pages";
 
 
         console.log("Creating a page from " + uri);
@@ -32,7 +34,7 @@ pagehub = function() {
       },
 
       update: function(page_id, attributes, handlers) {
-        var uri = config.resource + "/pages/" + page_id;
+        var uri = pagehub.namespace + "/pages/" + page_id;
 
         $.ajax({
           type: "PUT",
@@ -44,7 +46,7 @@ pagehub = function() {
       },
       
       destroy: function(page_id, on_success, on_error) {
-        var uri = config.resource + "/pages/" + page_id;
+        var uri = pagehub.namespace + "/pages/" + page_id;
 
         $.ajax({
           type: "DELETE",
@@ -58,7 +60,7 @@ pagehub = function() {
 
     folders: {
       create: function(data, handlers) {
-        var uri = config.resource + "/folders";
+        var uri = pagehub.namespace + "/folders";
 
         $.ajax({
           url: uri,
@@ -70,7 +72,7 @@ pagehub = function() {
       },
 
       update: function(folder_id, title, parent, on_success, on_error) {
-        var uri = config.resource + "/folders/" + folder_id;
+        var uri = pagehub.namespace + "/folders/" + folder_id;
 
         $.ajax({
           type: "PUT",
@@ -83,7 +85,7 @@ pagehub = function() {
 
       destroy: function(in_id, on_success, on_error) {
         var in_id = in_id,
-            uri   = config.resource + "/folders/" + in_id;
+            uri   = pagehub.namespace + "/folders/" + in_id;
 
         if (!in_id)
           throw "undefined id given to pagehub.folders.destroy: " + in_id;

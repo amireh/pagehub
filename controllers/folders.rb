@@ -1,16 +1,14 @@
 # Create an empty folder, must be unique by title in the user's scope
 def create_folder(gid = nil)
-  r = @group || current_user
-
   # locate parent folder, if any
   parent = nil
   if params[:folder_id] && params[:folder_id].to_i != 0 then
-    parent = r.folders.first({ id: params[:folder_id] })
+    parent = @scope.folders.first({ id: params[:folder_id] })
 
     halt 400, "No such parent folder with the id #{parent_id}" if !parent
   end
 
-  f = r.folders.create({ 
+  f = @scope.folders.create({ 
     title: params[:title],
     user: current_user,
     folder: parent
@@ -18,7 +16,7 @@ def create_folder(gid = nil)
 
   # see models/datamapper_resource.rb for DataMapper::Resource.persisted?
   unless f.persisted?
-    halt 400, "Unable to create folder: #{f.collect_errors}"
+    halt 400, f.collect_errors
   end
 
   f.to_json
@@ -26,9 +24,7 @@ end
 
 # Updates the folder's title and its parent containing folder
 def update_folder(fid, gid = nil)
-  r = @group || current_user
-
-  unless f = r.folders.first({ id: fid })
+  unless f = @scope.folders.first({ id: fid })
     halt 400, "That folder does not exist."
   end
 
@@ -41,7 +37,7 @@ def update_folder(fid, gid = nil)
   if parent_id == 0 then
     f.folder = nil # has detached the folder from its parent
   else
-    unless parent = r.folders.first(id: parent_id)
+    unless parent = @scope.folders.first(id: parent_id)
       halt 500, "No such parent folder with the id #{parent_id}"
     end
     
@@ -57,9 +53,7 @@ end
 
 # Add a page to this folder
 def add_to_folder(fid, pid, gid = nil)
-  r = @group || current_user
-
-  unless p = r.pages.first(id: pid)
+  unless p = @scope.pages.first(id: pid)
     halt 400, "That page does not exist."
   end
 
@@ -72,7 +66,7 @@ def add_to_folder(fid, pid, gid = nil)
     return p.to_json
   end
 
-  unless f = r.folders.first(id: fid)
+  unless f = @scope.folders.first(id: fid)
     halt 400, "That folder does not exist."
   end
 
@@ -86,14 +80,13 @@ def add_to_folder(fid, pid, gid = nil)
 end
 
 def delete_folder(fid, gid = nil)
-  r = @group || current_user
-
-  unless f = r.folders.first({ id: fid })
+  unless f = @scope.folders.first({ id: fid })
     halt 400, "That folder does not exist."
   end
 
-  unless f.deletable_by? current_user || f.destroy
-    halt 500, "#{f.collect_errors}" 
+  f.operating_user = current_user
+  unless f.destroy
+    halt 500, f.collect_errors
   end
 
   true

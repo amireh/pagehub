@@ -21,6 +21,7 @@ class User
   has n, :pages, :constraint => :destroy
   has n, :folders, :constraint => :destroy
   has n, :groups, :through => Resource
+  has n, :public_pages, :constraint => :destroy
 
   validates_presence_of :name, :provider, :uid
 

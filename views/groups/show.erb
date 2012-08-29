@@ -30,7 +30,7 @@
 
   $(function() {
 
-    pagehub.config.resource = "/groups/<%= @group.id %>";
+    pagehub.namespace = "/groups/<%= @group.id %>";
     
     var editor = null;
     dynamism.configure({ debug: false, logging: false })

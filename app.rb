@@ -6,8 +6,10 @@ $LOAD_PATH << $ROOT
 gem 'sinatra'
 gem 'sinatra-content-for'
 gem 'sinatra-flash'
-gem "data_mapper", ">=1.2.0"
+gem "dm-core", ">=1.2.0"
+gem "dm-serializer", ">=1.2.0"
 gem "dm-migrations", ">=1.2.0"
+gem "dm-types", ">=1.2.0"
 gem 'redcarpet'
 gem 'albino'
 gem 'nokogiri'
@@ -25,7 +27,7 @@ require 'data_mapper'
 # require 'dm-serializer'
 require 'dm-migrations'
 require 'dm-migrations/migration_runner'
-require 'dm-constraints'
+# require 'dm-constraints'
 require 'dm-mysql-adapter'
 require "digest/sha1"
 require 'json'

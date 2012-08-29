@@ -341,7 +341,7 @@ pagehub_ui = function() {
         try {
           // load the creation form
           $.ajax({
-            url: pagehub.config.resource + "/folders/new",
+            url: pagehub.namespace + "/folders/new",
             success: function(html) {
               pagehub.confirm(html, "Create a new folder", function(foo) {
                 // console.log("creating a folder")
@@ -574,7 +574,7 @@ pagehub_ui = function() {
         var title = $(this).attr("id").replace("page_", "");
         $.ajax({
           type: "GET",
-          url: pagehub.config.resource + "/pages/" + title + ".json",
+          url: pagehub.namespace + "/pages/" + title + ".json",
           success: function(page) {
             var page    = JSON.parse(page),
                 content = page.content,
@@ -582,8 +582,8 @@ pagehub_ui = function() {
 
             ui.editor.clearHistory();
             ui.editor.setValue(content);
-            $("#preview").attr("href", pagehub.config.resource + "/pages/" + title + "/pretty");
-            $("#share_everybody").attr("href", pagehub.config.resource + "/pages/" + title + "/share");
+            $("#preview").attr("href", pagehub.namespace + "/pages/" + title + "/pretty");
+            $("#share_everybody").attr("href", pagehub.namespace + "/pages/" + title + "/share");
 
             // Disable the group share links for all the groups this page
             // is already shared with
@@ -600,7 +600,7 @@ pagehub_ui = function() {
               }
 
               if (!already_shared) {
-                $(this).attr("href", pagehub.config.resource + "/pages/" + title + "/share/" + group);
+                $(this).attr("href", pagehub.namespace + "/pages/" + title + "/share/" + group);
                 $(this).attr("data-disabled", null);
               } else {
                 $(this).attr("href", null);
@@ -616,7 +616,7 @@ pagehub_ui = function() {
             // $("a[data-action=move]").unbind('click');
             $("a[data-action=move]").each(function() {
               $(this).attr("href", 
-                pagehub.config.resource
+                pagehub.namespace
                 + "/folders/" 
                 + $(this).attr("data-folder")
                 + "/add/" + page.id);
@@ -732,7 +732,7 @@ pagehub_ui = function() {
         if (!ui.is_page_selected())
           return true; // let the event propagate
 
-        window.open(pagehub.config.resource + "/pages/" + current_page_id() + "/pretty", "_pretty")
+        window.open(pagehub.namespace + "/pages/" + current_page_id() + "/pretty", "_pretty")
       }
     }
   }

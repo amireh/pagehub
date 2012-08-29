@@ -12,6 +12,7 @@ class Group
   has n,     :folders,  :constraint => :set_nil
   has n,     :pages,    :constraint => :set_nil
   has n,     :users,    :through => Resource, :constraint => :destroy
+  has n,     :public_pages, :constraint => :destroy
   belongs_to :admin, 'User', key: true
 
   validates_presence_of :name
@@ -32,18 +33,24 @@ class Group
   end
 
   def has_admin?(user)
-    is_admin?(user)
+    if gu = GroupUser.first({ group_id: self.id, user_id: user.id })
+      return gu.is_admin
+    end
+    false
   end
+  alias_method :is_admin?, :has_admin?
 
   def has_member?(user)
     self.users.each { |u| return true if user.nickname == u.nickname }
     false
   end
+  alias_method :is_member?, :has_member?
 
   def has_editor?(user)
     # TODO: implement
     has_member?(user)
   end
+  alias_method :is_editor?, :has_editor?
 
   def has_member_by_nickname?(nn)
     self.users.each { |u| return true if nn == u.nickname }
@@ -59,12 +66,7 @@ class Group
     self.pages.each { |p| return true if p.pretty_title == title}
   end
 
-  def is_admin?(user)
-    if gu = GroupUser.first({ group_id: self.id, user_id: user.id })
-      return gu.is_admin
-    end
-    false
-  end
+
 
   def is_creator?(user)
     admin.id == user.id

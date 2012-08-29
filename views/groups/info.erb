@@ -1,6 +1,8 @@
-<h2><%= @group.title %><% if @group.is_admin?(current_user)%>
-  <small><a href="/groups/<%= @group.name %>/edit">manage</a></small>
-<% end %></h2>
+<h2><a href="/groups/<%= @group.name %>"><%= @group.title %></a>
+  <% if @group.is_admin?(current_user)%>
+    <small><a href="/groups/<%= @group.name %>/edit">manage</a></small>
+  <% end %>
+</h2>
 
 <h3>Pages</h3>
 <ol>
@@ -9,6 +11,27 @@
   <% end %>
 </ol>
 
+<h3>Public Pages</h3>
+
+<p>Here's a list of all the pages you've currently shared. 
+  Clicking on them will take you to the public link that you can share with others.</p>
+
+<ol>
+<% @group.public_pages.each do |pp| %>
+  <li><a href="<%= pp.url %>"><%= pp.page.title %></a>
+    <% if @group.is_editor?(current_user) %>
+     <small>
+        -
+        <em>
+          <a href="/groups/<%= @group.id %>/pages/<%= pp.page.id %>/unshare">unshare it</a>
+        </em>
+      </small>
+    <% end %>
+  </li>
+<% end %>
+</ol>
+
+<h3>
 <h3>Members</h3>
 <ol>
   <% @group.users.each do |u| %>

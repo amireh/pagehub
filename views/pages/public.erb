@@ -16,16 +16,20 @@
 <% end %>
 </ol>
 
-<h3>Group Shares</h3>
-<% current_user.groups.each do |g| %>
-  <% user_group_pages = g.pages.all({ user_id: current_user.id }) %>
-  <h4><%= g.title %> <small>(<%= user_group_pages.size %> pages shared)</small></h4>
-  <ol>
-  <% user_group_pages.each do |p| %>
-    <li>
-      <a href="/<%= g.name %>/<%= p.pretty_title %>"><%= p.title %></a>
-      <small> - <em><a href="/pages/<%= p.id %>/unshare/<%= g.id %>">unshare it</a></em></small>
-    </li>
+<% if false %>
+
+  <h3>Group Shares</h3>
+  <% current_user.groups.each do |g| %>
+    <% user_group_pages = g.pages.all({ user_id: current_user.id }) %>
+    <h4><%= g.title %> <small>(<%= user_group_pages.size %> pages shared)</small></h4>
+    <ol>
+    <% user_group_pages.each do |p| %>
+      <li>
+        <a href="/<%= g.name %>/<%= p.pretty_title %>"><%= p.title %></a>
+        <small> - <em><a href="/pages/<%= p.id %>/unshare/<%= g.id %>">unshare it</a></em></small>
+      </li>
+    <% end %>
+    </ol>
   <% end %>
-  </ol>
+
 <% end %>

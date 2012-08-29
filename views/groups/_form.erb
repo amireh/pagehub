@@ -167,7 +167,7 @@
 
 <% conditionals = {
   heading: @editing ? 
-    "Group Management - <a href='/groups/#{@group.name}'>#{@group.title}</a>"
+    "Group Management - <a href='/groups/#{@group.name}/info'>#{@group.title}</a>"
   : "Group Registration",
   form_action: @editing ? "/groups/#{@group.name}" : "/groups",
   submit_label: @editing ? "Update Group" : "Register Group",

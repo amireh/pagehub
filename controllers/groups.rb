@@ -19,6 +19,9 @@ get '/groups/:name/edit', :auth => :group_admin do |name|
 end
 
 get '/groups/:name/destroy', :auth => :group_creator do |name|
+  # we're doing the following in the controller because I just couldn't
+  # get the before :destroy hook in the Group model to work...
+  
   # disband all folder pages into a special "Orphan" folder for each user
   @group.users.each { |u|
     f = u.folders.create({ title: "Orphans: #{@group.title}" })

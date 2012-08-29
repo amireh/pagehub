@@ -1,232 +1,255 @@
-get '/pages/:id.json' do |id|
-  restricted!
+# @scope is identified in helpers/auth_helper.rb, it points to a user or a group
 
-  unless p = Page.first(id: id, user: current_user)
-    halt 404, "Page ##{id} does not exist."
+# Creates a blank new page
+def create_page()
+  @scope.pages.create({ user: current_user }).to_json
+end
+
+def load_page(pid)
+  unless p = @scope.pages.first(id: pid)
+    halt 400, "Page ##{pid} does not exist."
   end
 
   p.serialize.merge({ content: p.content }).to_json
 end
 
-get '/groups/:gid/pages/:id.json', auth: :group_member do |gid, id|
-  unless p = @group.pages.first(id: id)
-    halt 404, "Page ##{id} does not exist."
+def update_page(pid)
+  unless p = @scope.pages.first({ id: pid })
+    halt 501, "No such page: #{pid}!"
   end
 
-  p.serialize.merge({ content: p.content }).to_json
-end
-
-put '/pages/:id' do |id|
-  restricted!
-
-  unless p = Page.first({ id: id, user_id: current_user.id })
-    halt 501, "No such page: #{id}!"
+  unless p.update(params[:attributes])
+    halt 400, p.collect_errors
   end
 
-  p.update(params[:attributes])
   p.to_json
 end
 
-put '/groups/:gid/pages/:id', :auth => :group_editor do |gid, id|
-  # restricted!
-  # g = group_editor! gid
-
-  unless p = Page.first({ id: id, group: @group })
-    halt 501, "No such page: #{id}!"
+def delete_page(pid)
+  unless p = @scope.pages.first({ id: pid })
+    halt 400, "No such page."
   end
 
-  p.update(params[:attributes])
-  p.to_json  
-end
+  p.operating_user = current_user
 
-# Creates a blank new page
-post '/pages' do
-  restricted!
-
-  Page.create({ user_id: current_user.id }).to_json
-end
-
-post '/groups/:gid/pages', auth: :group_editor do |gid|
-  Page.create({ user: current_user, group: @group }).to_json
-end
-
-delete '/pages/:id' do |id|
-  restricted!
-
-  p = Page.first({ id: id, user_id: current_user.id })
-  
-  halt 400, "No such page" if !p
-
-  p.destroy
-
-  true.to_json
-end
-
-delete '/groups/:gid/pages/:id' do |gid, id|
-  restricted!
-
-  # only the author can remove their own posts
-
-  unless p = Page.first({ id: id })
-    halt 404, "No such page #{id}."
+  if !p.destroy
+    halt 500, p.collect_errors
   end
 
-  unless p.deletable_by? current_user
-    halt 403, "Only the author may delete their pages."
+  true
+end
+
+def pretty_view(pid)
+  unless @page = @scope.pages.first({ id: pid })
+    halt 500, "This link seems to point to a non-existent page."
   end
-
-  p.destroy
-  true.to_json
-end
-
-get '/pages/public' do
-  restricted!
-
-  @pages = []
-  PublicPage.all({ user_id: current_user.id }).each { |pp|
-    p = Page.first({ id: pp.page_id, user_id: pp.user_id })
-    if p then @pages << p end
-  }
-
-  erb :"pages/public"
-end
-
-
-get '/pages/:id/pretty' do |id|
-  restricted!
-
-  @page = Page.first({ id: id, user_id: current_user.id })
-
-  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
 
   erb :"pages/pretty", layout: :"layouts/print"
 end
-
 
 # Creates a publicly accessible version of the given page.
 # The public version will be accessible at:
 # => /user-nickname/pretty-article-title
 #
 # See String.sanitize for the nickname and pretty page titles.
-get '/pages/:id/share' do |id|
-  restricted!
-
-  @page = Page.first({ id: id, user_id: current_user.id })
-
-  halt 404, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
-
-  @pp = PublicPage.first_or_create({ page_id: @page.id, user_id: @page.user_id })
-
-  redirect "/#{@page.user.nickname}/#{@page.title.sanitize}"
-end
-
-get '/pages/:id/share/:group' do |id, group_name|
-  restricted!
-
-  unless g = Group.first(name: group_name)
-    halt 400, "There's no group named #{group_name}."
+def share_page(id)
+  unless @page = @scope.pages.first({ id: id })
+    halt 404, "This link seems to point to a non-existent page."
   end
 
-  halt 403, "You do not belong to that group" unless g.has_member?(current_user)
-
-  @page = Page.first({ id: id, user_id: current_user.id })
-
-  halt 404, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
-
-  unless g.has_page?(@page)
-    g.pages << @page
-    g.save
+  unless pp = @scope.public_pages.first({ page: @page })
+    pp = @scope.public_pages.create({ page: @page, user: current_user })
   end
 
-  redirect "/#{g.name}/#{@page.title.sanitize}"
+  redirect pp.url
 end
+
+
+def unshare_page(pid)
+  unless page = @scope.pages.first({ id: pid })
+    halt 400, "No such page."
+  end
+
+  unless pp = @scope.public_pages.first({ page: page })
+    halt 400, "That page isn't shared."
+  end
+  
+  if pp.destroy
+    flash[:notice] = "Page #{page.title} is no longer shared with the public."
+  else
+    flash[:error] = "Unable to un-share the page, please try again."
+  end
+
+  redirect back  
+end
+
+
+def locate_folder(path, scope, args = {})
+  fidx = 0
+  f = nil
+  while fidx < path.length - 1
+    unless f = scope.folders.first({ pretty_title: path[fidx] }.merge(args))
+      break
+    end
+
+    fidx += 1
+  end
+  f
+end
+
+def locate_group_page(crammed_path)
+  path = crammed_path.split('/')
+
+  puts "looking for a group page"
+
+  if path.length > 1
+    unless f = locate_folder(path, @group, {})
+      halt 404
+    end
+
+    puts f.inspect
+
+    unless @page = f.pages.first({ pretty_title: path.last })
+      halt 404
+    end
+  else
+    title = crammed_path.sanitize
+
+    # locate the page
+    @page = @group.page.first({ pretty_title: title })
+  end
+
+  @page
+end
+
+
+post '/pages', auth: :user do create_page end
+post '/groups/:gid/pages', auth: :group_editor do |gid| create_page end
+
+get '/pages/:id.json', auth: :user do |id| load_page(id) end
+get '/groups/:gid/pages/:id.json', auth: :group_member do |gid, id| load_page(id) end
+
+put '/pages/:id', auth: :user do |id| update_page(id) end
+put '/groups/:gid/pages/:id', :auth => :group_editor do |gid, id| update_page(id) end
+
+delete '/pages/:id', auth: :user do |id| delete_page(id) end
+delete '/groups/:gid/pages/:id', auth: :group_editor do |gid, id| delete_page(id) end
+
+get '/pages/public', auth: :user do
+  nr_invalidated_links = 0
+
+  @pages = []
+  @scope.public_pages.all.each { |pp|
+    p = @scope.pages.first({ id: pp.page_id })
+
+    if p then
+      @pages << p
+    else
+      nr_invalidated_links += 1
+      pp.destroy
+    end
+
+  }
+
+  if nr_invalidated_links > 0
+    flash[:notice] = 
+      "#{nr_invalidated_links} public links have been invalidated because \
+      the pages they point to have deleted."
+  end
+
+  erb :"pages/public"
+end
+
+get '/pages/:id/pretty', auth: :user do |id| pretty_view(id) end
+get '/groups/:gid/pages/:id/pretty', auth: :group_member do |gid, id| pretty_view(id) end
+
+get '/pages/:id/share', auth: [ :user ] do |id| share_page(id) end
+get '/groups/:gid/pages/:id/share', auth: [ :group_editor ] do |gid, pid| share_page(pid) end
 
 # Removes the public status of a page, it will no longer
 # be viewable by others.
 get '/pages/:id/unshare' do |id|
-  restricted!
-
-  @page = Page.first({ id: id, user_id: current_user.id })
-
-  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
-
-  @pp = PublicPage.first({ page_id: @page.id, user_id: @page.user_id })
-  if @pp then
-    @pp.destroy
-    flash[:notice] = "The page titled #{@page.title} is no longer publicly shared."
-  else
-    flash[:error] = "This page does not seem to be publicly shared, are you sure you've shared it?"
-  end
-
-  redirect :"/pages/public"
+  unshare_page(id)
 end
 
 # Removes the public status of a page, it will no longer
 # be viewable by others.
-get '/pages/:id/unshare/:group_id' do |id, group_id|
-  restricted!
-
-  gp = GroupPage.first({ page_id: id, group_id: group_id })
-
-  halt 501, "That page doesn't seem to be shared with that group." if !gp
-
-  page = Page.get(gp.page_id)
-  group = Group.first({ id: gp.group_id })
-
-  gp.destroy
-
-  flash[:notice] = "Page #{page.title} is no longer shared with the group #{group.title}."
-  redirect :"/pages/public"
+get '/groups/:gid/pages/:id/unshare', auth: [ :group_editor ] do |gid, pid|
+  unshare_page(pid)
 end
 
+# Retrieve a publicly shared user page.
+get '/:nickname/*' do |nn, crammed_path|
+  path = crammed_path.split('/')
 
-# Retrieve a publicly accessible page.
-get '/:nickname/:title' do |nn, title|
-  # try a public-shared page
-  @user = User.first({ nickname: nn })
-  if @user
-    unless @page = Page.first({ pretty_title: title.sanitize, user_id: @user.id })
-      puts "ERROR: public page could not be found with sane title: #{title.sanitize}"
-
-      halt 404, "No page with title #{title} could be found."
-    end
-
-    @pp = PublicPage.first({ page_id: @page.id, user_id: @user.id })
-    halt 403, "This page can only be viewed by its author." if !@pp
-
-    @public = true
-    return erb :"pages/pretty", layout: :"layouts/print"
+  # try a user shared page
+  user = User.first({ nickname: nn })
+  if !user
+    pass
   end
 
-  # try a group shared page    
-  if @group = Group.first({ name: nn })
-    if current_user
-      # the user must belong to this group
-      if !@group.has_member?(current_user)
-        halt 403, "You do not have access to the pages of this group."
-      end
+  if path.length > 1
+    unless f = locate_folder(path, user, { group: nil })
+      halt 404
+    end
 
-      # locate the page
-      pages = Page.all({ pretty_title: title.sanitize })
-      pages.each { |p| 
-        group_page = GroupPage.first({ group_id: @group.id, page_id: p.id })
-        if group_page
-          @page = p
-          break
-        end
-      }
-
-      if @page then
-        @public = true
-        return erb :"pages/pretty", layout: :"layouts/print"
-      end
-
-      halt 404, "No page with title #{title} for the group #{nn} could be found."
-    else
-      # not logged in
-      halt 403, "You must be logged in as a member of the group #{@group.title} to view this page."
+    unless @page = f.pages.first({ pretty_title: path.last })
+      halt 404
+    end
+  else
+    title = crammed_path.sanitize
+    unless @page = user.pages.first({ pretty_title: title })
+      # puts "ERROR: public page could not be found with sane title: #{title.sanitize}"
+      halt 404#, "No page with title #{title} could be found."
     end
   end
 
-  halt 404, "This seems to be an invalid link."
+  # is it shared?
+  unless user == current_user || user.public_pages.first({ page: @page })
+    halt 403, "This page can only be viewed by its author."
+  end
+
+  @public = true
+  return erb :"pages/pretty", layout: :"layouts/print"
+end
+
+# A group page. Group pages are visible to all members.
+#
+# Note: the reason we don't authenticate normally using
+# the :auth scope is because we don't want to halt if
+# the person isn't a member, instead we will pass into
+# the anonymous capturer below this one.
+get '/:gname/*' do |gname, crammed_path|
+  pass if !group_member?
+
+  unless @scope = @group = Group.first({name: gname })
+    halt 404, "No such group."
+  end
+
+  @page = locate_group_page(crammed_path)
+
+  if !@page
+    halt 404, "No such page."
+  end
+
+  @public = true
+  erb :"pages/pretty", layout: :"layouts/print"
+end
+
+# A group shared page
+get '/:gname/*' do |gname, crammed_path|
+  unless @scope = @group = Group.first({name: gname })
+    halt 404, "No such group."
+  end
+
+  unless @page = locate_group_page(crammed_path)
+    halt 404, "No page with title for the group #{@group.title} could be found."
+  end
+
+  if !@group.public_pages.first({ page: @page })
+    halt 403, "That page is only viewable by its group members."
+  end
+
+  @public = true
+  erb :"pages/pretty", layout: :"layouts/print"  
 end
