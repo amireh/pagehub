@@ -6,14 +6,17 @@
   $(function() {
 
     pagehub.confirm = function(msg, heading, callback) {
-
       var accept_dialogue = function() {
         console.log($(this));
         if($(this).attr("id") == 'confirm_accepted') {
           if (typeof callback == "string") {
             window.location.href = callback;
           } else {
-            callback();
+            try { 
+              callback();
+            } catch (script_error) {
+              ui.report_error(script_error);
+            }
           }
         }
 
@@ -25,7 +28,7 @@
       $('#confirm')
         .jqmShow()
         .find('h1')
-        .html(heading)
+        .html(heading || "Confirmation")
         .end()
         .find('p.jqmConfirmMsg')
         .html(msg)
@@ -48,14 +51,29 @@
     
     $('a.confirm').click(function(e) { 
       var a = $(this);
-      pagehub.confirm(a.attr("data-confirmation"), a.attr("data-confirmation-heading"), function() {
-        var method = dynamism.utility.lookup_method(a.attr("data-confirmation-cb"));
-        if (method) {
-          return method(a);
-        } else {
-          console.log("ERROR: invalid confirmation callback: " + a.attr("data-confirmation-cb"));
-        }
-      });
+      try {
+        var msg = a.attr("data-confirm") || a.next("[data-confirm]").html();
+        var heading = a.attr("data-confirm-heading") || "Confirmation";
+        var accept_label = a.attr("data-confirm-accept") || "Yes";
+        $("div#confirm #confirm_accepted").attr("value", accept_label);
+        
+        pagehub.confirm(msg, heading, function() {
+          var method = dynamism.utility.lookup_method(a.attr("data-confirm-cb"));
+          if (method) {
+            return method(a);
+          } else {
+            console.log("ERROR: invalid confirmation callback: " + a.attr("data-confirm-cb"));
+          }
+        });
+      } catch (e) {
+        console.log("ERROR: something bad happened while showing the cnfm dialog: ")
+        console.log(e)
+
+
+
+        $("#confirm").jqmHide();
+        ui.status.show("A script error has been encountered, please report this issue.", "bad")
+      }
 
       return false;
     });
@@ -76,8 +94,8 @@
     <p class="jqmConfirmMsg"></p>
     </div>
     
-    <input type="submit" id="confirm_rejected" value="Cancel" />
-    <input type="submit" id="confirm_accepted" value="Yes" />
+    <input type="submit" id="confirm_rejected" class="bad" value="Cancel" />
+    <input type="submit" id="confirm_accepted" class="good" value="Yes" />
     
   </div>
 </div>

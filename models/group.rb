@@ -1,18 +1,24 @@
 class Group
   include DataMapper::Resource
 
+  attr_accessor :state
+
   property :id, Serial
   
   property :name,       String, length: 120, unique: true, required: true
   property :title,      String, length: 120
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
-  has n,     :users,    :through => Resource
-  has n,     :pages
-  has n,     :folders
+  has n,     :folders,  :constraint => :set_nil
+  has n,     :pages,    :constraint => :set_nil
+  has n,     :users,    :through => Resource, :constraint => :destroy
   belongs_to :admin, 'User', key: true
 
   validates_presence_of :name
+
+  before :valid? do
+    self.name = self.title.sanitize
+  end
 
   def all_pages
     c = { folders: [] }
@@ -23,6 +29,10 @@ class Group
     c[:folders] << folderless
 
     c
+  end
+
+  def has_admin?(user)
+    is_admin?(user)
   end
 
   def has_member?(user)
@@ -50,8 +60,18 @@ class Group
   end
 
   def is_admin?(user)
-    GroupUser.first({ group_id: self.id, user_id: user.id }).is_admin
+    if gu = GroupUser.first({ group_id: self.id, user_id: user.id })
+      return gu.is_admin
+    end
+    false
   end
+
+  def is_creator?(user)
+    admin.id == user.id
+  end
+
+  alias_method :has_creator?, :is_creator?
+  alias_method :is_master_admin?, :is_creator?
 
   def admins()
     users = []

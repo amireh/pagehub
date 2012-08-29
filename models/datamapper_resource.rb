@@ -11,14 +11,5 @@ module DataMapper
     def persisted?
       !self.id.nil?
     end
-
-    def serialize
-      {}
-    end
-
-    def to_json(*args)
-      serialize.to_json
-    end
-
   end
 end

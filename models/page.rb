@@ -4,18 +4,19 @@ class Page
   property :id,           Serial
   property :title,        String, length: 120, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
   property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
-  property :content,      Text, default: "This page is empty!"
+  property :content,      Text, default: "This page is empty."
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
   belongs_to :user
   belongs_to :folder, default: nil, required: false
   belongs_to :group,  default: nil, required: false
-  # has n,      :groups, :through => Resource
+  has n, :public_pages, :constraint => :destroy
 
-  before :valid? do |context|
+  validates_presence_of :title
+  validates_length_of   :title, :within => 3..120
+
+  before :valid? do
     self.pretty_title = self.title.sanitize
-
-    true
   end
 
   def deletable_by?(u = nil)

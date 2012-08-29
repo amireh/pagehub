@@ -40,6 +40,10 @@ div.jqmConfirm input[type="submit"] {
     /*padding: 4px; margin: 10px 30px; background: #000; color: #FFF; border: 1px solid #AAA;*/
 }
 
+div.jqmConfirm input#confirm_accepted {
+  float: right;
+}
+
 /* jqModal confirm CSS courtesy of;
    Alexandre Plennevaux <alexandre@pixeline.be>,
    Brice Burgess <bhb@iceburg.net> */
@@ -65,8 +69,8 @@ div.jqmConfirmWindow {
   height:auto;
   width: auto;
   margin: auto;
-  
-  max-width: 343px;
+
+  max-width: 420px;
   padding: 0 10px 10px;
   
   background:#FFF;

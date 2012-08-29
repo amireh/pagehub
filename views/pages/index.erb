@@ -11,7 +11,6 @@
 <script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
 
 <script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
-<script src="/js/dynamism.js"></script>
 
 <link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
 <link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
@@ -98,43 +97,44 @@
     }, { is_editor_action: false }); // action[new_page]
 
     // $.jqm({ trigger: $("#new_folder")})
-    ui.on_action("new_folder", function() {
-      console.log("new_folder() called")
-      try {
-        $.ajax({
-          url: "/folders/new",
-          success: function(html) {
-            pagehub.confirm(html, "Create a new folder", function(foo) {
-              console.log($("#confirm form#folder_form").serialize())
+    // ui.on_action("new_folder", function() {
+    //   console.log("new_folder() called")
+    //   try {
+    //     $.ajax({
+    //       url: "/folders/new",
+    //       success: function(html) {
+    //         pagehub.confirm(html, "Create a new folder", function(foo) {
+    //           console.log($("#confirm form#folder_form").serialize())
 
-              console.log("creating a folder")
-              ui.status.show("Creating a new folder...", "pending");
+    //           console.log("creating a folder")
+    //           ui.status.show("Creating a new folder...", "pending");
 
-              $.ajax({
-                url: "/folders",
-                type: "POST",
-                data: $("#confirm form#folder_form").serialize(),
-                success: function(folder) {
-                  var folder = JSON.parse(folder);
-                  dynamism.inject({ folders: [ folder ] }, $("#page_listing"));
-                },
-                error: function(e) {
-                  ui.status.show(e.responseText, "bad");
-                }
-              });
+    //           $.ajax({
+    //             url: "/folders",
+    //             type: "POST",
+    //             data: $("#confirm form#folder_form").serialize(),
+    //             success: function(folder) {
+    //               var folder = JSON.parse(folder);
+    //               dynamism.inject({ folders: [ folder ] }, $("#page_listing"));
+    //             },
+    //             error: function(e) {
+    //               ui.status.show(e.responseText, "bad");
+    //             }
+    //           });
 
-            });            
-          }
-        })
-      } catch(err) {
-        log(err);
-      }
+    //         });            
+    //       }
+    //     })
+    //   } catch(err) {
+    //     log(err);
+    //   }
 
-      // roll up the option list
-      $("a.listlike.selected").click();
+    //   // roll up the option list
+    //   $("a.listlike.selected").click();
 
-      return false;
-    }, { is_editor_action: false }); // action[new_page]
+    //   return false;
+    // }, { is_editor_action: false }); // action[new_page]
+    ui.on_action("new_folder", ui.folders.create, { is_editor_action: false }); // action[new_page]
 
     ui.on_action("save_content", ui.pages.save);
     ui.on_action("increase_height", function() {
@@ -157,7 +157,7 @@
       var page = ui.current_page(),
           page_title = page.html();
 
-      $("#destroy_page").attr("data-confirmation",
+      $("#destroy_page").attr("data-confirm",
         "Are you sure you want to delete the page '" + page_title + "'?");
 
       return true;
@@ -202,7 +202,10 @@
     <a class="listlike" tabindex="1">New</a>
     <ol class="listlike">
       <li><a href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
-      <li><a href="/folders/new" id="new_folder" title="Create a new folder">New folder</a></li>
+      <li><a  href="/folders/new"
+              id="new_folder"
+              title="Create a new folder">New folder</a>
+      </li>
     </ol>
   </div>
 
@@ -273,9 +276,9 @@
      title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
      href="/pages/x/pretty" id="preview">Pretty Version</a>
   <a id="destroy_page" class="confirm"
-     data-confirmation="Are you sure you want this page to be FOREVER deleted?"
-     data-confirmation-heading="Delete Page"
-     data-confirmation-cb="ui.pages.destroy"
+     data-confirm="Are you sure you want this page to be FOREVER deleted?"
+     data-confirm-heading="Delete Page"
+     data-confirm-cb="ui.pages.destroy"
      title="Deletes the page forever (Ctrl+Alt+D)">Delete</a>
   <a class="listlike">Share</a>
   <ol class="listlike">

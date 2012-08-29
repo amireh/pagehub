@@ -18,7 +18,7 @@ def create_folder(gid = nil)
 
   # see models/datamapper_resource.rb for DataMapper::Resource.persisted?
   unless f.persisted?
-    halt 500, "Unable to create folder: #{f.collect_errors}"
+    halt 400, "Unable to create folder: #{f.collect_errors}"
   end
 
   f.to_json
@@ -92,9 +92,7 @@ def delete_folder(fid, gid = nil)
     halt 400, "That folder does not exist."
   end
 
-  f.state = { user: current_user, group: @group }
-
-  unless f.destroy
+  unless f.deletable_by? current_user || f.destroy
     halt 500, "#{f.collect_errors}" 
   end
 
@@ -130,7 +128,7 @@ put "/groups/:gid/folders/:id", :auth => :group_editor do |gid, id|
 end
 
 # User page to folder addition
-put '/folders/:id/add/:page_id', :auth => :user do |fid, pid|
+put '/folders/:gid/add/:page_id', :auth => :user do |fid, pid|
   add_to_folder(fid, pid)
 end
 

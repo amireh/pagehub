@@ -314,6 +314,11 @@ pagehub_ui = function() {
       },
     },
 
+    report_error: function(err_msg) {
+      ui.status.show("A script error has occured, please try to reproduce the bug and report it.", "bad");
+      console.log(err_msg);
+    },
+
     highlight: function(el) {
       el = el || $(this);
       ui.dehighlight(el.hasClass("folder_title") ? "folder" : "page");
@@ -339,8 +344,6 @@ pagehub_ui = function() {
             url: pagehub.config.resource + "/folders/new",
             success: function(html) {
               pagehub.confirm(html, "Create a new folder", function(foo) {
-                console.log($("#confirm form#folder_form").serialize())
-
                 // console.log("creating a folder")
                 ui.status.show("Creating a new folder...", "pending");
 
@@ -349,6 +352,7 @@ pagehub_ui = function() {
                   .create($("#confirm form#folder_form").serialize(), {
                           success: function(folder) {
                             var folder = JSON.parse(folder);
+                            console.log(folder)
                             dynamism.inject({ folders: [ folder ] }, $("#page_listing"));
                             ui.status.show("Folder " + folder.title + " has been created.", "good");
                           },
@@ -419,6 +423,7 @@ pagehub_ui = function() {
       arrange: function(ul) {
         ui.status.mark_pending();
 
+        // Parent-less folders go to the top
         ul.prepend(ul.find('[data-parent=\\\%parent]:visible'));
 
         ul.find('> li.folder[data-parent]:not([data-parent=\\\%parent]):visible').each(function() {
@@ -638,8 +643,10 @@ pagehub_ui = function() {
 
         if (!dont_show_status) {
           messages = {
-            success: "Saved!",
-            error: "Unable to update page :("
+            success: function() { ui.status.show("Page updated.", "good") },
+            error: function(e)  {
+              ui.status.show("Unable to update page: " + e.responseText, "bad");
+            }
           }
         }
 

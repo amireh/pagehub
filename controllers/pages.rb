@@ -8,11 +8,8 @@ get '/pages/:id.json' do |id|
   p.serialize.merge({ content: p.content }).to_json
 end
 
-get '/groups/:gid/pages/:id.json' do |gid, id|
-  restricted!
-  g = group_editor! gid
-
-  unless p = Page.first(id: id, group: g)
+get '/groups/:gid/pages/:id.json', auth: :group_member do |gid, id|
+  unless p = @group.pages.first(id: id)
     halt 404, "Page ##{id} does not exist."
   end
 
@@ -30,11 +27,11 @@ put '/pages/:id' do |id|
   p.to_json
 end
 
-put '/groups/:gid/pages/:id' do |gid, id|
-  restricted!
-  g = group_editor! gid
+put '/groups/:gid/pages/:id', :auth => :group_editor do |gid, id|
+  # restricted!
+  # g = group_editor! gid
 
-  unless p = Page.first({ id: id, group: g })
+  unless p = Page.first({ id: id, group: @group })
     halt 501, "No such page: #{id}!"
   end
 
@@ -49,11 +46,8 @@ post '/pages' do
   Page.create({ user_id: current_user.id }).to_json
 end
 
-post "/groups/:gid/pages" do |gid|
-  restricted!
-  g = group_editor! gid
-
-  Page.create({ user: current_user, group: g }).to_json
+post '/groups/:gid/pages', auth: :group_editor do |gid|
+  Page.create({ user: current_user, group: @group }).to_json
 end
 
 delete '/pages/:id' do |id|
