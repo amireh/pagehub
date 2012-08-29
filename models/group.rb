@@ -7,15 +7,32 @@ class Group
   property :title,      String, length: 120
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
-  has n,     :users, :through => Resource
-  has n,     :pages, :through => Resource
+  has n,     :users,    :through => Resource
+  has n,     :pages
+  has n,     :folders
   belongs_to :admin, 'User', key: true
 
   validates_presence_of :name
 
+  def all_pages
+    c = { folders: [] }
+    folders.each { |f| c[:folders] << f.serialize }
+
+    folderless = { title: "None", id: 0, pages: [] }
+    pages.all(folder_id: nil).each { |p| folderless[:pages] << p.serialize }
+    c[:folders] << folderless
+
+    c
+  end
+
   def has_member?(user)
     self.users.each { |u| return true if user.nickname == u.nickname }
     false
+  end
+
+  def has_editor?(user)
+    # TODO: implement
+    has_member?(user)
   end
 
   def has_member_by_nickname?(nn)

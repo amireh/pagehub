@@ -103,6 +103,7 @@
   <div class="stuff">
     <header>
       <h1><a href="/">Page<em>Hub</em></a></h1>
+      <div class="subheader"><% yield_content :header %></div>
     </header>
     
     <nav>
@@ -113,7 +114,10 @@
           <ol class="listlike">
             <li><a href="/groups/new">New group</a></li>
             <% current_user.groups.each do |g| %>
-              <li><a href="/groups/<%= g.name %>"><%= g.title %></a></li>
+              <li>
+                <a href="/groups/<%= g.name %>"><%= g.title %></a>
+                <small><a style="padding: 0; margin: 0" href="/groups/<%= g.name %>/info">( info )</a></small>
+              </li>
             <% end %>
           </ol>
           <a class="listlike" href="/help">Help</a>

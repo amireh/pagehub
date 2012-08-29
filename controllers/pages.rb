@@ -1,35 +1,45 @@
 get '/pages/:id.json' do |id|
   restricted!
 
-  p = Page.first(id: id, user_id: current_user.id)
-
-  if !p
-    return "Sorry, I was unable to find the page :("
+  unless p = Page.first(id: id, user: current_user)
+    halt 404, "Page ##{id} does not exist."
   end
 
-  { id: p.id, content: p.content, groups: p.group_names, folder: p.folder ? p.folder.id : 0 }.to_json
+  p.serialize.merge({ content: p.content }).to_json
+end
+
+get '/groups/:gid/pages/:id.json' do |gid, id|
+  restricted!
+  g = group_editor! gid
+
+  unless p = Page.first(id: id, group: g)
+    halt 404, "Page ##{id} does not exist."
+  end
+
+  p.serialize.merge({ content: p.content }).to_json
 end
 
 put '/pages/:id' do |id|
   restricted!
 
-  p = Page.first({ id: id, user_id: current_user.id })
-  
-  halt 501, "No such page: #{id}!".to_json if !p
+  unless p = Page.first({ id: id, user_id: current_user.id })
+    halt 501, "No such page: #{id}!"
+  end
 
   p.update(params[:attributes])
-
   p.to_json
 end
 
-get '/pages/:id/pretty' do |id|
+put '/groups/:gid/pages/:id' do |gid, id|
   restricted!
+  g = group_editor! gid
 
-  @page = Page.first({ id: id, user_id: current_user.id })
+  unless p = Page.first({ id: id, group: g })
+    halt 501, "No such page: #{id}!"
+  end
 
-  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
-
-  erb :"pages/pretty", layout: :"layouts/print"
+  p.update(params[:attributes])
+  p.to_json  
 end
 
 # Creates a blank new page
@@ -37,6 +47,13 @@ post '/pages' do
   restricted!
 
   Page.create({ user_id: current_user.id }).to_json
+end
+
+post "/groups/:gid/pages" do |gid|
+  restricted!
+  g = group_editor! gid
+
+  Page.create({ user: current_user, group: g }).to_json
 end
 
 delete '/pages/:id' do |id|
@@ -51,6 +68,23 @@ delete '/pages/:id' do |id|
   true.to_json
 end
 
+delete '/groups/:gid/pages/:id' do |gid, id|
+  restricted!
+
+  # only the author can remove their own posts
+
+  unless p = Page.first({ id: id })
+    halt 404, "No such page #{id}."
+  end
+
+  unless p.deletable_by? current_user
+    halt 403, "Only the author may delete their pages."
+  end
+
+  p.destroy
+  true.to_json
+end
+
 get '/pages/public' do
   restricted!
 
@@ -62,6 +96,18 @@ get '/pages/public' do
 
   erb :"pages/public"
 end
+
+
+get '/pages/:id/pretty' do |id|
+  restricted!
+
+  @page = Page.first({ id: id, user_id: current_user.id })
+
+  halt 501, "This link seems to point to a non-existent page, you sure you got it right?" if !@page
+
+  erb :"pages/pretty", layout: :"layouts/print"
+end
+
 
 # Creates a publicly accessible version of the given page.
 # The public version will be accessible at:

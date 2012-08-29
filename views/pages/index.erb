@@ -285,7 +285,7 @@
             id="share_everybody">With Everybody
         </a>
     </li>
-    <% current_user.groups.each do |g| %>
+    <% false && current_user.groups.each do |g| %>
     <li>
       <a  target="PageHub"
           href="/pages/x/share/<%= g.name %>"

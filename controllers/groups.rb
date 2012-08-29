@@ -21,6 +21,18 @@ get "/groups/:name" do |name|
   erb :"/groups/show"
 end
 
+get "/groups/:name/info" do |name|
+  restricted!
+
+  unless @group = Group.first(name: name.to_s)
+    halt 404, "There is no such group called #{name}."
+  end
+
+  halt 403, "You do not belong to this group." unless @group.has_member?(current_user)
+
+  erb :"/groups/info"
+end
+
 get '/groups/:name/edit' do |name|
   restricted!
 

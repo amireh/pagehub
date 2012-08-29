@@ -18,9 +18,9 @@ class User
   property :created_at,     DateTime, default: lambda { |*_| DateTime.now }
 
   # has n, :notebooks
-  has n, :pages
+  has n, :pages, :constraint => :destroy
+  has n, :folders, :constraint => :destroy
   has n, :groups, :through => Resource
-  has n, :folders
 
   validates_presence_of :name, :provider, :uid
 
@@ -32,10 +32,10 @@ class User
 
   def all_pages
     pages = { folders: [] }
-    self.folders.each { |f| pages[:folders] << f.serialize }
+    self.folders(group: nil).each { |f| pages[:folders] << f.serialize }
 
     folderless = { title: "None", id: 0, pages: [] }
-    self.pages.all(folder_id: nil).each { |p| folderless[:pages] << p.serialize }
+    self.pages.all(folder: nil, group: nil).each { |p| folderless[:pages] << p.serialize }
     pages[:folders] << folderless
     pages
   end

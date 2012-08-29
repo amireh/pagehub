@@ -8,7 +8,7 @@
   <label>Parent folder:<br />
     <select name="folder_id">
       <option value="0">None</option>
-      <% current_user.folders.each do |f| %>
+      <% (@group || current_user).folders.each do |f| %>
         <option value="<%= f.id %>"
           <%= 'selected="selected"' if @f.folder_id == f.id %>><%= f.title %></option>
       <% end %>

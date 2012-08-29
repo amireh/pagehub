@@ -100,11 +100,32 @@ before do
 end
 
 not_found do
+  # return "Bad link!".to_json if request.xhr?
+  if request.xhr?
+    r = response.body.first
+    return r.include?("<html>") ? "404 - bad link!" : r.to_json
+  end
+  
   erb :"404"
 end
 
 error 403 do
+  # return response.body.first.to_json if request.xhr?
+  if request.xhr?
+    r = response.body.first
+    return r.include?("<html>") ? "403 - forbidden!" : r.to_json
+  end
+  
   erb :"403"
+end
+
+error do
+  # return response.body.first.to_json if request.xhr?
+  if request.xhr?
+    halt 500, "500 - internal error: " + env['sinatra.error'].name + " => " + env['sinatra.error'].message
+  end
+
+  erb :"500"  
 end
 
 get '/' do

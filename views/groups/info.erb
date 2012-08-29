@@ -1,0 +1,17 @@
+<h2><%= @group.title %><% if @group.is_admin?(current_user)%>
+  <small><a href="/groups/<%= @group.name %>/edit">manage</a></small>
+<% end %></h2>
+
+<h3>Pages</h3>
+<ol>
+  <% @group.pages.each do |p| %>
+    <li><a href="/<%= @group.name %>/<%= p.pretty_title %>"><%= p.title %></a> <small>(by <%= p.user.nickname %>)</small></li>
+  <% end %>
+</ol>
+
+<h3>Members</h3>
+<ol>
+  <% @group.users.each do |u| %>
+    <li><%= u.nickname %></li>
+  <% end %>
+</ol>

@@ -327,6 +327,43 @@ pagehub_ui = function() {
     },
 
     folders: {
+      create: function() {
+        try {
+          // load the creation form
+          $.ajax({
+            url: pagehub.config.resource + "/folders/new",
+            success: function(html) {
+              pagehub.confirm(html, "Create a new folder", function(foo) {
+                console.log($("#confirm form#folder_form").serialize())
+
+                // console.log("creating a folder")
+                ui.status.show("Creating a new folder...", "pending");
+
+                // actually create the folder
+                pagehub.folders
+                  .create($("#confirm form#folder_form").serialize(), {
+                          success: function(folder) {
+                            var folder = JSON.parse(folder);
+                            dynamism.inject({ folders: [ folder ] }, $("#page_listing"));
+                            ui.status.show("Folder " + folder.title + " has been created.", "good");
+                          },
+                          error: function(e) {
+                            ui.status.show(e.responseText, "bad");
+                          }});
+
+              }); // pagehub.confirm()
+            } // loading success
+          })
+        } catch(err) {
+          log(err);
+        }
+
+        // roll up the option list
+        $("a.listlike.selected").click();
+
+        return false;
+      },
+
       on_update: function(f) {
         ui.status.show("Folder updated!", "good");
 
@@ -456,8 +493,8 @@ pagehub_ui = function() {
             },
 
             // error handler
-            function() {
-              ui.status.show("Unable to delete folder.", "bad");
+            function(e) {
+              ui.status.show("Unable to delete folder: " + e.responseText, "bad");
             });
 
           // don't let dynamism remove the listing just yet
@@ -477,6 +514,36 @@ pagehub_ui = function() {
     },
 
     pages: {
+      create: function() {
+        ui.status.show("Creating a new page...", "pending");
+
+        pagehub.pages.create({
+          success: function(page) {
+            console.log("page created successfully")
+            var page = JSON.parse(page);
+            console.log(page);
+            dynamism.inject({ folders: [ { id: 0, pages: [ page ] } ] }, $("#page_listing"));
+            $("#page_" + page.id).click();
+            // var new_page = "<li><a id=\"page_" + page_id + "\">page #" + page_id + "</a></li>";
+            // $("#page_listing").prepend(new_page);
+            // ui.dehighlight();
+            // $("#page_listing li:first a").click(get_page).click();
+
+            ui.editor.setValue("Preparing newly created page... hold on.");
+          },
+          error: function(e) {
+            ui.status.show("Could not create a new page: " + e.responseText, "bad");
+            console.log("smth bad happened")
+            console.log(e)
+          }
+        });
+
+        // roll up the option list
+        $("a.listlike.selected").click();
+
+        return true;
+      },
+
       load: function() {
         if ($(this).parent().hasClass("selected")) {
           ui.resource_editor.show();
@@ -497,7 +564,7 @@ pagehub_ui = function() {
         var title = $(this).attr("id").replace("page_", "");
         $.ajax({
           type: "GET",
-          url: "/pages/" + title + ".json",
+          url: pagehub.config.resource + "/pages/" + title + ".json",
           success: function(page) {
             var page    = JSON.parse(page),
                 content = page.content,
@@ -505,8 +572,8 @@ pagehub_ui = function() {
 
             ui.editor.clearHistory();
             ui.editor.setValue(content);
-            $("#preview").attr("href", "/pages/" + title + "/pretty");
-            $("#share_everybody").attr("href", "/pages/" + title + "/share");
+            $("#preview").attr("href", pagehub.config.resource + "/pages/" + title + "/pretty");
+            $("#share_everybody").attr("href", pagehub.config.resource + "/pages/" + title + "/share");
 
             // Disable the group share links for all the groups this page
             // is already shared with
@@ -523,7 +590,7 @@ pagehub_ui = function() {
               }
 
               if (!already_shared) {
-                $(this).attr("href", "/pages/" + title + "/share/" + group);
+                $(this).attr("href", pagehub.config.resource + "/pages/" + title + "/share/" + group);
                 $(this).attr("data-disabled", null);
               } else {
                 $(this).attr("href", null);
@@ -539,7 +606,8 @@ pagehub_ui = function() {
             // $("a[data-action=move]").unbind('click');
             $("a[data-action=move]").each(function() {
               $(this).attr("href", 
-                "/folders/" 
+                pagehub.config.resource
+                + "/folders/" 
                 + $(this).attr("data-folder")
                 + "/add/" + page.id);
             });
@@ -590,8 +658,8 @@ pagehub_ui = function() {
             ui.actions.addClass("disabled");
             ui.resource_editor.hide();
           },
-          function() {
-            ui.status.show("Page could not be destroyed! Please try again.", "bad");
+          function(e) {
+            ui.status.show("Page could not be destroyed: " + e.responseText, "bad");
           }); // pagehub.pages.destroy
       },
 
@@ -641,7 +709,7 @@ pagehub_ui = function() {
         if (!ui.is_page_selected())
           return true; // let the event propagate
 
-        window.open("/pages/" + current_page_id() + "/pretty", "_pretty")
+        window.open(pagehub.config.resource + "/pages/" + current_page_id() + "/pretty", "_pretty")
       }
     }
   }

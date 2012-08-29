@@ -1,17 +1,247 @@
-<h2><%= @group.title %><% if @group.is_admin?(current_user)%>
-  <small><a href="/groups/<%= @group.name %>/edit">manage</a></small>
-<% end %></h2>
+<% content_for :scripts do %>
+<script src="/js/codemirror-2.3/lib/codemirror.js"></script>
+<script src="/js/codemirror-2.3/mode/xml/xml.js"></script>
+<script src="/js/codemirror-2.3/mode/markdown/markdown.js"></script>
+<script src="/js/codemirror-2.3/mode/gfm/gfm.js"></script>
 
-<h3>Pages</h3>
-<ol>
-  <% @group.pages.each do |p| %>
-    <li><a href="/<%= @group.name %>/<%= p.pretty_title %>"><%= p.title %></a> <small>(by <%= p.user.nickname %>)</small></li>
-  <% end %>
-</ol>
+<script src="/js/codemirror-2.3/mode/javascript/javascript.js"></script>
+<script src="/js/codemirror-2.3/mode/ruby/ruby.js"></script>
+<script src="/js/codemirror-2.3/mode/shell/shell.js"></script>
+<script src="/js/codemirror-2.3/mode/lua/lua.js"></script>
+<script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
 
-<h3>Members</h3>
-<ol>
-  <% @group.users.each do |u| %>
-    <li><%= u.nickname %></li>
-  <% end %>
-</ol>
+<script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
+<script src="/js/dynamism.js"></script>
+
+<link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
+<link rel="stylesheet" href="/js/codemirror-2.3/theme/<%= @theme %>.css">
+<link rel="stylesheet" href="/css/codemirror.css">
+
+<!-- apply user preferences -->
+<style>
+  .CodeMirror {
+    font-family: <%= Preferences::FontMap[preferences["editing"]["font_face"]] %>;
+    font-size: <%= preferences["editing"]["font_size"].to_i %>px;
+    line-height: <%= preferences["editing"]["line_height"].to_i %>px;
+  }
+</style>
+
+<script type="text/javascript">
+
+  $(function() {
+
+    pagehub.config.resource = "/groups/<%= @group.id %>";
+    
+    var editor = null;
+    dynamism.configure({ debug: false, logging: false })
+
+    var last_folder = null;
+    dynamism.register_factory("folders", function(el, folder) {
+      last_folder = folder;
+      var existing_folder = $("#folder_" + folder.id);
+      if (existing_folder.length == 1) {
+        // the folder exists, don't create another one
+        return existing_folder;
+      }
+
+      var target = $("[data-dyn-spawn-on='folders'][data-dyn-index=-1]");
+      if (target.length == 1) {
+        return dynamism.add(target);
+      }
+
+      return null;
+    });
+
+
+    /* --- ------ *
+     * The Editor *
+     * --- ------ */
+    ui.editor = editor = ui.create_editor("page_editor");
+    ui.actions = $("#page_actions");
+
+    // Resize it to fill up the remainder of the screen's height
+    var editor_h = $(window).height() - 123;
+    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+    editor.refresh();
+    // and the page listing
+    $("#pages .scroller").css("max-height", $(window).height() - 123);  
+
+    /* ------ -------- *
+     * Action bindings *
+     * ------ -------- */
+    ui.on_action("new_page", ui.pages.create, { is_editor_action: false }); // action[new_page]
+
+    // $.jqm({ trigger: $("#new_folder")})
+    ui.on_action("new_folder", ui.folders.create, { is_editor_action: false }); // action[new_page]
+
+    ui.on_action("save_content", ui.pages.save);
+    ui.on_action("increase_height", function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) + step) +"px");
+      editor.refresh();
+    });
+    ui.on_action("decrease_height", function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) - step) +"px");
+      editor.refresh();
+    });
+    ui.on_action("refresh_editor", function() {
+      editor.refresh();
+    });
+
+    ui.on_action("destroy_page", function() {
+      var page = ui.current_page(),
+          page_title = page.html();
+
+      $("#destroy_page").attr("data-confirmation",
+        "Are you sure you want to delete the page '" + page_title + "'?");
+
+      return true;
+    });
+    $("a[data-action=move]").click(ui.pages.move);
+
+    $(".actions a[id], #page_actions a[id]").click(function() {
+      log("An action was clicked: " + $(this).attr("id"))
+      return ui.action($(this).attr("id"));
+    });
+
+    /* ----------- *
+     * Keybindings *
+     * ----------- */
+    shortcut.add("ctrl+alt+s", function() { ui.pages.save(); })
+    shortcut.add("ctrl+alt+v", function() { ui.pages.preview(); })
+    shortcut.add("ctrl+alt+d", function() { $("a[id=destroy_page]").click(); })
+    shortcut.add("ctrl+alt+c", function() { $("#new_page").click(); })
+    shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
+    shortcut.add("ctrl+alt+r", function() { ui.editor.refresh(); })
+
+    data = <%= @group.all_pages.to_json %>;
+    dynamism.inject(data, $("#page_listing"));
+
+    <%# puts @group.all_pages %>;
+
+  }); 
+</script>
+<% end %>
+
+<% content_for :title do %>
+  <%= current_user.nickname %> | PageHub
+<% end %>
+
+<% content_for :header do %>
+  <h3><a href="/groups/<%=@group.name%>"><%= @group.title %></a></h3>
+<% end %>
+
+<% content_for :wraps do %>
+  <div class="action_bar_wrap"></div>
+<% end %>
+
+<div id="indicator"></div>
+<div id="pages">
+  <div class="actions">
+    <a class="listlike" tabindex="1">New</a>
+    <ol class="listlike">
+      <li><a href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
+      <li><a href="/folders/new" id="new_folder" title="Create a new folder">New folder</a></li>
+    </ol>
+  </div>
+
+  <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
+  <div class="scroller">
+
+    <div hidden="hidden" class="dialog" id="resource_editor">
+      <input type="text" name="title" />
+      <div hidden="hidden" id="parent_folder_selection">
+        <label>Parent folder:<br />
+          <select name="folder_id">
+            <option value="folder_0" selected="selected">None</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="thin" id="update_title">Update</button>
+        <button class="thin" id="cancel_title_editing">Cancel</button>
+      </div>
+    </div>
+
+    <ul id="page_listing" data-dyn-hook="post-injection, ui.folders.arrange">
+
+      <li data-dyn-entity="folder"
+          data-dyn-spawn-on="folders"
+          data-dyn-hook="post-injection, ui.folders.on_injection,
+                         removal, ui.folders.on_removal"
+          data-dyn-inject="@id, folders.id, @data-parent, folders.parent"
+          data-parent="%parent"
+          id="folder_%id"
+          class="folder">
+          <span data-dyn-inject="@text, folders.title"
+                data-dyn-hook="click, ui.folders.edit_title, hover, ui.folders.highlight"
+                class="folder_title">
+                %title
+          </span>
+          <button data-dyn-action="remove">X</button>
+          <a href="/folders/%id/add/x"
+             data-action="move"
+             data-folder="%id"
+             data-dyn-inject="@data-folder, folders.id,
+                              @text,        folders.title,
+                              @href,        folders.id"
+             data-dyn-hook="click, ui.pages.move">
+             %title
+          </a>
+          <ol>
+            <li>This folder is empty.</li>
+            <li data-dyn-entity="folder[-1][pages]"
+                data-dyn-spawn-on="folders.pages">
+                <a href="/pages/%id"
+                   id="page_%id"
+                   data-dyn-inject="@text, folders.pages.title,
+                                    @href, folders.pages.id,
+                                    @id, folders.pages.id"
+                   data-dyn-hook="click, ui.pages.load">%title</a></li>
+          </ol>
+      </li>
+    </ul>
+  </div>
+</div><!--
+
+--><div id="editor_container"><!--
+
+--><div class="disabled" id="page_actions">
+  <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a>
+  <a target="PageHub - Preview" 
+     title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
+     href="/pages/x/pretty" id="preview">Pretty Version</a>
+  <a id="destroy_page" class="confirm"
+     data-confirmation="Are you sure you want this page to be FOREVER deleted?"
+     data-confirmation-heading="Delete Page"
+     data-confirmation-cb="ui.pages.destroy"
+     title="Deletes the page forever (Ctrl+Alt+D)">Delete</a>
+  <a class="listlike">Share</a>
+  <ol class="listlike">
+    <li><a  target="PageHub" 
+            title="Make a public version of this page that you can share with people" 
+            href="/pages/x/share"
+            id="share_everybody">With Everybody
+        </a>
+    </li>
+  </ol>
+  
+  <a class="listlike">Move</a>
+  <ol class="listlike" id="movement_listing">
+    <li><a data-action="move" data-folder="0" href="/folders/x/add/y">Top folder</a></li>
+  </ol>
+
+  <a class="listlike">Editor Actions</a>
+  <ol class="listlike">
+    <li class="sticky"><a href="#" title="Increase the height of the editor" id="increase_height">Grow</a></li>
+    <li class="sticky"><a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
+    <li class="sticky"><a href="#" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
+  </ol>
+</div><textarea id="page_editor">Load or create a new page to begin.</textarea>
+</div>
+<img class="loader" src="/css/ajax-loader.gif" />
+
+<%= erb :"/shared/_confirmation_dlg" %>

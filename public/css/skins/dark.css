@@ -141,3 +141,9 @@ ol.listlike {
 ol.listlike li {
   border-color: #111;
 }
+
+.jqmConfirmWindow input[type=text],
+.jqmConfirmWindow input[type=text]:focus {
+  background: white;
+  color: #333;
+}

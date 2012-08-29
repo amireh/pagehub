@@ -19,7 +19,7 @@ body {
 }
 
 header h1 a:visited,
-header h1 a{
+header h1 a {
   letter-spacing: 5px;
   font-weight: 100;
   color: #333;

@@ -26,7 +26,50 @@ class Hash
   end
 end
 
+module RoleInspector
+  def restricted!(scope = nil)
+    halt 401, "You must sign in first." unless logged_in?
+  end
+
+  def group_editor!(gid)
+    if g = Group.first(id: gid)
+      halt 403, "You are not an editor of this group." unless g.has_editor?(current_user)
+    end
+
+    halt 404, "No such group ##{gid}." unless g
+
+    g
+  end
+  
+  def group_member!(gid)
+    if g = Group.first(id: gid)
+      halt 403, "You are not a member of this group." unless g.has_member?(current_user)
+    end
+
+    halt 404, "No such group ##{gid}." unless g
+
+    g
+  end
+
+  set(:auth) do |*roles|   # <- notice the splat here
+    condition do
+      # puts "Params in :auth => #{params.inspect}"
+      # puts "Roles in :auth => #{roles.inspect}"
+
+      if roles.include?(:group_editor)
+        restricted!
+        @group = group_editor! params[:gid]
+      elsif roles.include?(:user)
+        restricted!
+      end
+    end
+  end
+
+end
+
 helpers do
+  include RoleInspector
+
   def logged_in?
     session[:id]
   end
@@ -42,10 +85,6 @@ helpers do
 
     @user = User.get(session[:id])
     @user
-  end
-
-  def restricted!
-    halt 401 unless logged_in?
   end
 
   def preferences
