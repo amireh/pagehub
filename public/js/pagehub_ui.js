@@ -24,6 +24,13 @@ pagehub_ui = function() {
         function() {
           dynamism.configure({ debug: false, logging: false })
         },
+
+        function() {
+          $("[data-collapsible]").each(function() {
+            var collapse_btn = "<button data-dyn-hook='click, ui.collapse' data-collapse>&minus;</button>";
+            $(this).append(collapse_btn);
+          });
+        },
         
         // Bind the title editor's key presses:
         // 1. on RETURN: update the page and the entry
@@ -167,6 +174,15 @@ pagehub_ui = function() {
       return editor;
     },
 
+    collapse: function() {
+      if ($(this).attr("data-collapsed")) {
+        $(this).siblings(":not(span.folder_title)").show();
+        $(this).attr("data-collapsed", null).html("&minus;");
+      } else {
+        $(this).siblings(":not(span.folder_title)").hide();        
+        $(this).attr("data-collapsed", true).html("&plus;");
+      }
+    },
     status: {
       clear: function(cb) {
         if (!$("#status").is(":visible"))
@@ -474,6 +490,7 @@ pagehub_ui = function() {
           el.find("> button[data-dyn-action=remove]").remove();
           el.find("> a[data-action=move]").remove();
           el.find("> select").remove();
+          el.find("> button[data-collapse]").hide();
         } else {
 
           // add the folder to the "Move to folder" listing
