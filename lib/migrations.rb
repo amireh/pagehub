@@ -25,3 +25,39 @@ migration 1, :change_string_lengths do
   down do
   end
 end
+
+migration 2, :carbon_copies do
+  up do
+    Page.all.each { |p|
+      unless p.carbon_copy
+        p.carbon_copy = CarbonCopy.create({ content: p.content })
+        p.save
+        puts "Page #{p.title} now has a CC."
+      end
+    }
+  end
+
+  down do
+    CarbonCopy.destroy
+  end
+end
+
+# migration 3, :patch_changes do
+  # up do
+    # Revision.all.each { |rv|
+      # diff = Marshal.load(rv.blob)
+      # changes = { :additions => 0, :deletions => 0 }
+      # diff.each { |changeset|
+        # changeset.each { |d|
+          # d.action == '-' ? changes[:deletions] += 1 : changes[:additions] += 1
+        # }
+      # }
+      # rv.update!(changes.merge({ patchsz: rv.blob.length }))
+      # puts "Updating revision #{rv.version}"
+    # }
+  # end
+# 
+  # down do
+    # Revision.update({ additions: 0, deletions: 0, patchsz: 0 })
+  # end
+# end

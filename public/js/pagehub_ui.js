@@ -246,7 +246,7 @@ pagehub_ui = function() {
         // if (update_title)
         //   li.html(txtbox.attr("value"));
 
-        form.hide();
+        $("body").append(form.hide());
         li.show();
 
         if (ui.is_folder_selected()) {
@@ -602,6 +602,8 @@ pagehub_ui = function() {
             ui.editor.setValue(content);
             $("#preview").attr("href", pagehub.namespace + "/pages/" + title + "/pretty");
             $("#share_everybody").attr("href", pagehub.namespace + "/pages/" + title + "/share");
+            $("#history").attr("href", pagehub.namespace + "/pages/" + page.id + "/revisions")
+                         .html($("#history").html().replace(/\d+/, page.nr_revisions));
 
             // Disable the group share links for all the groups this page
             // is already shared with
@@ -629,7 +631,7 @@ pagehub_ui = function() {
             // disable the "move to" of the folder the page is in, if any
             $("a[data-action=move]").attr("data-disabled", null);
             $("a[data-action=move][data-folder=" + page.folder + "]")
-            .attr({ "data-disabled": true });
+              .attr({ "data-disabled": true });
 
             // $("a[data-action=move]").unbind('click');
             $("a[data-action=move]").each(function() {
@@ -668,7 +670,7 @@ pagehub_ui = function() {
           }
         }
 
-        pagehub.pages.update(page_id, { content: content }, messages);
+        pagehub.pages.update(page_id, { content: content, autosave: dont_show_status }, messages);
       }, // pagehub_ui.pages.save
 
       on_update: function(p) {
@@ -690,6 +692,8 @@ pagehub_ui = function() {
             page_id     = current_page_id(),
             page_title  = entry.html(); // for status
 
+        ui.resource_editor.hide();
+        
         pagehub.pages.destroy(page_id,
           // success
           function() {
@@ -717,6 +721,8 @@ pagehub_ui = function() {
             last_folder = page_li.parents("li.folder:first"),
             folder_id   = $(this).attr("data-folder");
 
+        console.log("Requesting page move...");
+
         $.ajax({
           url: uri,
           type: "PUT",
@@ -725,6 +731,9 @@ pagehub_ui = function() {
                 folder  = $("#folder_" + page.folder);
 
             var current_listing = page_li.parent();
+
+            console.log("Moving page:")
+            console.log(page);
 
             // 1. move the page <li> to the folder's
             folder.find("> ol > li:not(.folder):last").after(page_li);

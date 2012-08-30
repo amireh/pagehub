@@ -1,0 +1,27 @@
+1c1
+< ## Interface Shortcuts
+---
+> ## UI Shortcuts
+6d5
+< * `Ctrl+Alt+V` pretty print
+7a7
+> * `Ctrl+Alt+V` pretty print
+9,10d8
+< * `Ctrl+Alt+E` moves focus to the editor
+< * `Ctrl+Alt+A` moves focus to the list of pages so u can use the arrows to select ur document
+12c10
+< ## Editor Shortcuts
+---
+> ## Page Editor Shortcuts
+17,18c15,22
+< * `Ctrl+I` *italicize* line/word (this isn't currently working very well)
+< * `Ctrl+B` *boldify* line/word (this isn't currently working very well)
+---
+> * `Ctrl+Shift+K` deletes the current line
+> * `Ctrl+Shift+K` deletes the current line
+> * `Ctrl+Shift+K` deletes the current line
+> * `Ctrl+Shift+K` deletes the current line
+> * `Ctrl+Shift+K` deletes the current line
+> * `Ctrl+Shift+K` deletes the current line
+> * `Ctrl+Shift+K` deletes the current line
+> * `Ctrl+Shift+K` deletes the current line

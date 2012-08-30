@@ -1,0 +1,94 @@
+<% content_for :scripts do %>
+<script type="text/javascript">
+  $(function() {
+
+    /* ------ -------- *
+     * Action bindings *
+     * ------ -------- */
+    ui.on_action("new_page", ui.pages.create, { is_editor_action: false }); // action[new_page]
+    ui.on_action("new_folder", ui.folders.create, { is_editor_action: false }); // action[new_page]
+    ui.on_action("save_content", ui.pages.save);
+    ui.on_action("increase_height", function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) + step) +"px");
+      ui.editor.refresh();
+    });
+    ui.on_action("decrease_height", function() {
+      var step = parseInt($(".CodeMirror").css("line-height"));
+      $(".CodeMirror-scroll").css("min-height", 
+        (parseInt($(".CodeMirror-scroll").css("min-height")) - step) +"px");
+      ui.editor.refresh();
+    });
+    ui.on_action("refresh_editor", function() {
+      ui.editor.refresh();
+    });
+
+    ui.on_action("destroy_page", function() {
+      var page = ui.current_page(),
+          page_title = page.html();
+
+      $("#destroy_page").attr("data-confirm",
+        "Are you sure you want to delete the page '" + page_title + "'?");
+
+      return true;
+    });
+
+    // because it won't be spawned dynamically via dynamism and 
+    // won't be injected and hooked by it
+    $("a[data-action=move][data-folder=0]").click(ui.pages.move);
+
+    $(".actions a[id], #page_actions a[id]").click(function() {
+      return ui.action($(this).attr("id"));
+    });
+
+    /* ----------- *
+     * Keybindings *
+     * ----------- */
+    shortcut.add("ctrl+alt+s", function() { ui.pages.save(); })
+    shortcut.add("ctrl+alt+v", function() { ui.pages.preview(); })
+    shortcut.add("ctrl+alt+d", function() { $("a[id=destroy_page]").click(); })
+    shortcut.add("ctrl+alt+c", function() { $("#new_page").click(); })
+    shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
+    shortcut.add("ctrl+alt+r", function() { ui.editor.refresh(); })
+  });
+</script>
+<% end %>
+
+<div class="disabled" id="page_actions">
+  <a href="#" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a>
+  
+  <a target="PageHub - Preview" 
+     title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
+     href="/pages/x/pretty" id="preview">Pretty Version</a>
+  
+  <a id="destroy_page" class="confirm"
+     data-confirm="Are you sure you want this page to be FOREVER deleted?"
+     data-confirm-heading="Delete Page"
+     data-confirm-cb="ui.pages.destroy"
+     title="Deletes the page forever (Ctrl+Alt+D)">Delete</a>
+
+  <a class="listlike">Share</a>
+  <ol class="listlike">
+    <li><a  target="PageHub" 
+            title="Make a public version of this page that you can share with people" 
+            href="/pages/x/share"
+            id="share_everybody">With Everybody
+        </a>
+    </li>
+  </ol>
+  
+  <a id="history" target="PageHub" title="View the history of this page">Revisions [0]</a>
+
+  <a class="listlike">Move</a>
+  <ol class="listlike" id="movement_listing">
+    <li><a data-action="move" data-folder="0" href="/folders/x/add/y">Top folder</a></li>
+  </ol>
+
+  <a class="listlike">Editor Actions</a>
+  <ol class="listlike">
+    <li class="sticky"><a href="#" title="Increase the height of the editor" id="increase_height">Grow</a></li>
+    <li class="sticky"><a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
+    <li class="sticky"><a href="#" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
+  </ol>
+</div>

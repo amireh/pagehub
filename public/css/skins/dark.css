@@ -1,4 +1,7 @@
 .cm-s-neat span.cm-header { color: #D4EE5E; }
+.CodeMirror pre.CodeMirror-cursor {
+  border-color: #fff;
+}
 
 body {
   background: url(../bg.png) repeat;
@@ -36,6 +39,7 @@ header h1 a em {
   color: #F4FAD2;
 }
 
+* { border-color: rgba(0,0,0,0.2); }
 hr {
   box-shadow: none;
   border-color: rgba(0,0,0,0.2);

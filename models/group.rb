@@ -66,7 +66,9 @@ class Group
     self.pages.each { |p| return true if p.pretty_title == title}
   end
 
-
+  def namespace
+    "/groups/#{self.id}"
+  end
 
   def is_creator?(user)
     admin.id == user.id

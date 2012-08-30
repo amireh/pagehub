@@ -18,6 +18,25 @@ def update_page(pid)
     halt 501, "No such page: #{pid}!"
   end
 
+  unless params[:attributes][:autosave]
+    begin
+      unless p.generate_revision(params[:attributes][:content], current_user)
+        puts "Page failed to generate RV"
+        halt 400, p.collect_errors
+      end
+
+      # p.save
+    rescue Revision::NothingChangedError
+      # it's ok, we'll just not store a revision
+    end
+  end
+
+  if p.dirty?
+    halt 500, "Something _really_ bad happened."
+  end
+
+  params[:attributes].delete("autosave")
+
   unless p.update(params[:attributes])
     halt 400, p.collect_errors
   end
@@ -122,7 +141,53 @@ def locate_group_page(crammed_path)
   @page
 end
 
+def load_revisions(pid)
+  unless @page = @scope.pages.first({ id: pid })
+    halt 404, "No such page."
+  end
 
+  erb "/pages/revisions/index".to_sym
+end
+
+def load_revision(pid, rid)
+  unless @page = @scope.pages.first({ id: pid })
+    halt 404, "No such page."
+  end
+
+  unless @rv = @page.revisions.first({ id: rid })
+    halt 404, "No such revision."
+  end
+
+  @prev_rv = @rv.prev
+  @next_rv = @rv.next
+
+  erb "/pages/revisions/show".to_sym
+end
+
+def rollback_page(pid, rid)
+  unless @page = @scope.pages.first({ id: pid })
+    halt 404, "No such page."
+  end
+  unless @rv = @page.revisions.first({ id: rid })
+    halt 404, "No such revision."
+  end
+
+  if !params[:confirmed] || params[:confirmed] != "do it"
+    flash[:error] = "Will not roll-back until you have confirmed your action."
+    return redirect @rv.url(@scope.namespace)
+  end
+
+  unless @page.rollback(@rv)
+    flash[:error] = "Page failed to rollback: #{@page.collect_errors}"
+    return redirect @rv.url(@scope.namespace)
+  end
+
+  flash[:notice] = "Page #{@page.title} has been restored to revision #{@rv.version}"
+
+  redirect @rv.url(@scope.namespace)  
+end
+
+# CRUDs
 post '/pages', auth: :user do create_page end
 post '/groups/:gid/pages', auth: :group_editor do |gid| create_page end
 
@@ -134,6 +199,16 @@ put '/groups/:gid/pages/:id', :auth => :group_editor do |gid, id| update_page(id
 
 delete '/pages/:id', auth: :user do |id| delete_page(id) end
 delete '/groups/:gid/pages/:id', auth: :group_editor do |gid, id| delete_page(id) end
+
+# Version control
+get '/pages/:id/revisions', auth: :user do |pid| load_revisions(pid) end
+get '/groups/:gid/pages/:id/revisions', auth: :group_editor do |gid, pid| load_revisions(pid) end
+
+get '/pages/:id/revisions/:rid', auth: :user do |pid, rid| load_revision(pid, rid) end
+get '/groups/:gid/pages/:id/revisions/:rid', auth: :group_editor do |gid, pid, rid| load_revision(pid, rid) end
+
+post '/pages/:id/revisions/:rid', auth: :user do |pid, rid| rollback_page(pid, rid) end
+post '/groups/:gid/pages/:id/revisions/:rid', auth: :group_editor do |gid, pid, rid| rollback_page(pid, rid) end
 
 get '/pages/public', auth: :user do
   nr_invalidated_links = 0

@@ -19,6 +19,7 @@ gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-github'
 gem 'omniauth-twitter', '0.0.9'
+gem 'diff-lcs'
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -61,8 +62,8 @@ configure do
     Dir.glob("#{directory}/*.rb").each { |f| require f }
   end
 
-  load "models"
   load "helpers"
+  load "models"
   # load "controllers"
   require 'controllers/helpers'
   require 'controllers/groups'

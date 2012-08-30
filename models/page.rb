@@ -1,3 +1,5 @@
+require 'digest/sha1'
+
 class Page
   include DataMapper::Resource
   
@@ -6,13 +8,15 @@ class Page
   property :id,           Serial
   property :title,        String, length: 120, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
   property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
-  property :content,      Text,   default: "This page is empty."
+  property :content,      Text,   default: ""
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
   belongs_to :user
   belongs_to :folder, default: nil, required: false
   belongs_to :group,  default: nil, required: false
   has n, :public_pages, :constraint => :destroy
+  has n, :revisions, :constraint => :destroy
+  has 1, :carbon_copy, :constraint => :destroy
 
   validates_presence_of :title
   validates_length_of   :title, :within => 3..120
@@ -21,7 +25,81 @@ class Page
     self.pretty_title = self.title.sanitize
   end
 
+  [ :update, :save ].each { |advice|
+    before advice do |context|
+    end
+  }
+
+  after :create do |context|
+    # Don't initialize the CC with our content because
+    # we want the first revision to reflect the entire
+    # changes the post was first created with.
+    self.carbon_copy = CarbonCopy.create({ page: self })
+  end
+
   before :destroy, :deletable_by? 
+
+  def generate_revision(new_content, editor)
+    if !persisted?
+      errors.add :revisions, "Page revisions can not be generated from new pages."
+      return false
+    end
+
+    if !new_content
+      return true
+    end
+    
+    rv = Revision.new
+    rv.context = { content: new_content }
+    rv.editor = editor
+    rv.page = self # doing otherwise will make the page dirty
+    unless rv.save
+      errors.add :revisions, "Unable to generate revision: #{rv.collect_errors}"
+      rv = nil
+      return false
+    end
+
+    carbon_copy.update({ content: new_content })
+
+    true
+  end
+
+  def snapshot(dest_rv, snapshotted = nil)
+    snapshotted ||= carbon_copy.content.dup
+    revisions.all({ :order => [ :created_at.desc ] }).each { |rv|
+      break if rv == dest_rv
+      snapshotted = rv.apply(snapshotted)
+      # snapshotted = Diff::LCS.unpatch!(snapshotted.split("\n"), Marshal.load(rv.blob)).join("\n")
+    }
+    snapshotted
+  end
+
+  # Replaces the content of the carbon copy and the page with
+  # the snapshot taken from the specified revision. All revisions
+  # created after the specified one will be destroyed.
+  def rollback(dest_rv)
+    new_content = snapshot(dest_rv)
+    current_content = self.content.dup
+    
+    unless carbon_copy.update({ content: new_content })
+      return false
+    end
+    
+    unless update({ content: new_content })
+      carbon_copy.update!({ content: current_content })
+      return false
+    end
+
+    unless revisions.all({ :created_at.gt => dest_rv.created_at }).destroy
+      update!({ content: current_content })
+      carbon_copy.update!({ content: current_content })
+      return false
+    end
+
+    current_content = nil
+
+    true
+  end
 
   def compound_url
     f = folder
@@ -45,12 +123,16 @@ class Page
     "#{prefix}/#{self.user.nickname}/#{self.pretty_title}"
   end
 
+  def revisions_url(prefix = "")
+    "#{prefix}/pages/#{self.id}/revisions"
+  end
+
   def self.random_suffix
     Base64.urlsafe_encode64(Random.rand(12345 * 100).to_s)
   end
 
   def serialize
-    { id: id, title: title, folder: folder_id || 0 }
+    { id: id, title: title, folder: folder_id || 0, nr_revisions: revisions.count }
   end
 
   def to_json(*args)

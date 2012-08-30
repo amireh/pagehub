@@ -40,4 +40,8 @@ class User
     pages[:folders] << folderless
     pages
   end
+
+  def namespace
+    ""
+  end
 end

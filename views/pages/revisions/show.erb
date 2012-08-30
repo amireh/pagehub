@@ -1,0 +1,135 @@
+<%= erb :"/shared/_editor" %>
+
+<% content_for :scripts do %>
+
+<style>
+  div.block {
+    width: 49%;
+    clear: left;
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+  }
+  .CodeMirror, pre {
+    margin: 0;
+    width: 100%;
+  }
+  .CodeMirror-scroll {
+    height: auto;
+    overflow-y: hidden;
+    overflow-x: auto;
+  }
+
+  div.spanner {
+    width: 100%;
+    float: left;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    vertical-align: bottom;
+    /*text-align: center;*/
+  }
+  div.spanner:last-of-type {
+    border: none;
+    border-top: 1px solid #ddd;
+  }
+
+  #changes {
+    padding-left: 15px;
+    border-left: 1px solid #ddd;
+    /*float: right;*/
+  }
+  #changes pre {
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+  del { color: red; }
+  ins { color: green; text-decoration: none;}
+</style>
+
+<script type="text/javascript">
+  $(function() {
+    ui.editor = ui.create_editor("page_editor", { readOnly: true });
+  });
+</script>
+<% end %>
+
+<p>There are <%= @page.revisions.count %> <a href="<%= @page.revisions_url(@scope.namespace) %>">revisions</a> for this page.
+  You are currently viewing revision <strong><code><%= @rv.pretty_version %></code></strong>
+  which was committed by <strong><%= @rv.editor == current_user ? "you" :  @rv.editor.nickname %></strong>
+  on <%= pretty_time @rv.created_at %>.
+</p>
+
+<div class="spanner">
+  <% if @prev_rv %>
+    <a href='<%= @prev_rv.url(@scope.namespace) %>' class="left plain thin button">&larr; Previous revision</a>
+  <% end %>
+
+  <% if @next_rv %>
+    <a href='<%= @next_rv.url(@scope.namespace) %>' class="right plain thin button">Next revision &rarr;</a>
+  <% end %>
+
+</div>
+
+<div class="block">
+  <% if @rv %>
+    <h2><%= @page.title %> at <%= @rv.pretty_version %></h2>
+  <% else %>
+    <h2><%= @page.title %> - Original copy</code></h2>
+  <% end %>
+
+  <% snapshot = @page.snapshot(@rv) %>
+  <textarea id="page_editor"><%= snapshot %></textarea>
+</div>
+
+<div id="changes" class="block">
+  <% if @prev_rv %>
+    <h2>Changes from
+      <strong><%= @prev_rv.pretty_version %></strong>
+      &rarr;
+      <strong><%= @rv.pretty_version %></strong>
+    </h2>
+
+    <% diffs = Marshal.load @rv.blob %>
+    <% out = "" %>
+    <% count = { :additions => 0, :deletions => 0 } %>
+    <%
+     diffs.each { |dset|
+        dset.each { |d|
+          action = ""
+          if d.action == '-'
+            action = "del"
+            count[:deletions] += 1
+          else
+            count[:additions] += 1
+            action = "ins"
+          end
+          out += "<#{action}>#{d.action} #{d.element}</#{action}>\n"
+        }
+      }
+    %>
+    <pre><%= count[:additions] %> line(s) were added, <%= count[:deletions] %> were removed or modified:
+<%= out %></pre>
+  <% else %>
+  <h2>N/A</h2>
+  <p>This is the original revision, there's nothing to compare it to.</p>
+  <% end %>
+
+<% if @next_rv %>
+  <div class="spanner">
+    <form action="<%= @rv.url(@scope.namespace) %>" method="POST">
+      <h3>Rollback</h3>
+      <p><strong><em>WARNING: </strong>Rolling back will cause all edits made <strong>after</strong> this revision
+          to be <strong>LOST FOREVER</strong> -- this action is <strong>irreversible</strong>.
+        </em>
+      </p>
+      <p><label><input name="confirmed" type="checkbox" value="do it" />I have read the warning, do it!</label></p>
+      <p>
+        <input type="submit" class="button bad thin" value="Rollback to this version" />
+      </p>
+    </form>
+  </div>
+<% else %>
+  <p><em>This is your latest revision, you can not roll back to it.</em></p>
+<% end %>  
+</div>
+

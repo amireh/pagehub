@@ -5,6 +5,10 @@
   z-index: 101;
 }
 
+.CodeMirror pre.CodeMirror-cursor {
+  border-color: #615B4E;
+}
+
 a,
 a:visited {
   /*color: #D4EE5E;*/

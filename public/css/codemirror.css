@@ -32,7 +32,7 @@
   border-color: #615B4E;
 }
 .CodeMirror pre.CodeMirror-cursor {
-  border-left-color: #BBB;
+  border-left-color: #555;
   border-left-width: 1px;
 }
 .CodeMirror-selected {

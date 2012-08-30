@@ -703,13 +703,9 @@ ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px; }
   padding-left: 0;
 }
 
-
 iframe {
   width: 100%;
 }
-
-
-
 
 button.bad:not(:active),
 input[type=submit].bad:not(:active),
@@ -810,3 +806,6 @@ button.edit_folder {
   border-bottom:  7px solid transparent;
   border-left:    7px solid #ddd;
 }
+
+.left { float: left; }
+.right { float: right;}

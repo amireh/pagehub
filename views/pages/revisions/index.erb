@@ -1,0 +1,9 @@
+<h2><%= @page.title %> - Page Revisions</h2>
+
+<ol>
+  <% @page.revisions.all(:order => [ :created_at.desc ]).each do |rv| %>
+    <li><a href="<%= rv.url(@scope.namespace) %>"><%= rv.pretty_version %></a>
+      on <%= pretty_time rv.created_at %>
+      : <%= rv.info %></li>
+  <% end %>
+</ol>

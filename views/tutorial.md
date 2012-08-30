@@ -22,9 +22,3 @@ PageHub uses [Markdown](http://daringfireball.net/projects/markdown/) for "styli
 ## Stay aware
 
 The first link in the Help listing takes you to the PageHub news article, you should check it out every once in a while to learn about new features you can leverage.
-
-### For those who be test-driving...
-
-Here's how an `###` looks like, and following it is an `####`
-
-#### Yes!

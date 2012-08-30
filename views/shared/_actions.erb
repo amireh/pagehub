@@ -1,0 +1,34 @@
+<% content_for :wraps do %>
+  <div class="action_bar_wrap"></div>
+<% end %>
+
+<% content_for :scripts do %>
+<script type="text/javascript">
+  $(function() {
+
+    dynamism.register_factory("folders", function(el, folder) {
+      var existing_folder = $("#folder_" + folder.id);
+      if (existing_folder.length == 1) {
+        // the folder exists, don't create another one
+        return existing_folder;
+      }
+
+      var target = $("[data-dyn-spawn-on='folders'][data-dyn-index=-1]");
+      if (target.length == 1) {
+        return dynamism.add(target);
+      }
+
+      return null;
+    });
+  });
+
+</script>
+<% end %>
+
+<div class="actions">
+  <a class="listlike" tabindex="1">New</a>
+  <ol class="listlike">
+    <li><a href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
+    <li><a href="/folders/new" id="new_folder" title="Create a new folder">New folder</a></li>
+  </ol>
+</div>
