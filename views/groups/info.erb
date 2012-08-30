@@ -1,3 +1,5 @@
+<% content_for :title do %> <%= @group.title %> - Info | PageHub <% end %>
+
 <h2><a href="/groups/<%= @group.name %>"><%= @group.title %></a>
   <% if @group.is_admin?(current_user)%>
     <small><a href="/groups/<%= @group.name %>/edit">manage</a></small>

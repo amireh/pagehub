@@ -122,9 +122,7 @@
 </script>
 <% end %>
 
-<% content_for :title do %>
-  <%= current_user.nickname %> | PageHub
-<% end %>
+<% content_for :title do %> <%= @group.title %> | PageHub <% end %>
 
 <% content_for :header do %>
   <h3><a href="/groups/<%=@group.name%>"><%= @group.title %></a>

@@ -1,8 +1,7 @@
+<% content_for :title do %> <%= @page.title %> | PageHub <% end %>
+
 <% content_for :scripts do %>
   <link rel="stylesheet" href="/css/code_highlighting.css" />
-<% end %>
-<% content_for :title do %>
-  <%= @page.title %> - PageHub
 <% end %>
 <% content_for :header do %>
   <% if @public then %>
