@@ -25,16 +25,23 @@ class Page
     self.pretty_title = self.title.sanitize
   end
 
-  [ :update, :save ].each { |advice|
-    before advice do |context|
-    end
-  }
+  # [ :update, :save ].each { |advice|
+  #   before advice do |context|
+  #   end
+  # }
 
-  after :create do |context|
+  after :create, :init_cc
+  before :valid?, :init_cc
+
+  def init_cc(context = nil)
     # Don't initialize the CC with our content because
     # we want the first revision to reflect the entire
     # changes the post was first created with.
-    self.carbon_copy = CarbonCopy.create({ page: self })
+    if !self.carbon_copy
+      self.carbon_copy = CarbonCopy.new
+      self.carbon_copy.page = self
+      self.carbon_copy.save! # make sure to use the bang version here
+    end
   end
 
   before :destroy, :deletable_by? 

@@ -4,9 +4,28 @@ foreach = function(arr, handler) {
 
 log = function(m, ctx) { ctx = ctx || "D"; console.log("[" + ctx + "] " + m); }
 
+Array.prototype.has_value = function(v) {
+  for (var i = 0; i < this.length; ++i)
+    if (this[i] == v) return true;
+
+  return false;
+}
+
+Array.prototype.pop_value = function(v) {
+  var index = -1;
+  while ((index = this.indexOf(v)) != -1 ) {
+    this.splice(index, 1);
+  }
+
+  return this;
+}
+
 pagehub = function() {
-  var config = { resource: "" };
-  var namespace = "";
+  var config = { resource: "" },
+      namespace = "",
+      settings_changed = false,
+      setting_sync_uri = "/profile/preferences/runtime";
+
   $(document).ajaxStart(function() {
     ui.status.mark_pending();
   });
@@ -17,6 +36,26 @@ pagehub = function() {
   return {
     config: config,
     namespace: namespace,
+    settings_changed: settings_changed,
+
+    sync: function() {
+      // any changes pending?
+      if (!pagehub.settings_changed) {
+        return;
+      }
+
+      $.ajax({
+        url: setting_sync_uri,
+        type: "PUT",
+        data: { settings: pagehub.settings.runtime },
+        error: function(e) {
+          ui.report_error("Unable to synchronize user settings: " + e.responseText);
+        },
+        complete: function() { 
+          pagehub.settings_changed = false;
+        }
+      })
+    },
 
     pages: {
       create: function(handlers) {
@@ -108,4 +147,7 @@ pagehub = function() {
 pagehub = new pagehub();
 
 pagehub.settings = pagehub_settings;
+if (!pagehub.settings.runtime) {
+  pagehub.settings.runtime = { cf: [] }
+}
 pagehub_settings = null;

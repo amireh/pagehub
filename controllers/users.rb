@@ -199,6 +199,17 @@ get '/profile/skin/:skin' do |skin|
   redirect back
 end
 
+put '/profile/preferences/runtime', auth: :user do
+  prefs = preferences
+  prefs["runtime"] = params[:settings]
+
+  unless current_user.update({ settings: prefs.to_json })
+    halt 500, current_user.collect_errors
+  end
+
+  true
+end
+
 post '/profile/preferences' do
   restricted!
 

@@ -27,7 +27,11 @@ pagehub_ui = function() {
 
         function() {
           $("[data-collapsible]").each(function() {
-            var collapse_btn = "<button data-dyn-hook='click, ui.collapse' data-collapse>&minus;</button>";
+            var collapse_btn =
+              "<button \
+                data-dyn-hook='click, ui.collapse' \
+                data-dyn-inject='@data-folder, folders.id' \
+                data-collapse>&minus;</button>";
             $(this).append(collapse_btn);
           });
         },
@@ -178,9 +182,15 @@ pagehub_ui = function() {
       if ($(this).attr("data-collapsed")) {
         $(this).siblings(":not(span.folder_title)").show();
         $(this).attr("data-collapsed", null).html("&minus;");
+
+        pagehub.settings.runtime.cf.pop_value($(this).attr("data-folder"));
+        pagehub.settings_changed = true;
       } else {
         $(this).siblings(":not(span.folder_title)").hide();        
         $(this).attr("data-collapsed", true).html("&plus;");
+
+        pagehub.settings.runtime.cf.push($(this).attr("data-folder"));
+        pagehub.settings_changed = true;
       }
     },
     status: {
@@ -477,6 +487,8 @@ pagehub_ui = function() {
       }, 
 
       on_injection: function(el) {
+        var folder_id = parseInt(el.attr("id").replace("folder_", ""));
+
         // toggle the "This folder is empty" label if it has any pages
         if (el.find("> ol > li[data-dyn-index][data-dyn-index!=-1]").length > 0) {
           el.find("> ol > li:first").hide();
@@ -504,6 +516,11 @@ pagehub_ui = function() {
             .append('<option value="' + el.attr("id") 
               + '">' + el.find("> span").html()
               + '</option>');
+
+          // am I collapsed per the user request?
+          if (pagehub.settings.runtime.cf.has_value(folder_id)) {
+            el.find("button[data-collapse]").click();
+          }
         }
       },
 
@@ -744,7 +761,13 @@ pagehub_ui = function() {
           }
         }
 
-        pagehub.pages.update(page_id, { content: content, autosave: dont_show_status }, messages);
+        pagehub.pages.update(page_id, {
+          content: content,
+          autosave: dont_show_status
+        }, messages);
+
+        // if settings have changed, push them
+        pagehub.sync();
       }, // pagehub_ui.pages.save
 
       on_update: function(p) {

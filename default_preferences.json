@@ -16,5 +16,7 @@
 
   "groups": {
     "lookup_pulse": 250
-  }
+  },
+
+  "runtime": { "cf": [] }
 }
