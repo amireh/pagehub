@@ -99,7 +99,7 @@ pagehub_ui = function() {
         mode: "markdown",
         lineNumbers: false,
         matchBrackets: true,
-        theme: ui.theme,
+        theme: "neat",
         tabSize: 2,
         gutter: false,
         autoClearEmptyLines: false,

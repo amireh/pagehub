@@ -1,5 +1,9 @@
 module RoleInspector
 
+  def logged_in?
+    session[:id]
+  end
+
   def restricted
     unless logged_in?
       flash[:error] = "You must sign in first."
@@ -20,7 +24,7 @@ module RoleInspector
         halt 400, "No such group."
       end
 
-      puts "User #{current_user.nickname} is a #{role} of the group #{g.name}."
+      # puts "User #{current_user.nickname} is a #{role} of the group #{g.name}."
       g
     end
 
@@ -33,32 +37,6 @@ module RoleInspector
       true
     end
   }
-  # def group_admin!(params)
-  #   if g = locate_group(params)
-  #     halt 403, "You are not an administrator of this group." unless g.has_editor?(current_user)
-  #   else
-  #     halt 400, "No such group."
-  #   end
-  #   g
-  # end
-
-  # def group_editor!(params)
-  #   if g = locate_group(params)
-  #     halt 403, "You are not an editor of this group." unless g.has_editor?(current_user)
-  #   else
-  #     halt 400, "No such group."
-  #   end
-  #   g
-  # end
-  
-  # def group_member!(params)
-  #   if g = locate_group(params)
-  #     halt 403, "You are not a member of this group." unless g.has_member?(current_user)
-  #   else
-  #     halt 404, "No such group."
-  #   end
-  #   g
-  # end
 
   set(:auth) do |*roles|
     condition do
@@ -69,17 +47,22 @@ module RoleInspector
 
       # puts "Params in :auth => #{params.inspect}"
       # puts "Roles in :auth => #{roles.inspect}"
-
-      if roles.include?(:group_creator)
-        @scope = @group = group_creator! params
-      elsif roles.include?(:group_admin)
-        @scope = @group = group_admin! params
-      elsif roles.include?(:group_member)
-        @scope = @group = group_member! params
-      elsif roles.include?(:group_editor)
-        @scope = @group = group_editor! params
-      elsif roles.include?(:user)
-      end
+      [ :creator, :admin, :member, :editor ].each { |role|
+        if roles.include?("group_#{role}".to_sym)
+          @scope = @group = send("group_#{role}!", params)
+          break
+        end
+      }
+      # if roles.include?(:group_creator)
+      #   @scope = @group = group_creator! params
+      # elsif roles.include?(:group_admin)
+      #   @scope = @group = group_admin! params
+      # elsif roles.include?(:group_member)
+      #   @scope = @group = group_member! params
+      # elsif roles.include?(:group_editor)
+      #   @scope = @group = group_editor! params
+      # elsif roles.include?(:user)
+      # end
     end
   end
 
@@ -93,7 +76,6 @@ module RoleInspector
   private
 
   def locate_group(params)
-    puts params.inspect
     if params[:gid]
       return Group.first({ id: params[:gid] })
     elsif params[:current_name]
@@ -110,26 +92,4 @@ end
 
 helpers do
   include RoleInspector
-
-  def logged_in?
-    session[:id]
-  end
-
-
-
-  # Loads the user's preferences merging them with the defaults
-  # for any that were not overridden.
-  #
-  # Side-effects:
-  # => @preferences will be overridden with the current user's settings
-  def preferences
-    if !current_user
-      return settings.default_preferences
-    end
-    
-    @preferences ||= JSON.parse(current_user.settings || "{}")
-    defaults = settings.default_preferences.dup
-    defaults.deep_merge(@preferences)
-    # set_defaults(settings.default_preferences, @preferences)
-  end
 end

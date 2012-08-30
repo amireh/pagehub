@@ -38,8 +38,6 @@
       last_error = null;
       
       $(function() {
-        ui.theme = "<%= @theme %>";
-
         var show_list = function() {
           if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
             return false;

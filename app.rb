@@ -41,25 +41,6 @@ require 'omniauth-twitter'
 # require 'omniauth-google-oauth2'
 # require 'openid/store/filesystem' 
 
-helpers do
-  module Preferences
-    # mapping of displayable font names to actual CSS font-family names
-    FontMap = { 
-      "Proxima Nova" => "ProximaNova-Light",
-      "Ubuntu" => "UbuntuRegular",
-      "Ubuntu Mono" => "UbuntuMonoRegular",
-      "Monospace" => "monospace, Courier New, courier, Mono",
-      "Arial" => "Arial",
-      "Verdana" => "Verdana",
-      "Helvetica Neue" => "Helvetica Neue"
-    }
-  end
-
-  def md(content)
-    content.to_s.to_markdown
-  end
-end
-
 configure do
   # enable :sessions
   use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
@@ -95,11 +76,6 @@ configure do
   DataMapper.auto_upgrade!
 
   set :default_preferences, JSON.parse(File.read(File.join($ROOT, "default_preferences.json")))
-end
-
-before do
-  # CodeMirror theme
-  @theme = @cm_theme = "neat"
 end
 
 not_found do
