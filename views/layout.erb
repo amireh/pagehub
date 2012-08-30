@@ -13,75 +13,11 @@
   <link href="/css/fonts/ubuntu-mono/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
 
-  <% if !flash.empty? %>
-    <script type="text/javascript">
-      marker = null;
-
-      $(function() {
-        $("#flashes button").click(function() {
-          $(this).parent().next("hr:first").remove();
-          $(this).parent().addClass("hidden");
-          $(".flash_wrap").addClass("hidden");
-        });
-      });
-
-    </script>
-  <% end %>
-
   <% if logged_in? then %>
-    <style>
-      footer { display: none; }
-    </style>
 
     <script>
       pagehub_settings = <%= preferences.to_json %>;
-      last_error = null;
-      
-      $(function() {
-        var show_list = function() {
-          if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
-            return false;
-
-          hide_list($("a.listlike.selected"));
-
-          $(this).next("ol").show()
-            .css("left", $(this).position().left);
-          $(this).addClass("selected");
-          $(this).unbind('click', show_list);
-          $(this).bind('click', hide_list_callback);
-
-
-          return false;
-        }
-
-        var hide_list_callback = function(e) {
-          e.preventDefault();
-
-          hide_list($(this));
-
-          return false;
-        }
-
-        var hide_list = function(el) {
-          $(el).removeClass("selected");
-          $(el).next("ol").hide();
-          $(el).bind('click', show_list);
-        }
-        
-        $("a.listlike:not(.selected)").click(show_list);
-        $("ol.listlike li:not(.sticky), ol.listlike li:not(.sticky) *").click(function() {
-          var anchor = $(this).parent().prev("a.listlike");
-          if (anchor.hasClass("selected")) {
-            hide_list(anchor);
-          }
-
-          return true; // let the event propagate
-        });
-
-        dynamism.configure({ debug: false, logging: false })
-
-      });
-
+      last_error = null; // used for debugging
     </script>
 
     <script src="/js/dynamism.js"></script>
@@ -92,6 +28,7 @@
 
   <% yield_content :scripts %>
 
+  <!-- the user's preferred skin -->
   <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
 </head>
 

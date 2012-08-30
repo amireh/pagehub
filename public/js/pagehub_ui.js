@@ -19,6 +19,12 @@ pagehub_ui = function() {
       actions = {},
       removed = {},
       hooks = [
+
+        // initialize dynamism
+        function() {
+          dynamism.configure({ debug: false, logging: false })
+        },
+        
         // Bind the title editor's key presses:
         // 1. on RETURN: update the page and the entry
         // 2. on ESCAPE: hide the editor and reset the title
@@ -54,9 +60,60 @@ pagehub_ui = function() {
 
         // disable all links attributed with data-disabled
         function() {
-          $("a[data-disabled]").click(function(e) { e.preventDefault(); return false; });
+          $("a[data-disabled], a.disabled").click(function(e) { e.preventDefault(); return false; });
+        },
+
+        // flash messages close button
+        function() {
+          $("#flashes button").click(function() {
+            $(this).parent().next("hr:first").remove();
+            $(this).parent().addClass("hidden");
+            $(".flash_wrap").addClass("hidden");
+          });
+        },
+
+        // "listlike" links
+        function() {
+          $("a.listlike:not(.selected)").click(show_list);
+          $("ol.listlike li:not(.sticky), ol.listlike li:not(.sticky) *").click(function() {
+            var anchor = $(this).parent().prev("a.listlike");
+            if (anchor.hasClass("selected")) {
+              hide_list(anchor);
+            }
+
+            return true; // let the event propagate
+          });
         }
       ];
+
+  function show_list() {
+    if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
+      return false;
+
+    hide_list($("a.listlike.selected"));
+
+    $(this).next("ol").show()
+      .css("left", $(this).position().left);
+    $(this).addClass("selected");
+    $(this).unbind('click', show_list);
+    $(this).bind('click', hide_list_callback);
+
+    return false;
+  }
+
+  function hide_list_callback(e) {
+    e.preventDefault();
+
+    hide_list($(this));
+
+    return false;
+  }
+
+  function hide_list(el) {
+    $(el).removeClass("selected");
+    $(el).next("ol").hide();
+    $(el).bind('click', show_list);
+  }
 
   function current_page_id() {
     if (!ui.is_page_selected())
