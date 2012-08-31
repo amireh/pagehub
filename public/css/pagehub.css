@@ -790,14 +790,15 @@ button.edit_folder {
 }
 #pages li.folder > button[data-dyn-action=remove] {
   position: absolute;
-  padding: 0 10px;
+  padding: 0;
   right: -5px; top: 4px;
   background: none;
   color: #ddd;
   border: none;
 }
 
-#indicator {
+#indicator,
+#drag_indicator {
   display: none;
   position: absolute;
   top: 2px;
@@ -807,6 +808,15 @@ button.edit_folder {
   border-top:     7px solid transparent;
   border-bottom:  7px solid transparent;
   border-left:    7px solid #ddd;
+}
+
+#drag_indicator {
+  right: 0;
+  left: auto;
+  width: 0; 
+  height: 0; 
+  border-right:   7px solid #ddd;
+  border-left: none;
 }
 
 .left { float: left; }
@@ -821,4 +831,32 @@ button[data-collapse] {
   background: none;
   border: none;
   color: #bbb;
+}
+
+.drop-target {
+  /*border-bottom: 1px solid #555;*/
+  /*background: rgba(0,0,0,0.1);*/
+  /*letter-spacing: 3pt;*/
+}
+.drag-src {
+  opacity: 0.5;
+}
+.drop-target button[data-collapse] { display: none; }
+.drop-target button[data-dyn-action=remove] { display: none; }
+
+.drop-target #indicator,
+.drop-target #drag_indicator {
+  top: 6px;
+  border-left-color: orange;
+  border-right-color: orange;
+}
+
+.general-folder.drop-target #indicator,
+.general-folder.drop-target #drag_indicator {
+  top: 0;
+}
+
+/* a hack for drag and drop in Safari */
+[draggable=true] {
+  -khtml-user-drag: element;
 }

@@ -7,6 +7,7 @@ pagehub_ui = function() {
       status_timer = null,
       autosave_timer = null,
       theme = "",
+      is_dragging = false,
       anime_dur = 250,
       status_shown = false,
       current_status = null,
@@ -18,6 +19,7 @@ pagehub_ui = function() {
       },
       actions = {},
       removed = {},
+      action_hooks = { pages: { on_load: [] } },
       hooks = [
 
         // initialize dynamism
@@ -144,6 +146,7 @@ pagehub_ui = function() {
   return {
     hooks: hooks,
     theme: theme,
+    action_hooks: action_hooks,
 
     current_page: function() {
       return $("#page_listing li.selected:not(.folder) a");
@@ -363,7 +366,7 @@ pagehub_ui = function() {
           parent_folder = $("#parent_folder_selection select :selected").attr("value").replace("folder_", "");
 
           ui.status.show("Updating folder...", "pending");
-          pagehub.folders.update(resource_id, title, parent_folder,
+          pagehub.folders.update(resource_id, { title: title, folder_id: parent_folder },
             function(f) {
               var f = JSON.parse(f);
               ui.folders.on_update(f);
@@ -487,7 +490,8 @@ pagehub_ui = function() {
       }, 
 
       on_injection: function(el) {
-        var folder_id = parseInt(el.attr("id").replace("folder_", ""));
+        var folder_id = parseInt(el.attr("id").replace("folder_", "")),
+            is_general_folder = folder_id == 0;
 
         // toggle the "This folder is empty" label if it has any pages
         if (el.find("> ol > li[data-dyn-index][data-dyn-index!=-1]").length > 0) {
@@ -497,7 +501,7 @@ pagehub_ui = function() {
         }
 
         // if it's the general folder, we don't want to display its title
-        if (el.attr("id") == "folder_0") {
+        if (is_general_folder) {
           el.addClass("general-folder");
           el.find("> button[data-dyn-action=remove]").remove();
           el.find("> a[data-action=move]").remove();
@@ -522,6 +526,126 @@ pagehub_ui = function() {
             el.find("button[data-collapse]").click();
           }
         }
+
+        var t = is_general_folder
+                ? el.get(0)
+                : el.find("> span.folder_title:first").get(0);
+
+        el.find("[draggable=true]").bind('dragstart', function(jQuery_evt) {
+          var e = jQuery_evt.originalEvent;
+
+          $("#page_listing .drag-src").removeClass("drag-src");
+          $(this).addClass("drag-src");
+
+          // This is a necessary hack for Firefox to even accept the
+          // component as being draggable (apparently draggable=true ain't
+          // enough)
+          e.dataTransfer.setData('ignore_me', 'fubar');
+
+          is_dragging = true;
+
+          return true;
+        });
+
+        // TODO: check for HTML5 DnD support
+
+        // Visually mark the folder as "droppable" using the #indicator arrow
+        t.addEventListener('dragenter', function() {
+          $("#page_listing").find(".drop-target").removeClass("drop-target");
+          
+          // add a drop-target class:
+          // general folder? (it has no title <span>)
+          if ($(this).is("li")) {
+            $(this).addClass("drop-target");
+          }
+          // a normal folder's title <span>
+          else {
+            $(this).parent().addClass("drop-target");
+          }
+
+          $(this).append($("#indicator").show());
+          $(this).append($("#drag_indicator").show());
+        });
+
+        t.addEventListener('dragleave', function(e) {
+          e.preventDefault();
+          return false;
+        });
+
+        var on_drop = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Since we bind to both 'dragend' and 'drop' events for browser compatibility
+          // some browers might fire the callback twice, so we guard against it here.
+          if (!is_dragging) {
+            $("#indicator").hide();
+            $("#drag_indicator").hide();
+            return false;
+          }
+
+          var src_node = $("#page_listing .drag-src");
+
+          console.log(src_node);
+          is_dragging = false;
+
+          // dragging a folder?
+          if (src_node.hasClass("folder_title")) {
+            var src_folder_id = src_node.parent().attr("id").replace("folder_", ""),
+                tgt_folder_id = $(this).hasClass("general-folder")
+                                ? $(this).attr("id").replace("folder_", "") // gf has no title span
+                                : $(this).parent().attr("id").replace("folder_", "");
+
+            pagehub.folders.update(src_folder_id, { folder_id: tgt_folder_id },
+              function(f) {
+                ui.folders.on_update(JSON.parse(f));
+              },
+              function(rc) {
+                ui.status.show("Unable to move folder: " + rc.responseText, "bad");
+              });
+          } // folder drag
+
+          else {
+            var page_id   = $("#page_listing .drag-src a").attr("id").replace("page_", ""),
+                folder_id = $(this).hasClass("general-folder")
+                            ? $(this).attr("id").replace("folder_", "") // gf has no title span
+                            : $(this).parent().attr("id").replace("folder_", ""),
+                page_link = $("#page_listing .drag-src a"),
+                move_link = $("a[data-action=move][data-folder=" + folder_id + "]");
+           
+            if (current_page_id() != page_id) {
+              // load the page
+              action_hooks.pages.on_load.push(function() {
+                move_link.click();
+                action_hooks.pages.on_load.pop();
+              });
+
+              page_link.click();
+            } else {
+              // and move it
+              move_link.click();
+            }
+          } // page drag
+
+          // Unmark the nodes
+          $("#page_listing .drag-src, #page_listing .drop-target")
+            .removeClass("drag-src drop-target");
+
+          $("#indicator").hide();
+          $("#drag_indicator").hide();
+
+          return false;
+        } // on_drop()
+
+        t.addEventListener('drop', on_drop);
+        t.addEventListener('dragend', on_drop);
+        t.addEventListener('dragover', function(e) {
+          e.preventDefault();
+
+          // e.dataTransfer.dropEffect = 'move';
+
+          return false;
+        })
       },
 
       arrange: function(ul) {
@@ -733,6 +857,10 @@ pagehub_ui = function() {
                 + "/add/" + page.id);
             });
 
+            for (var i = 0; i < action_hooks.pages.on_load.length; ++i) {
+              action_hooks.pages.on_load[i](page);
+            }
+
             ui.editor.focus();
           },
           complete: function() {
@@ -818,8 +946,6 @@ pagehub_ui = function() {
             last_folder = page_li.parents("li.folder:first"),
             folder_id   = $(this).attr("data-folder");
 
-        console.log("Requesting page move...");
-
         $.ajax({
           url: uri,
           type: "PUT",
@@ -829,8 +955,8 @@ pagehub_ui = function() {
 
             var current_listing = page_li.parent();
 
-            console.log("Moving page:")
-            console.log(page);
+            // console.log("Moving page:")
+            // console.log(page);
 
             // 1. move the page <li> to the folder's
             folder.find("> ol > li:not(.folder):last").after(page_li);

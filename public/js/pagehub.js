@@ -107,13 +107,13 @@ pagehub = function() {
         });
       },
 
-      update: function(folder_id, title, parent, on_success, on_error) {
+      update: function(folder_id, attributes, on_success, on_error) {
         var uri = pagehub.namespace + "/folders/" + folder_id;
 
         $.ajax({
           type: "PUT",
           url: uri,
-          data: { title: title, folder_id: parent },
+          data: attributes,
           success: on_success,
           error: on_error
         })

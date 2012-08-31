@@ -1,4 +1,5 @@
 <div id="indicator"></div>
+<div id="drag_indicator"></div>
 <div id="pages">
 
   <%= erb :"/shared/_actions" %>
@@ -34,7 +35,8 @@
 
           <span data-dyn-inject="@text, folders.title"
                 data-dyn-hook="click, ui.folders.edit_title, hover, ui.folders.highlight"
-                class="folder_title">
+                class="folder_title"
+                draggable="true">
                 %title
           </span>
 
@@ -42,7 +44,7 @@
 
           <a data-action="move"
              data-dyn-hook="click, ui.pages.move"
-             href="/folders/%id/add/x"             
+             href="/folders/%id/add/x"
              data-folder="%id"
              data-dyn-inject="@data-folder, folders.id,
                               @text,        folders.title,
@@ -51,7 +53,8 @@
           <ol>
             <li>This folder is empty.</li>
             <li data-dyn-entity="folder[-1][pages]"
-                data-dyn-spawn-on="folders.pages">
+                data-dyn-spawn-on="folders.pages"
+                draggable="true">
                 <a href="/pages/%id"
                    id="page_%id"
                    data-dyn-inject="@text, folders.pages.title,
