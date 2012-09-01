@@ -772,7 +772,7 @@ iframe {
 button.bad:not(:active),
 input[type=submit].bad:not(:active),
 a.button.bad:not(:active) {
-  color: white;
+  color: #eee;
   text-shadow: none;
   background: rgb(255,48,25); /* Old browsers */
   background: -moz-linear-gradient(top, rgba(255,48,25,1) 0%, rgba(207,4,4,1) 100%); /* FF3.6+ */
@@ -789,7 +789,7 @@ a.button.bad:not(:active) {
 button.good:not(:active),
 input[type=submit].good:not(:active),
 a.button.good:not(:active) {
-  color: white;
+  color: #555;
   text-shadow: none;
   background: rgb(143,200,0); /* Old browsers */
   background: -moz-linear-gradient(top, rgba(143,200,0,1) 0%, rgba(143,200,0,1) 100%); /* FF3.6+ */
@@ -1166,26 +1166,14 @@ button[data-collapse] {
       
       margin-left: -300px;
       width: 600px;
-      
+      /*
       background-color: #EEE;
       color: #333;
       border: 1px solid black;
-      padding: 12px;
+      padding: 12px;*/
   }
 
   .jqmOverlay { background-color: rgba(0,0,0,0.5); }
-
-  div.jqmConfirm input[type="submit"] { 
-      /*padding: 4px; margin: 10px 30px; background: #000; color: #FFF; border: 1px solid #AAA;*/
-  }
-
-  div.jqmConfirm input#confirm_accepted {
-    float: right;
-  }
-
-  /* jqModal confirm CSS courtesy of;
-     Alexandre Plennevaux <alexandre@pixeline.be>,
-     Brice Burgess <bhb@iceburg.net> */
 
   div.jqmConfirm { /* contains + positions the alert window */
     display: none;
@@ -1197,62 +1185,62 @@ button[data-collapse] {
   }
 
   div.jqmConfirmWindow {
-    height:auto;
+    height: auto;
     width: auto;
     margin: auto;
-
     max-width: 420px;
-    padding: 0 10px 10px;
-    
-    background:#FFF;
-    border:1px dotted #FFF;
+    padding: 0;
+    background: white;
+    border: 1px solid #aaa;
+    box-shadow: 0 0 1px 5px #BBB;
+    border-radius: 3px;
+    position: relative;
+    padding-bottom: 50px;    
   }
 
   .jqmConfirmTitle{
-    margin:5px 2px;
-    height:20px;
-    color:#000;
-    background:#FFF;
+    margin: 0;
+    height: auto;
+    color: black;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    text-shadow: 0 1px 0 white;
+    font-weight: normal;
+    border-bottom: 1px solid #bbb;
+    text-transform: capitalize;
   }
   .jqmConfirmTitle h1{
     margin:5px 2px;
-    padding-left:5px;
     padding:0;
     font-size:18px;
     text-transform:capitalize;
     letter-spacing: 1px;
-    font-weight:bold;
-    color:#000;
-
-    float:left;
-    height:20px;
+    font-weight: normal;
   }
-
-  div.jqmConfirm .jqmClose em{display:none;}
-  div.jqmConfirm .jqmClose {
-    width:20px;
-    height:20px;
-    display:block;
-    float:right;
-    clear:right;
-    background:transparent  0 0 no-repeat;
-  }
-
-  div.jqmConfirm a.jqmClose:hover{ background-position: 0 -20px; }
 
   div.jqmConfirmContent{
-    color:#000;
-    /*font:11px/14pt arial;*/
+    color: black;
     font-size: 14px;
-    padding: 0 5px;
+    padding: 0 15px;
     margin: 15px 0;
     line-height: 18px;
-    /*border:1px dotted #111;*/
-    /*letter-spacing:0px;*/
-    /*background:#FFF url(confirm/darkgrid.png);*/
   }
 
-  .clearfix:after {
+  div.jqmConfirm div.jqmActions {
+    display: block;
+  }
+  div.jqmConfirm input#confirm_accepted {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+  }
+  div.jqmConfirm input#confirm_rejected {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+  }
+
+/*  .clearfix:after {
       content: "."; 
       display: block; 
       height: 0; 
@@ -1262,7 +1250,6 @@ button[data-collapse] {
 
   .clearfix {display: inline-block;}
 
-  /* Hides from IE-mac \*/
   * html .clearfix {height: 1%;}
   .clearfix {display: block;}
-  /* End hide from IE-mac */
+*/
