@@ -12,7 +12,7 @@
      # get things done: we need the preferences of the author of the page,
      # not the current (or none) user, and Helpers::preferences uses either
      # current_user or @user, so overriding it would do exactly what we want:
-     @user = @page.user
+     if @page then @user = @page.user end
   %>
 
   <% yield_content :scripts %>

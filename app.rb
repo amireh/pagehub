@@ -122,7 +122,7 @@ get '/' do
 end
 
 %w(/tutorial /testdrive).each { |uri|
-  send("get", uri) do
+  send("get", uri, auth: :user) do
     erb :"/tutorial.md", layout: :"layouts/print"
   end
 }
