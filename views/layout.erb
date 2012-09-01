@@ -46,28 +46,23 @@
     </header>
     
     <nav>
-      <% if logged_in? %>
-        <div id="admin_actions">
-          <span>Hi <%= current_user.nickname %></span>
-          <a class="listlike" href="/groups">Groups</a>
-          <ol class="listlike">
-            <li><a href="/groups/new">New group</a></li>
-            <% current_user.groups.each do |g| %>
-              <li>
-                <a href="/groups/<%= g.name %>"><%= g.title %></a>
-                <small><a style="padding: 0; margin: 0" href="/groups/<%= g.name %>/info">( info )</a></small>
-              </li>
-            <% end %>
-          </ol>
-          <a class="listlike" href="/help">Help</a>
-          <%= erb :"/shared/_nav_help_links" %>
-          <a class="listlike" href="/account">Account</a>
-          <%= erb :"/shared/_nav_account_links" %>
-        </div>
-      <% else %>
-        <a id="login" href="/login">login</a>
-        <a href="/signup">signup</a>
-      <% end %>
+
+      <span>Hi <%= current_user.nickname %></span>
+      <a class="listlike" title="Your groups" href="/groups">Groups</a>
+      <ol class="listlike">
+        <li><a href="/groups/new">New group</a></li>
+        <% current_user.groups.each do |g| %>
+          <li>
+            <a href="/groups/<%= g.name %>"><%= g.title %></a>
+            <small><a style="padding: 0; margin: 0" href="/groups/<%= g.name %>/info">( info )</a></small>
+          </li>
+        <% end %>
+      </ol>
+      <a class="listlike" href="/help" title="Help">Help</a>
+      <%= erb :"/shared/_nav_help_links" %>
+      <a class="listlike" href="/account" title="Your account">Account</a>
+      <%= erb :"/shared/_nav_account_links" %>
+
     </nav>
 
     <div id="content">
@@ -101,7 +96,7 @@
 
   </div>
 
-  <%# erb :"footer" %>
+  <%= erb :"footer" %>
   
 </body>
 

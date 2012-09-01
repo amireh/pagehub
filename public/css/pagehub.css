@@ -66,12 +66,15 @@ code {
 
 header {
   /*margin-bottom: 30px;*/
-  max-height: 65px;
+  max-height: 48px;
 }
 
 header h1 {
   margin: 0;
-  line-height: 65px;
+  line-height: 48px;
+}
+.member header h1 {
+  font-size: 20px;
 }
 header h1 a {
   text-decoration: none;
@@ -119,7 +122,7 @@ h1,h2,h3,h4,h5,h6 {
 .nav_wrap {
   width: 100%;
   background: rgba(0,0,0,0.05);
-  height: 65px;
+  height: 48px;
   position: absolute;
   top: 0;
   z-index: -100;
@@ -127,9 +130,10 @@ h1,h2,h3,h4,h5,h6 {
 
 .action_bar_wrap,
 .flash_wrap {
-  top: 65px;
-  height: 40px;
+  top: 48px;
+  height: 41px;
   background: rgba(0,0,0,0.025);
+  border-bottom: 1px solid #eee;
 }
 
 .stuff,
@@ -145,10 +149,23 @@ nav {
 }
 
 nav a {
-  margin-left: 10px;
-  padding: 0;
-  line-height: 65px;
+  padding: 0 15px;
+  margin: -1px 0 0 0; /* to disable the top part of the box shadow */
+  height: 49px;
+  line-height: 49px;
+  display: inline-block;
 }
+
+/*nav > a,
+#page_actions > a,
+.actions > a.listlike {
+  background-repeat: no-repeat;
+  background-position: center center;
+  font-size: 0;
+  min-width: 32px;
+  padding: 0 0 0 24px;
+  vertical-align: middle;
+}*/
 
 #actions {
 
@@ -173,8 +190,7 @@ a.button {
 
 #pages {
   width: 240px;
-  padding-top: 0;
-  padding-left: 0;
+  padding: 0 10px 0 0;
 }
 
 #pages hr {
@@ -185,10 +201,11 @@ a.button {
 /* New page & New folder link list */
 #pages > .actions {
   position: relative;
-  left: -10px; /* because the <a> is padded 10px to the left */
+  left: -5px; /* because the <a> is padded 5px to the left */
 }
 #pages .actions > a:first-child {
   line-height: 40px;
+  height: 40px;
   display: inline-block;
   clear: both;
   /*padding: 0;*/
@@ -212,7 +229,7 @@ a.button {
 #page_listing {
   position: relative;
   padding: 0;
-  margin-right: 5px;
+  margin: 0 5px 0 0;
 }
 #page_listing ul,
 #page_listing ol {
@@ -326,19 +343,20 @@ footer {
   width: 960px;
   margin: 0 auto;
   border-top: 1px dotted black;
-  display: none;
+  padding: 0;
+  /*display: none;*/
 }
 footer p {
-  margin: 5px 0;
+  margin: 0;
 }
 #page_actions {
   position: absolute;
   top: 0;
-  left: 0;
+  /*left: 0;*/
   font-size: 13px;
   letter-spacing: 2px;
   z-index: 100;
-  padding-left: 5px;
+  /*padding-left: 5px;*/
   display: block;
 }
 .disabled,
@@ -415,7 +433,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .stuff ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
   height: 10px;
 }
 .stuff ::-webkit-scrollbar-button:start:decrement,
@@ -433,7 +451,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   /*background-color: rgba(0, 0, 0, 0.25);*/
   background-color: #ddd;
   border: 1px solid rgba(255,255,255,0.125);
-  -webkit-border-radius: 6px;
+  /*-webkit-border-radius: 6px;*/
 }
 
 
@@ -459,7 +477,8 @@ a[href="#top"] {
 #skin_switcher {
   position: absolute;
   /*bottom: 10px;*/
-  top: 20px;
+  /*top: 20px;*/
+  top: 12px;
   /*z-index: 0;*/
   left: -64px;
   opacity: 0.75;
@@ -647,37 +666,22 @@ a img {
   font-style: normal;
 }
 
-nav a {
-  padding: 0 15px;
-  margin: -1px 0 0 0; /* to disable the top part of the box shadow */
-  height: 66px;
-  line-height: 66px;
-  display: inline-block;
-}
-
 nav {
   min-width: 220px;
   text-align: right;
 }
 a.listlike.selected,
 ol.listlike {
-  background: #fff;
   box-shadow: 0 0px 0px 1px #ddd inset;
 }
 a.listlike {
   padding: 0 10px;
 }
-a.listlike:after {
-  content: "\00a0\2193";
-}
-a.listlike.selected:after {
-  content: "\00a0\2191";
-}
-a.listlike.selected {
-  border: none;
-}
+
 ol.listlike { 
-  /*min-width: 180px;*/
+  min-width: 180px;
+  background: white;
+
   display: none; 
   position: absolute; 
   list-style-type: none;
@@ -702,7 +706,7 @@ ol.listlike li a { line-height: inherit; height: auto; padding: 0 10px; }
   padding: 0 10px;
 }
 #page_actions > a:first-of-type {
-  padding-left: 0;
+  /*padding-left: 0;*/
 }
 
 iframe {

@@ -10,8 +10,8 @@
   display: inline-block;
   height: auto;
   font-family: inherit;
-  margin-top: 40px;
-  letter-spacing: 1px;
+  margin-top: 42px;
+  /*letter-spacing: 1px;*/
 }
 .CodeMirror-scroll {
   min-height: 492px;

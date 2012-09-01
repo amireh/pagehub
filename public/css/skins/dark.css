@@ -15,6 +15,15 @@ body {
 
 .action_bar_wrap {
   background: rgba(0,0,0,0.1);
+  border: none;
+}
+
+#editor_container {
+  border: none;
+  padding: 0;
+}
+.CodeMirror {
+  width: 720px;
 }
 
 a,
@@ -150,4 +159,14 @@ ol.listlike li {
 .jqmConfirmWindow input[type=text]:focus {
   background: white;
   color: #333;
+}
+
+a.listlike:after {
+  content: "\00a0\2193";
+}
+a.listlike.selected:after {
+  content: "\00a0\2191";
+}
+a.listlike.selected {
+  border: none;
 }

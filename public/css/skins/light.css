@@ -1,7 +1,7 @@
 .header_wrap,
 .guest .nav_wrap {
   background: rgb(255,255,255); /* Old browsers */
-  box-shadow: 0 -1px 10px 0px black;
+  box-shadow: 0 -1px 6px 0px black;
   z-index: 101;
 }
 
@@ -9,10 +9,37 @@
   border-color: #615B4E;
 }
 
+.member nav > a,
+.member #page_actions > a,
+.member .actions > a.listlike {
+  background-repeat: no-repeat;
+  background-position: center center;
+  font-size: 0;
+  min-width: 32px;
+  padding: 0 0 0 24px;
+  vertical-align: middle;
+}
+
+.member nav > a:nth-of-type(1) { background-image: url("../icons/16x16/users.png");    }
+.member nav > a:nth-of-type(2) { background-image: url("../icons/16x16/help.png");     }
+.member nav > a:nth-of-type(3) { background-image: url("../icons/16x16/process.png");  }
+.member #save_content          { background-image: url("../icons/16x16/save.png");     }
+.member #preview               { background-image: url("../icons/16x16/television.png"); }
+.member #destroy_page          { background-image: url("../icons/16x16/delete.png");   }
+.member a.share_page           { background-image: url("../icons/16x16/user.png");   }
+.member #history               { background-image: url("../icons/16x16/wired.png");   }
+.member a.move_page            { background-image: url("../icons/16x16/folder.png");   }
+.member a.editor_settings      { background-image: url("../icons/16x16/tools.png");   }
+.member .actions > a.listlike  { background-image: url("../icons/24x24/new_page.png"); }
+
 a,
 a:visited {
   /*color: #D4EE5E;*/
   color: #008cdd;
+}
+
+a.listlike {
+  border-bottom: 2px solid rgba(0,0,0,0.35);
 }
 .highlighted {
   color: #F0AD11;
@@ -110,11 +137,16 @@ input[type=password] {
   top: 0;
   right: 0;
   color: #333;
-  font-size: 24px;
+  font-size: 14px;
   line-height: inherit;
   height: 100%;
 }
 
 footer {
-  border-color: #ccc;
+  border-color: #ddd;
+}
+
+#editor_container {
+  /*padding-left: 10px;
+  border-left: 1px solid #eee;  */
 }
