@@ -580,7 +580,7 @@ a.button {
 button:hover, 
 input[type=submit]:hover,
 a.button:hover {
-  background-position: 0 -15px;
+  /*background-position: 0 -5px;*/
   padding: 5px 20px;
 }
 
@@ -673,6 +673,7 @@ nav {
 a.listlike.selected,
 ol.listlike {
   box-shadow: 0 0px 0px 1px #ddd inset;
+  background-color: white;
 }
 a.listlike {
   padding: 0 10px;
@@ -690,7 +691,7 @@ ol.listlike {
   z-index: 101; /* to be active on top of the page action bar */
   right: 0%;
   left: 0%;
-  top: 98%;
+  top: 93%;
   text-align: left;
   color: white;
 }

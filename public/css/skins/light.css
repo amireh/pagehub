@@ -64,8 +64,7 @@ header h1 a em {
 
 h2,
 .cm-s-neat span.cm-header {
-  /*color: #8FBE00;*/
-  color: #7ea800;
+  color: #615B4E;
 }
 
 .success {
@@ -80,26 +79,24 @@ hr {
 input[type=submit],
 button,
 a.button {
-  color: #312d21;
-  color: white;
-  background-color: #B85C00;
-  background-repeat: no-repeat;
-  background-image: -webkit-gradient(linear,0 0,0 100%,from(#F93),color-stop(25%,#F93),to(#B85C00));
-  background-image: -webkit-linear-gradient(#F93,#F93 25%,#B85C00);
-  background-image: -moz-linear-gradient(top,#F93,#F93 25%,#B85C00);
-  background-image: -ms-linear-gradient(#F93,#F93 25%,#B85C00);
-  background-image: -o-linear-gradient(#F93,#F93 25%,#B85C00);
-  background-image: linear-gradient(#F93,#F93 25%,#B85C00);
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-
-  border: 1px solid #000;
-  border-color: #C60 #C60 #AD5700;
+  color: #615B4E;
+  text-shadow: 0 1px 0 white;
+background: rgb(255,255,255); /* Old browsers */
+background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(47%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* IE10+ */
+background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+  border: 1px solid #ddd;
+  /*border-color: #C60 #C60 #AD5700;*/
 }
 
 button:hover, 
 input[type=submit]:hover,
 a.button:hover {
-  color: #EEE;
+  color: #111;
 }
 
 button:active,
@@ -107,7 +104,7 @@ input[type=submit]:active,
 a.button:active {
   background: #FFFFF7;
   color: #312D21;
-  border-color: black;
+  border-color: #aaa;
 }
 
 

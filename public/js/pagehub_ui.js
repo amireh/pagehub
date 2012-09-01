@@ -105,8 +105,8 @@ pagehub_ui = function() {
 
     hide_list($("a.listlike.selected"));
 
-    $(this).next("ol").show()
-      .css("left", $(this).position().left);
+    $(this).next("ol").show();
+      // .css("left", $(this).position().left);
     $(this).addClass("selected");
     $(this).unbind('click', show_list);
     $(this).bind('click', hide_list_callback);
