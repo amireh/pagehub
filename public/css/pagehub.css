@@ -717,6 +717,8 @@ iframe {
 button.bad:not(:active),
 input[type=submit].bad:not(:active),
 a.button.bad:not(:active) {
+  color: white;
+  text-shadow: none;
   background: rgb(255,48,25); /* Old browsers */
   background: -moz-linear-gradient(top, rgba(255,48,25,1) 0%, rgba(207,4,4,1) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,48,25,1)), color-stop(100%,rgba(207,4,4,1))); /* Chrome,Safari4+ */
@@ -732,6 +734,8 @@ a.button.bad:not(:active) {
 button.good:not(:active),
 input[type=submit].good:not(:active),
 a.button.good:not(:active) {
+  color: white;
+  text-shadow: none;
   background: rgb(143,200,0); /* Old browsers */
   background: -moz-linear-gradient(top, rgba(143,200,0,1) 0%, rgba(143,200,0,1) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(143,200,0,1)), color-stop(100%,rgba(143,200,0,1))); /* Chrome,Safari4+ */
