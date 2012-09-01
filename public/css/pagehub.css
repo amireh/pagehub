@@ -91,6 +91,7 @@ header h1, header h3 {
 
 header .subheader {
   display: inline;
+  margin-left: 5px;
 }
 header .subheader h3 {
   letter-spacing: 2px;

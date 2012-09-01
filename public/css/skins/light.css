@@ -51,7 +51,7 @@ body {
 
 header h1 a:visited,
 header h1 a {
-  letter-spacing: 5px;
+  /*letter-spacing: 5px;*/
   font-weight: 100;
   color: #333;
   font-family: inherit;

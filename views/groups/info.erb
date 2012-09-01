@@ -1,8 +1,14 @@
 <% content_for :title do %> <%= @group.title %> - Info | PageHub <% end %>
 
+<% content_for :header do %>
+  <h3><a href="/groups/<%=@group.name%>"><%= @group.title %></a>
+    <small><a style="padding: 0; margin: 0" href="/groups/<%= @group.name %>/info"><em>info</em></a></small>
+  </h3>
+<% end %>
+
 <h2><a href="/groups/<%= @group.name %>"><%= @group.title %></a>
   <% if @group.is_admin?(current_user)%>
-    <small><a href="/groups/<%= @group.name %>/edit">manage</a></small>
+    <small><a href="/groups/<%= @group.name %>/edit"><em>manage</em></a></small>
   <% end %>
 </h2>
 
