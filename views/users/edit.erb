@@ -1,21 +1,57 @@
 <% content_for :title do %> <%= current_user.nickname %> - Settings | PageHub <% end %>
 
-<% content_for :scripts do %>
-<script src="/js/codemirror-2.3/lib/codemirror.js"></script>
-<script src="/js/codemirror-2.3/mode/xml/xml.js"></script>
-<script src="/js/codemirror-2.3/mode/markdown/markdown.js"></script>
-<script src="/js/codemirror-2.3/mode/gfm/gfm.js"></script>
+<%= erb :"/shared/_editor" %>
 
-<script src="/js/codemirror-2.3/mode/javascript/javascript.js"></script>
-<script src="/js/codemirror-2.3/mode/ruby/ruby.js"></script>
-<script src="/js/codemirror-2.3/mode/shell/shell.js"></script>
-<script src="/js/codemirror-2.3/mode/lua/lua.js"></script>
-<script src="/js/codemirror-2.3/mode/clike/clike.js"></script>
-<script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
+<% content_for :css do %>
+<style>
+  section.editor_preview {
+    position: absolute;
+    left: 320px;
+    top: 160px;
+    /*border-left: 1px solid #333;*/
+    padding: 0;
+    opacity: 0.5;
+  }
+  section.editor_preview .curly,
+  section.editor_preview small {
+    font-family: "UbuntuMonoRegular";
+    font-size: 196px;
+    position: absolute;
+    opacity: 0.1;
+    left: -164px;
+    font-weight: bold;
+    top: 100px;
+    -webkit-transform: rotate(-30deg);
+    -moz-transform: rotate(-30deg);
+  }
+  section.editor_preview small {
+    position: absolute;
+    left: -128px;
+    top: 110px;
+    z-index: 100;
+    opacity: 1;
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
 
-<link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css">
-<link rel="stylesheet" href="/js/codemirror-2.3/theme/neat.css">
-<link rel="stylesheet" href="/css/codemirror.css">
+  #editor_settings {
+    position: relative;
+  }
+  .CodeMirror {
+    width: 320px;
+    margin: 0;
+    max-height: 320px;
+    height: 320px;
+    overflow: inherit;
+    font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
+    font-size: <%= preferences["editing"]["font_size"] %>px;
+    line-height: <%= preferences["editing"]["line_height"] %>px;
+    letter-spacing: <%= preferences["editing"]["letter_spacing"] %>px;
+  }
+</style>
+<% end %>
+
+<% content_for :js do %>
 
 <script>
   $(function() {
@@ -28,7 +64,6 @@
 
         success: function(is_available) {
           is_available = JSON.parse(is_available);
-          console.log(is_available)
           if (is_available) {
             btn.next("span").addClass("success").removeClass("error").html("available");
           } else {
@@ -78,53 +113,6 @@
 
   });
 </script>
-
-<style>
-  section.editor_preview {
-    position: absolute;
-    left: 320px;
-    top: 160px;
-    /*border-left: 1px solid #333;*/
-    padding: 0;
-    opacity: 0.5;
-  }
-  section.editor_preview .curly,
-  section.editor_preview small {
-    font-family: "UbuntuMonoRegular";
-    font-size: 196px;
-    position: absolute;
-    opacity: 0.1;
-    left: -164px;
-    font-weight: bold;
-    top: 100px;
-    -webkit-transform: rotate(-30deg);
-    -moz-transform: rotate(-30deg);
-  }
-  section.editor_preview small {
-    position: absolute;
-    left: -128px;
-    top: 110px;
-    z-index: 100;
-    opacity: 1;
-    font-size: 14px;
-    letter-spacing: 2px;
-  }
-
-  #editor_settings {
-    position: relative;
-  }
-  .CodeMirror {
-    width: 320px;
-    margin: 0;
-    max-height: 320px;
-    height: 320px;
-    overflow: inherit;
-    font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
-    font-size: <%= preferences["editing"]["font_size"] %>px;
-    line-height: <%= preferences["editing"]["line_height"] %>px;
-    letter-spacing: <%= preferences["editing"]["letter_spacing"] %>px;
-  }
-</style>
 <% end %>
 
 <form id="preferences" action="/profile/preferences" method="POST">
@@ -283,7 +271,4 @@ I'm **bold** and I'm *not*.
 
   <br />
   <input type="submit" value="Change password" />
-  <br />
-  <br />
-  <br />
 </form>

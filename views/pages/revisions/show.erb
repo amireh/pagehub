@@ -1,56 +1,60 @@
 <%= erb :"/shared/_editor" %>
 
-<% content_for :scripts do %>
+<% content_for :css do %>
 
-<style>
-  div.block {
-    width: 49%;
-    clear: left;
-    margin: 0;
-    display: inline-block;
-    vertical-align: top;
-  }
-  .CodeMirror, pre {
-    margin: 0;
-    width: 100%;
-  }
-  .CodeMirror-scroll {
-    height: auto;
-    overflow-y: hidden;
-    overflow-x: auto;
-  }
+  <style>
+    div.block {
+      width: 49%;
+      clear: left;
+      margin: 0;
+      display: inline-block;
+      vertical-align: top;
+    }
+    .CodeMirror, pre {
+      margin: 0;
+      width: 100%;
+    }
+    .CodeMirror-scroll {
+      height: auto;
+      overflow-y: hidden;
+      overflow-x: auto;
+    }
 
-  div.spanner {
-    width: 100%;
-    float: left;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    vertical-align: bottom;
-    /*text-align: center;*/
-  }
-  div.spanner:last-of-type {
-    border: none;
-    border-top: 1px solid #ddd;
-  }
+    div.spanner {
+      width: 100%;
+      float: left;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+      vertical-align: bottom;
+      /*text-align: center;*/
+    }
+    div.spanner:last-of-type {
+      border: none;
+      border-top: 1px solid #ddd;
+    }
 
-  #changes {
-    padding-left: 15px;
-    border-left: 1px solid #ddd;
-    /*float: right;*/
-  }
-  #changes pre {
-    max-width: 100%;
-    word-wrap: break-word;
-  }
-  del { color: red; }
-  ins { color: green; text-decoration: none;}
-</style>
+    #changes {
+      padding-left: 15px;
+      border-left: 1px solid #ddd;
+      /*float: right;*/
+    }
+    #changes pre {
+      max-width: 100%;
+      word-wrap: break-word;
+      line-height: 14px;
+      font-size: 14px;
+    }
+    del { color: red; text-decoration: none; }
+    ins { color: green; text-decoration: none;}
+  </style>
+<% end %>
 
-<script type="text/javascript">
-  $(function() {
-    ui.editor = ui.create_editor("page_editor", { readOnly: true });
-  });
-</script>
+<% content_for :js do %>
+  <script type="text/javascript">
+    $(function() {
+      ui.editor = ui.create_editor("page_editor", { readOnly: true });
+    });
+  </script>
 <% end %>
 
 <p>There are <%= @page.revisions.count %> <a href="<%= @page.revisions_url(@scope.namespace) %>">revisions</a> for this page.

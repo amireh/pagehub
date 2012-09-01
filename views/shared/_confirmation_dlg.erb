@@ -1,6 +1,7 @@
-<% content_for :scripts do %>
-<script src="/js/jqModal.js"></script>
-<link rel="stylesheet" href="/css/jqModal.css">
+<% content_for :js do %>
+<% if settings.development? %>
+  <script src="/js/ugly/jqModal.js"></script>
+<% end %>
 
 <script>
   $(function() {

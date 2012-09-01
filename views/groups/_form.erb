@@ -1,4 +1,16 @@
-<% content_for :scripts do %>
+<% content_for :css do %>
+<style>
+  #user_listing > li:hover {
+    cursor: pointer;
+    color: red;
+  }
+  #users > li > small > strong {
+    cursor: pointer;
+  }
+</style>
+<% end %>
+
+<% content_for :js do %>
 <script>
   $(function() {
     var lookup_timer = null;
@@ -153,16 +165,6 @@
     <% end %>
   });
 </script>
-
-<style>
-  #user_listing > li:hover {
-    cursor: pointer;
-    color: red;
-  }
-  #users > li > small > strong {
-    cursor: pointer;
-  }
-</style>
 <% end %>
 
 <% conditionals = {

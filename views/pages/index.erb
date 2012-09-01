@@ -2,32 +2,29 @@
 
 <%= erb :"/shared/_editor" %>
 
-<% content_for :scripts do %>
+<% content_for :js do %>
+  <script type="text/javascript">
+    $(function() {
+      /* --- ------ *
+       * The Editor *
+       * --- ------ */
+      ui.editor = ui.create_editor("page_editor");
+      ui.actions = $("#page_actions");
 
-<script type="text/javascript">
+      // Resize it to fill up the remainder of the screen's height
+      var editor_h = $(window).height() - 135;
+      $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+      ui.editor.refresh();
+      // and the page listing
+      $("#pages .scroller").css("max-height", $(window).height() - 135);
 
-  $(function() {
-    /* --- ------ *
-     * The Editor *
-     * --- ------ */
-    ui.editor = ui.create_editor("page_editor");
-    ui.actions = $("#page_actions");
+      data = <%= current_user.all_pages.to_json %>;
+      dynamism.inject(data, $("#page_listing"));
+    });
 
-    // Resize it to fill up the remainder of the screen's height
-    var editor_h = $(window).height() - 135;
-    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
-    ui.editor.refresh();
-    // and the page listing
-    $("#pages .scroller").css("max-height", $(window).height() - 135);
-
-    data = <%= current_user.all_pages.to_json %>;
-    dynamism.inject(data, $("#page_listing"));
-  });
-
-</script>
+  </script>
 <% end %>
 
 <%= erb :"/shared/_resource_listing", locals: { editor_content: File.read(File.join(settings.views, "tutorial.md")) } %>
-<img class="loader" src="/css/ajax-loader.gif" />
 
 <%= erb :"/shared/_confirmation_dlg" %>

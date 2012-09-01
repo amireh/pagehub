@@ -3,33 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <title><% yield_content :title %></title>
-  <!-- <title>notebook.mxvt</title> -->
+
+  <% if settings.development? %>
+    <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
+    <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
+  <% else %>
+    <link href="/css/pagehub.min.css" rel="stylesheet" type="text/css" />
+    <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.min.css" rel="stylesheet" type="text/css" />
+  <% end %>
+
+  <% yield_content :css %>
 
   <script type="text/javascript" src="/js/json2.min.js"></script>
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
-  <script type="text/javascript" src="/js/shortcut.js"></script>
-  <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" />
-  <link href="/css/fonts/ubuntu/stylesheet.css" rel="stylesheet" type="text/css" />
-  <link href="/css/fonts/ubuntu-mono/stylesheet.css" rel="stylesheet" type="text/css" />
-  <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
 
-  <% if logged_in? then %>
+  <script>
+    pagehub_settings = <%= preferences.to_json %>;
+    last_error = null; // used for debugging
+  </script>
 
-    <script>
-      pagehub_settings = <%= preferences.to_json %>;
-      last_error = null; // used for debugging
-    </script>
-
+  <% if settings.development? %>
+    <script type="text/javascript" src="/js/shortcut.js"></script>
     <script src="/js/dynamism.js"></script>
     <script src="/js/pagehub.js"></script>
     <script src="/js/pagehub_ui.js"></script>
-    
+  <% else %>
+    <script src="/js/ugly/all.js"></script>
   <% end %>
 
+  <% yield_content :js %>
   <% yield_content :scripts %>
-
-  <!-- the user's preferred skin -->
-  <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="member">
@@ -94,10 +97,10 @@
       <%= erb(:"shared/_skin_switcher") %>
     <% end %>
 
-  </div>
+    <img class="loader" src="/css/ajax-loader-615B4E.gif" />
 
-  <%= erb :"footer" %>
-  
+    <%= erb :"footer" %>
+  </div>  
 </body>
 
 </html>

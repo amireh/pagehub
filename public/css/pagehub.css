@@ -1,3 +1,56 @@
+
+/* Font-faces */
+  @font-face {
+      font-family: 'UbuntuMonoRegular';
+      src: url('fonts/ubuntu-mono/UbuntuMono-R-webfont.eot');
+      src: url('fonts/ubuntu-mono/UbuntuMono-R-webfont.eot?#iefix') format('embedded-opentype'),
+           url('fonts/ubuntu-mono/UbuntuMono-R-webfont.woff') format('woff'),
+           url('fonts/ubuntu-mono/UbuntuMono-R-webfont.ttf') format('truetype'),
+           url('fonts/ubuntu-mono/UbuntuMono-R-webfont.svg#UbuntuMonoRegular') format('svg');
+      font-weight: normal;
+      font-style: normal;
+  }
+  @font-face {
+    font-family: 'UbuntuRegular';
+    src: url('fonts/ubuntu/Ubuntu-R-webfont.eot');
+    src: url('fonts/ubuntu/Ubuntu-R-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/ubuntu/Ubuntu-R-webfont.woff') format('woff'),
+         url('fonts/ubuntu/Ubuntu-R-webfont.ttf') format('truetype'),
+         url('fonts/ubuntu/Ubuntu-R-webfont.svg#UbuntuRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+      font-family: 'UbuntuLight';
+      src: url('fonts/ubuntu/Ubuntu-L-webfont.eot');
+      src: url('fonts/ubuntu/Ubuntu-L-webfont.eot?#iefix') format('embedded-opentype'),
+           url('fonts/ubuntu/Ubuntu-L-webfont.woff') format('woff'),
+           url('fonts/ubuntu/Ubuntu-L-webfont.ttf') format('truetype'),
+           url('fonts/ubuntu/Ubuntu-L-webfont.svg#UbuntuLight') format('svg');
+      font-weight: normal;
+      font-style: normal;
+  }  
+  @font-face {
+    font-family: 'ProximaNova-Light';
+    src: url('fonts/proximanova/proximanova-light-webfont.eot');
+    src: url('fonts/proximanova/proximanova-light-webfont.eot?iefix') format('eot'),
+         url('fonts/proximanova/proximanova-light-webfont.woff') format('woff'),
+         url('fonts/proximanova/proximanova-light-webfont.ttf') format('truetype'),
+         url('fonts/proximanova/proximanova-light-webfont.svg#webfontOdV5l44Z') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+      font-family: 'ProximaNova-Regular';
+      src: url('fonts/proximanova/proximanova-regular-webfont.eot');
+      src: url('fonts/proximanova/proximanova-regular-webfont.eot?iefix') format('eot'),
+           url('fonts/proximanova/proximanova-regular-webfont.woff') format('woff'),
+           url('fonts/proximanova/proximanova-regular-webfont.ttf') format('truetype'),
+           url('fonts/proximanova/proximanova-regular-webfont.svg') format('svg');
+      font-weight: normal;
+      font-style: normal;
+  }
+
 body {
   font-family: "UbuntuLight", "ProximaNova-Light", Arial, Verdana;
   /*font-family: "ProximaNova-Light", "UbuntuRegular", Arial, Verdana;*/
@@ -265,7 +318,8 @@ a.button {
   text-align: center;
   padding: 0px;
   margin-left: 0px;
-  line-height: 40px;
+  /*line-height: 40px;*/
+  line-height: 29px;
   left: -100%;
   right: 0;
   z-index: 1000;
@@ -378,10 +432,8 @@ footer p {
 
 img.loader {
   position: absolute;
-  left: 0;
-  bottom: 10px;
-  -webkit-transform: rotate(-1.5deg);
-  -moz-transform: rotate(-1.5deg);
+  right: 0;
+  bottom: 0;
   display: none;
 }
 
@@ -872,3 +924,345 @@ button[data-collapse] {
 [draggable=true] {
   -khtml-user-drag: element;
 }
+
+
+/** CodeMirror */
+  .CodeMirror {
+    line-height: 1em;
+    font-family: monospace;
+
+    /* Necessary so the scrollbar can be absolutely positioned within the wrapper on Lion. */
+    position: relative;
+    /* This prevents unwanted scrollbars from showing up on the body and wrapper in IE. */
+    overflow: hidden;
+  }
+
+  .CodeMirror-scroll {
+    overflow: auto;
+    height: 300px;
+    /* This is needed to prevent an IE[67] bug where the scrolled content
+       is visible outside of the scrolling box. */
+    position: relative;
+    outline: none;
+  }
+
+  /* Vertical scrollbar */
+  .CodeMirror-scrollbar {
+    position: absolute;
+    right: 0; top: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    z-index: 5;
+  }
+  .CodeMirror-scrollbar-inner {
+    /* This needs to have a nonzero width in order for the scrollbar to appear
+       in Firefox and IE9. */
+    width: 1px;
+  }
+  .CodeMirror-scrollbar.cm-sb-overlap {
+    /* Ensure that the scrollbar appears in Lion, and that it overlaps the content
+       rather than sitting to the right of it. */
+    position: absolute;
+    z-index: 1;
+    float: none;
+    right: 0;
+    min-width: 12px;
+  }
+  .CodeMirror-scrollbar.cm-sb-nonoverlap {
+    min-width: 12px;
+  }
+  .CodeMirror-scrollbar.cm-sb-ie7 {
+    min-width: 18px;
+  }
+
+  .CodeMirror-gutter {
+    position: absolute; left: 0; top: 0;
+    z-index: 10;
+    background-color: #f7f7f7;
+    border-right: 1px solid #eee;
+    min-width: 2em;
+    height: 100%;
+  }
+  .CodeMirror-gutter-text {
+    color: #aaa;
+    text-align: right;
+    padding: .4em .2em .4em .4em;
+    white-space: pre !important;
+    cursor: default;
+  }
+  .CodeMirror-lines {
+    padding: .4em;
+    white-space: pre;
+    cursor: text;
+  }
+
+  .CodeMirror pre {
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    -o-border-radius: 0;
+    border-radius: 0;
+    border-width: 0; margin: 0; padding: 0; background: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0; margin: 0;
+    white-space: pre;
+    word-wrap: normal;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  .CodeMirror-wrap pre {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: normal;
+  }
+  .CodeMirror-wrap .CodeMirror-scroll {
+    overflow-x: hidden;
+  }
+
+  .CodeMirror textarea {
+    outline: none !important;
+  }
+
+  .CodeMirror pre.CodeMirror-cursor {
+    z-index: 10;
+    position: absolute;
+    visibility: hidden;
+    border-left: 1px solid black;
+    border-right: none;
+    width: 0;
+  }
+  .cm-keymap-fat-cursor pre.CodeMirror-cursor {
+    width: auto;
+    border: 0;
+    background: transparent;
+    background: rgba(0, 200, 0, .4);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#6600c800, endColorstr=#4c00c800);
+  }
+  /* Kludge to turn off filter in ie9+, which also accepts rgba */
+  .cm-keymap-fat-cursor pre.CodeMirror-cursor:not(#nonsense_id) {
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  }
+  .CodeMirror pre.CodeMirror-cursor.CodeMirror-overwrite {}
+  .CodeMirror-focused pre.CodeMirror-cursor {
+    visibility: visible;
+  }
+
+  div.CodeMirror-selected { background: #d9d9d9; }
+  .CodeMirror-focused div.CodeMirror-selected { background: #d7d4f0; }
+
+  .CodeMirror-searching {
+    background: #ffa;
+    background: rgba(255, 255, 0, .4);
+  }
+
+  /* Default theme */
+
+  .cm-s-default span.cm-keyword {color: #708;}
+  .cm-s-default span.cm-atom {color: #219;}
+  .cm-s-default span.cm-number {color: #164;}
+  .cm-s-default span.cm-def {color: #00f;}
+  .cm-s-default span.cm-variable {color: black;}
+  .cm-s-default span.cm-variable-2 {color: #05a;}
+  .cm-s-default span.cm-variable-3 {color: #085;}
+  .cm-s-default span.cm-property {color: black;}
+  .cm-s-default span.cm-operator {color: black;}
+  .cm-s-default span.cm-comment {color: #a50;}
+  .cm-s-default span.cm-string {color: #a11;}
+  .cm-s-default span.cm-string-2 {color: #f50;}
+  .cm-s-default span.cm-meta {color: #555;}
+  .cm-s-default span.cm-error {color: #f00;}
+  .cm-s-default span.cm-qualifier {color: #555;}
+  .cm-s-default span.cm-builtin {color: #30a;}
+  .cm-s-default span.cm-bracket {color: #cc7;}
+  .cm-s-default span.cm-tag {color: #170;}
+  .cm-s-default span.cm-attribute {color: #00c;}
+  .cm-s-default span.cm-header {color: blue;}
+  .cm-s-default span.cm-quote {color: #090;}
+  .cm-s-default span.cm-hr {color: #999;}
+  .cm-s-default span.cm-link {color: #00c;}
+
+  span.cm-header, span.cm-strong {font-weight: bold;}
+  span.cm-em {font-style: italic;}
+  span.cm-emstrong {font-style: italic; font-weight: bold;}
+  span.cm-link {text-decoration: underline;}
+
+  span.cm-invalidchar {color: #f00;}
+
+  div.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}
+  div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
+
+  @media print {
+
+    /* Hide the cursor when printing */
+    .CodeMirror pre.CodeMirror-cursor {
+      visibility: hidden;
+    }
+
+  }
+  .CodeMirror {
+    /*border: 1px solid #E1E6E5;*/
+    /*border-left: 1px solid #ddd;*/
+    /*background: #FFFFF7;*/
+    overflow: auto;
+    font-size: 14px;
+    line-height: 18px;
+    width: 720px;
+    margin-right: 0;
+    display: inline-block;
+    height: auto;
+    font-family: inherit;
+    margin-top: 47px;
+    letter-spacing: 0;
+  }
+  .CodeMirror-scroll {
+    min-height: 492px;
+    /*height: auto;*/
+    /*overflow-y: hidden;*/
+    /*overflow-x: auto;*/
+  }
+
+  .CodeMirror-lines {
+    /*padding-top: 0;*/
+  }
+
+  .CodeMirror-gutter-text {
+    /*text-align: center;*/
+  }
+  .CodeMirror-gutter {
+    background: transparent;
+    border-color: #615B4E;
+  }
+  .CodeMirror pre.CodeMirror-cursor {
+    border-left-color: #555;
+    border-left-width: 1px;
+  }
+  .CodeMirror-selected {
+    background: #FF4A58 !important;
+  }
+  .cm-s-neat span.cm-comment { color: #a86; }
+  .cm-s-neat span.cm-keyword { line-height: 1em; font-weight: bold; color: blue; }
+  .cm-s-neat span.cm-string { color: #E2403D; }
+  .cm-s-neat span.cm-builtin { line-height: 1em; font-weight: bold; color: #077; }
+  .cm-s-neat span.cm-special { line-height: 1em; font-weight: bold; color: #0aa; }
+  .cm-s-neat span.cm-variable { color: black; }
+  .cm-s-neat span.cm-number, .cm-s-neat span.cm-atom { color: #3a3; }
+  .cm-s-neat span.cm-meta {color: #555;}
+  .cm-s-neat span.cm-link { color: #3a3; }
+
+
+  /* jqModal base Styling courtesy of;
+    Brice Burgess <bhb@iceburg.net> */
+
+  /* The Window's CSS z-index value is respected (takes priority). If none is supplied,
+    the Window's z-index value will be set to 3000 by default (via jqModal.js). */
+    
+  .jqmWindow {
+      display: none;
+      
+      position: fixed;
+      top: 17%;
+      left: 50%;
+      
+      margin-left: -300px;
+      width: 600px;
+      
+      background-color: #EEE;
+      color: #333;
+      border: 1px solid black;
+      padding: 12px;
+  }
+
+  .jqmOverlay { background-color: rgba(0,0,0,0.5); }
+
+  div.jqmConfirm input[type="submit"] { 
+      /*padding: 4px; margin: 10px 30px; background: #000; color: #FFF; border: 1px solid #AAA;*/
+  }
+
+  div.jqmConfirm input#confirm_accepted {
+    float: right;
+  }
+
+  /* jqModal confirm CSS courtesy of;
+     Alexandre Plennevaux <alexandre@pixeline.be>,
+     Brice Burgess <bhb@iceburg.net> */
+
+  div.jqmConfirm { /* contains + positions the alert window */
+    display: none;
+    
+    position: fixed;
+    top: 17%;
+    width: 100%;
+    left: 0;
+  }
+
+  div.jqmConfirmWindow {
+    height:auto;
+    width: auto;
+    margin: auto;
+
+    max-width: 420px;
+    padding: 0 10px 10px;
+    
+    background:#FFF;
+    border:1px dotted #FFF;
+  }
+
+  .jqmConfirmTitle{
+    margin:5px 2px;
+    height:20px;
+    color:#000;
+    background:#FFF;
+  }
+  .jqmConfirmTitle h1{
+    margin:5px 2px;
+    padding-left:5px;
+    padding:0;
+    font-size:18px;
+    text-transform:capitalize;
+    letter-spacing: 1px;
+    font-weight:bold;
+    color:#000;
+
+    float:left;
+    height:20px;
+  }
+
+  div.jqmConfirm .jqmClose em{display:none;}
+  div.jqmConfirm .jqmClose {
+    width:20px;
+    height:20px;
+    display:block;
+    float:right;
+    clear:right;
+    background:transparent  0 0 no-repeat;
+  }
+
+  div.jqmConfirm a.jqmClose:hover{ background-position: 0 -20px; }
+
+  div.jqmConfirmContent{
+    color:#000;
+    /*font:11px/14pt arial;*/
+    font-size: 14px;
+    padding: 0 5px;
+    margin: 15px 0;
+    line-height: 18px;
+    /*border:1px dotted #111;*/
+    /*letter-spacing:0px;*/
+    /*background:#FFF url(confirm/darkgrid.png);*/
+  }
+
+  .clearfix:after {
+      content: "."; 
+      display: block; 
+      height: 0; 
+      clear: both; 
+      visibility: hidden;
+  }
+
+  .clearfix {display: inline-block;}
+
+  /* Hides from IE-mac \*/
+  * html .clearfix {height: 1%;}
+  .clearfix {display: block;}
+  /* End hide from IE-mac */
