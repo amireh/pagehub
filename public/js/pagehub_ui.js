@@ -87,7 +87,7 @@ pagehub_ui = function() {
 
         // "listlike" links
         function() {
-          $("a.listlike:not(.selected)").click(show_list);
+          $("a.listlike:not(.selected)").bind('click', show_list);
           $("ol.listlike li:not(.sticky), ol.listlike li:not(.sticky) *").click(function() {
             var anchor = $(this).parent().prev("a.listlike");
             if (anchor.hasClass("selected")) {
@@ -125,6 +125,7 @@ pagehub_ui = function() {
   function hide_list(el) {
     $(el).removeClass("selected");
     $(el).next("ol").hide();
+    $(el).unbind('click', hide_list_callback);
     $(el).bind('click', show_list);
   }
 

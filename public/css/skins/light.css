@@ -9,28 +9,33 @@
   border-color: #615B4E;
 }
 
+/* -- icons -- */
 .member nav > a,
 .member #page_actions > a,
 .member .actions > a.listlike {
   background-repeat: no-repeat;
-  background-position: center center;
+  /*background-position: center center;*/
   font-size: 0;
   min-width: 32px;
-  padding: 0 0 0 24px;
+  padding: 0;
   vertical-align: middle;
+  height: 40px;
+  background-image: url("../sheet.png");
 }
-
-.member nav > a:nth-of-type(1) { background-image: url("../icons/16x16/users.png");    }
-.member nav > a:nth-of-type(2) { background-image: url("../icons/16x16/help.png");     }
-.member nav > a:nth-of-type(3) { background-image: url("../icons/16x16/process.png");  }
-.member #save_content          { background-image: url("../icons/16x16/save.png");     }
-.member #preview               { background-image: url("../icons/16x16/television.png"); }
-.member #destroy_page          { background-image: url("../icons/16x16/delete.png");   }
-.member a.share_page           { background-image: url("../icons/16x16/user.png");   }
-.member #history               { background-image: url("../icons/16x16/wired.png");   }
-.member a.move_page            { background-image: url("../icons/16x16/folder.png");   }
-.member a.editor_settings      { background-image: url("../icons/16x16/tools.png");   }
-.member .actions > a.listlike  { background-image: url("../icons/24x24/new_page.png"); }
+.member nav > a {
+  height: 49px;
+}
+.member .icon.groups          { background-position: -88px  -32px;}
+.member .icon.help            { background-position: -56px  16px; }
+.member .icon.settings        { background-position: -88px  16px; }
+.member .icon.save_page       { background-position: -152px 12px; }
+.member .icon.pretty_page     { background-position: -120px -36px;}
+.member .icon.delete_page     { background-position: -24px  12px; }
+.member .icon.share_page      { background-position: -24px  -36px;}
+.member .icon.history         { background-position: -56px  -36px;}
+.member .icon.move_page       { background-position: -120px 12px; }
+.member .icon.editor_settings { background-position: 8px    -36px;}
+.member .icon.new_page        { background-position: 4px    8px;  }
 
 a {
   /*color: #D4EE5E;*/

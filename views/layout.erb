@@ -48,7 +48,7 @@
     <nav>
 
       <span>Hi <%= current_user.nickname %></span>
-      <a class="listlike" title="Your groups" href="/groups">Groups</a>
+      <a class="listlike icon groups" title="Your groups" href="/groups">Groups</a>
       <ol class="listlike">
         <li><a href="/groups/new">New group</a></li>
         <% current_user.groups.each do |g| %>
@@ -58,9 +58,9 @@
           </li>
         <% end %>
       </ol>
-      <a class="listlike" href="/help" title="Help">Help</a>
+      <a class="listlike icon help" href="/help" title="Help">Help</a>
       <%= erb :"/shared/_nav_help_links" %>
-      <a class="listlike" href="/account" title="Your account">Account</a>
+      <a class="listlike icon settings" href="/account" title="Your account">Account</a>
       <%= erb :"/shared/_nav_account_links" %>
 
     </nav>
