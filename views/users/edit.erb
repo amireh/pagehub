@@ -70,6 +70,12 @@
       else if (e.keyCode == 40) { $(this).attr("value", parseInt($(this).attr("value")) - 1);}
       $(".CodeMirror").css("line-height", parseInt($(this).attr("value") || 1) + "px");
     });
+    $("input[type=text][name*=editing\\\]\\\[letter_spacing]").keyup(function(e) {
+      if (e.keyCode == 38) { $(this).attr("value", parseInt($(this).attr("value")) + 1);}
+      else if (e.keyCode == 40) { $(this).attr("value", parseInt($(this).attr("value")) - 1);}
+      $(".CodeMirror").css("letter-spacing", parseInt($(this).attr("value") || 0) + "px");
+    });
+
   });
 </script>
 
@@ -113,6 +119,10 @@
     max-height: 320px;
     height: 320px;
     overflow: inherit;
+    font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
+    font-size: <%= preferences["editing"]["font_size"] %>px;
+    line-height: <%= preferences["editing"]["line_height"] %>px;
+    letter-spacing: <%= preferences["editing"]["letter_spacing"] %>px;
   }
 </style>
 <% end %>
@@ -191,7 +201,7 @@
     <h3>Autosaving</h3>
     <label>
       <input type="checkbox" name="settings[editing][autosave]"
-              <%= (preferences["editing"] || {})["autosave"] ? "checked='checked'" : "" %> />
+              <%= preferences["editing"]["autosave"] ? "checked='checked'" : "" %> />
       Automatically save while editing (every 30 seconds)
     </label>
 
@@ -202,27 +212,33 @@
           <input 
           type="radio" name="settings[editing][font_face]" 
           value="<%=name%>"
-          <%= (preferences["editing"] || {})["font_face"] == name ? "checked='checked'" : "" %>
+          <%= preferences["editing"]["font_face"] == name ? "checked='checked'" : "" %>
           ><%= name %></input>
         </label>
         <br />
       <% end %>
-    <h3>Font size &times; Line height</h3>
+    <h3>Font size &times; Line height &times; Letter spacing</h3>
       <input 
         type="text" name="settings[editing][font_size]"
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= (preferences["editing"] || {})["font_size"] %>" /> 
+        value="<%= preferences["editing"]["font_size"] %>" /> 
       <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
       <input 
         type="text" name="settings[editing][line_height]"
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= (preferences["editing"] || {})["line_height"] %>" /> 
+        value="<%= preferences["editing"]["line_height"] %>" /> 
+      <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
+      <input 
+        type="text" name="settings[editing][letter_spacing]"
+        autocomplete="off"
+        class="very_fat"
+        style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
+        value="<%= preferences["editing"]["letter_spacing"] %>" /> 
       <span style="font-size: 18px;">px</span>
-
     <section class="editor_preview">
       <span class="curly">&rarr;</span>
       <small>preview</small>

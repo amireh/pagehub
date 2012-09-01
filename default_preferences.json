@@ -3,6 +3,7 @@
     "font_face": "Ubuntu",
     "font_size": 14,
     "line_height": 18,
+    "letter_spacing": 0,
     "autosave": true
   },
   "pretty": {

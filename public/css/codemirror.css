@@ -11,7 +11,7 @@
   height: auto;
   font-family: inherit;
   margin-top: 42px;
-  /*letter-spacing: 1px;*/
+  letter-spacing: 0;
 }
 .CodeMirror-scroll {
   min-height: 492px;

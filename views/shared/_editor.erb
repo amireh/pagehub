@@ -19,9 +19,11 @@
 <!-- apply user preferences -->
 <style>
   .CodeMirror {
-    font-family: <%= Preferences::FontMap[preferences["editing"]["font_face"]] %>;
+    font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
     font-size: <%= preferences["editing"]["font_size"].to_i %>px;
     line-height: <%= preferences["editing"]["line_height"].to_i %>px;
+    letter-spacing: <%= preferences["editing"]["letter_spacing"].to_i %>px;
+
   }
 </style>
 
