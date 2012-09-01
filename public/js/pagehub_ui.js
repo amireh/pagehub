@@ -819,6 +819,10 @@ pagehub_ui = function() {
             $("#share_everybody").attr("href", pagehub.namespace + "/pages/" + title + "/share");
             $("#history").attr("href", pagehub.namespace + "/pages/" + page.id + "/revisions")
                          .html($("#history").html().replace(/\d+/, page.nr_revisions));
+            if (page.nr_revisions == 0)
+              $("#history").attr("disabled", "true").addClass("disabled");
+            else
+              $("#history").attr("disabled", null).removeClass("disabled");
 
             // Disable the group share links for all the groups this page
             // is already shared with
@@ -882,7 +886,16 @@ pagehub_ui = function() {
 
         if (!dont_show_status) {
           messages = {
-            success: function() { ui.status.show("Page updated.", "good") },
+            success: function(p) {
+              var p = JSON.parse(p);
+              ui.status.show("Page updated.", "good");
+              if (p.nr_revisions == 0) {
+                $("#history").attr("disabled", "true").addClass("disabled");
+              } else {
+                $("#history").attr("disabled", null).removeClass("disabled");
+              }
+
+            },
             error: function(e)  {
               ui.status.show("Unable to update page: " + e.responseText, "bad");
             }

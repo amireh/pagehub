@@ -24,6 +24,7 @@ header h1 {
 #flashes {
   width: 640px;
   margin-left: -20px;
+  padding: 5px 10px;
 }
 
 nav a:last-of-type {

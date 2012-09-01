@@ -302,14 +302,16 @@ a.button {
 
 a,
 #pages li,
-.highlighted {
+.highlighted,
+header a em {
   text-decoration: none;
-  -webkit-transition: color 0.25s ease 0s;
-  -moz-transition:    color 0.25s ease 0s;
-  -ms-transition:     color 0.25s ease 0s;
-  -o-transition:      color 0.25s ease 0s;
-  transition:         color 0.25s ease 0s;      
+  -webkit-transition: color 0.5s ease 0s;
+  -moz-transition:    color 0.5s ease 0s;
+  -ms-transition:     color 0.5s ease 0s;
+  -o-transition:      color 0.5s ease 0s;
+  transition:         color 0.5s ease 0s;      
 }
+
 a:hover,
 a:visited:hover,
 a.selected,
@@ -342,7 +344,7 @@ a.selected,
 
 footer {
   width: 960px;
-  margin: 0 auto;
+  margin: 10px auto 0 auto;
   border-top: 1px dotted black;
   padding: 0;
   /*display: none;*/
@@ -364,7 +366,7 @@ footer p {
 [data-disabled] {
   opacity: 0.5;
 }
-.disabled *,
+.disabled, .disabled *,
 [data-disabled], [data-disabled] * {
   color: gray !important;
   cursor: default !important;

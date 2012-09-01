@@ -243,7 +243,7 @@ get '/groups/:gid/pages/:id/share', auth: [ :group_editor ] do |gid, pid| share_
 
 # Removes the public status of a page, it will no longer
 # be viewable by others.
-get '/pages/:id/unshare' do |id|
+get '/pages/:id/unshare', auth: [ :user ] do |id|
   unshare_page(id)
 end
 
