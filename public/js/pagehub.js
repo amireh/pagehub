@@ -24,6 +24,7 @@ pagehub = function() {
   var config = { resource: "" },
       namespace = "",
       settings_changed = false,
+      content_changed = false,
       setting_sync_uri = "/profile/preferences/runtime";
 
   $(document).ajaxStart(function() {
@@ -37,6 +38,7 @@ pagehub = function() {
     config: config,
     namespace: namespace,
     settings_changed: settings_changed,
+    content_changed: content_changed,
 
     sync: function() {
       // any changes pending?

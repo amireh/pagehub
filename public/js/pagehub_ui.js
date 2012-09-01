@@ -176,7 +176,11 @@ pagehub_ui = function() {
         gutter: false,
         autoClearEmptyLines: false,
         lineWrapping: true,
-        keyMap: "mxvt"
+        keyMap: "mxvt",
+        onChange: function() {
+          log("content changed");
+          pagehub.content_changed = true;
+        }
       }, opts));
 
       return editor;
@@ -816,6 +820,7 @@ pagehub_ui = function() {
 
             ui.editor.clearHistory();
             ui.editor.setValue(content);
+            pagehub.content_changed = false;
             $("#preview").attr("href", pagehub.namespace + "/pages/" + title + "/pretty");
             $("#share_everybody").attr("href", pagehub.namespace + "/pages/" + title + "/share");
             $("#history").attr("href", pagehub.namespace + "/pages/" + page.id + "/revisions")
@@ -878,9 +883,12 @@ pagehub_ui = function() {
 
       save: function(dont_show_status) {
         // ui.editor.save();
-        if (!ui.is_page_selected())
+        if (!ui.is_page_selected() || !pagehub.content_changed) {
           return;
+        }
 
+        pagehub.content_changed = true;
+        
         var page_id   = current_page_id(),
             content   = ui.editor.getValue(),
             messages  = {};
