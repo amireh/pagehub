@@ -639,6 +639,7 @@ pagehub_ui = function() {
       }, 
 
       on_injection: function(el) {
+        log("Folder is being injected");
         var folder_id = parseInt(el.attr("id").replace("folder_", "")),
             is_general_folder = folder_id == 0;
 
@@ -812,6 +813,13 @@ pagehub_ui = function() {
             $(".general-folder li:not([data-dyn-entity]):first").hide();
 
             ui.editor.setValue("Preparing newly created page... hold on.");
+
+            // Make it draggable
+            if (Modernizr.draganddrop) {
+              var page_li = $("#page_" + page.id).parent();
+              page_li.bind('dragstart', ui.resources.on_drag_start);
+              ui.resources.make_draggable(page_li);              
+            }
           },
           error: function(e) {
             ui.status.show("Could not create a new page: " + e.responseText, "bad");
