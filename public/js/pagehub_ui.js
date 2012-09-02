@@ -15,6 +15,7 @@ pagehub_ui = function() {
       status_shown = false,
       current_status = null,
       status_queue = [],
+      editor_disabled = false,
       animation_dur = 2500,
       pulses = {
         autosave: 30, /* autosave every half minute */
@@ -165,6 +166,11 @@ pagehub_ui = function() {
     theme: theme,
     action_hooks: action_hooks,
 
+    reset_autosave_timer: function() {
+      clearInterval(timers.autosave);
+      timers.autosave = setInterval("ui.pages.save(true)", pulses.autosave * 1000);
+    },
+
     current_page: function() {
       return $("#page_listing li.selected:not(.folder) a");
     },
@@ -195,6 +201,15 @@ pagehub_ui = function() {
         keyMap: "mxvt",
         onChange: function() {
           pagehub.content_changed = true;
+        },
+        onKeyEvent: function(editor,e) {
+          if (editor_disabled) {
+            e.preventDefault();
+            e.stopPropagation();
+            return true;
+          } else {
+            return false;
+          }
         }
       }, opts));
 
@@ -794,6 +809,15 @@ pagehub_ui = function() {
       }
     },
 
+    disable_editor: function() {
+      editor_disabled = true;
+      $(ui.editor.getWrapperElement()).addClass("disabled");
+    },
+    enable_editor: function() {
+      $(ui.editor.getWrapperElement()).removeClass("disabled");
+      editor_disabled = false;
+    },
+
     pages: {
       create: function() {
         ui.status.show("Creating a new page...", "pending");
@@ -932,10 +956,15 @@ pagehub_ui = function() {
         
         var page_id   = current_page_id(),
             content   = ui.editor.getValue(),
-            messages  = {};
+            handlers  = {};
 
-        if (!dont_show_status) {
-          messages = {
+        // autosave or manual?
+        if (!dont_show_status) { // not autosave
+          ui.reset_autosave_timer();
+
+          ui.disable_editor();
+
+          handlers = {
             success: function(p) {
               var p = JSON.parse(p);
               ui.status.show("Page updated.", "good");
@@ -945,9 +974,18 @@ pagehub_ui = function() {
                 $("#history").attr("disabled", null).removeClass("disabled");
               }
 
+              if (p.content) {
+                // the content was changed, probably due to a mutator
+                // so we update it
+                ui.editor.setValue(p.content);
+                pagehub.content_changed = false;
+              }
+
+              ui.enable_editor();
             },
             error: function(e)  {
               ui.status.show("Unable to update page: " + e.responseText, "bad");
+              ui.enable_editor();
             }
           }
         }
@@ -955,7 +993,7 @@ pagehub_ui = function() {
         pagehub.pages.update(page_id, {
           content: content,
           autosave: dont_show_status
-        }, messages);
+        }, handlers);
 
         // if settings have changed, push them
         pagehub.sync();

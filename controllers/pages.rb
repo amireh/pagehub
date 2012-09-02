@@ -18,7 +18,10 @@ def update_page(pid)
     halt 501, "No such page: #{pid}!"
   end
 
+  force_content_update = false
   unless params[:attributes][:autosave]
+    force_content_update = PageHub::Markdown::mutate! params[:attributes][:content]
+
     begin
       unless p.generate_revision(params[:attributes][:content], current_user)
         puts "Page failed to generate RV"
@@ -28,7 +31,7 @@ def update_page(pid)
       # p.save
     rescue Revision::NothingChangedError
       # it's ok, we'll just not store a revision
-    end
+    end    
   end
 
   if p.dirty?
@@ -41,7 +44,7 @@ def update_page(pid)
     halt 400, p.collect_errors
   end
 
-  p.to_json
+  p.serialize(force_content_update).to_json
 end
 
 def delete_page(pid)

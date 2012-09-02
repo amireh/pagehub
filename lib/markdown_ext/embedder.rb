@@ -185,3 +185,36 @@ module Embedder
   register_processor(GithubWikiProcessor.new)
   register_processor(PageHubProcessor.new)
 end
+
+PageHub::Markdown::add_processor :pre_render, lambda {|str|
+  # Embed remote references, if any
+  str.gsub!(/^\B\[\!include\s?(.*)\!\]\((.*)\)/) { 
+    content = ""
+    
+    uri = $2
+
+    # parse the content source and args, if any
+    source = ($1 || "").split.first || ""
+    args = ($1 || "").split || []
+    args = args[1..args.length].join(' ') unless args.empty? 
+
+    begin
+      content = Embedder.get_resource(uri, source, args)
+    rescue Embedder::InvalidSizeError => e
+      content << "**Embedding error**: the file you tried to embed is too big - #{e.message.to_i} bytes."
+      content << " (**Source**: [#{$2}](#{$2}))\n\n"
+    rescue Embedder::InvalidTypeError => e
+      content << "**Embedding error**: the file type you tried to embed (`#{e.message}`) is not supported."
+      content << " (**Source**: [#{$2}](#{$2}))\n\n"
+    rescue Embedder::EmbeddingError => e
+      content << "**Embedding error**: #{e.message}."
+      content << " (**Source**: [#{$2}](#{$2}))\n\n"
+    end
+
+    # content = "<div data-embedded=true>#{content.to_s.to_markdown}</div>".to_markdown
+    # content = "#{content}"
+    content
+  }
+
+  str  
+}

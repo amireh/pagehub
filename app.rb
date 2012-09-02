@@ -33,8 +33,6 @@ require 'dm-mysql-adapter'
 require "digest/sha1"
 require 'json'
 require 'lib/common'
-require 'lib/toc'
-require 'lib/embedder'
 require 'omniauth'
 require 'omniauth-facebook'
 require 'omniauth-github'
@@ -61,6 +59,10 @@ configure do
   def load(directory)
     Dir.glob("#{directory}/*.rb").each { |f| require f }
   end
+
+  # Load the Markdown extensions
+  require "lib/markdown_ext/processor"
+  load "lib/markdown_ext"
 
   load "helpers"
   load "models"

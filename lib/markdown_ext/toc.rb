@@ -1,5 +1,3 @@
-require 'json'
-
 module TableOfContents
 
   # Builds a tree of headings from a given block of Markdown
@@ -22,7 +20,6 @@ module TableOfContents
     toc_index = 0
     content.scan(pattern).each { |l, t|
       level,title = formatter.call(l, t)
-      # puts "\t#{level} => #{title}"
 
       if level <= threshold 
         h = Heading.new(title, level, toc_index)
@@ -52,12 +49,12 @@ module TableOfContents
   #
   def self.to_html(toc)
     html = "<ol>"
-    toc.each { |heading|
-      html << heading.to_html
-    }
+    toc.each { |heading| html << heading.to_html }
     html << "</ol>"
     html
   end
+
+  private
 
   class Heading
     attr_accessor :level, :title, :children, :parent, :index
@@ -80,10 +77,6 @@ module TableOfContents
       @children << h
     end
 
-    def to_json(s = nil)
-      "{ #{title.to_json}: #{children.to_json} }"
-    end
-
     def to_html()
       html = ""
       html << "<li>"
@@ -91,11 +84,7 @@ module TableOfContents
 
       if self.children then
         html << "<ol>"
-        
-        self.children.each { |child|
-          html << child.to_html
-        }
-
+        self.children.each { |child| html << child.to_html }
         html << "</ol>"
       end
 
@@ -103,3 +92,10 @@ module TableOfContents
     end
   end
 end
+
+PageHub::Markdown::add_processor :pre_render, lambda { |str|
+  str.gsub!(/^\B\[\!toc(.*)\!\]/) {
+    TableOfContents.to_html TableOfContents.from_markdown(str, $1.empty? ? 6 : $1.strip.to_i)
+  }
+  str
+}

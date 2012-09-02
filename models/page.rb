@@ -138,12 +138,14 @@ class Page
     Base64.urlsafe_encode64(Random.rand(12345 * 100).to_s)
   end
 
-  def serialize
-    { id: id, title: title, folder: folder_id || 0, nr_revisions: revisions.count }
+  def serialize(with_content = false)
+    s = { id: id, title: title, folder: folder_id || 0, nr_revisions: revisions.count }
+    s.merge!({ content: content }) if with_content
+    s
   end
 
   def to_json(*args)
-    serialize.to_json
+    serialize(args).to_json
   end
 
   private
