@@ -228,7 +228,8 @@ nav > a {
 textarea,
 #page_editor,
 input,
-a.button {
+a.button,
+button {
   border-radius: 2px;
 }
 
@@ -335,6 +336,7 @@ a.button {
 }
 #status.good {
   background: #CCFF00;
+  color: #111;
 }
 #status.bad {
   background: #BF0606;
@@ -1386,3 +1388,14 @@ button[data-collapse] {
   border-width: 0 5px 5px;
   border-bottom-color: #000000;
 }
+
+.group_form { vertical-align: top; width: 690px; display: inline-block; margin: 0; }
+.group_form > :first-child { margin-top: 0; }
+.group_form table { width: 100%; }
+.group_form table th { text-align: left; }
+.group_form table th:nth-of-type(1) { width: 46%; }
+.group_form table th:nth-of-type(2) { width: 40%; }
+/*.group_form table th:nth-of-type(3) { width: 10%; max-width: 10%; }*/
+.group_form table tbody tr:hover { background: rgba(0,0,0,0.05); }
+
+.group_role_description { opacity: 0.75; position: relative; top: -55px; width: 240px; margin-left: 20px; display: inline-block;}

@@ -1,6 +1,8 @@
 class Group
   include DataMapper::Resource
 
+  Roles = [ :member, :editor, :admin ]
+
   attr_accessor :state
 
   property :id, Serial
@@ -12,6 +14,7 @@ class Group
   has n,     :folders,  :constraint => :set_nil
   has n,     :pages,    :constraint => :set_nil
   has n,     :users,    :through => Resource, :constraint => :destroy
+  has n,     :group_users
   has n,     :public_pages, :constraint => :destroy
   belongs_to :admin, 'User', key: true
 
@@ -19,6 +22,14 @@ class Group
 
   before :valid? do
     self.name = self.title.sanitize
+  end
+
+  after :create do
+    gu = GroupUser.first_or_create({ group: self, user: self.creator })
+    gu.role = :admin
+    gu.save
+
+    true
   end
 
   def all_pages
@@ -32,9 +43,18 @@ class Group
     c
   end
 
+  def all_users
+    c = { users: [] }
+    self.group_users.each { |gu|
+      u = gu.user
+      c[:users] << { id: u.id, nickname: u.nickname, role: gu.role }
+    }
+    c
+  end    
+
   def has_admin?(user)
     if gu = GroupUser.first({ group_id: self.id, user_id: user.id })
-      return gu.is_admin
+      return gu.role == :admin
     end
     false
   end
@@ -47,8 +67,10 @@ class Group
   alias_method :is_member?, :has_member?
 
   def has_editor?(user)
-    # TODO: implement
-    has_member?(user)
+    if gu = GroupUser.first({ group_id: self.id, user_id: user.id })
+      return gu.role != :member
+    end
+    false
   end
   alias_method :is_editor?, :has_editor?
 
@@ -74,12 +96,13 @@ class Group
     admin.id == user.id
   end
 
+  alias_method :creator, :admin
   alias_method :has_creator?, :is_creator?
   alias_method :is_master_admin?, :is_creator?
 
   def admins()
     users = []
-    GroupUser.all({ group_id: self.id, is_admin: true }).each { |gu| users << gu.user }
+    GroupUser.all({ group: self, role: :admin }).each { |gu| users << gu.user }
     users
   end
 

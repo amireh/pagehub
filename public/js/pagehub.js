@@ -140,10 +140,22 @@ pagehub = function() {
           success: on_success,
           error: on_error
         });
+      } // folders.destroy
+    }, // pagehub.folders
+
+    groups: {
+      kick: function(id, gid, handlers) {
+        var uri = "/groups/" + gid + "/kick/" + id;
+        $.ajax({
+          type: "PUT",
+          url: uri,
+          success: handlers.success,
+          error: handlers.error
+        })
       }
     }
-  }    
-};
+  } // pagehub.return
+}; // pagehub
 
 // globally accessible instance
 pagehub = new pagehub();

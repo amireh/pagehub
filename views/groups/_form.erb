@@ -15,6 +15,15 @@
   $(function() {
     var lookup_timer = null;
     var lookup_pulse = <%= preferences["groups"]["lookup_pulse"] %>;
+    <% if @editing %>
+      var gid = <%= @group.id %>;
+    <% end %>
+
+    $("form").submit(function() {
+      $(this).find("[data-dyn-entity]:hidden").remove();
+
+      return true;
+    });
 
     // Checks whether the typed in group name is available
     $("#check_availability").click(function() {
@@ -52,48 +61,49 @@
     // Appends a <li> containing the nickname and a remove button
     // to the registered user listing - #users
     var add_user = function(nn) {
-      var html = '<input type="hidden" name="users[]" value="' + nn + '" />';
-      $("form").append(html);
-      var user = $("div[data-template=user]").clone();
+      dynamism.inject({ users: [ { nickname: nn, role: "member" } ]}, $("table"))
+      // var html = '<input type="hidden" name="users[]" value="' + nn + '" />';
+      // $("form").append(html);
+      // var user = $("div[data-template=user]").clone();
       
-      user.children().each(function() {
-        $.each($(this).get(0).attributes, function(i, pair) {
-          // // console.log("changing attribute '" + pair.name + "' (" + pair.value + ")")
-          try {
-            child.attr(pair.name,pair.value.replace(/%NICKNAME%/g, nn));
-          } catch (e) {
-            // ignore properties that can't be changed
-          }
-        });
-        $(this).html($(this).html().replace(/%NICKNAME%/g, nn));
-      });
+      // user.children().each(function() {
+      //   $.each($(this).get(0).attributes, function(i, pair) {
+      //     // // console.log("changing attribute '" + pair.name + "' (" + pair.value + ")")
+      //     try {
+      //       child.attr(pair.name,pair.value.replace(/%NICKNAME%/g, nn));
+      //     } catch (e) {
+      //       // ignore properties that can't be changed
+      //     }
+      //   });
+      //   $(this).html($(this).html().replace(/%NICKNAME%/g, nn));
+      // });
 
-      // toggle the admin checkbox if the user is an admin
-      for (var i = 0; i < admins.length; ++i) {
-        if (admins[i] == nn) {
-          user.find("input[type=checkbox][name*=admins]").attr("checked", "checked");
-          break;
-        }
-      }
+      // // toggle the admin checkbox if the user is an admin
+      // for (var i = 0; i < admins.length; ++i) {
+      //   if (admins[i] == nn) {
+      //     user.find("input[type=checkbox][name*=admins]").attr("checked", "checked");
+      //     break;
+      //   }
+      // }
 
-      // $("#users").append("<li><span>" + nn + "</span> <small title='remove member'><strong>[ X ]</strong></small></li>");
-      $("#users").append(user.children());
-      users.push(nn);
-      $("#users li:last small").click(function() {
-        rem_user($(this).prev("span").html());
-        $(this).parent().remove();
-      })      
+      // // $("#users").append("<li><span>" + nn + "</span> <small title='remove member'><strong>[ X ]</strong></small></li>");
+      // $("#users").append(user.children());
+      // users.push(nn);
+      // $("#users li:last small").click(function() {
+      //   rem_user($(this).prev("span").html());
+      //   $(this).parent().remove();
+      // })      
     }
     // Removes a registered user from users[]
-    var rem_user = function(nn) {
-      $("form input[type=hidden][name*=users][value=" + nn + "]").remove();
-      for (var i = 0; i < users.length; ++i) {
-        if (users[i] == nn) {
-          users[i] = null;
-          break;
-        }
-      }
-    }
+    // var rem_user = function(nn) {
+    //   $("form input[type=hidden][name*=users][value=" + nn + "]").remove();
+    //   for (var i = 0; i < users.length; ++i) {
+    //     if (users[i] == nn) {
+    //       users[i] = null;
+    //       break;
+    //     }
+    //   }
+    // }
 
     // Clicking on a received nickname will add it
     // to the registered members listing - #users
@@ -125,6 +135,7 @@
         data: { nickname: nn },
         success: function(users) {
           var users = JSON.parse(users);
+          console.log(users)
           
           list.empty();
           
@@ -143,25 +154,62 @@
     $("#user_search").keyup(function() {
       var nn = $(this).attr("value");
 
+      console.log("looking up " +nn)
       if (lookup_timer) {
         clearTimeout(lookup_timer);
         lookup_timer = null;
       }
 
+
       lookup_timer = setTimeout("lookup_user('" + nn + "')", lookup_pulse);
     });
 
+    // check the member's role radio button
+    assign_role = function(el, user) {
+      el.find(":checked").attr("checked", null);
+      el.find("input[type=radio][value=" + user.role + "]").attr("checked", "checked");
+    }
+
     <% if @editing %>
-      <% @group.users.each do |u| %>
-        <% next if u == current_user %>
-        add_user("<%= u.nickname %>");
-      <% end %>
-      // var cloned = $("#users").clone();
-      // $("#users").empty();
-      // cloned.find("li").each(function() {
-      //   var nn = $(this).html();
-      //   add_user(nn);
-      // });
+
+    var kicked = {};
+    var kick_member = function(id, nn) {
+      pagehub.groups.kick(id, gid, { 
+        success: function() { 
+          ui.status.show(nn + " is no longer a member of this group.", "good");
+          kicked[id] = true;
+
+          // re-initiate the UI removal event
+          $("#user_" + id).find("[data-dyn-action=remove]").click();
+        },
+        error: function(e) {
+          ui.status.show("Unable to kick the member " + nn + ": " + e.responseText, "bad");
+        }
+      });
+    } // kick_member
+
+    var on_kick_member = function(el) {
+      var nn = el.find("input:hidden").attr("value"),
+          id = el.attr("id").replace("user_", "");
+      console.log(kicked);
+      if (!kicked[id]) {
+
+        // confirm kicking
+        pagehub.confirm("Are you sure you want to kick the member " + nn + "?", "Member Removal",
+          function() {
+            kick_member(id, nn);
+          });
+
+        throw "Halt";
+      } // removal confirmed?
+    };
+
+    dynamism.on_removal(on_kick_member);
+
+    <% end %>
+
+    <% if @editing %>
+      dynamism.inject(<%= @group.all_users.to_json %>, $("table"))
     <% end %>
   });
 </script>
@@ -174,21 +222,37 @@
   form_action: @editing ? "/groups/#{@group.name}" : "/groups",
   submit_label: @editing ? "Update Group" : "Register Group",
   members_label: @editing ?
-    'Look for members using the text box below, or click the [ X ] near their nicknames to remove current ones.'
+    'Look up users using the text box below.'
     : 'You can assign the initial members of this group. Of course, you can always add and remove members later.'
 }
 %>
 
 <h2><%= conditionals[:heading] %></h2>
 
-<form method="POST" action="<%= conditionals[:form_action] %>">
-  <h3>Name</h3>
-  <label>The group name must be unique and it will be used for accessing pages and user management.
-    <br /><br />
-    <input type="text" name="name" class="very_fat" value="<%= @group.title %>" />
-    <button id="check_availability">check availability</button>
-    <span></span>
-  </label>
+<form class="group_form" method="POST" action="<%= conditionals[:form_action] %>">
+  <% if !@editing || (@editing && @group.is_creator?(current_user)) %>
+    <h3>Name</h3>
+    <label>The group name must be unique and it will be used for accessing pages and user management.
+      <br /><br />
+      <input type="text" name="name" class="very_fat" value="<%= @group.title %>" />
+      <button id="check_availability">check availability</button>
+      <span></span>
+    </label>
+
+    <% if @editing %>
+      <p>
+        <em>
+          <strong>WARNING: </strong>
+          changing the group name will <strong>irreversibly</strong> invalidate
+          <strong>all public links</strong> of the group's pages that were shared
+          with members or people.
+        </em>
+      </p>
+      <p><label><input name="confirmed" type="checkbox" value="do it" />
+        I have read the warning and I understand the implications. Do it.</label>
+      </p> 
+    <% end %> 
+  <% end %>
 
   <h3>Members</h3>
   <label>
@@ -198,25 +262,38 @@
   </label>
   <ul id="user_listing"></ul>
   <h4>Registered members</h4>
-  <div data-template="user" hidden="hidden">
-    <li>
-      <span>%NICKNAME%</span> <small><strong>[ X ]</strong></small>
-      <label> - admin?<input type="checkbox" name="admins[]" value="%NICKNAME%" /></label>
-    </li>
-    <input type="hidden" name="users[]" value="%NICKNAME%" />
-  </div>
-  <ol id="users">
-    <% false && @group.users.each do |u| %>
-      <li><%= u.nickname %></li>
-    <% end %>
-  </ol>
+  <table>
+    <thead>
+      <tr>
+        <th>Nickname</th>
+        <th>Permissions</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id="user_%id" data-dyn-inject="@id, users.id" data-dyn-entity="users" data-dyn-hook="post-injection, assign_role"  data-dyn-spawn-on="users">
+        <input type="hidden" name="users[-1][nickname]" data-dyn-inject="@value, users.nickname" />
+        <td data-dyn-inject="@text, users.nickname">
+          %nickname
+        </td>
+        <td>
+          <label><input type="radio" name="users[-1][role]" value="member" checked="checked" /> Member</label>          
+          <label><input type="radio" name="users[-1][role]" value="editor" /> Editor</label>
+          <label><input type="radio" name="users[-1][role]" value="admin" /> Admin</label>
+        </td>
+        <td>
+          <button class="very thin bad" data-dyn-action="remove">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <hr />
   <br />
 
   <input type="submit" value="<%= conditionals[:submit_label] %>" />
 
-  <% if @group.persisted? && @group.is_creator?(current_user) %>
+  <% if @editing && @group.is_creator?(current_user) %>
     <a href="/groups/<%= @group.name %>/destroy"
        class="button bad confirm thin"
        data-confirm-cb="ui.dialogs.destroy_group"
@@ -231,8 +308,26 @@
         to those pages that were shared with others.
       </p>
     </div>
-
   <% end %>
 
   <%= erb :"/shared/_confirmation_dlg" %>
 </form>
+
+<div class="group_role_description">
+  <h3>Group Roles</h3>
+  <h4>Members</h4>
+  <p>Members are limited to reading the pages
+    written by the group editors.</p>
+  <h4>Editors</h4>
+    <p>Editors can
+    write new pages and folders, edit existing ones, and rename them.</p>
+  <h4>Admins</h4>
+  <p>Administrators can invite new members,
+    promote and demote them to and from
+    the editorial role, and can kick non-admins.
+    Admins get all the perks editors and members do.
+  </p>
+  <h4>Group creator</h4>
+  <p>The group creator can change the group name, promote
+    and demote others to/from the admin role, and kick admins.</p>
+</div>

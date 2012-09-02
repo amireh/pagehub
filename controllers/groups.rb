@@ -51,82 +51,111 @@ post '/groups/name', :auth => :user do
   name_available?(params[:name]).to_json
 end
 
-post '/groups', :auth => :user do
-  if params[:name].to_s.empty?
-    flash[:error] = "Group name must be specified."
-    return redirect '/groups/new'
-  elsif !name_available?(params[:name])
-    flash[:error] = "That group name is unavailable."
-    return redirect '/groups/new'
-  end
+def assign_memberships(g)
 
-  unless g = Group.create({ title: params[:name], admin: current_user })
-    flash[:error] = "Group could not be created, please try again."
-    return redirect "/groups/new"
-  end
+  params[:users].each_pair { |idx, user_info|
+    next if idx.to_i == -1
 
-  params[:admins] ||= []
-  params[:users]  ||= []
-  params[:admins] << current_user.nickname
-  params[:users]  << current_user.nickname
-  params[:users].uniq.each { |nn|
-    if u = User.first(nickname: nn) then
-      GroupUser.create({ group: g, user: u, is_admin: params[:admins].include?(nn) })
+    # the group creator can not be modified
+    next if user_info[:nickname] == g.creator.nickname
+
+    # validate the user's existence
+    unless u = User.first(nickname: user_info[:nickname]) then
+      flash[:error] = "No such user: #{user_info[:nickname]}"
+      return redirect back
     end
+
+    gu = GroupUser.first_or_create({ group: g, user: u })
+
+    role = user_info[:role].to_sym
+    # validate the role
+    unless Group::Roles.include?( role )
+      flash[:error] = "Unrecognizable group member role #{user_info[:role]}."
+      return redirect back
+    end
+
+    if gu.role != role
+      # puts "Group #{g.name}: changing the role of group member" +
+      #      "#{u.nickname} from #{gu.role.to_s} to #{user_info[:role]}"
+
+      # if the member is an admin, only the group creator can change their role
+      if gu.role == :admin && !g.is_creator?(current_user)
+        flash[:error] = "You can not demote the member #{u.nickname}, only the group creator can do that."
+      # only the group creator can promote others to admins
+      elsif role == :admin && !g.is_creator?(current_user)
+        flash[:error] = "You can not promote the member #{u.nickname} to become an administrator of this group. " +
+                        "Only the group creator can do that."
+
+      elsif current_user.id == u.id
+        flash[:notice] = "You can not change your own group role."
+      # it's ok, either promoting/demoting a member from/to editorial role
+      else
+        gu.role = role
+        gu.save
+      end
+    end
+
+    # puts "#{u.nickname} is now a member of #{g.name} as a: #{gu.role.to_s}"
   }
 
-  g.save
+end
+
+post '/groups', :auth => :user do
+  back_url = "/groups/new"
+
+  if params[:name].to_s.empty?
+    flash[:error] = "Group name must be specified."
+    return redirect back
+  elsif !name_available?(params[:name])
+    flash[:error] = "That group name is unavailable."
+    return redirect back
+  end
+
+  unless g = Group.new({ title: params[:name], admin: current_user })
+    flash[:error] = "Group could not be created, please try again."
+    return redirect back
+  end
+
+  assign_memberships(g)
+
+  unless g.save
+    flash[:error] = "Group could not be created: #{g.collect_errors}"
+    GroupUser.all({ group: g.id }).destroy!
+  end
 
   flash[:notice] = "Group created successfully."
+
   redirect :"/groups/#{g.name}"
 end
 
 post '/groups/:current_name', :auth => :group_admin do |current_name|
   g = @group
 
-  name_changed = params[:name].to_s.sanitize != current_name
+  name_changed = params[:name] && !params[:name].empty? && params[:name].to_s.sanitize != current_name
+  
+  # puts params.inspect
 
   # Only the group creator can change its name
   if g.is_master_admin?(current_user) 
-    if name_changed && !name_available?(params[:name])
-      flash[:error] = "That group name is unavailable."
-      return redirect :"/groups/#{g.name}/edit"
-    end
+    if name_changed 
+      if !name_available?(params[:name])
+        flash[:error] = "That group name is unavailable."
+        return redirect back
+      end
 
-    g.title = params[:name]
+      if !params[:confirmed] || !params[:confirmed] == "do it" then
+        flash[:error] = "Will not modify the group name until you confirm your action."
+      else
+        g.title = params[:name]
+      end
+    end
   else
     if name_changed
       flash[:error] = "Only the group creator can change its name."
     end
   end
 
-  params[:admins] ||= []
-
-  # Has someone tried to demote the group creator? 
-  if !params[:admins].include?(g.admin.nickname) &&
-    # this because the current user isn't displayed in the form (they can't demote themselves)
-    # so if the group creator is trying to update, they won't be in the list
-    current_user.id != g.admin.id 
-  then
-    flash[:error] = "You can not demote the group creator '#{g.admin.nickname}'!"
-  end
-
-  params[:admins] << current_user.nickname
-  params[:admins] << g.admin.nickname # the group creator is always an admin
-
-  params[:users] ||= []
-  params[:users] << current_user.nickname
-  params[:users] << g.admin.nickname # the group creator is always a user
-  
-  GroupUser.all({ group_id: g.id }).destroy
-  params[:users].each { |nn| 
-    if u = User.first(nickname: nn) then
-      begin
-        GroupUser.create({ group: g, user: u, is_admin: params[:admins].include?(nn) })
-      rescue
-      end
-    end
-  }
+  assign_memberships(g)
 
   if g.save
     flash[:notice] = "Group updated successfully."
@@ -135,4 +164,24 @@ post '/groups/:current_name', :auth => :group_admin do |current_name|
   end
 
   redirect :"/groups/#{g.name}/edit"
+end
+
+put '/groups/:gid/kick/:id', :auth => :group_admin do |gid, user_id|
+  id = user_id.to_i
+  unless gu = @scope.group_users.first({ user_id: id })
+    halt 400, "No such user: #{id}"
+  end
+
+  if gu.role == :admin && !@scope.is_creator?(current_user)
+    halt 403, "Only the group creator can kick admins."
+  end
+
+  # puts "Removing member #{id} from group #{@scope.name}"
+  gu.destroy
+
+  true
+end
+
+put '/groups/:current_name/leave', :auth => :group_member do |current_name|
+
 end

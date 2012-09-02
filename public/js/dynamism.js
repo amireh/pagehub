@@ -213,9 +213,9 @@ dynamism = function(options) {
 
     // We need to locate the target(s) now
     reference = $.escape(reference);
-    var targets = el.find('[data-dyn-inject]:visible');
+    var targets = el.find('[data-dyn-inject]:visible,input[data-dyn-inject][type=hidden]');
     if (el.attr("data-dyn-inject")) {
-      log("Self-object wants to be injected too! " + el.attr("data-dyn-inject"));
+      log("Self-object wants to be injected too! " + el.attr("data-dyn-inject"), "N");
       targets = targets.add(el);
     }
 
@@ -614,8 +614,8 @@ dynamism = function(options) {
 
                   // invoke any injection hooks attached to this element
                   if (me.attr("data-dyn-hook")) {
-                    foreach(callbacks["post-injection"],  function(cb) { cb(me); });
-                    foreach(callbacks["all"],             function(cb) { cb(me, "post-injection"); });                  
+                    foreach(callbacks["post-injection"],  function(cb) { cb(me, value); });
+                    foreach(callbacks["all"],             function(cb) { cb(me, "post-injection", value); });                  
                   }
                 })
               } else {
@@ -632,8 +632,8 @@ dynamism = function(options) {
       // we're done injecting
       if (initial) {
         log("Invoking all post-injection hooks");
-        foreach(callbacks["post-injection"],  function(cb) { cb(el); });
-        foreach(callbacks["all"],             function(cb) { cb(el, "post-injection"); });
+        foreach(callbacks["post-injection"],  function(cb) { cb(el, feed); });
+        foreach(callbacks["all"],             function(cb) { cb(el, "post-injection", feed); });
       }
     }, // dynamism.inject
 
