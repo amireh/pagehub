@@ -71,3 +71,29 @@ nav a { padding: 0; line-height: 40px; height: 40px; vertical-align: middle; hei
 .features h2 {
   text-transform: capitalize;
 }
+
+form#user_signup {
+  display: inline-block;
+  vertical-align: top;
+}
+div.browser_notice {
+  /*padding-left: 163px;*/
+  position: relative;
+  width: 220px;
+  display: inline-block;
+  margin-left: 15px;
+  /*background: rgba(0,0,0,0.05);*/
+  padding: 0 30px;
+  /*box-shadow: 0 0 3px 1px #aaa;*/
+  /*border-radius: 5px;*/
+  font-size: 0.9em;
+  text-align: left;
+}
+div.browser_notice img {
+  vertical-align: middle;
+  display: block;
+  margin-top: 15px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}

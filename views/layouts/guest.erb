@@ -73,11 +73,10 @@
           <button>&times;</button>
         </div>
       <% end %>
-
-
       <%= yield %>
     </div>
 
+    <%= erb :"footer", locals: { guest: true } %>
   </div>
   
 </body>

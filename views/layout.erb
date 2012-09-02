@@ -7,6 +7,7 @@
   <% if settings.development? %>
     <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
     <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="/js/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
   <% else %>
     <link href="/css/pagehub.min.css" rel="stylesheet" type="text/css" />
     <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.min.css" rel="stylesheet" type="text/css" />
@@ -14,8 +15,10 @@
 
   <% yield_content :css %>
 
+  <script type="text/javascript" src="/js/modernizr.js"></script>
   <script type="text/javascript" src="/js/json2.min.js"></script>
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
+  <script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
 
   <script>
     pagehub_settings = <%= preferences.to_json %>;
@@ -51,13 +54,13 @@
     <nav>
 
       <span>Hi <%= current_user.nickname %></span>
-      <a class="listlike icon groups" title="Your groups" href="/groups">Groups</a>
+      <a class="listlike icon groups" rel="tooltip" title="Your groups" href="/groups">Groups</a>
       <ol class="listlike">
-        <li><a href="/groups/new">New group</a></li>
+        <li><a href="/groups/new">Start a new group</a></li>
         <% current_user.groups.each do |g| %>
           <li>
             <a href="/groups/<%= g.name %>"><%= g.title %></a>
-            <small><a style="padding: 0; margin: 0" href="/groups/<%= g.name %>/info">( info )</a></small>
+            <!-- <small><a style="padding: 0; margin: 0" href="/groups/<%= g.name %>/info">( info )</a></small> -->
           </li>
         <% end %>
       </ol>
@@ -99,8 +102,21 @@
 
     <img class="loader" src="/css/ajax-loader-615B4E.gif" />
 
+    <aside class="modal alert" id="html5_compatibility_notice">
+      <h2>Unsupported Browser</h2>
+
+      <p>The brower you are currently using does not appear to support
+        the latest HTML5 standards which are required for PageHub to
+        function correctly.
+      </p>
+      <p>Please update your browser or use a recent version of the
+        officially supported browsers: Google Chrome, Safari 5, or Mozilla Firefox.
+      </p>
+    </aside>
+
     <%= erb :"footer" %>
-  </div>  
+  </div>
+
 </body>
 
 </html>

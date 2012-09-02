@@ -1,8 +1,9 @@
 <% content_for :title do %> Sign up | PageHub <% end %>
 
-<h2>Sign up for a PageHub account</h2>
 
-<form action="/signup" method="POST">
+<form id="user_signup" action="/signup" method="POST">
+  <h2>Sign up for a PageHub account</h2>
+
   <label>
     Your email:<br />
     <input class="very_fat" type="text" name="email" />
@@ -31,3 +32,22 @@
   <br />
   <br />
 </form>
+<div class="browser_notice">
+  <p>
+    <h2>Notice</h2>
+    <p>PageHub uses HTML5, CSS3, and JavaScript and requires an <em>up-to-date</em> browser. Officially
+      supported browsers are:
+      <ul>
+        <li>Google Chrome</li>
+        <li>Safari 5</li>
+        <li>Mozilla Firefox</li>
+        <li>Opera 12</li>
+      </ul>
+    </p>
+    <img src="/images/html5-badge-v-css3-semantics.png" 
+       width="38"
+       height="138"
+       alt="HTML5 Powered with CSS3 / Styling, and Semantics"
+       title="HTML5 Powered with CSS3 / Styling, and Semantics" />
+  </p>
+</div>

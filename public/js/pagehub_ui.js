@@ -21,10 +21,19 @@ pagehub_ui = function() {
       removed = {},
       action_hooks = { pages: { on_load: [] } },
       hooks = [
+        // HTML5 compatibility tests
+        function() {
+          if (!Modernizr.draganddrop) {
+            ui.modal.as_alert($("#html5_compatibility_notice"))
+          }
+        },
 
         // initialize dynamism
         function() {
-          dynamism.configure({ debug: false, logging: false })
+          dynamism.configure({ debug: false, logging: false });
+
+          // element tooltips
+          $("a[title]").tooltip({ placement: "bottom" });
         },
 
         function() {
@@ -109,7 +118,7 @@ pagehub_ui = function() {
       // .css("left", $(this).position().left);
     $(this).addClass("selected");
     $(this).unbind('click', show_list);
-    $(this).bind('click', hide_list_callback);
+    $(this).add($(window)).bind('click', hide_list_callback);
 
     return false;
   }
@@ -117,7 +126,7 @@ pagehub_ui = function() {
   function hide_list_callback(e) {
     e.preventDefault();
 
-    hide_list($(this));
+    hide_list($(".listlike.selected:visible"));
 
     return false;
   }
@@ -125,7 +134,7 @@ pagehub_ui = function() {
   function hide_list(el) {
     $(el).removeClass("selected");
     $(el).next("ol").hide();
-    $(el).unbind('click', hide_list_callback);
+    $(el).add($(window)).unbind('click', hide_list_callback);
     $(el).bind('click', show_list);
   }
 
@@ -178,7 +187,6 @@ pagehub_ui = function() {
         lineWrapping: true,
         keyMap: "mxvt",
         onChange: function() {
-          log("content changed");
           pagehub.content_changed = true;
         }
       }, opts));
@@ -201,6 +209,19 @@ pagehub_ui = function() {
         pagehub.settings_changed = true;
       }
     },
+
+    modal: { 
+      as_alert: function(resource, callback) {
+        if (typeof resource == "string") {
+
+        }
+        else if (typeof resource == "object") {
+          var resource = $(resource);
+          resource.show();
+        }
+      }
+    },
+
     status: {
       clear: function(cb) {
         if (!$("#status").is(":visible"))
