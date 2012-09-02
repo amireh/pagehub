@@ -877,6 +877,10 @@ a.button.good:not(:active) {
 #pages li.folder.collapsed span {
   margin: 0;
 }
+#pages li.folder.collapsed + li.general-folder {
+  margin-top: 4px; /* sorry but those 4 pixels were really bugging me */
+}
+
 #pages li.folder > span {
   display: block;
   margin-bottom: 5px;
