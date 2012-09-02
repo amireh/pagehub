@@ -1316,6 +1316,7 @@ button[data-collapse] {
   visibility: visible;
   padding: 5px;
   font-size: 11px;
+  line-height: 16px;
   opacity: 0;
   filter: alpha(opacity=0);
 }

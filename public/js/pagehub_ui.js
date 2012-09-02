@@ -639,7 +639,6 @@ pagehub_ui = function() {
       }, 
 
       on_injection: function(el) {
-        log("Folder is being injected");
         var folder_id = parseInt(el.attr("id").replace("folder_", "")),
             is_general_folder = folder_id == 0;
 
