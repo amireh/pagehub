@@ -5,7 +5,10 @@ pagehub_ui = function() {
         on_entry: []
       },
       status_timer = null,
-      autosave_timer = null,
+      timers = {
+        autosave: null,
+        sync: null
+      },
       theme = "",
       is_dragging = false,
       anime_dur = 250,
@@ -13,7 +16,10 @@ pagehub_ui = function() {
       current_status = null,
       status_queue = [],
       animation_dur = 2500,
-      autosave_pulse = 30, /* autosave every half minute */
+      pulses = {
+        autosave: 30, /* autosave every half minute */
+        sync: 5
+      },
       defaults = {
         status: 1
       },
@@ -75,7 +81,8 @@ pagehub_ui = function() {
         function() {
           if (pagehub !== undefined) {
             if (pagehub.settings.editing.autosave) {
-              autosave_timer = setInterval("ui.pages.save(true)", autosave_pulse * 1000);
+              timers.autosave = setInterval("ui.pages.save(true)", pulses.autosave * 1000);
+              timers.sync = setInterval("pagehub.sync()", pulses.sync * 1000);
             }
           }
         },
@@ -455,6 +462,122 @@ pagehub_ui = function() {
       // $("#page_listing .selected").removeClass("selected");
     },
 
+    resources: {
+      on_drag_start: function(jQuery_evt) {
+        var e = jQuery_evt.originalEvent;
+
+        $("#page_listing .drag-src").removeClass("drag-src");
+        $(this).addClass("drag-src");
+
+        // This is a necessary hack for Firefox to even accept the
+        // component as being draggable (apparently draggable=true isn't enough)
+        e.dataTransfer.setData('ignore_me', 'fubar');
+
+        is_dragging = true;
+
+        return true;
+      },
+
+      on_drop: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Since we bind to both 'dragend' and 'drop' events for browser compatibility
+        // some browers might fire the callback twice, so we guard against it here.
+        if (!is_dragging) {
+          $("#indicator").hide();
+          $("#drag_indicator").hide();
+          return false;
+        }
+
+        var src_node = $("#page_listing .drag-src");
+
+        console.log(src_node);
+        is_dragging = false;
+
+        // dragging a folder?
+        if (src_node.hasClass("folder_title")) {
+          var src_folder_id = src_node.parent().attr("id").replace("folder_", ""),
+              tgt_folder_id = $(this).hasClass("general-folder")
+                              ? $(this).attr("id").replace("folder_", "") // gf has no title span
+                              : $(this).parent().attr("id").replace("folder_", "");
+
+          pagehub.folders.update(src_folder_id, { folder_id: tgt_folder_id },
+            function(f) {
+              ui.folders.on_update(JSON.parse(f));
+            },
+            function(rc) {
+              ui.status.show("Unable to move folder: " + rc.responseText, "bad");
+            });
+        } // folder drag
+
+        else {
+          var page_id   = $("#page_listing .drag-src a").attr("id").replace("page_", ""),
+              folder_id = $(this).hasClass("general-folder")
+                          ? $(this).attr("id").replace("folder_", "") // gf has no title span
+                          : $(this).parent().attr("id").replace("folder_", ""),
+              page_link = $("#page_listing .drag-src a"),
+              move_link = $("a[data-action=move][data-folder=" + folder_id + "]");
+         
+          if (current_page_id() != page_id) {
+            // load the page
+            action_hooks.pages.on_load.push(function() {
+              move_link.click();
+              action_hooks.pages.on_load.pop();
+            });
+
+            page_link.click();
+          } else {
+            // and move it
+            move_link.click();
+          }
+        } // page drag
+
+        // Unmark the nodes
+        $("#page_listing .drag-src, #page_listing .drop-target")
+          .removeClass("drag-src drop-target");
+
+        $("#indicator").hide();
+        $("#drag_indicator").hide();
+
+        return false;
+      }, // on_drop()
+
+      consume_dragevent: function(e) {
+        e.preventDefault();
+
+        // e.dataTransfer.dropEffect = 'move';
+
+        return false;
+      },
+
+      on_dragenter: function() {
+        $("#page_listing").find(".drop-target").removeClass("drop-target");
+        
+        // add a drop-target class:
+        // general folder? (it has no title <span>)
+        if ($(this).is("li")) {
+          $(this).addClass("drop-target");
+        }
+        // a normal folder's title <span>
+        else {
+          $(this).parent().addClass("drop-target");
+        }
+
+        $(this).append($("#indicator").show());
+        $(this).append($("#drag_indicator").show());
+      },
+
+      make_draggable: function(el) {
+        // Visually mark the folder as "droppable" using the #indicator arrow
+        el.addEventListener('dragenter',  ui.resources.on_dragenter);
+        el.addEventListener('drop',       ui.resources.on_drop);
+        el.addEventListener('dragend',    ui.resources.on_drop);
+        el.addEventListener('dragleave',  ui.resources.consume_dragevent);
+        el.addEventListener('dragover',   ui.resources.consume_dragevent);
+      }
+    },
+
     folders: {
       create: function() {
         try {
@@ -553,125 +676,15 @@ pagehub_ui = function() {
           }
         }
 
-        var t = is_general_folder
-                ? el.get(0)
-                : el.find("> span.folder_title:first").get(0);
+        if (Modernizr.draganddrop) {
+          var t = is_general_folder
+                  ? el.get(0)
+                  : el.find("> span.folder_title:first").get(0);
 
-        el.find("[draggable=true]").bind('dragstart', function(jQuery_evt) {
-          var e = jQuery_evt.originalEvent;
+          el.find("[draggable=true]").bind('dragstart', ui.resources.on_drag_start);
 
-          $("#page_listing .drag-src").removeClass("drag-src");
-          $(this).addClass("drag-src");
-
-          // This is a necessary hack for Firefox to even accept the
-          // component as being draggable (apparently draggable=true ain't
-          // enough)
-          e.dataTransfer.setData('ignore_me', 'fubar');
-
-          is_dragging = true;
-
-          return true;
-        });
-
-        // TODO: check for HTML5 DnD support
-
-        // Visually mark the folder as "droppable" using the #indicator arrow
-        t.addEventListener('dragenter', function() {
-          $("#page_listing").find(".drop-target").removeClass("drop-target");
-          
-          // add a drop-target class:
-          // general folder? (it has no title <span>)
-          if ($(this).is("li")) {
-            $(this).addClass("drop-target");
-          }
-          // a normal folder's title <span>
-          else {
-            $(this).parent().addClass("drop-target");
-          }
-
-          $(this).append($("#indicator").show());
-          $(this).append($("#drag_indicator").show());
-        });
-
-        t.addEventListener('dragleave', function(e) {
-          e.preventDefault();
-          return false;
-        });
-
-        var on_drop = function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          // Since we bind to both 'dragend' and 'drop' events for browser compatibility
-          // some browers might fire the callback twice, so we guard against it here.
-          if (!is_dragging) {
-            $("#indicator").hide();
-            $("#drag_indicator").hide();
-            return false;
-          }
-
-          var src_node = $("#page_listing .drag-src");
-
-          console.log(src_node);
-          is_dragging = false;
-
-          // dragging a folder?
-          if (src_node.hasClass("folder_title")) {
-            var src_folder_id = src_node.parent().attr("id").replace("folder_", ""),
-                tgt_folder_id = $(this).hasClass("general-folder")
-                                ? $(this).attr("id").replace("folder_", "") // gf has no title span
-                                : $(this).parent().attr("id").replace("folder_", "");
-
-            pagehub.folders.update(src_folder_id, { folder_id: tgt_folder_id },
-              function(f) {
-                ui.folders.on_update(JSON.parse(f));
-              },
-              function(rc) {
-                ui.status.show("Unable to move folder: " + rc.responseText, "bad");
-              });
-          } // folder drag
-
-          else {
-            var page_id   = $("#page_listing .drag-src a").attr("id").replace("page_", ""),
-                folder_id = $(this).hasClass("general-folder")
-                            ? $(this).attr("id").replace("folder_", "") // gf has no title span
-                            : $(this).parent().attr("id").replace("folder_", ""),
-                page_link = $("#page_listing .drag-src a"),
-                move_link = $("a[data-action=move][data-folder=" + folder_id + "]");
-           
-            if (current_page_id() != page_id) {
-              // load the page
-              action_hooks.pages.on_load.push(function() {
-                move_link.click();
-                action_hooks.pages.on_load.pop();
-              });
-
-              page_link.click();
-            } else {
-              // and move it
-              move_link.click();
-            }
-          } // page drag
-
-          // Unmark the nodes
-          $("#page_listing .drag-src, #page_listing .drop-target")
-            .removeClass("drag-src drop-target");
-
-          $("#indicator").hide();
-          $("#drag_indicator").hide();
-
-          return false;
-        } // on_drop()
-
-        t.addEventListener('drop', on_drop);
-        t.addEventListener('dragend', on_drop);
-        t.addEventListener('dragover', function(e) {
-          e.preventDefault();
-
-          // e.dataTransfer.dropEffect = 'move';
-
-          return false;
-        })
+          ui.resources.make_draggable(t);
+        }
       },
 
       arrange: function(ul) {
