@@ -45,12 +45,7 @@ pagehub_ui = function() {
 
         function() {
           $("[data-collapsible]").each(function() {
-            var collapse_btn =
-              "<button \
-                data-dyn-hook='click, ui.collapse' \
-                data-dyn-inject='@data-folder, folders.id' \
-                data-collapse>&minus;</button>";
-            $(this).append(collapse_btn);
+            $(this).append($("#collapser").clone().attr({ id: null, hidden: null }));
           });
         },
         
@@ -217,17 +212,24 @@ pagehub_ui = function() {
     },
 
     collapse: function() {
-      if ($(this).attr("data-collapsed")) {
-        $(this).siblings(":not(span.folder_title)").show();
-        $(this).attr("data-collapsed", null).html("&minus;");
+      var source = $(this);
+      // log(!source.attr("data-collapse"))
+      if (source.attr("data-collapse") == null)
+        return source.siblings("[data-collapse]:first").click();
 
-        pagehub.settings.runtime.cf.pop_value($(this).attr("data-folder"));
+      if (source.attr("data-collapsed")) {
+        source.siblings(":not(span.folder_title)").show();
+        source.attr("data-collapsed", null).html("&minus;");
+        source.parent().removeClass("collapsed");
+        
+        pagehub.settings.runtime.cf.pop_value(source.attr("data-folder"));
         pagehub.settings_changed = true;
       } else {
-        $(this).siblings(":not(span.folder_title)").hide();        
-        $(this).attr("data-collapsed", true).html("&plus;");
+        source.siblings(":not(span.folder_title)").hide();        
+        source.attr("data-collapsed", true).html("&plus;");
+        source.parent().addClass("collapsed");
 
-        pagehub.settings.runtime.cf.push($(this).attr("data-folder"));
+        pagehub.settings.runtime.cf.push(source.attr("data-folder"));
         pagehub.settings_changed = true;
       }
     },
@@ -384,7 +386,7 @@ pagehub_ui = function() {
         li.show();
 
         if (ui.is_folder_selected()) {
-          li.siblings("button[data-dyn-action=remove]:hidden").show();
+          li.siblings("button:hidden").show();
           ui.dehighlight("folder");
           form.find("option:hidden").show();
           $("#parent_folder_selection").hide();
@@ -667,10 +669,10 @@ pagehub_ui = function() {
         // if it's the general folder, we don't want to display its title
         if (is_general_folder) {
           el.addClass("general-folder");
-          el.find("> button[data-dyn-action=remove]").remove();
+          // el.find("> button[data-dyn-action=remove]").remove();
           el.find("> a[data-action=move]").remove();
           el.find("> select").remove();
-          el.find("> button[data-collapse]").hide();
+          el.find("> button").remove();
         } else {
 
           // add the folder to the "Move to folder" listing
@@ -748,8 +750,9 @@ pagehub_ui = function() {
         if ($("#resource_editor").is(":visible"))
           ui.resource_editor.hide();
 
-        ui.highlight($(this));
+        ui.highlight($(this).prev(".folder_title:first"));
         $(this).siblings("button[data-dyn-action=remove]:visible").hide();
+        $(this).hide();
         $("#parent_folder_selection").show();
 
         return ui.resource_editor.show();

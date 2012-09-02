@@ -36,6 +36,7 @@
 .member .icon.move_page       { background-position: -120px 12px; }
 .member .icon.editor_settings { background-position: 8px    -36px;}
 .member .icon.new_page        { background-position: 4px    8px;  }
+.member .icon.edit_folder     { background: url("../icons/16x16/edit.png") no-repeat 0 0; }
 
 a {
   /*color: #D4EE5E;*/

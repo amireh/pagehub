@@ -2,6 +2,11 @@
 <div id="drag_indicator"></div>
 <div id="pages">
 
+  <button data-dyn-hook='click, ui.collapse'
+          data-dyn-inject='@data-folder, folders.id'
+          data-collapse
+          id="collapser" hidden="hidden">&minus;</button>
+
   <%= erb :"/shared/_actions" %>
 
   <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
@@ -15,8 +20,8 @@
         </select>
       </div>
       <div class="actions">
-        <button class="thin" id="update_title">Update</button>
         <button class="thin" id="cancel_title_editing">Cancel</button>
+        <button class="thin" id="update_title">Update</button>
       </div>
     </div>
 
@@ -32,12 +37,13 @@
           class="folder">
 
           <span data-dyn-inject="@text, folders.title"
-                data-dyn-hook="click, ui.folders.edit_title, hover, ui.folders.highlight"
+                data-dyn-hook="click, ui.collapse, hover, ui.folders.highlight"
                 class="folder_title"
                 draggable="true">
                 %title
           </span>
 
+          <button data-dyn-hook="click, ui.folders.edit_title" class="edit_folder icon edit_folder"></button>
           <button data-dyn-action="remove">X</button>
 
           <a data-action="move"

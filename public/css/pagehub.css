@@ -391,13 +391,16 @@ a.selected,
   border-radius: 0;
 }
 .dialog .actions {
-  margin-top: 5px;
+  margin: 2px 0 10px 0;
   text-align: center;
+  float: left;
+  width: 100%;
 }
 .dialog .actions button {
-  /*width: 35%;*/
+  /*width: 45%;*/
 }
-
+.dialog .actions button:first-child { float: left; }
+.dialog .actions button:last-child { float: right; }
 footer {
   /*width: 960px;*/
   margin: 10px auto 0 auto;
@@ -855,17 +858,6 @@ a.button.good:not(:active) {
   top: -24px;
 }
 
-button.edit_folder,
-button.remove_folder {
-  padding: 0;
-  background: transparent;
-  color: #333;
-  border: none;
-  font-weight: normal;
-}
-button.edit_folder {
-  right: 12px;
-}
 
 #pages li.folder.general-folder > ol {
   padding: 0; margin: 0;
@@ -880,6 +872,10 @@ button.edit_folder {
 
 #pages li.folder {
   position: relative;
+}
+#pages li.folder.collapsed,
+#pages li.folder.collapsed span {
+  margin: 0;
 }
 #pages li.folder > span {
   display: block;
@@ -904,6 +900,24 @@ button.edit_folder {
   color: #ddd;
   border: none;
 }
+
+button.edit_folder {
+  right: 12px;
+  padding: 0;
+  border: none;
+  height: 12px;
+  width: 12px;
+  position: absolute;
+  top: 9px;
+  opacity: 0.2;
+}
+#pages li.folder > button[data-dyn-action=remove]:hover {
+  color: #333;
+}
+button.edit_folder:hover {
+  opacity: 1;
+}
+
 
 #indicator,
 #drag_indicator {
