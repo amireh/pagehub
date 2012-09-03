@@ -15,13 +15,8 @@ gem 'albino'
 gem 'nokogiri'
 gem 'multi_json'
 gem 'addressable'
-gem 'omniauth'
-gem 'omniauth-facebook'
-gem 'omniauth-github'
-gem 'omniauth-twitter', '0.0.9'
 gem 'diff-lcs'
 gem 'gravatarify', ">= 3.1.0"
-gem "pony"
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -35,18 +30,23 @@ require 'dm-mysql-adapter'
 require "digest/sha1"
 require 'json'
 require 'lib/common'
-require 'omniauth'
-require 'omniauth-facebook'
-require 'omniauth-github'
-require 'omniauth-twitter'
 require 'gravatarify'
-require 'pony'
 # require 'omniauth-google-oauth2'
 # require 'openid/store/filesystem' 
 
-configure do
-  # enable :sessions
-  use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+configure :production do
+  gem 'omniauth'
+  gem 'omniauth-facebook'
+  gem 'omniauth-github'
+  gem 'omniauth-twitter', '0.0.9'
+  gem "pony"
+
+  require 'omniauth'
+  require 'omniauth-facebook'
+  require 'omniauth-github'
+  require 'omniauth-twitter'
+  require 'pony'
+
   use OmniAuth::Builder do
     provider :developer if settings.development?
     provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
@@ -55,14 +55,6 @@ configure do
     # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
   end
-
-  helpers Gravatarify::Helper
-
-  # Gravatarify.options[:default] = "wavatar"
-  Gravatarify.options[:filetype] = :png
-  Gravatarify.styles[:mini] = { size: 16, html: { :class => 'gravatar gravatar-mini' } }
-  Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
-  Gravatarify.styles[:profile] = { size: 128, html: { :class => 'gravatar' } }
 
   Pony.options = { 
     :from => "noreply@pagehub.org",
@@ -76,7 +68,21 @@ configure do
       :domain => "HELO", # don't know exactly what should be here
     }
   }
-  
+    
+end
+
+configure do
+  # enable :sessions
+  use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+
+  helpers Gravatarify::Helper
+
+  # Gravatarify.options[:default] = "wavatar"
+  Gravatarify.options[:filetype] = :png
+  Gravatarify.styles[:mini] = { size: 16, html: { :class => 'gravatar gravatar-mini' } }
+  Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
+  Gravatarify.styles[:profile] = { size: 128, html: { :class => 'gravatar' } }
+
   # DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, 'mysql://root@localhost/notebook')
 
