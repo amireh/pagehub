@@ -1,0 +1,71 @@
+<%= erb :"users/settings/_nav" %>
+
+<% content_for :js do %>
+<script>
+  $(function() {
+    var colour_scheme_map = 
+      [ "Background", "Foreground", "Heading #1", "Heading #2", "Heading #3 and Links" ];
+
+    $("span.scheme_colours").hover(function() {
+      var idx = $(this).attr("class").substr(-1);
+      // $(this).addClass("zoom").html(colour_scheme_map[idx]);
+      $("#colour_explanation").html("Colour: " + colour_scheme_map[idx]);
+    }, function() {
+      $("#colour_explanation").html("Colour: &minus;");      
+      // $(this).removeClass("zoom").html("");
+    });
+  });
+</script>
+<% end %>
+<form action="/settings/publishing" method="POST">
+  <section>
+    <h2>Publishing settings</h2>
+
+    <p>These settings control the "pretty" versions of your pages.</p>
+
+    <h3>Colour scheme</h3>
+
+    <% schemes = {
+      "Clean" => [ "FFF", "615B4E", "E94E77", "8FBE00", "333" ],
+      "Hazzle Dazzle" => [ "443a34", "F4FAD2", "E94E77", "D4EE5E", "F0AD11" ],
+      "Dusty" => [ "F0F2EB", "1C140D", "FF4242", "99173C", "5E8C6A" ],
+      "Antimatter" => [ "111", "fff", "aaa", "bbb", "555" ]
+    } %>
+    <% puts preferences %>
+    <% schemes.each_pair do |scheme, colours| %>
+      <label style="vertical-align: middle; font-size: 18px; margin-bottom: 5px; display: inline-block;">
+        <% colours.each_with_index do |hex, idx| %>
+          <span class="scheme_colours colour_<%=idx%>"
+            style="vertical-align: middle; height: 36px; width: 36px; display: inline-block; background: #<%= hex %>; border: 1px solid #111"></span>
+        <% end %>
+        <input type="radio" 
+        style="vertical-align: middle;"
+        name="settings[publishing][scheme]" 
+        value="<%= scheme %>"
+        <%= preferences["publishing"]["scheme"] == scheme ? "checked='checked'" : "" %>
+        />
+        <%= scheme %>
+        <small><a href="/testdrive?scheme=<%=scheme%>" target="_blank">preview</a></small>
+      </label>
+      <br />
+    <% end %>
+    <span id="colour_explanation">Colour: &minus;</span>
+
+    <h3>Page width</h3>
+    <input 
+      type="text" name="settings[publishing][width]" class="very_fat" 
+      value="<%= preferences["publishing"]["width"] %>"
+      style="width: 70px; text-align: center;" />
+      px
+
+    <h3>Text Alignment: J u s t i f y</h3>
+    <label>
+      <input type="checkbox" name="settings[publishing][justified]"
+      <%= preferences["publishing"]["justified"] ? 'checked="checked"' : '' %> />
+      Stretch out the spacing between words so they span the full width of the line, when possible.
+    </label>
+  </section>
+
+  <br />
+  <input type="submit" value="Update preferences" />
+</form>

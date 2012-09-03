@@ -20,13 +20,13 @@
   <% if params[:scheme] %>
     <link href="/css/schemes/<%= params[:scheme].sanitize %>.css" rel="stylesheet" type="text/css" />
   <% else %>
-    <link href="/css/schemes/<%= preferences["pretty"]["scheme"].sanitize %>.css" rel="stylesheet" type="text/css" />
+    <link href="/css/schemes/<%= preferences["publishing"]["scheme"].sanitize %>.css" rel="stylesheet" type="text/css" />
   <% end %>
 
   <style>
     .stuff {
-      width: <%= preferences["pretty"]["width"].to_i %>px;
-      text-align: <%= preferences["pretty"]["justified"] ? 'justify' : 'left' %>;
+      width: <%= preferences["publishing"]["width"].to_i %>px;
+      text-align: <%= preferences["publishing"]["justified"] ? 'justify' : 'left' %>;
     }
   </style>
   <link href="/css/print.css" rel="stylesheet" type="text/css" />

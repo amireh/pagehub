@@ -44,7 +44,6 @@
   </div>
 
   <% yield_content :wraps %>
-
   <div class="stuff">
     <header>
       <h1><a href="/">Page<em>Hub</em></a></h1>
@@ -71,28 +70,26 @@
 
     </nav>
 
-    <div id="content">
-      <div id="status">
-      </div>
+    <div id="status"></div>
 
-      <% if !flash.empty? %>
-        <div id="flashes">
-          <% if flash.size > 1 then %>
-            <ol>
-              <% flash.each_pair do |ctx,msg| %>
-                <li class="flash <%= ctx %>"><%= msg %></li>
-              <% end %>
-            </ol>
-          <% else %>
+    <% if !flash.empty? %>
+      <div id="flashes">
+        <% if flash.size > 1 then %>
+          <ol>
             <% flash.each_pair do |ctx,msg| %>
-              <span class="flash <%= ctx %>"><%= msg %></span>
+              <li class="flash <%= ctx %>"><%= msg %></li>
             <% end %>
+          </ol>
+        <% else %>
+          <% flash.each_pair do |ctx,msg| %>
+            <span class="flash <%= ctx %>"><%= msg %></span>
           <% end %>
-          <button>&times;</button>
-        </div>
-      <% end %>
+        <% end %>
+        <button>&times;</button>
+      </div>
+    <% end %>
 
-
+    <div id="content" class="<%= request.path.gsub('/', ' ').strip.sanitize.split('-').first %>">
       <%= yield %>
     </div>
 

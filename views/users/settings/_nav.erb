@@ -1,0 +1,24 @@
+<% content_for :css do %>
+  <link type="text/css" rel="stylesheet" href="/css/settings.css" />
+<% end %>
+
+<% content_for :scripts do %>
+  <script>
+    $(function() {
+      $(".settings > nav a[href=\"<%= request.path %>\"]")
+        .addClass("selected").parent().addClass("selected");
+    })
+  </script>
+<% end %>
+
+<nav>
+  <ul>
+    <li><%= current_user.nickname %></li>
+    <li><a href="/settings/profile">Profile</a></li>
+    <li><a href="/settings/account">Account Settings</a></li>
+    <li><a href="/settings/editing">Editing</a></li>
+    <li><a href="/settings/publishing">Publishing</a></li>
+    <li><a href="/settings/notifications">Notifications</a></li>
+    <li><a href="/settings/groups">Groups</a></li>
+  </ul>
+</nav>

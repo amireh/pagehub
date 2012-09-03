@@ -1,32 +1,6 @@
 require 'json'
 require 'uuid'
 
-class Hash
-
-  # Merges self with another hash, recursively.
-  # 
-  # This code was lovingly stolen from some random gem:
-  # http://gemjack.com/gems/tartan-0.1.1/classes/Hash.html
-  # 
-  # Thanks to whoever made it.
-
-  def deep_merge(hash)
-    target = dup
-    
-    hash.keys.each do |key|
-      if hash[key].is_a? Hash and self[key].is_a? Hash
-        target[key] = target[key].deep_merge(hash[key])
-        next
-      end
-      
-      target[key] = hash[key]
-    end
-    
-    target
-  end
-end
-
-
 private
 
 def nickname_salt
@@ -172,13 +146,19 @@ get '/logout' do
   redirect :"/"
 end
 
-get '/profile' do
+get '/settings' do
   restricted!
   
-  erb :"/users/edit"
+  erb :"/users/settings/index"
 end
 
-get '/profile/skin/:skin' do |skin|
+[ "account", "editing", "publishing", "profile", "notifications", "groups" ].each { |domain|
+  get "/settings/#{domain}", auth: :user do
+    erb :"/users/settings/#{domain}"
+  end
+}
+
+get '/settings/skin/:skin' do |skin|
   restricted!
 
   if ["dark", "light"].include? skin
@@ -203,82 +183,17 @@ put '/profile/preferences/runtime', auth: :user do
   prefs = preferences
   prefs["runtime"] = params[:settings]
 
-  unless current_user.update({ settings: prefs.to_json })
+  puts "In runtime prefs. update:"
+  puts params.inspect
+
+  unless current_user.update({ settings: prefs.to_json.to_s })
     halt 500, current_user.collect_errors
   end
 
   true
 end
 
-post '/profile/preferences' do
-  restricted!
-
-  # p params.inspect
-
-  # see if the nickname is available
-  nickname, u = params[:nickname], nil
-  if nickname.empty? then
-    flash[:error] = "A nickname can't be empty!"
-    return redirect :"/profile"
-  else
-    u = User.first(nickname: nickname)
-    if u && u.email != current_user.email then
-      flash[:error] = "That nickname isn't available! Please choose another one."
-    else
-      current_user.nickname = nickname
-      current_user.auto_nickname = false
-    end
-  end
-
-  # some preferences ought to be sanitized:
-  # [editing][font_size] can't be 0 or over 30
-  editing_fontsz = params[:settings][:editing][:font_size].to_i
-  if editing_fontsz <= 0 then
-    params[:settings][:editing][:font_size] = 8
-  elsif editing_fontsz > 30 then
-    params[:settings][:editing][:font_size] = 30
-  end
-
-  if params[:settings][:editing][:autosave] then
-    params[:settings][:editing][:autosave] = true
-  else
-    params[:settings][:editing][:autosave] = false
-  end
-  
-  current_user.settings = params[:settings].to_json.to_s
-
-  if current_user.save then
-    flash[:notice] = "Your preferences were updated!"
-  else
-    flash[:error] = "Something bad happened while updating your preferences."
-  end
-
-  redirect :"/profile"
-end
-
-get '/users/nickname' do
-  restricted!
-  nn = params[:nickname]
-
-  return [].to_json if nn.empty?
-
-  nicknames = []
-  User.all(:nickname.like => "#{nn}%", limit: 10).each { |u|
-    nicknames << u.nickname
-  }
-  nicknames.to_json
-end
-
-# Returns whether params[:nickname] is available or not
-post '/users/nickname' do
-  restricted!
-
-  name_available?(params[:nickname]).to_json
-end
-
-post '/profile/password' do
-  restricted!
-
+post '/settings/password', auth: :user do
   pw = Digest::SHA1.hexdigest(params[:password][:current])
 
   if current_user.password == pw then
@@ -301,5 +216,94 @@ post '/profile/password' do
     flash[:error] = "The current password you've entered isn't correct!"
   end
 
-  redirect :'/profile'
+  redirect back
+end
+
+post '/settings/nickname', auth: :user do
+  # see if the nickname is available
+  nickname = params[:nickname]
+  if nickname.empty? then
+    flash[:error] = "A nickname can't be empty!"
+    return redirect back
+  end
+
+  u = User.first(nickname: nickname)
+  # is it taken?
+  if u && u.email != current_user.email then
+    flash[:error] = "That nickname isn't available. Please choose another one."
+    return redirect back
+  end
+
+  current_user.nickname = nickname
+  current_user.auto_nickname = false
+
+  if current_user.save then
+    flash[:notice] = "Your nickname has been changed."
+  else
+    flash[:error] = "Something bad happened while updating your nickname."
+  end
+
+  redirect back
+end
+
+post "/settings/editing", auth: :user do
+  # some preferences ought to be sanitized:
+  # [editing][font_size] can't be 0 or over 30
+  editing_fontsz = params[:settings][:editing][:font_size].to_i
+  if editing_fontsz <= 0 then
+    params[:settings][:editing][:font_size] = 8
+  elsif editing_fontsz > 30 then
+    params[:settings][:editing][:font_size] = 30
+  end
+
+  if params[:settings][:editing][:autosave] then
+    params[:settings][:editing][:autosave] = true
+  else
+    params[:settings][:editing][:autosave] = false
+  end
+  
+  prefs = preferences
+  prefs["editing"] = params[:settings][:editing]
+  current_user.settings = prefs.to_json.to_s
+
+  if current_user.save then
+    flash[:notice] = "Your editing preferences were updated."
+  else
+    flash[:error] = "Something bad happened while updating your editing preferences: #{current_user.collect_errors}."
+  end
+
+  redirect back
+end
+
+post "/settings/publishing", auth: :user do
+  prefs = preferences
+  prefs["publishing"] = params[:settings][:publishing]
+  current_user.settings = prefs.to_json.to_s
+
+  if current_user.save then
+    flash[:notice] = "Your publishing preferences were updated."
+  else
+    flash[:error] = "Something bad happened while updating your publishing " +
+                    "preferences: #{current_user.collect_errors}."
+  end
+
+  redirect back
+end
+
+get '/users/nickname' do
+  restricted!
+  nn = params[:nickname]
+
+  return [].to_json if nn.empty?
+
+  nicknames = []
+  User.all(:nickname.like => "#{nn}%", limit: 10).each { |u|
+    nicknames << u.nickname
+  }
+  nicknames.to_json
+end
+
+# Returns whether params[:nickname] is available or not
+post '/users/nickname', auth: :user do
+  name_available?(params[:nickname]).to_json
 end

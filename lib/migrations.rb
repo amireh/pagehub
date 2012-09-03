@@ -61,3 +61,38 @@ end
     # Revision.update({ additions: 0, deletions: 0, patchsz: 0 })
   # end
 # end
+migration 3, :rename_pretty_to_publishing_settings do
+  up do
+    class Preferences; include PageHub::Helpers; end
+
+    User.each { |u|
+      prefs = Preferences.new.preferences(u)
+      if prefs["pretty"]
+        prefs["publishing"] = prefs.delete("pretty")
+        u.settings = prefs.to_json.to_s
+        unless u.save
+          puts "Error: unable to save the user #{u.nickname}, cause: #{u.collect_errors}"
+          break
+        end
+        puts "Updated user #{u.nickname}: #{prefs["publishing"]}"
+      end
+    }
+  end
+
+  down do
+    class Preferences; include PageHub::Helpers; end
+
+    User.each { |u|
+      prefs = Preferences.new.preferences(u)
+      if prefs["publishing"]
+        prefs["pretty"] = prefs.delete("publishing")
+        u.settings = prefs.to_json.to_s
+        unless u.save
+          puts "Error: unable to save the user #{u.nickname}, cause: #{u.collect_errors}"
+          break
+        end
+        puts "Updated user #{u.nickname}: #{prefs["pretty"]}"
+      end
+    }    
+  end
+end

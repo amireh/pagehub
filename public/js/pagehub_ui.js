@@ -222,14 +222,14 @@ pagehub_ui = function() {
         source.attr("data-collapsed", null).html("&minus;");
         source.parent().removeClass("collapsed");
         
-        pagehub.settings.runtime.cf.pop_value(source.attr("data-folder"));
+        pagehub.settings.runtime.cf.pop_value(parseInt(source.attr("data-folder")));
         pagehub.settings_changed = true;
       } else {
         source.siblings(":not(span.folder_title)").hide();        
         source.attr("data-collapsed", true).html("&plus;");
         source.parent().addClass("collapsed");
 
-        pagehub.settings.runtime.cf.push(source.attr("data-folder"));
+        pagehub.settings.runtime.cf.push(parseInt(source.attr("data-folder")));
         pagehub.settings_changed = true;
       }
     },
@@ -688,7 +688,7 @@ pagehub_ui = function() {
               + '</option>');
 
           // am I collapsed per the user request?
-          if (pagehub.settings.runtime.cf.has_value(folder_id)) {
+          if (pagehub.settings.runtime.cf.has_value(parseInt(folder_id))) {
             el.find("button[data-collapse]").click();
           }
         }

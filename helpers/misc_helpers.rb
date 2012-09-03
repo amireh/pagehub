@@ -27,11 +27,19 @@ module PageHub
 
       if !user
         return settings.default_preferences
+      elsif @preferences
+        return @preferences
       end
-      
-      @preferences ||= JSON.parse(user.settings || "{}")
+
+      @preferences = {}
+      prefs = user.settings
+      if prefs && !prefs.empty?
+        begin; @preferences = JSON.parse(prefs); rescue; @preferences = {}; end
+      end
+
       defaults = settings.default_preferences.dup
-      defaults.deep_merge(@preferences)
+      @preferences = defaults.deep_merge(@preferences)
+      @preferences
     end
 
     def pretty_time(datetime)

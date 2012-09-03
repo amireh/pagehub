@@ -1,0 +1,86 @@
+.settings {
+  padding-left: 220px;
+  padding-right: 100px;
+
+}
+.settings nav > ul { 
+  list-style-type: none;
+  margin: 0; 
+  width: 200px;
+  padding: 0;
+  position: absolute;
+  top: 0px;
+  left: 0;
+}
+.settings nav > ul li:first-child { 
+  border-top: 1px solid #ddd;
+  background: #333;
+  color: white;
+  border: none;
+}
+.settings nav > ul li:last-child { 
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;  
+}
+.settings nav > ul li { 
+  display: block; 
+  /*background: rgba(0,0,0,0.015);*/
+  border: 1px solid #ddd;
+  border-top: none;
+}
+.settings nav > ul li:not(:first-child):hover,
+.settings nav > ul li.selected { 
+  background: rgba(0,0,0,0.025);
+}
+.settings nav > ul li:first-child,
+.settings nav > ul li a { 
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.settings form + form {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.settings section.editor_preview {
+  position: absolute;
+  left: 360px;
+  top: 160px;
+  /*border-left: 1px solid #333;*/
+  padding: 0;
+  opacity: 0.5;
+}
+.settings section.editor_preview .curly,
+.settings section.editor_preview small {
+  font-family: "UbuntuMonoRegular";
+  font-size: 196px;
+  position: absolute;
+  opacity: 0.15;
+  left: -164px;
+  font-weight: bold;
+  top: 100px;
+  -webkit-transform: rotate(-30deg);
+  -moz-transform: rotate(-30deg);
+}
+.settings section.editor_preview small {
+  position: absolute;
+  left: -128px;
+  top: 110px;
+  z-index: 100;
+  opacity: 1;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.settings #editor_settings {
+  position: relative;
+}
+.settings .CodeMirror {
+  width: 320px;
+  margin: 0;
+  max-height: 320px;
+  height: 320px;
+  overflow: inherit;
+}

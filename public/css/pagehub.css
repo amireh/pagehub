@@ -135,7 +135,7 @@ header h1 a {
 }
 
 header { position: relative; }
-header, nav { z-index: 102; }
+header, .stuff > nav { z-index: 102; }
 
 header h1, header h3 {
   vertical-align: middle;  
@@ -195,14 +195,14 @@ footer {
   /*padding-left: 10px;*/
   /*padding-right: 10px;*/
 }
-nav {
+.stuff > nav {
   position: absolute;
   right: 0px;
   top: 0;
   /*top: 2px;*/
 }
 
-nav > a {
+.stuff > nav > a {
   padding: 0 15px;
   margin: -1px 0 0 0; /* to disable the top part of the box shadow */
   height: 49px;
@@ -210,7 +210,7 @@ nav > a {
   display: inline-block;
 }
 
-/*nav > a,
+/*.stuff > nav > a,
 #page_actions > a,
 .actions > a.listlike {
   background-repeat: no-repeat;
@@ -731,7 +731,7 @@ a img {
   font-style: normal;
 }
 
-nav {
+.stuff > nav {
   min-width: 220px;
   text-align: right;
 }
@@ -831,6 +831,12 @@ a.button.bad:not(:active) {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
 
   border-color: rgba(0,0,0,0.3);
+}
+
+button.kinda_bad:not(:active),
+input[type=submit].kinda_bad:not(:active),
+a.button.kinda_bad:not(:active) {
+  color: rgb(255,48,25);
 }
 
 button.good:not(:active),
