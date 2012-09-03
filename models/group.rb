@@ -50,7 +50,11 @@ class Group
       c[:users] << { id: u.id, nickname: u.nickname, role: gu.role }
     }
     c
-  end    
+  end
+
+  def role_of(user)
+    GroupUser.first({ group: self, user: user }).role.to_s
+  end
 
   def has_admin?(user)
     if gu = GroupUser.first({ group_id: self.id, user_id: user.id })

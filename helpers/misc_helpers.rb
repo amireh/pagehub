@@ -56,7 +56,7 @@ module PageHub
 
     Vowels = ['a','o','u','i','e']
     def vowelize(word)
-      Vowels.include? word[0] ? "an #{word}" : "a #{word}"
+      Vowels.include?(word[0]) ? "an #{word}" : "a #{word}"
     end
   end
 end

@@ -57,14 +57,19 @@
         var accept_label = a.attr("data-confirm-accept") || "Yes";
         $("div#confirm #confirm_accepted").attr("value", accept_label);
         
-        pagehub.confirm(msg, heading, function() {
-          var method = dynamism.utility.lookup_method(a.attr("data-confirm-cb"));
-          if (method) {
-            return method(a);
-          } else {
-            console.log("ERROR: invalid confirmation callback: " + a.attr("data-confirm-cb"));
-          }
-        });
+        if (!a.attr("data-confirm-cb")) {
+          pagehub.confirm(msg, heading, a.attr("href"));
+        } else {
+          
+          pagehub.confirm(msg, heading, function() {
+            var method = dynamism.utility.lookup_method(a.attr("data-confirm-cb"));
+            if (method) {
+              return method(a);
+            } else {
+              console.log("ERROR: invalid confirmation callback: " + a.attr("data-confirm-cb"));
+            }
+          });
+        }
       } catch (e) {
         console.log("ERROR: something bad happened while showing the cnfm dialog: ")
         console.log(e);

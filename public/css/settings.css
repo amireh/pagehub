@@ -99,3 +99,24 @@
   box-shadow: 0 0 3px 1px #555;
   padding: 2px;
 }
+
+.settings .groups ol {
+  list-style-type: none; padding: 0;
+}
+.settings .groups li {
+  background: rgba(0,0,0,0.025);
+  position: relative;
+  border-top:     1px solid #bbb;
+  border-left: 8px solid #bbb;
+  border-right:  1px solid #bbb;
+  padding: 10px 20px;
+}
+.settings .groups li:last-of-type {
+  border-bottom: 1px solid #bbb;
+}
+.settings .groups li a.button {
+  position: absolute; top: 20px; right: 10px;
+}
+.settings .groups li > p {
+  margin: 0;
+}

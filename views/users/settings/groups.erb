@@ -1,0 +1,35 @@
+<%= erb :"users/settings/_nav" %>
+<%= erb :"shared/_confirmation_dlg" %>
+<% content_for :js do %>
+<script>
+  $(function() {
+  });
+</script>
+<% end %>
+
+
+<form class="groups" method="POST" action="/settings/groups">
+  <section>
+    <h2>Group memberships</h2>
+
+    <p>You are currently a member of <%= pluralize(current_user.groups.count, "group") %>.</p>
+
+    <ol>
+      <% current_user.groups.each do |g| %>
+        <li>
+            <% unless g.is_creator?(current_user) %>
+              <a href="/groups/<%= g.id %>/leave" class="confirm button thin bad">Leave</a>
+              <p hidden="hidden" data-confirm>Leaving the group will remove all the pages you've written in it
+                from that group space and will return them to you. Are you sure you want to do this?
+              </p>
+            <% end %>
+          <p>
+            <a href="/groups/<%= g.name %>"> <%= g.title %></a> as <%= vowelize g.role_of(current_user) %>.<br />
+            <span>Authored <%= pluralize(g.pages({ user: current_user }).count, "page" ) %>.</span>
+          </p>
+        </li>
+      <% end %>
+    </ol>
+
+  </section>
+</form>

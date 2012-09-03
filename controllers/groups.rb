@@ -182,6 +182,19 @@ put '/groups/:gid/kick/:id', :auth => :group_admin do |gid, user_id|
   true
 end
 
-put '/groups/:current_name/leave', :auth => :group_member do |current_name|
+get '/groups/:gid/leave', :auth => :group_member do |gid|
+  unless gu = @scope.group_users.first({ user: current_user })
+    halt 400, "No such membership."
+  end
 
+  if @scope.is_creator?(current_user)
+    flash[:error] = "You can not leave a group you've created!"
+    return redirect back
+  end
+
+  gu.destroy
+
+  flash[:notice] = "You are no longer a member of the group #{@scope.name}"
+
+  redirect back
 end
