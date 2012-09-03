@@ -62,7 +62,6 @@ body {
   padding: 0;
   color: #615B4E;
   height: 100%;
-  min-height: 100%;
 }
 html {
   background-color: transparent;
@@ -169,9 +168,6 @@ h1,h2,h3,h4,h5,h6 {
   display: block;
   border-top: none;
   padding: 0;
-  min-height: 100%;
-  margin-bottom: -35px;
-  /*padding-bottom: 35px;*/
 }
 
 .header_wrap,
@@ -406,14 +402,10 @@ a.selected,
 .dialog .actions button:first-child { float: left; }
 .dialog .actions button:last-child { float: right; }
 footer {
-  position: relative;
-  width: 960px;
-  margin: 0 auto 0 auto;
+  /*width: 960px;*/
+  margin: 10px auto 0 auto;
   border-top: 1px dotted black;
   padding: 0;
-  margin-top: 0px;
-  /*height: 35px;*/
-  clear: both;
   /*display: none;*/
 }
 footer p {
@@ -440,11 +432,7 @@ footer p {
 }
 
 #content {
-  /*margin-top: 10px;*/
   position: relative;
-  overflow: auto;
-  padding-bottom: 45px;
-  margin-bottom: 10px;
 }
 
 img.loader {

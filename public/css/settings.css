@@ -1,51 +1,51 @@
-.settings {
+#content.settings {
   padding-left: 220px;
   padding-right: 100px;
-
+  min-height: 300px;
 }
-.settings nav > ul { 
+#content.settings nav > ul { 
   list-style-type: none;
   margin: 0; 
   width: 200px;
   padding: 0;
   position: absolute;
-  top: 20px;
+  top: 0px;
   left: 0;
 }
-.settings nav > ul li:first-child { 
+#content.settings nav > ul li:first-child { 
   border-top: 1px solid #ddd;
   background: #333;
   color: white;
   border: none;
 }
-.settings nav > ul li:last-child { 
+#content.settings nav > ul li:last-child { 
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;  
 }
-.settings nav > ul li { 
+#content.settings nav > ul li { 
   display: block; 
   /*background: rgba(0,0,0,0.015);*/
   border: 1px solid #ddd;
   border-top: none;
 }
-.settings nav > ul li:not(:first-child):hover,
-.settings nav > ul li.selected { 
+#content.settings nav > ul li:not(:first-child):hover,
+#content.settings nav > ul li.selected { 
   background: rgba(0,0,0,0.025);
 }
-.settings nav > ul li:first-child,
-.settings nav > ul li a { 
+#content.settings nav > ul li:first-child,
+#content.settings nav > ul li a { 
   display: block;
   width: 100%;
   padding: 5px 10px;
 }
 
-.settings form + form,
-.settings section + section {
+#content.settings form + form,
+#content.settings section + section {
   margin-top: 20px;
   border-top: 1px solid #ddd;
 }
 
-.settings section.editor_preview {
+#content.settings section.editor_preview {
   position: absolute;
   left: 360px;
   top: 160px;
@@ -53,8 +53,8 @@
   padding: 0;
   opacity: 0.5;
 }
-.settings section.editor_preview .curly,
-.settings section.editor_preview small {
+#content.settings section.editor_preview .curly,
+#content.settings section.editor_preview small {
   font-family: "UbuntuMonoRegular";
   font-size: 196px;
   position: absolute;
@@ -65,7 +65,7 @@
   -webkit-transform: rotate(-30deg);
   -moz-transform: rotate(-30deg);
 }
-.settings section.editor_preview small {
+#content.settings section.editor_preview small {
   position: absolute;
   left: -128px;
   top: 110px;
@@ -75,10 +75,10 @@
   letter-spacing: 2px;
 }
 
-.settings #editor_settings {
+#content.settings #editor_settings {
   position: relative;
 }
-.settings .CodeMirror {
+#content.settings .CodeMirror {
   width: 320px;
   margin: 0;
   max-height: 320px;
@@ -86,24 +86,24 @@
   overflow: inherit;
 }
 
-.settings .scheme_colour_group {
+#content.settings .scheme_colour_group {
   display: inline-block;
   border: 1px solid #555;
 }
-.settings .scheme_colours {
+#content.settings .scheme_colours {
   vertical-align: middle; height: 36px; width: 36px; display: inline-block; 
   /*border: 1px solid #111;*/
 }
 
-.settings .gravatar {
+#content.settings .gravatar {
   box-shadow: 0 0 3px 1px #555;
   padding: 2px;
 }
 
-.settings .groups ol {
+#content.settings .groups ol {
   list-style-type: none; padding: 0;
 }
-.settings .groups li {
+#content.settings .groups li {
   background: rgba(0,0,0,0.025);
   position: relative;
   border-top:     1px solid #bbb;
@@ -111,12 +111,12 @@
   border-right:  1px solid #bbb;
   padding: 10px 20px;
 }
-.settings .groups li:last-of-type {
+#content.settings .groups li:last-of-type {
   border-bottom: 1px solid #bbb;
 }
-.settings .groups li a.button {
+#content.settings .groups li a.button {
   position: absolute; top: 20px; right: 10px;
 }
-.settings .groups li > p {
+#content.settings .groups li > p {
   margin: 0;
 }

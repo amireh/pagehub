@@ -1,0 +1,22 @@
+<% content_for :title do %> Shares - Settings | <%= current_user.nickname %> | PageHub <% end %>
+<%= erb :"users/settings/_nav" %>
+<h2>Public Pages</h2>
+
+<p>You currently have <%= pluralize(@pages.length, "page") %> shared.</p>
+<% unless @pages.empty? %>
+  <p>Here's a list of all the pages you've currently shared. 
+    Clicking on them will take you to the public link that you can share with others.</p>
+
+  <ol>
+  <% @pages.each do |p| %>
+    <li><a href="<%= p.public_url true %>"><%= p.title %></a>
+      <small>
+        -
+        <em>
+          <a href="/pages/<%= p.id %>/unshare">unshare it</a>
+        </em>
+      </small>
+    </li>
+  <% end %>
+  </ol>
+<% end %>

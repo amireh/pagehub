@@ -215,30 +215,30 @@ get '/groups/:gid/pages/:id/revisions/:rid', auth: :group_editor do |gid, pid, r
 post '/pages/:id/revisions/:rid', auth: :user do |pid, rid| rollback_page(pid, rid) end
 post '/groups/:gid/pages/:id/revisions/:rid', auth: :group_editor do |gid, pid, rid| rollback_page(pid, rid) end
 
-get '/pages/public', auth: :user do
-  nr_invalidated_links = 0
+# get '/pages/public', auth: :user do
+#   nr_invalidated_links = 0
 
-  @pages = []
-  @scope.public_pages.all.each { |pp|
-    p = @scope.pages.first({ id: pp.page_id })
+#   @pages = []
+#   @scope.public_pages.all.each { |pp|
+#     p = @scope.pages.first({ id: pp.page_id })
 
-    if p then
-      @pages << p
-    else
-      nr_invalidated_links += 1
-      pp.destroy
-    end
+#     if p then
+#       @pages << p
+#     else
+#       nr_invalidated_links += 1
+#       pp.destroy
+#     end
 
-  }
+#   }
 
-  if nr_invalidated_links > 0
-    flash[:notice] = 
-      "#{nr_invalidated_links} public links have been invalidated because \
-      the pages they point to have deleted."
-  end
+#   if nr_invalidated_links > 0
+#     flash[:notice] = 
+#       "#{nr_invalidated_links} public links have been invalidated because \
+#       the pages they point to have deleted."
+#   end
 
-  erb :"pages/public"
-end
+#   erb :"pages/public"
+# end
 
 get '/pages/:id/pretty', auth: :user do |id| pretty_view(id) end
 get '/groups/:gid/pages/:id/pretty', auth: :group_member do |gid, id| pretty_view(id) end
