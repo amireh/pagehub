@@ -20,7 +20,9 @@ def update_page(pid)
 
   force_content_update = false
   unless params[:attributes][:autosave]
-    force_content_update = PageHub::Markdown::mutate! params[:attributes][:content]
+    if params[:attributes][:content]
+      force_content_update = PageHub::Markdown::mutate! params[:attributes][:content]
+    end
 
     begin
       unless p.generate_revision(params[:attributes][:content], current_user)
