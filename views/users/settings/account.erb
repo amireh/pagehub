@@ -71,3 +71,27 @@
   <br />
   <input type="submit" value="Update password" />
 </form>
+
+
+<form method="POST" action="/settings/password">
+  <section>
+    <h2>Changing your password</h2>
+
+    <label>
+      Your current password:<br />
+      <input type="password" class="fat" name="password[current]" />
+    </label>
+    <br />
+    
+    <span>
+      And a new one (type it twice to confirm it):<br />
+    </span>
+    <label>#1 &rarr; <input type="password" class="fat" name="password[new]" style="margin-bottom: 5px;" /></label>
+    <br />
+    <label>#2 &rarr; <input type="password" class="fat" name="password[confirmation]" /></label>
+
+  </section>
+
+  <br />
+  <input type="submit" value="Update password" />
+</form>
