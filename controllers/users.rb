@@ -187,9 +187,7 @@ get "/settings/public_pages", auth: :user do
   erb :"/users/settings/public_pages"
 end
 
-get '/settings/skin/:skin' do |skin|
-  restricted!
-
+get '/settings/skin/:skin', auth: :user do |skin|
   if ["dark", "light"].include? skin
     curr_prefs = preferences
     curr_prefs["pagehub"] ||= {}
@@ -205,7 +203,7 @@ get '/settings/skin/:skin' do |skin|
     flash[:error] = "That skin is unavailable, try with 'light' or 'dark'"
   end
 
-  redirect back
+  redirect "/"
 end
 
 put '/profile/preferences/runtime', auth: :user do
