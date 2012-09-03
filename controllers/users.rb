@@ -156,6 +156,14 @@ end
   end
 }
 
+get "/profiles/:nickname" do |nn|
+  unless @user = User.first({ nickname: nn })
+    halt 404, "Unable to find the user '#{nn}', are you sure of the link?"
+  end
+
+  erb :"/users/profile"
+end
+
 get "/settings/public_pages", auth: :user do
   nr_invalidated_links = 0
 

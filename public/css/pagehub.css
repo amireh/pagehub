@@ -1431,3 +1431,11 @@ button[data-collapse] {
 .group_form table tbody tr:hover { background: rgba(0,0,0,0.05); }
 
 .group_role_description { opacity: 0.75; position: relative; top: -55px; width: 240px; margin-left: 20px; display: inline-block;}
+
+#content.profiles .gravatar {
+  box-shadow: 0 0 3px 1px #555;
+  padding: 2px;
+}
+#content.profiles h1 span {
+  font-weight: normal;
+}

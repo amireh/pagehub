@@ -62,6 +62,7 @@ configure do
   Gravatarify.options[:filetype] = :png
   Gravatarify.styles[:mini] = { size: 16, html: { :class => 'gravatar gravatar-mini' } }
   Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
+  Gravatarify.styles[:profile] = { size: 128, html: { :class => 'gravatar' } }
 
   Pony.options = { 
     :from => "noreply@pagehub.org",
@@ -112,7 +113,7 @@ not_found do
     return r.include?("<html>") ? "404 - bad link!" : r.to_json
   end
   
-  erb :"404"
+  erb :"404", layout: logged_in? ? :layout : :"layouts/guest"
 end
 
 error 403 do
@@ -122,7 +123,7 @@ error 403 do
     return r.include?("<html>") ? "403 - forbidden!" : r.to_json
   end
   
-  erb :"403"
+  erb :"403", layout: logged_in? ? :layout : :"layouts/guest"
 end
 
 error do
@@ -131,7 +132,7 @@ error do
     halt 500, "500 - internal error: " + env['sinatra.error'].name + " => " + env['sinatra.error'].message
   end
 
-  erb :"500"  
+  erb :"500", layout: logged_in? ? :layout : :"layouts/guest"
 end
 
 get '/' do

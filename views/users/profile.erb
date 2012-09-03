@@ -1,0 +1,15 @@
+<h1><strong><%= @user.nickname %></strong> <span>(<%= @user.name %>)</span></h1>
+<%= gravatar_tag @user, :profile %>
+<div>
+  <% unless @user.public_pages.empty? %>
+    <p>Public pages: <%= pluralize(@user.public_pages.length, "page") %>.</p>
+    <ol>
+    <% @user.public_pages.each do |pp| %>
+      <% p = pp.page; next if !p %>
+      <li><a href="<%= p.public_url true %>"><%= p.title %></a></li>
+    <% end %>
+    </ol>
+  <% else %>
+    <p><%= @user.nickname %> has not shared any pages yet.</p>
+  <% end %>
+</div>
