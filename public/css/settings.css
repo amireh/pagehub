@@ -12,12 +12,7 @@
   top: 0px;
   left: 0;
 }
-#content.settings nav > ul li:first-child { 
-  border-top: 1px solid #ddd;
-  background: #333;
-  color: white;
-  border: none;
-}
+
 #content.settings nav > ul li:last-child { 
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;  
@@ -38,7 +33,15 @@
   width: 100%;
   padding: 5px 10px;
 }
-
+#content.settings nav > ul li:first-child { 
+  /*border-top: 1px solid #ddd;*/
+  background: #eee;
+  /*color: white;*/
+  border: 1px solid #ddd;
+  padding: 15px 10px;
+  font-weight: bold;
+  display: block;
+}
 #content.settings form + form,
 #content.settings section + section {
   margin-top: 20px;

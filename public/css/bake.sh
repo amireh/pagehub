@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CMPR_CMD="yui"
-SHEETS=('pagehub' 'skins/light' 'skins/dark')
+SHEETS=('pagehub' 'settings' 'skins/light' 'skins/dark')
 
 # Verify all the sheets exist before we do anything
 for sheet in ${SHEETS[@]}; do
