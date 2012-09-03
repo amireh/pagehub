@@ -290,6 +290,43 @@ post "/settings/publishing", auth: :user do
   redirect back
 end
 
+post "/settings/profile", auth: :user do
+
+  { :name => "Your name can not be empty",
+    :email => "You must specify a primary email address.",
+    :gravatar_email => "Your gravatar email address can not be empty."
+  }.each_pair { |k, err|
+    if !params[k] || params[k].empty?
+      flash[:error] = err
+      return redirect back
+    else
+      current_user.send("#{k}=".to_sym, params[k])
+    end
+  }
+
+  # if !params[:name] || params[:name].empty?
+  #   flash[:error] = "Your name can not be empty."
+  #   return redirect back
+  # elsif params[:name] != current_user.name
+  #   current_user.name = params[:name]
+  # end
+
+  # if !params[:email] || params[:email].empty?
+  #   flash[:error] = "You must specify an email address."
+  #   return redirect back
+  # elsif params[:email] != current_user.email
+  #   current_user.email = params[:email]
+  # end
+
+  if current_user.save then
+    flash[:notice] = "Your profile has been updated."
+  else
+    flash[:error] = current_user.collect_errors
+  end
+
+  redirect back
+end
+
 get '/users/nickname' do
   restricted!
   nn = params[:nickname]

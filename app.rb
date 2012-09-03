@@ -20,6 +20,7 @@ gem 'omniauth-facebook'
 gem 'omniauth-github'
 gem 'omniauth-twitter', '0.0.9'
 gem 'diff-lcs'
+gem 'gravatarify', ">= 3.1.0"
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -37,6 +38,7 @@ require 'omniauth'
 require 'omniauth-facebook'
 require 'omniauth-github'
 require 'omniauth-twitter'
+require 'gravatarify'
 # require 'omniauth-google-oauth2'
 # require 'openid/store/filesystem' 
 
@@ -51,6 +53,13 @@ configure do
     # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
   end
+
+  helpers Gravatarify::Helper
+
+  # Gravatarify.options[:default] = "wavatar"
+  Gravatarify.options[:filetype] = :png
+  Gravatarify.styles[:mini] = { size: 16, html: { :class => 'gravatar gravatar-mini' } }
+  Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
 
   # DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, 'mysql://root@localhost/notebook')

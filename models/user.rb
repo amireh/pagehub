@@ -1,3 +1,5 @@
+require 'resolv'
+
 class User
   include DataMapper::Resource
 
@@ -8,6 +10,8 @@ class User
   property :uid,      String, length: 255, required: true
 
   property :email,          String, length: 255, default: ""
+  property :email_verified, Boolean, default: false, allow_nil: false
+  property :gravatar_email, String, length: 255, default: lambda { |r,_| r.email }
   property :nickname,       String, length: 120, default: ""
   property :password,       String, length: 64
   property :settings,       Text, default: "{}"
@@ -28,6 +32,9 @@ class User
   before :valid? do |_|
     self.nickname = self.name.to_s.sanitize if self.nickname.empty?
 
+    validate_email!(self.email, "primary")
+    validate_email!(self.gravatar_email, "gravatar")
+
     true
   end
 
@@ -44,4 +51,40 @@ class User
   def namespace
     ""
   end
+
+  def profile_url
+    "/profiles/#{self.nickname}"
+  end
+
+  def email_verified?
+    email_verified
+  end
+
+  private
+  
+  # Validates an email domain using Ruby's DNS resolver.
+  # Thanks to:
+  # => http://www.buildingwebapps.com/articles/79182-validating-email-addresses-with-ruby
+  def validate_email_domain(email)
+    domain = email.match(/\@(.+)/)[1]
+    Resolv::DNS.open do |dns|
+      @mx = dns.getresources(domain, Resolv::DNS::Resource::IN::MX)
+    end
+    @mx.size > 0 ? true : false
+  end
+
+  def validate_email!(email, type)
+    unless email.nil? || email.empty?
+      unless email =~ /^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/
+        errors.add(:email, "Your #{type} email address does not appear to be valid.")
+        throw :halt
+      else
+        unless validate_email_domain(email)
+          errors.add(:email, "Your #{type} email domain name appears to be incorrect.") 
+          throw :halt
+        end
+      end
+    end
+  end
+
 end

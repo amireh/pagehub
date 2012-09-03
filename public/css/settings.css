@@ -39,7 +39,8 @@
   padding: 5px 10px;
 }
 
-.settings form + form {
+.settings form + form,
+.settings section + section {
   margin-top: 20px;
   border-top: 1px solid #ddd;
 }
@@ -83,4 +84,18 @@
   max-height: 320px;
   height: 320px;
   overflow: inherit;
+}
+
+.settings .scheme_colour_group {
+  display: inline-block;
+  border: 1px solid #555;
+}
+.settings .scheme_colours {
+  vertical-align: middle; height: 36px; width: 36px; display: inline-block; 
+  /*border: 1px solid #111;*/
+}
+
+.settings .gravatar {
+  box-shadow: 0 0 3px 1px #555;
+  padding: 2px;
 }
