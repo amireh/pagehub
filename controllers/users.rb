@@ -147,9 +147,7 @@ get '/logout' do
 end
 
 get '/settings' do
-  restricted!
-  
-  erb :"/users/settings/index"
+  redirect "/settings/profile"
 end
 
 [ "account", "editing", "publishing", "profile", "notifications", "groups" ].each { |domain|
@@ -182,9 +180,6 @@ end
 put '/profile/preferences/runtime', auth: :user do
   prefs = preferences
   prefs["runtime"] = params[:settings]
-
-  puts "In runtime prefs. update:"
-  puts params.inspect
 
   unless current_user.update({ settings: prefs.to_json.to_s })
     halt 500, current_user.collect_errors
@@ -327,6 +322,41 @@ post "/settings/profile", auth: :user do
   redirect back
 end
 
+get '/settings/verify/:type', auth: :user do |type|
+  dispatch = lambda { |addr, tmpl|
+    Pony.mail :to => addr,
+              :from => "noreply@pagehub.org",
+              :subject => "[PageHub] Please verify your email '#{addr}'",
+              :html_body => erb(tmpl.to_sym, layout: "layouts/mail".to_sym)
+  }
+
+  redispatch = params[:redispatch]
+
+  @type = type.to_sym
+
+  case type
+  when "primary"
+    @address = current_user.email
+    if !redispatch && current_user.verified?(@address)
+      return erb :"/emails/already_verified"
+    elsif !redispatch && current_user.awaiting_verification?(@address)
+      return erb :"/emails/already_dispatched"
+    else
+      if redispatch
+        current_user.email_verifications.first({ address: @address }).destroy
+      end
+
+      unless @ev = current_user.verify_address(@address)
+        halt 500, "Unable to generate a verification link: #{current_user.collect_errors}"
+      end
+
+      dispatch.call(current_user.email, "emails/verification")
+    end
+  end
+
+  erb :"/emails/dispatched"
+end
+
 get '/users/nickname' do
   restricted!
   nn = params[:nickname]
@@ -343,4 +373,21 @@ end
 # Returns whether params[:nickname] is available or not
 post '/users/nickname', auth: :user do
   name_available?(params[:nickname]).to_json
+end
+
+get '/users/:id/verify/:token', auth: :user do |uid, token|
+  unless @ev = @scope.email_verifications.first({ salt: token })
+    halt 400, "No such verification link."
+  end
+
+  if @ev.expired?
+    return erb :"emails/expired"
+  elsif @ev.verified?
+    flash[:error] = "Your email address '#{@ev.address}' is already verified."
+    return redirect "/settings/profile"
+  else
+    @ev.verify!
+    flash[:notice] = "Your email address '#{@ev.address}' has been verified."
+    return redirect "/settings/profile"
+  end
 end

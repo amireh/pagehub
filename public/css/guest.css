@@ -27,7 +27,7 @@ header h1 {
   padding: 5px 10px;
 }
 
-nav a:last-of-type {
+.stuff > nav a:last-of-type {
   float: right;
 }
 
@@ -36,7 +36,7 @@ nav a:last-of-type {
   opacity: 0.5;
 }
 
-nav {
+.stuff > nav {
   position: relative;
   display: block;
   width: 100%;
@@ -44,7 +44,7 @@ nav {
   clear:  both;
   padding: 0;
 }
-nav a { padding: 0; line-height: 40px; height: 40px; vertical-align: middle; height: auto; display: inline-block; }
+.stuff > nav a { padding: 0; line-height: 40px; height: 40px; vertical-align: middle; height: auto; display: inline-block; }
 
 .guest .block {
   width: 45%;

@@ -1,0 +1,7 @@
+<p>Hi,</p>
+
+<p>We would like to verify that you are the PageHub user "<%= current_user.nickname %>". If you are, please visit this link to verify this email address:</p>
+
+<p><a href="<%= "#{__host}#{@ev.url}" %>"><%= __host %><%= @ev.url %></a></p>
+
+<p>If you are not "<%= current_user.nickname %>" or didn't request this verification, you can safely ignore this email.</p>

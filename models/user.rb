@@ -10,7 +10,6 @@ class User
   property :uid,      String, length: 255, required: true
 
   property :email,          String, length: 255, default: ""
-  property :email_verified, Boolean, default: false, allow_nil: false
   property :gravatar_email, String, length: 255, default: lambda { |r,_| r.email }
   property :nickname,       String, length: 120, default: ""
   property :password,       String, length: 64
@@ -26,6 +25,7 @@ class User
   has n, :folders, :constraint => :destroy
   has n, :groups, :through => Resource
   has n, :public_pages, :constraint => :destroy
+  has n, :email_verifications, :constraint => :destroy
 
   validates_presence_of :name, :provider, :uid
 
@@ -56,8 +56,33 @@ class User
     "/profiles/#{self.nickname}"
   end
 
-  def email_verified?
-    email_verified
+  def verified?(address)
+    if address == self.email
+      unless ev = self.email_verifications.first({ primary: true })
+        return false
+      end
+    else
+      unless ev = self.email_verifications.first({ address: address, primary: false })
+        return false
+      end
+    end
+
+    ev.verified?
+  end
+
+  def verify_address(address)
+    unless ev = self.email_verifications.first_or_create({ address: address, primary: address == self.email })
+      errors.add :email_verifications, ev.collect_errors
+      throw :halt
+    end
+
+    ev
+  end
+
+  def awaiting_verification?(address)
+    if ev = self.email_verifications.first({ address: address })
+      return ev.pending?
+    end
   end
 
   private

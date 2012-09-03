@@ -21,6 +21,7 @@ gem 'omniauth-github'
 gem 'omniauth-twitter', '0.0.9'
 gem 'diff-lcs'
 gem 'gravatarify', ">= 3.1.0"
+gem "pony"
 
 require 'sinatra'
 require 'sinatra/content_for'
@@ -39,6 +40,7 @@ require 'omniauth-facebook'
 require 'omniauth-github'
 require 'omniauth-twitter'
 require 'gravatarify'
+require 'pony'
 # require 'omniauth-google-oauth2'
 # require 'openid/store/filesystem' 
 
@@ -61,6 +63,19 @@ configure do
   Gravatarify.styles[:mini] = { size: 16, html: { :class => 'gravatar gravatar-mini' } }
   Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
 
+  Pony.options = { 
+    :from => "noreply@pagehub.org",
+    :via => :smtp, :via_options => {
+      :address => 'smtp.gmail.com',
+      :port => '587',
+      :enable_starttls_auto => true,
+      :user_name => ENV['GMAIL_ID'],
+      :password => ENV['GMAIL_PW'],
+      :authentication => :plain, # :plain, :login, :cram_md5, no auth by default
+      :domain => "HELO", # don't know exactly what should be here
+    }
+  }
+  
   # DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, 'mysql://root@localhost/notebook')
 

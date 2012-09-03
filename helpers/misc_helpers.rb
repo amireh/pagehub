@@ -17,6 +17,10 @@ module PageHub
       content.to_s.to_markdown
     end
 
+    def __host
+      request.referer.scan(/http:\/\/[^\/]*\//).first[0..-2]
+    end
+
     # Loads the user's preferences merging them with the defaults
     # for any that were not overridden.
     #

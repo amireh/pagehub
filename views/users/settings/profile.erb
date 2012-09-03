@@ -32,8 +32,8 @@
     <label>Your primary email address where we can reach you: <small><em>(not visible to people)</em></small>
       <br />
       <input type="text" name="email" class="very_fat" value="<%= current_user.email %>" />
-      <% unless current_user.email_verified? %>
-        <button class="thin bad">Verify</button>
+      <% unless current_user.verified? current_user.email %>
+        <a href="/settings/verify/primary" class="button thin bad">Verify</a>
       <% else %>
         <span>Verified</span>
       <% end %>
