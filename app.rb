@@ -6,10 +6,14 @@ $LOAD_PATH << $ROOT
 gem 'sinatra'
 gem 'sinatra-content-for'
 gem 'sinatra-flash'
+gem 'mysql'
 gem "dm-core", ">=1.2.0"
 gem "dm-serializer", ">=1.2.0"
 gem "dm-migrations", ">=1.2.0"
+gem "dm-validations", ">=1.2.0"
+gem "dm-constraints", ">=1.2.0"
 gem "dm-types", ">=1.2.0"
+gem "dm-mysql-adapter", ">=1.2.0"
 gem 'redcarpet'
 gem 'albino'
 gem 'nokogiri'
@@ -22,16 +26,20 @@ gem 'omniauth-twitter', '0.0.9'
 gem 'diff-lcs'
 gem 'gravatarify', ">= 3.1.0"
 gem "pony"
+gem 'uuid'
 
 require 'sinatra'
 require 'sinatra/content_for'
 require 'sinatra/flash'
-require 'data_mapper'
+require 'dm-core'
 # require 'dm-serializer'
 require 'dm-migrations'
 require 'dm-migrations/migration_runner'
-# require 'dm-constraints'
 require 'dm-mysql-adapter'
+# require 'dm-constraints'
+require 'dm-types'
+require 'dm-validations'
+require 'dm-constraints'
 require "digest/sha1"
 require 'json'
 require 'lib/common'
