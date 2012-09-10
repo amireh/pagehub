@@ -11,22 +11,25 @@
   border: none;
 }
 
-header h1 a {
+header h1 a,
+h1 {
   color: #E94E77 !important;
+  color: #999 !important;
 }
 
-h1 {
-  color: #E94E77;
-}
 
 h2 {
   color: #8FBE00;
+  /*color: #555;*/
 }
 
 h3,a, a:visited {
   color: #333;
 }
 
+code {
+  letter-spacing: 1px;
+}
 a {
   text-decoration: underline;
 }

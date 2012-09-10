@@ -1,3 +1,13 @@
+body.print {
+  font-family: Arial, "ProximaNova-Light";
+  font-size: 16px;
+  line-height: 20px;
+}
+body.print .strikes {
+  display: none;
+}
+
+
 header {
   max-height: inherit;
   margin-top: 15px;
