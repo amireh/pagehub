@@ -27,7 +27,7 @@ header h1 {
 #content > :first-child { padding-top: 0; margin-top: 0; }
 
 #breadcrumbs {
-  background: #eee;
+  background: rgba(0,0,0,0.075);
   margin: 0 0 10px 0;
   font-weight: bold;
   letter-spacing: 1px;
@@ -39,36 +39,29 @@ header h1 {
   position: relative;
   display: inline-block;
 }
-#breadcrumbs > a.selected,
-#breadcrumbs > a:hover,
-#sidebar > a:hover,
-#sidebar > a.selected {
-  color: red;
-}
+
 
 #sidebar {
+  background: rgba(0,0,0,0.075);
   clear: none;
   display: inline-block;
   vertical-align: top;
-
-  /*margin-left: 1%;*/
-  /*opacity: 0.85;*/
-  background: #eee;
+  opacity: 0.85;
   font-size: 0.85em;
   width: 28%;
   text-align: left;
   padding: 10px;
 }
 
-#sidebar ul,
-#sidebar ol {
+#sidebar #group_listing ul,
+#sidebar #group_listing ol {
   list-style-type: none;
   padding: 0;
   margin: 5px 0;
 }
-#sidebar ol {
+#sidebar #group_listing ol {
   padding: 0 0 0 15px;
 }
-#sidebar li:first-child { margin-left: -15px; }
-#sidebar > h2:first-child { background: rgba(0,0,0,0.05); color: #555; }
-#sidebar > h2 { padding: 10px; margin-top: 0;}
+#sidebar #group_listing ol li:first-child { margin-left: -15px; }
+#sidebar #group_listing > h2:first-child { background: rgba(0,0,0,0.05); color: #555; }
+#sidebar #group_listing > h2 { padding: 10px; margin-top: 0;}

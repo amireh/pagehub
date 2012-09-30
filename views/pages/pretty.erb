@@ -5,7 +5,9 @@
 <% end %>
 
 <% content_for :header do %>
-  <% if @public then %>
+  <% if @group then %>
+    <h1><a href="<%= @group.public_url %>"><%= @group.name %></a></h1>
+  <% elsif @public then %>
     <h1><a href="<%= @page.public_url true %>"><%= @page.title %></a></h1>
   <% else %>
     <h1><%= @page.title %></h1>

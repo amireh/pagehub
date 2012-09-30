@@ -10,6 +10,7 @@ class Group
   property :name,       String, length: 120, unique: true, required: true
   property :title,      String, length: 120
   property :is_public,  Boolean, default: false
+  property :css,        Text, default: ""
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   has n,     :folders,  :constraint => :set_nil

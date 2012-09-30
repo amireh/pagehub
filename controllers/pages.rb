@@ -297,7 +297,7 @@ end
 
 get '/:gname' do |gname|
   unless @scope = @group = Group.first({name: gname })
-    halt 404, "No such group."
+    halt 404, "No such group #{gname}."
   end
 
   erb :"/groups/public/show", layout: :"layouts/print"
@@ -313,7 +313,7 @@ get '/:gname/*' do |gname, crammed_path|
   pass if !group_member?
 
   unless @scope = @group = Group.first({name: gname })
-    halt 404, "No such group."
+    halt 404, "No such group #{gname}."
   end
 
   possible_folder_title = crammed_path.split('/').last
@@ -334,7 +334,7 @@ end
 # A group shared page
 get '/:gname/*' do |gname, crammed_path|
   unless @scope = @group = Group.first({name: gname })
-    halt 404, "No such group."
+    halt 404, "No such group #{gname}."
   end
 
   possible_folder_title = crammed_path.split('/').last

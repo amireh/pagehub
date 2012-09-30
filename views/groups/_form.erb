@@ -62,48 +62,7 @@
     // to the registered user listing - #users
     var add_user = function(nn) {
       dynamism.inject({ users: [ { nickname: nn, role: "member" } ]}, $("table"))
-      // var html = '<input type="hidden" name="users[]" value="' + nn + '" />';
-      // $("form").append(html);
-      // var user = $("div[data-template=user]").clone();
-
-      // user.children().each(function() {
-      //   $.each($(this).get(0).attributes, function(i, pair) {
-      //     // // console.log("changing attribute '" + pair.name + "' (" + pair.value + ")")
-      //     try {
-      //       child.attr(pair.name,pair.value.replace(/%NICKNAME%/g, nn));
-      //     } catch (e) {
-      //       // ignore properties that can't be changed
-      //     }
-      //   });
-      //   $(this).html($(this).html().replace(/%NICKNAME%/g, nn));
-      // });
-
-      // // toggle the admin checkbox if the user is an admin
-      // for (var i = 0; i < admins.length; ++i) {
-      //   if (admins[i] == nn) {
-      //     user.find("input[type=checkbox][name*=admins]").attr("checked", "checked");
-      //     break;
-      //   }
-      // }
-
-      // // $("#users").append("<li><span>" + nn + "</span> <small title='remove member'><strong>[ X ]</strong></small></li>");
-      // $("#users").append(user.children());
-      // users.push(nn);
-      // $("#users li:last small").click(function() {
-      //   rem_user($(this).prev("span").html());
-      //   $(this).parent().remove();
-      // })
     }
-    // Removes a registered user from users[]
-    // var rem_user = function(nn) {
-    //   $("form input[type=hidden][name*=users][value=" + nn + "]").remove();
-    //   for (var i = 0; i < users.length; ++i) {
-    //     if (users[i] == nn) {
-    //       users[i] = null;
-    //       break;
-    //     }
-    //   }
-    // }
 
     // Clicking on a received nickname will add it
     // to the registered members listing - #users
@@ -121,7 +80,6 @@
         list.empty();
         add_user(nn);
       });
-
     }
 
     // Populates the #user_listing with all the nicknames
@@ -294,6 +252,23 @@
     </tbody>
   </table>
 
+  <% if @group.is_admin?(current_user) %>
+    <h3>Custom CSS</h3>
+    <%= erb :"/shared/_editor" %>
+    <% content_for :js do %>
+      <script>
+        $(function() {
+          ui.editor = editor = ui.create_editor("page_editor", { mode: "css" });
+
+          $("form").submit(function() {
+            ui.editor.save();
+            return true;
+          })
+        });
+      </script>
+    <% end %>
+    <textarea name="css" id="page_editor" class="blocky_editor"><%= @group.css || "/* you can write your own CSS here that will be applied to all the group public pages */\n\n#content { width: 960px; }" %></textarea>
+  <% end %>
   <hr />
   <br />
 
@@ -315,6 +290,7 @@
       </p>
     </div>
   <% end %>
+
 
   <%= erb :"/shared/_confirmation_dlg" %>
 </form>

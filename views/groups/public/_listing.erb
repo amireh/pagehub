@@ -1,3 +1,13 @@
+<% def dump_page(p) %>
+  <li>
+  <% if @page && @page.id == p.id %>
+    <span class="selected"><%= p.title %></span>
+  <% else %>
+    <a href="<%= p.public_url %>"><%= p.title %></a>
+  <% end %>
+  </li>
+<% end %>
+
 <% def dump_folder(f) %>
   <ol>
     <li <%= 'class="selected"' if @folder && @folder.id == f.id %>>
@@ -6,10 +16,7 @@
       <li><em>This folder is empty.</em></li>
     <% else %>
       <% f.pages.each do |p| %>
-        <li>
-          <a
-            <%= 'class="selected"' if @page && @page.id == p.id %>
-            href="/<%= @group.name %>/<%= f.pretty_title %>/<%= p.pretty_title %>"><%= p.title %></a></li>
+        <% dump_page(p) %>
       <% end %>
     <% end %>
 
@@ -18,8 +25,11 @@
 <% end %>
 
 <% content_for :sidebar do %>
-  <h2>Group Pages</h2>
-  <ul>
-    <% @group.folders.all({ conditions: { folder_id: nil }, order: [ :title.asc ] }).each { |tlf| dump_folder(tlf) } %>
-  </ul>
+  <div id="group_listing">
+    <h2>Pages</h2>
+    <ul>
+      <% @group.pages.all({ folder: nil }).each { |p| dump_page p } %>
+      <% @group.folders.all({ conditions: { folder_id: nil }, order: [ :title.asc ] }).each { |tlf| dump_folder(tlf) } %>
+    </ul>
+  </div>
 <% end %>

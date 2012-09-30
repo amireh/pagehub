@@ -12,7 +12,7 @@
 }
 
 header h1 a {
-  color: #E94E77 !important;
+  color: #E94E77;
 }
 
 h1 {
@@ -41,4 +41,11 @@ hr {
 
 #content {
   padding-bottom: 0;
+}
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+  margin: 15px 0;
 }

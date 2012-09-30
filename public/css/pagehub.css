@@ -152,6 +152,9 @@ h3 {
 
 h1,h2,h3,h4,h5,h6 {
   font-family: "ProximaNova-Light";
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
+  cursor: text;
 }
 .stuff {
   width: 960px;
@@ -366,7 +369,6 @@ a.selected,
 .selected {
   /*text-decoration: underline;*/
   cursor: pointer;
-  color: #E94E77;
 }
 
 #resource_editor {
@@ -1002,6 +1004,12 @@ button[data-collapse] {
     -o-transition:      opacity 0.25s ease 0s;
     transition:         opacity 0.25s ease 0s;
 
+  }
+
+  .blocky_editor + .CodeMirror {
+    border: 1px solid #ddd;
+    margin-top: 0;
+    width: 100%;
   }
 
   .CodeMirror-scroll {

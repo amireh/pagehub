@@ -127,7 +127,8 @@ class Page
   end
 
   def public_url(relative = false)
-    prefix = relative ? "" : "http://www.pagehub.org"
+    # prefix = relative ? "" : "http://www.pagehub.org"
+    prefix = ''
     if folder then
       return "#{prefix}#{folder.public_url}/#{self.pretty_title}"
     else

@@ -137,8 +137,6 @@ post '/groups/:current_name', :auth => :group_admin do |current_name|
 
   name_changed = params[:name] && !params[:name].empty? && params[:name].to_s.sanitize != current_name
 
-  # puts params.inspect
-
   # Only the group creator can change its name
   if g.is_master_admin?(current_user)
     if name_changed
@@ -155,6 +153,7 @@ post '/groups/:current_name', :auth => :group_admin do |current_name|
     end
 
     g.is_public = params[:is_public] == "true"
+    g.css = params[:css]
   else
     if name_changed
       flash[:error] = "Only the group creator can change its name."

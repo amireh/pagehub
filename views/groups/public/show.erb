@@ -3,7 +3,7 @@
 
 
 <% content_for :header do %>
-  <h1><%= @group.name %></h1>
+  <h1><a href="<%= @group.public_url %>"><%= @group.name %></a></h1>
 <% end %>
 
 <%= erb :"/groups/public/_breadcrumbs" %>

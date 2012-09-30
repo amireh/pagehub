@@ -5,7 +5,7 @@
   <title><%= yield_content :title %></title>
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
-  <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" /> -->
   <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
 
   <% # I'm not really proud of the following but it's the quickest way to
@@ -30,11 +30,28 @@
       text-align: <%= preferences["publishing"]["justified"] ? 'justify' : 'left' %>;
     }
   </style>
+
   <link href="/css/print.css" rel="stylesheet" type="text/css" />
   <%= yield_content :css %>
 
+  <% if @group && @group.css && !@group.css.empty? %>
+    <style>
+      <%= @group.css %>
+    </style>
+  <% end %>
+
 </head>
-<body class="print <%= 'with_sidebar' if content_for?(:sidebar) %>">
+<% klasses = [ ] %>
+<%
+  @resource = @page || @folder
+  if @resource
+    klasses << @resource.pretty_title
+    klasses << @page.folder.pretty_title if @page && @page.folder
+  end
+  klasses << 'with_sidebar' if content_for? :sidebar
+%>
+
+<body class="print <%= klasses.join(' ') %>">
   <div id="top"></div>
 
   <a href="#top">top &uarr;</a>
