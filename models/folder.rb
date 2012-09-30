@@ -4,7 +4,7 @@ class Folder
   attr_writer :operating_user
 
   property :id, Serial
-  
+
   property :title,        String, length: 120, required: true
   property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
@@ -23,15 +23,15 @@ class Folder
   end
 
   # Only the folder creator can destroy it, and only if it
-  # doesn't contain folders created by others  
-  before :destroy, :deletable_by? 
-  before :destroy, :nullify_references 
+  # doesn't contain folders created by others
+  before :destroy, :deletable_by?
+  before :destroy, :nullify_references
 
   [ :save, :update ].each { |advice|
     before advice.to_sym do |*args|
       validate_hierarchy!
       validate_title!
-      
+
       throw :halt unless errors.empty?
 
       true
@@ -59,11 +59,20 @@ class Folder
     false
   end
 
+  def public_url(relative = true)
+    scope = group ? group.public_url : user.public_url
+    path = [ pretty_title ]
+    p = folder
+    while p do path.insert(0,p.pretty_title); p = p.folder end
+
+    return "#{scope}/#{path.join('/')}"
+  end
+
   private
 
   # pre-destroy validation hook:
   #
-  # Folders are deletable only by their authors and  only when all their 
+  # Folders are deletable only by their authors and  only when all their
   # children are owned by that same author.
   def deletable_by?(context = :default)
     if user != @operating_user
@@ -89,7 +98,7 @@ class Folder
   # move all its children pages and folders to that parent,
   # otherwise they are orphaned into the general folder.
   def nullify_references(context = :default)
-    new_parent = self.folder 
+    new_parent = self.folder
 
     self.pages.update!(folder: new_parent)
     self.folders.update!(folder: new_parent)
@@ -112,14 +121,14 @@ class Folder
   # A folder cannot be its own parent, or a child
   # of one of its children
   def validate_hierarchy!
-    if folder 
+    if folder
       # prevent the folder from being its own parent
       if folder.id == self.id then
         errors.add :folder_id, "You cannot add a folder to itself!"
 
       # or a parent being a child of one of its children
       elsif folder.is_child_of?(self) then
-        errors.add :folder_id, 
+        errors.add :folder_id,
           "Folder '#{title}' currently contains '#{folder.title}', it cannot become its child."
       end
     end

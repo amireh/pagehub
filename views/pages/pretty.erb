@@ -12,4 +12,17 @@
   <% end %>
 <% end %>
 
-<%= @page.content.to_markdown %>
+<% if @group %>
+  <% @folder ||= @page %>
+  <%= erb :"/groups/public/_breadcrumbs" %>
+<% end %>
+
+<% if @page.content.empty? %>
+  <p>This page is a stub.</p>
+<% else %>
+  <%= @page.content.to_markdown %>
+<% end %>
+
+<% if @group %>
+  <%= erb :"/groups/public/_listing" %>
+<% end %>

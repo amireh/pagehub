@@ -1,0 +1,25 @@
+<% def dump_folder(f) %>
+  <ol>
+    <li <%= 'class="selected"' if @folder && @folder.id == f.id %>>
+      <strong><a href="<%= f.public_url %>"><%= f.title %></a></strong></li>
+    <% if f.pages.empty? %>
+      <li><em>This folder is empty.</em></li>
+    <% else %>
+      <% f.pages.each do |p| %>
+        <li>
+          <a
+            <%= 'class="selected"' if @page && @page.id == p.id %>
+            href="/<%= @group.name %>/<%= f.pretty_title %>/<%= p.pretty_title %>"><%= p.title %></a></li>
+      <% end %>
+    <% end %>
+
+    <% f.folders.all({folder_id: f.id }).each { |cf| dump_folder(cf) } %>
+  </ol>
+<% end %>
+
+<% content_for :sidebar do %>
+  <h2>Group Pages</h2>
+  <ul>
+    <% @group.folders.all({ conditions: { folder_id: nil }, order: [ :title.asc ] }).each { |tlf| dump_folder(tlf) } %>
+  </ul>
+<% end %>

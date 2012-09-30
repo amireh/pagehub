@@ -6,9 +6,10 @@ class Group
   attr_accessor :state
 
   property :id, Serial
-  
+
   property :name,       String, length: 120, unique: true, required: true
   property :title,      String, length: 120
+  property :is_public,  Boolean, default: false
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   has n,     :folders,  :constraint => :set_nil
@@ -30,6 +31,10 @@ class Group
     gu.save
 
     true
+  end
+
+  def public_url
+    "/#{self.name}"
   end
 
   def all_pages
@@ -65,6 +70,7 @@ class Group
   alias_method :is_admin?, :has_admin?
 
   def has_member?(user)
+    return false if !user
     self.users.each { |u| return true if user.nickname == u.nickname }
     false
   end

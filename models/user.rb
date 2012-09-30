@@ -4,7 +4,7 @@ class User
   include DataMapper::Resource
 
   property :id, Serial
-  
+
   property :name,     String, length: 255, required: true
   property :provider, String, length: 255, required: true
   property :uid,      String, length: 255, required: true
@@ -56,6 +56,10 @@ class User
     "/profiles/#{self.nickname}"
   end
 
+  def public_url
+    "/#{self.nickname}"
+  end
+
   def verified?(address)
     if address == self.email
       unless ev = self.email_verifications.first({ primary: true })
@@ -86,7 +90,7 @@ class User
   end
 
   private
-  
+
   # Validates an email domain using Ruby's DNS resolver.
   # Thanks to:
   # => http://www.buildingwebapps.com/articles/79182-validating-email-addresses-with-ruby
@@ -105,7 +109,7 @@ class User
         throw :halt
       else
         unless validate_email_domain(email)
-          errors.add(:email, "Your #{type} email domain name appears to be incorrect.") 
+          errors.add(:email, "Your #{type} email domain name appears to be incorrect.")
           throw :halt
         end
       end

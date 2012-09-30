@@ -1,4 +1,4 @@
-{ 
+{
   "editing": {
     "font_face": "Proxima Nova",
     "font_size": 14,
@@ -7,7 +7,7 @@
     "autosave": true
   },
   "publishing": {
-    "scheme": "Hazzle Dazzle",
+    "scheme": "Clean",
     "width": "960",
     "justified": false
   },

@@ -109,7 +109,8 @@ def unshare_page(pid)
 end
 
 
-def locate_folder(path, scope, args = {})
+def locate_folder(path, scope = nil, args = {})
+  scope ||= @scope
   fidx = 0
   f = nil
   while fidx < path.length - 1
@@ -141,7 +142,7 @@ def locate_group_page(crammed_path)
     title = crammed_path.sanitize
 
     # locate the page
-    @page = @group.page.first({ pretty_title: title })
+    @page = @group.pages.first({ pretty_title: title })
   end
 
   @page
@@ -294,6 +295,14 @@ get '/:nickname/*' do |nn, crammed_path|
   return erb :"pages/pretty", layout: :"layouts/print"
 end
 
+get '/:gname' do |gname|
+  unless @scope = @group = Group.first({name: gname })
+    halt 404, "No such group."
+  end
+
+  erb :"/groups/public/show", layout: :"layouts/print"
+end
+
 # A group page. Group pages are visible to all members.
 #
 # Note: the reason we don't authenticate normally using
@@ -305,6 +314,11 @@ get '/:gname/*' do |gname, crammed_path|
 
   unless @scope = @group = Group.first({name: gname })
     halt 404, "No such group."
+  end
+
+  possible_folder_title = crammed_path.split('/').last
+  if @folder = @group.folders({pretty_title: possible_folder_title}).first
+    return erb :"folders/pretty", layout: :"layouts/print"
   end
 
   @page = locate_group_page(crammed_path)
@@ -323,14 +337,19 @@ get '/:gname/*' do |gname, crammed_path|
     halt 404, "No such group."
   end
 
+  possible_folder_title = crammed_path.split('/').last
+  if @folder = @group.folders({pretty_title: possible_folder_title}).first
+    return erb :"folders/pretty", layout: :"layouts/print"
+  end
+
   unless @page = locate_group_page(crammed_path)
-    halt 404, "No page with title for the group #{@group.title} could be found."
+    halt 404, "No such resource for the group #{@group.title} could be found."
   end
 
-  if !@group.public_pages.first({ page: @page })
-    halt 403, "That page is only viewable by its group members."
+  if @group.is_public || @group.public_pages.first({ page: @page })
+    @public = true
+    return erb :"pages/pretty", layout: :"layouts/print"
   end
 
-  @public = true
-  erb :"pages/pretty", layout: :"layouts/print"
+  halt 403, "That page is only viewable by its group members."
 end

@@ -128,7 +128,12 @@ class Page
 
   def public_url(relative = false)
     prefix = relative ? "" : "http://www.pagehub.org"
-    "#{prefix}/#{self.user.nickname}/#{self.pretty_title}"
+    if folder then
+      return "#{prefix}#{folder.public_url}/#{self.pretty_title}"
+    else
+      scope = group ? group.public_url : user.public_url
+      return "#{prefix}#{scope}/#{self.pretty_title}"
+    end
   end
 
   def revisions_url(prefix = "")

@@ -99,9 +99,10 @@ pagehub_ui = function() {
 
         // "listlike" links
         function() {
-          $("a.listlike:not(.selected)").bind('click', show_list);
-          $("ol.listlike li:not(.sticky), ol.listlike li:not(.sticky) *").click(function() {
-            var anchor = $(this).parent().prev("a.listlike");
+          $("a.listlike:not(.selected),a[data-listlike]:not(.selected)").bind('click', show_list);
+          $("ol.listlike li:not(.sticky), ol.listlike li:not(.sticky) *, \
+             ol[data-listlike] li:not(.sticky), ol[data-listlike] li:not(.sticky) *").click(function() {
+            var anchor = $(this).parent().prev("a.listlike,a[data-listlike]");
             if (anchor.hasClass("selected")) {
               hide_list(anchor);
             }
@@ -115,9 +116,10 @@ pagehub_ui = function() {
     if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
       return false;
 
-    hide_list($("a.listlike.selected"));
+    hide_list($("a.listlike.selected,a[data-listlike].selected"));
 
     $(this).next("ol").show();
+    $(this).next("ol").css("left", $(this).position().left);
       // .css("left", $(this).position().left);
     $(this).addClass("selected");
     $(this).unbind('click', show_list);
@@ -129,7 +131,7 @@ pagehub_ui = function() {
   function hide_list_callback(e) {
     e.preventDefault();
 
-    hide_list($(".listlike.selected:visible"));
+    hide_list($(".listlike.selected:visible,[data-listlike].selected:visible"));
 
     return false;
   }
@@ -628,7 +630,7 @@ pagehub_ui = function() {
         }
 
         // roll up the option list
-        $("a.listlike.selected").click();
+        $("a.listlike.selected,a[data-listlike].selected").click();
 
         return false;
       },
@@ -856,7 +858,7 @@ pagehub_ui = function() {
         });
 
         // roll up the option list
-        $("a.listlike.selected").click();
+        $("a.listlike.selected,a[data-listlike].selected").click();
 
         return true;
       },

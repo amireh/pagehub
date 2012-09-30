@@ -16,6 +16,7 @@
   %>
 
   <%= yield_content :scripts %>
+  <%= yield_content :js %>
 
   <% if params[:scheme] %>
     <link href="/css/schemes/<%= params[:scheme].sanitize %>.css" rel="stylesheet" type="text/css" />
@@ -30,9 +31,10 @@
     }
   </style>
   <link href="/css/print.css" rel="stylesheet" type="text/css" />
+  <%= yield_content :css %>
 
 </head>
-<body class="print">
+<body class="print <%= 'with_sidebar' if content_for?(:sidebar) %>">
   <div id="top"></div>
 
   <a href="#top">top &uarr;</a>
@@ -42,14 +44,16 @@
     <header>
       <%= yield_content :header %>
     </header>
-    <div class="strikes">
-      <hr />
-      <hr />
-    </div>
     <div id="content" class="print">
       <%= yield %>
       <div id="bottom"></div>
     </div>
+
+    <% if content_for?(:sidebar) %>
+      <div id="sidebar">
+        <%= yield_content :sidebar %>
+      </div>
+    <% end %>
 
     <!-- <hr /> -->
     <!-- <a href="http://pdfcrowd.com/url_to_pdf/">Convert this page to a PDF</a> -->

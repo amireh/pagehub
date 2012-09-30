@@ -14,6 +14,10 @@ get "/groups/:name/info", :auth => :group_member do |name|
   erb :"/groups/info"
 end
 
+get "/groups/:name/space", :auth => :group_member do |name|
+  erb :"/groups/public"
+end
+
 get '/groups/:name/edit', :auth => :group_admin do |name|
   erb :"/groups/edit"
 end
@@ -21,7 +25,7 @@ end
 get '/groups/:name/destroy', :auth => :group_creator do |name|
   # we're doing the following in the controller because I just couldn't
   # get the before :destroy hook in the Group model to work...
-  
+
   # disband all folder pages into a special "Orphan" folder for each user
   @group.users.each { |u|
     f = u.folders.create({ title: "Orphans: #{@group.title}" })
@@ -111,7 +115,7 @@ post '/groups', :auth => :user do
     return redirect back
   end
 
-  unless g = Group.new({ title: params[:name], admin: current_user })
+  unless g = Group.new({ title: params[:name], is_public: params[:is_public], admin: current_user })
     flash[:error] = "Group could not be created, please try again."
     return redirect back
   end
@@ -132,12 +136,12 @@ post '/groups/:current_name', :auth => :group_admin do |current_name|
   g = @group
 
   name_changed = params[:name] && !params[:name].empty? && params[:name].to_s.sanitize != current_name
-  
+
   # puts params.inspect
 
   # Only the group creator can change its name
-  if g.is_master_admin?(current_user) 
-    if name_changed 
+  if g.is_master_admin?(current_user)
+    if name_changed
       if !name_available?(params[:name])
         flash[:error] = "That group name is unavailable."
         return redirect back
@@ -149,6 +153,8 @@ post '/groups/:current_name', :auth => :group_admin do |current_name|
         g.title = params[:name]
       end
     end
+
+    g.is_public = params[:is_public] == "true"
   else
     if name_changed
       flash[:error] = "Only the group creator can change its name."

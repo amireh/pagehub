@@ -1,0 +1,15 @@
+<% content_for :js do %>
+<% end %>
+
+
+<% content_for :header do %>
+  <h1><%= @group.name %></h1>
+<% end %>
+
+<%= erb :"/groups/public/_breadcrumbs" %>
+
+<% if home_page = @group.pages({ title: "Home", folder_id: nil }).first %>
+  <%= md home_page.content %>
+<% end %>
+
+<%= erb :"/groups/public/_listing" %>

@@ -29,7 +29,7 @@
            url('fonts/ubuntu/Ubuntu-L-webfont.svg#UbuntuLight') format('svg');
       font-weight: normal;
       font-style: normal;
-  }  
+  }
   @font-face {
     font-family: 'ProximaNova-Light';
     src: url('fonts/proximanova/proximanova-light-webfont.eot');
@@ -69,14 +69,6 @@ html {
 }
 .funky {
   font-family: "UbuntuMonoRegular";
-}
-body.print {
-  font-family: "ProximaNova-Light";
-  font-size: 16px;
-  line-height: 20px;
-}
-body.print .strikes {
-  display: none;
 }
 
 small {
@@ -138,7 +130,7 @@ header { position: relative; }
 header, .stuff > nav { z-index: 102; }
 
 header h1, header h3 {
-  vertical-align: middle;  
+  vertical-align: middle;
   display: inline-block;
 }
 
@@ -329,7 +321,7 @@ button {
   -moz-transition:    left 0.5s ease 0s;
   -ms-transition:     left 0.5s ease 0s;
   -o-transition:      left 0.5s ease 0s;
-  transition:         left 0.5s ease 0s;    
+  transition:         left 0.5s ease 0s;
 
   box-shadow: 0 0px 3px 0px #615B4E;
   font-size: 14px;
@@ -364,7 +356,7 @@ header a em {
   -moz-transition:    color 0.5s ease 0s;
   -ms-transition:     color 0.5s ease 0s;
   -o-transition:      color 0.5s ease 0s;
-  transition:         color 0.5s ease 0s;      
+  transition:         color 0.5s ease 0s;
 }
 
 a:hover,
@@ -573,7 +565,7 @@ select {
   -moz-transition:    background-color 0.25s ease 0s;
   -ms-transition:     background-color 0.25s ease 0s;
   -o-transition:      background-color 0.25s ease 0s;
-  transition:         background-color 0.25s ease 0s;    
+  transition:         background-color 0.25s ease 0s;
 }
 input[type=text]:focus,
 input[type=email]:focus,
@@ -630,7 +622,7 @@ a.button {
   padding: 5px 10px;
 
   border: none;
- 
+
   text-transform: uppercase;
   font-weight: bold;
   display: inline-block;
@@ -639,10 +631,10 @@ a.button {
   -moz-transition:    all 0.25s ease 0s;
   -ms-transition:     all 0.25s ease 0s;
   -o-transition:      all 0.25s ease 0s;
-  transition:         all 0.25s ease 0s;  
+  transition:         all 0.25s ease 0s;
 }
 
-button:hover, 
+button:hover,
 input[type=submit]:hover,
 a.button:hover {
   /*background-position: 0 -5px;*/
@@ -750,14 +742,14 @@ a.listlike.selected {
   background-color: rgba(0,0,0,0.05);
 }
 
-ol.listlike { 
+ol.listlike {
   min-width: 180px;
   background: white;
 
-  display: none; 
-  position: absolute; 
+  display: none;
+  position: absolute;
   list-style-type: none;
-  margin: 0; 
+  margin: 0;
   padding: 0;
   z-index: 101; /* to be active on top of the page action bar */
   right: 0%;
@@ -851,7 +843,7 @@ a.button.good:not(:active) {
   background: -o-linear-gradient(top, rgba(143,200,0,1) 0%,rgba(143,200,0,1) 100%); /* Opera 11.10+ */
   background: -ms-linear-gradient(top, rgba(143,200,0,1) 0%,rgba(143,200,0,1) 100%); /* IE10+ */
   background: linear-gradient(to bottom, rgba(143,200,0,1) 0%,rgba(143,200,0,1) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8fc800', endColorstr='#8fc800',GradientType=0 ); /* IE6-9 */  
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8fc800', endColorstr='#8fc800',GradientType=0 ); /* IE6-9 */
   border-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -935,8 +927,8 @@ button.edit_folder:hover {
   position: absolute;
   top: 2px;
   left: -12px;
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-top:     7px solid transparent;
   border-bottom:  7px solid transparent;
   border-left:    7px solid #ddd;
@@ -945,8 +937,8 @@ button.edit_folder:hover {
 #drag_indicator {
   right: 0;
   left: auto;
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-right:   7px solid #ddd;
   border-left: none;
 }
@@ -1008,7 +1000,7 @@ button[data-collapse] {
     -moz-transition:    opacity 0.25s ease 0s;
     -ms-transition:     opacity 0.25s ease 0s;
     -o-transition:      opacity 0.25s ease 0s;
-    transition:         opacity 0.25s ease 0s;    
+    transition:         opacity 0.25s ease 0s;
 
   }
 
@@ -1231,14 +1223,14 @@ button[data-collapse] {
 
   /* The Window's CSS z-index value is respected (takes priority). If none is supplied,
     the Window's z-index value will be set to 3000 by default (via jqModal.js). */
-    
+
   .jqmWindow {
       display: none;
-      
+
       position: fixed;
       top: 17%;
       left: 50%;
-      
+
       margin-left: -300px;
       width: 600px;
       /*
@@ -1252,7 +1244,7 @@ button[data-collapse] {
 
   div.jqmConfirm { /* contains + positions the alert window */
     display: none;
-    
+
     position: fixed;
     top: 17%;
     width: 100%;
@@ -1270,7 +1262,7 @@ button[data-collapse] {
     box-shadow: 0 0 1px 5px #BBB;
     border-radius: 3px;
     position: relative;
-    padding-bottom: 50px;    
+    padding-bottom: 50px;
   }
 
   .jqmConfirmTitle{
@@ -1316,10 +1308,10 @@ button[data-collapse] {
   }
 
 /*  .clearfix:after {
-      content: "."; 
-      display: block; 
-      height: 0; 
-      clear: both; 
+      content: ".";
+      display: block;
+      height: 0;
+      clear: both;
       visibility: hidden;
   }
 
@@ -1356,7 +1348,7 @@ button[data-collapse] {
   -moz-transition:    opacity 0.25s ease 0s;
   -ms-transition:     opacity 0.25s ease 0s;
   -o-transition:      opacity 0.25s ease 0s;
-  transition:         opacity 0.25s ease 0s;  
+  transition:         opacity 0.25s ease 0s;
 }
 .tooltip.in {
   opacity: 0.9;
@@ -1439,3 +1431,4 @@ button[data-collapse] {
 #content.profiles h1 span {
   font-weight: normal;
 }
+

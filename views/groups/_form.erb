@@ -65,7 +65,7 @@
       // var html = '<input type="hidden" name="users[]" value="' + nn + '" />';
       // $("form").append(html);
       // var user = $("div[data-template=user]").clone();
-      
+
       // user.children().each(function() {
       //   $.each($(this).get(0).attributes, function(i, pair) {
       //     // // console.log("changing attribute '" + pair.name + "' (" + pair.value + ")")
@@ -92,7 +92,7 @@
       // $("#users li:last small").click(function() {
       //   rem_user($(this).prev("span").html());
       //   $(this).parent().remove();
-      // })      
+      // })
     }
     // Removes a registered user from users[]
     // var rem_user = function(nn) {
@@ -110,7 +110,7 @@
     var bind_user_listing = function(list) {
       list.find("li").click(function() {
         var nn = $(this).html();
-        
+
         // don't add a user twice
         log(users + " => " + nn )
         for (var i = 0; i < users.length; ++i) {
@@ -136,9 +136,9 @@
         success: function(users) {
           var users = JSON.parse(users);
           console.log(users)
-          
+
           list.empty();
-          
+
           if (users.length > 0) {
             for (var i = 0; i < users.length; ++i) {
               list.append("<li>" + users[i] + "</li>");
@@ -174,8 +174,8 @@
 
     var kicked = {};
     var kick_member = function(id, nn) {
-      pagehub.groups.kick(id, gid, { 
-        success: function() { 
+      pagehub.groups.kick(id, gid, {
+        success: function() {
           ui.status.show(nn + " is no longer a member of this group.", "good");
           kicked[id] = true;
 
@@ -216,7 +216,7 @@
 <% end %>
 
 <% conditionals = {
-  heading: @editing ? 
+  heading: @editing ?
     "Group Management - <a href='/groups/#{@group.name}/info'>#{@group.title}</a>"
   : "Group Registration",
   form_action: @editing ? "/groups/#{@group.name}" : "/groups",
@@ -250,8 +250,14 @@
       </p>
       <p><label><input name="confirmed" type="checkbox" value="do it" />
         I have read the warning and I understand the implications. Do it.</label>
-      </p> 
-    <% end %> 
+      </p>
+    <% end %>
+
+    <h3>Public access</h3>
+    <label>
+      <input type="checkbox" <%= 'checked="checked"' if @group.is_public %> value="true" name="is_public" />
+      Allow people to read and browse the group documents automatically
+    </label>
   <% end %>
 
   <h3>Members</h3>
@@ -277,7 +283,7 @@
           %nickname
         </td>
         <td>
-          <label><input type="radio" name="users[-1][role]" value="member" checked="checked" /> Member</label>          
+          <label><input type="radio" name="users[-1][role]" value="member" checked="checked" /> Member</label>
           <label><input type="radio" name="users[-1][role]" value="editor" /> Editor</label>
           <label><input type="radio" name="users[-1][role]" value="admin" /> Admin</label>
         </td>

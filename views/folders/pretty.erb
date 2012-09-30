@@ -1,0 +1,42 @@
+<% content_for :js do %>
+  <script>
+    pagehub_settings = <%= preferences.to_json %>;
+    last_error = null; // used for debugging
+  </script>
+
+  <script>
+    // $(function() {
+    //   $("#breadcrumbs a").hover(function() {
+    //     if ($(this).hasClass("selected")) {
+    //       $("#breadcrumbs .selected").removeClass("selected");
+    //       $(this).next("ol:first").hide();
+    //       return false;
+    //     }
+
+    //     $(this).next("ol:first").toggle();
+    //     $("#breadcrumbs .selected").removeClass("selected");
+    //     $(this).addClass("selected");
+    //   });
+    // });
+  </script>
+<% end %>
+
+<% content_for :header do %>
+  <h1><%= @group.name %></h1>
+<% end %>
+
+<%= erb :"/groups/public/_breadcrumbs" %>
+
+<% if home_page = @folder.pages({ title: "Home" }).first %>
+  <%= md home_page.content %>
+<% else %>
+  <p>This folder has no home page,
+    <% if @folder.pages.any? %>
+      but it does have <%= pluralize(@folder.pages.size, "page") %>
+      you will find in the sidebar.
+    <% else %>and it has no pages either.<% end %>
+  </p>
+
+<% end %>
+
+<%= erb :"/groups/public/_listing" %>
