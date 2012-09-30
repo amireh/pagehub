@@ -34,43 +34,6 @@ require 'gravatarify'
 # require 'omniauth-google-oauth2'
 # require 'openid/store/filesystem'
 
-configure :production do
-  gem 'omniauth'
-  gem 'omniauth-facebook'
-  gem 'omniauth-github'
-  gem 'omniauth-twitter', '0.0.9'
-  gem "pony"
-
-  require 'omniauth'
-  require 'omniauth-facebook'
-  require 'omniauth-github'
-  require 'omniauth-twitter'
-  require 'pony'
-
-  use OmniAuth::Builder do
-    provider :developer if settings.development?
-    provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
-    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
-    provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
-    # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
-    # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
-  end
-
-  Pony.options = {
-    :from => "noreply@pagehub.org",
-    :via => :smtp, :via_options => {
-      :address => 'smtp.gmail.com',
-      :port => '587',
-      :enable_starttls_auto => true,
-      :user_name => ENV['GMAIL_ID'],
-      :password => ENV['GMAIL_PW'],
-      :authentication => :plain, # :plain, :login, :cram_md5, no auth by default
-      :domain => "HELO", # don't know exactly what should be here
-    }
-  }
-
-end
-
 configure do
   # enable :sessions
   use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
@@ -110,6 +73,43 @@ configure do
   DataMapper.auto_upgrade!
 
   set :default_preferences, JSON.parse(File.read(File.join($ROOT, "default_preferences.json")))
+end
+
+configure :production do
+  gem 'omniauth'
+  gem 'omniauth-facebook'
+  gem 'omniauth-github'
+  gem 'omniauth-twitter', '0.0.9'
+  gem "pony"
+
+  require 'omniauth'
+  require 'omniauth-facebook'
+  require 'omniauth-github'
+  require 'omniauth-twitter'
+  require 'pony'
+
+  use OmniAuth::Builder do
+    provider :developer if settings.development?
+    provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
+    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
+    provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+    # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
+    # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
+  end
+
+  Pony.options = {
+    :from => "noreply@pagehub.org",
+    :via => :smtp, :via_options => {
+      :address => 'smtp.gmail.com',
+      :port => '587',
+      :enable_starttls_auto => true,
+      :user_name => ENV['GMAIL_ID'],
+      :password => ENV['GMAIL_PW'],
+      :authentication => :plain, # :plain, :login, :cram_md5, no auth by default
+      :domain => "HELO", # don't know exactly what should be here
+    }
+  }
+
 end
 
 not_found do
