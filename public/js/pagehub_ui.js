@@ -1039,7 +1039,7 @@ pagehub_ui = function() {
               $(".general-folder > ol > li:hidden:first").show();
             }
 
-            $("a[id^=page_]:visible:first").click();
+            $("a[id^=page_]:visible:last").click();
           },
           function(e) {
             ui.status.show("Page could not be destroyed: " + e.responseText, "bad");

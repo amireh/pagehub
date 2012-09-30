@@ -254,11 +254,19 @@
 
   <% if @group.is_admin?(current_user) %>
     <h3>Custom CSS</h3>
+    <p>You can customize how your public pages look like by writing your own CSS code below.
+      <a href="http://www.pagehub.org/pagehub/css-skinning">The skinning guide</a>
+      contains a reference of the page structure, DOM, and everything you need
+      for skinning.
+    </p>
+
     <%= erb :"/shared/_editor" %>
     <% content_for :js do %>
       <script>
         $(function() {
-          ui.editor = editor = ui.create_editor("page_editor", { mode: "css" });
+          ui.editor = editor = ui.create_editor("page_editor", {
+            mode: "css"
+          });
 
           $("form").submit(function() {
             ui.editor.save();

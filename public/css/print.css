@@ -18,6 +18,10 @@ header h1 {
   line-height: normal;
 }
 
+#content.print img {
+  max-width: 100%;
+}
+
 .with_sidebar #content { float: left; min-width: 70%; max-width: 70%; }
 .with_sidebar #content,
 .with_sidebar #sidebar { display: inline-block; clear: none; vertical-align: top; }
@@ -51,6 +55,7 @@ header h1 {
   width: 28%;
   text-align: left;
   padding: 10px;
+  position: relative;
 }
 
 #sidebar #group_listing ul,

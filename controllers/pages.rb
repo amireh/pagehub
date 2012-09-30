@@ -3,6 +3,7 @@
 # Creates a blank new page
 def create_page()
   p = @scope.pages.create({ user: current_user })
+  puts p
   p.to_json
 end
 
@@ -125,8 +126,6 @@ end
 
 def locate_group_page(crammed_path)
   path = crammed_path.split('/')
-
-  puts "looking for a group page"
 
   if path.length > 1
     unless f = locate_folder(path, @group, {})
@@ -298,6 +297,10 @@ end
 get '/:gname' do |gname|
   unless @scope = @group = Group.first({name: gname })
     halt 404, "No such group #{gname}."
+  end
+
+  if !@group.is_public && (!current_user || !@group.is_member?(current_user))
+    halt 403, "You are not authorized to view this group's pages."
   end
 
   erb :"/groups/public/show", layout: :"layouts/print"
