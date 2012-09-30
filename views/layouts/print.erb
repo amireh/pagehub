@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title><% yield_content :title %></title>
+  <title><%= yield_content :title %></title>
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" />
@@ -15,7 +15,7 @@
      if @page then @user = @page.user end
   %>
 
-  <% yield_content :scripts %>
+  <%= yield_content :scripts %>
 
   <% if params[:scheme] %>
     <link href="/css/schemes/<%= params[:scheme].sanitize %>.css" rel="stylesheet" type="text/css" />
@@ -30,17 +30,17 @@
     }
   </style>
   <link href="/css/print.css" rel="stylesheet" type="text/css" />
-  
+
 </head>
 <body class="print">
   <div id="top"></div>
-  
+
   <a href="#top">top &uarr;</a>
   <a href="#bottom">bottom &darr;</a>
 
   <div class="stuff">
     <header>
-      <% yield_content :header %>
+      <%= yield_content :header %>
     </header>
     <div class="strikes">
       <hr />

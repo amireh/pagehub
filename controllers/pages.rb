@@ -2,7 +2,8 @@
 
 # Creates a blank new page
 def create_page()
-  @scope.pages.create({ user: current_user }).to_json
+  p = @scope.pages.create({ user: current_user })
+  p.to_json
 end
 
 def load_page(pid)
@@ -33,7 +34,7 @@ def update_page(pid)
       # p.save
     rescue Revision::NothingChangedError
       # it's ok, we'll just not store a revision
-    end    
+    end
   end
 
   if p.dirty?
@@ -97,14 +98,14 @@ def unshare_page(pid)
   unless pp = @scope.public_pages.first({ page: page })
     halt 400, "That page isn't shared."
   end
-  
+
   if pp.destroy
     flash[:notice] = "Page #{page.title} is no longer shared with the public."
   else
     flash[:error] = "Unable to un-share the page, please try again."
   end
 
-  redirect back  
+  redirect back
 end
 
 
@@ -189,7 +190,7 @@ def rollback_page(pid, rid)
 
   flash[:notice] = "Page #{@page.title} has been restored to revision #{@rv.version}"
 
-  redirect @rv.url(@scope.namespace)  
+  redirect @rv.url(@scope.namespace)
 end
 
 # CRUDs
@@ -232,7 +233,7 @@ post '/groups/:gid/pages/:id/revisions/:rid', auth: :group_editor do |gid, pid, 
 #   }
 
 #   if nr_invalidated_links > 0
-#     flash[:notice] = 
+#     flash[:notice] =
 #       "#{nr_invalidated_links} public links have been invalidated because \
 #       the pages they point to have deleted."
 #   end
@@ -331,5 +332,5 @@ get '/:gname/*' do |gname, crammed_path|
   end
 
   @public = true
-  erb :"pages/pretty", layout: :"layouts/print"  
+  erb :"pages/pretty", layout: :"layouts/print"
 end

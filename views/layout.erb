@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title><% yield_content :title %></title>
+  <title><%= yield_content :title %></title>
 
   <% if settings.development? %>
     <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
@@ -13,7 +13,7 @@
     <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.min.css" rel="stylesheet" type="text/css" />
   <% end %>
 
-  <% yield_content :css %>
+  <%= yield_content :css %>
 
   <script type="text/javascript" src="/js/modernizr.js"></script>
   <script type="text/javascript" src="/js/json2.min.js"></script>
@@ -34,8 +34,8 @@
     <script src="/js/ugly/all.js"></script>
   <% end %>
 
-  <% yield_content :js %>
-  <% yield_content :scripts %>
+  <%= yield_content :js %>
+  <%= yield_content :scripts %>
 </head>
 
 <body class="member">
@@ -43,13 +43,13 @@
   <div class="header_wrap">
   </div>
 
-  <% yield_content :wraps %>
+  <%= yield_content :wraps %>
   <div class="stuff">
     <header>
       <h1><a href="/">Page<em>Hub</em></a></h1>
-      <div class="subheader"><% yield_content :header %></div>
+      <div class="subheader"><%= yield_content :header %></div>
     </header>
-    
+
     <nav>
 
       <span>Hi <%= current_user.nickname %></span>

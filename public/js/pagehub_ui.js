@@ -48,7 +48,7 @@ pagehub_ui = function() {
             $(this).append($("#collapser").clone().attr({ id: null, hidden: null }));
           });
         },
-        
+
         // Bind the title editor's key presses:
         // 1. on RETURN: update the page and the entry
         // 2. on ESCAPE: hide the editor and reset the title
@@ -65,7 +65,7 @@ pagehub_ui = function() {
             e.preventDefault();
           });
 
-          $("#update_title").click(function() { 
+          $("#update_title").click(function() {
             return ui.resource_editor.save();
           });
           $("#cancel_title_editing").click(function() {
@@ -221,11 +221,11 @@ pagehub_ui = function() {
         source.siblings(":not(span.folder_title)").show();
         source.attr("data-collapsed", null).html("&minus;");
         source.parent().removeClass("collapsed");
-        
+
         pagehub.settings.runtime.cf.pop_value(parseInt(source.attr("data-folder")));
         pagehub.settings_changed = true;
       } else {
-        source.siblings(":not(span.folder_title)").hide();        
+        source.siblings(":not(span.folder_title)").hide();
         source.attr("data-collapsed", true).html("&plus;");
         source.parent().addClass("collapsed");
 
@@ -234,7 +234,7 @@ pagehub_ui = function() {
       }
     },
 
-    modal: { 
+    modal: {
       as_alert: function(resource, callback) {
         if (typeof resource == "string") {
 
@@ -253,7 +253,7 @@ pagehub_ui = function() {
 
         $("#status").addClass("hidden").removeClass("visible");
         status_shown = false;
-        
+
         if (cb)
           cb();
 
@@ -299,7 +299,7 @@ pagehub_ui = function() {
     },
 
     on_action: function(action, handler, props) {
-      
+
       var defaults = {
         is_editor_action: true
       }
@@ -404,11 +404,11 @@ pagehub_ui = function() {
         }
 
         var title = $("#resource_editor input[type=text][name=title]").attr("value");
-        
+
         // is it a folder?
         if (ui.is_folder_selected()) {
           resource_id   = current_folder_id();
-          
+
           if ($("#parent_folder_selection select :selected").length == 0) {
             $("#parent_folder_selection select option:first").attr("selected", "selected");
           }
@@ -453,7 +453,7 @@ pagehub_ui = function() {
         if (!ui.is_page_selected())
           return false;
 
-        $("a.confirm#destroy_page").click();      
+        $("a.confirm#destroy_page").click();
       },
     },
 
@@ -535,7 +535,7 @@ pagehub_ui = function() {
                           : $(this).parent().attr("id").replace("folder_", ""),
               page_link = $("#page_listing .drag-src a"),
               move_link = $("a[data-action=move][data-folder=" + folder_id + "]");
-         
+
           if (current_page_id() != page_id) {
             // load the page
             action_hooks.pages.on_load.push(function() {
@@ -570,7 +570,7 @@ pagehub_ui = function() {
 
       on_dragenter: function() {
         $("#page_listing").find(".drop-target").removeClass("drop-target");
-        
+
         // add a drop-target class:
         // general folder? (it has no title <span>)
         if ($(this).is("li")) {
@@ -587,6 +587,7 @@ pagehub_ui = function() {
 
       make_draggable: function(el) {
         // Visually mark the folder as "droppable" using the #indicator arrow
+        var el = $(el).get(0);
         el.addEventListener('dragenter',  ui.resources.on_dragenter);
         el.addEventListener('drop',       ui.resources.on_drop);
         el.addEventListener('dragend',    ui.resources.on_drop);
@@ -653,7 +654,7 @@ pagehub_ui = function() {
 
         // update the resource editor parent folder selection menu
         $("#resource_editor option[value=folder_" + f.id + "]").html(f.title);
-      }, 
+      },
 
       on_injection: function(el) {
         var folder_id = parseInt(el.attr("id").replace("folder_", "")),
@@ -663,7 +664,7 @@ pagehub_ui = function() {
         if (el.find("> ol > li[data-dyn-index][data-dyn-index!=-1]").length > 0) {
           el.find("> ol > li:first").hide();
         } else {
-          el.find("> ol > li:first").show();          
+          el.find("> ol > li:first").show();
         }
 
         // if it's the general folder, we don't want to display its title
@@ -683,7 +684,7 @@ pagehub_ui = function() {
 
           // and to the parent folder selection in the resource editor
           $("#parent_folder_selection select")
-            .append('<option value="' + el.attr("id") 
+            .append('<option value="' + el.attr("id")
               + '">' + el.find("> span").html()
               + '</option>');
 
@@ -739,11 +740,11 @@ pagehub_ui = function() {
         })
 
         // keep the general folder at the bottom of the list
-        var general_folder 
+        var general_folder
           = $("#page_listing").find(".folder.general-folder");
             $("#page_listing").append(general_folder);
 
-        ui.status.mark_ready();     
+        ui.status.mark_ready();
       },
 
       edit_title: function() {
@@ -844,7 +845,7 @@ pagehub_ui = function() {
             if (Modernizr.draganddrop) {
               var page_li = $("#page_" + page.id).parent();
               page_li.bind('dragstart', ui.resources.on_drag_start);
-              ui.resources.make_draggable(page_li);              
+              ui.resources.make_draggable(page_li);
             }
           },
           error: function(e) {
@@ -928,9 +929,9 @@ pagehub_ui = function() {
 
             // $("a[data-action=move]").unbind('click');
             $("a[data-action=move]").each(function() {
-              $(this).attr("href", 
+              $(this).attr("href",
                 pagehub.namespace
-                + "/folders/" 
+                + "/folders/"
                 + $(this).attr("data-folder")
                 + "/add/" + page.id);
             });
@@ -942,7 +943,7 @@ pagehub_ui = function() {
             ui.editor.focus();
           },
           complete: function() {
-            ui.status.mark_ready();          
+            ui.status.mark_ready();
           }
         });
 
@@ -956,7 +957,7 @@ pagehub_ui = function() {
         }
 
         pagehub.content_changed = true;
-        
+
         var page_id   = current_page_id(),
             content   = ui.editor.getValue(),
             handlers  = {};
@@ -1022,7 +1023,7 @@ pagehub_ui = function() {
             page_title  = entry.html(); // for status
 
         ui.resource_editor.hide();
-        
+
         pagehub.pages.destroy(page_id,
           // success
           function() {
@@ -1035,6 +1036,8 @@ pagehub_ui = function() {
             if ($(".general-folder > ol > li:visible").length == 0) {
               $(".general-folder > ol > li:hidden:first").show();
             }
+
+            $("a[id^=page_]:visible:first").click();
           },
           function(e) {
             ui.status.show("Page could not be destroyed: " + e.responseText, "bad");

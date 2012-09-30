@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title><% yield_content :title %></title>
+  <title><%= yield_content :title %></title>
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <script type="text/javascript" src="/js/shortcut.js"></script>
@@ -32,8 +32,8 @@
     });
 
   </script>
-    
-  <% yield_content :scripts %>
+
+  <%= yield_content :scripts %>
 
   <link href="/css/skins/light.css" rel="stylesheet" type="text/css" />
   <link href="/css/guest.css" rel="stylesheet" type="text/css" />
@@ -52,7 +52,7 @@
     <header>
       <h1><a href="/"><img src="/images/Logo-black-without-glass.png" alt="PageHub Logo" /></a></h1>
     </header>
-    
+
     <div id="content">
       <div id="status">
       </div>
@@ -78,7 +78,7 @@
 
     <%= erb :"footer", locals: { guest: true } %>
   </div>
-  
+
 </body>
 
 </html>

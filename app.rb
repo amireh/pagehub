@@ -4,7 +4,7 @@ $ROOT ||= File.dirname(__FILE__)
 $LOAD_PATH << $ROOT
 
 gem 'sinatra'
-gem 'sinatra-content-for'
+gem 'sinatra-contrib'
 gem 'sinatra-flash'
 gem "dm-core", ">=1.2.0"
 gem "dm-serializer", ">=1.2.0"
@@ -32,7 +32,7 @@ require 'json'
 require 'lib/common'
 require 'gravatarify'
 # require 'omniauth-google-oauth2'
-# require 'openid/store/filesystem' 
+# require 'openid/store/filesystem'
 
 configure :production do
   gem 'omniauth'
@@ -51,12 +51,12 @@ configure :production do
     provider :developer if settings.development?
     provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
-    provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET'] 
+    provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
     # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
     # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
   end
 
-  Pony.options = { 
+  Pony.options = {
     :from => "noreply@pagehub.org",
     :via => :smtp, :via_options => {
       :address => 'smtp.gmail.com',
@@ -68,7 +68,7 @@ configure :production do
       :domain => "HELO", # don't know exactly what should be here
     }
   }
-    
+
 end
 
 configure do
@@ -118,7 +118,7 @@ not_found do
     r = response.body.first
     return r.include?("<html>") ? "404 - bad link!" : r.to_json
   end
-  
+
   erb :"404", layout: logged_in? ? :layout : :"layouts/guest"
 end
 
@@ -128,7 +128,7 @@ error 403 do
     r = response.body.first
     return r.include?("<html>") ? "403 - forbidden!" : r.to_json
   end
-  
+
   erb :"403", layout: logged_in? ? :layout : :"layouts/guest"
 end
 

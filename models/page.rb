@@ -1,8 +1,9 @@
 require 'digest/sha1'
+require 'base64'
 
 class Page
   include DataMapper::Resource
-  
+
   attr_writer :operating_user
 
   property :id,           Serial
@@ -44,7 +45,7 @@ class Page
     end
   end
 
-  before :destroy, :deletable_by? 
+  before :destroy, :deletable_by?
 
   def generate_revision(new_content, editor)
     if !persisted?
@@ -55,7 +56,7 @@ class Page
     if !new_content
       return true
     end
-    
+
     rv = Revision.new
     rv.context = { content: new_content }
     rv.editor = editor
@@ -87,11 +88,11 @@ class Page
   def rollback(dest_rv)
     new_content = snapshot(dest_rv)
     current_content = self.content.dup
-    
+
     unless carbon_copy.update({ content: new_content })
       return false
     end
-    
+
     unless update({ content: new_content })
       carbon_copy.update!({ content: current_content })
       return false
