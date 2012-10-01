@@ -1,0 +1,27 @@
+<% content_for :css do %>
+  <link type="text/css" rel="stylesheet" href="/css/settings.css" />
+<% end %>
+
+<% content_for :scripts do %>
+  <script>
+    $(function() {
+      $(".settings > nav a[href=\"<%= request.path %>\"]")
+        .addClass("selected").parent().addClass("selected");
+    })
+  </script>
+<% end %>
+
+<nav>
+  <ul>
+    <li>Settings</li>
+    <li><a  data-placement="right"
+            title="The group name and other basic stuff"
+            href="<%= @group.url("/edit/general") %>">General</a>
+    </li>
+    <li><a  data-placement="right"
+            title="Manage group members, their roles, etc."
+            href="<%= @group.url("/edit/memberships") %>">Memberships</a>
+    </li>
+    <li><a href="<%= @group.url("/edit/publishing") %>">Publishing</a></li>
+  </ul>
+</nav>

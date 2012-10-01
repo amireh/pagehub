@@ -31,14 +31,16 @@ class User
 
   validates_presence_of :name, :provider, :uid
 
-  before :valid? do |_|
-    self.nickname = self.name.to_s.sanitize if self.nickname.empty?
+  [ :create, :save ].each { |advice|
+    before advice do |_|
+      self.nickname = self.name.to_s.sanitize if self.nickname.empty?
 
-    validate_email!(self.email, "primary")
-    validate_email!(self.gravatar_email, "gravatar")
+      validate_email!(self.email, "primary")
+      validate_email!(self.gravatar_email, "gravatar")
 
-    true
-  end
+      errors.empty?
+    end
+  }
 
   def demo?
     name == "PageHub Demo"
@@ -52,7 +54,7 @@ class User
 
     @operating_user = u
   end
-  
+
   before :destroy do
     #puts ":destroy => self: #{self.inspect}"
   end
@@ -123,7 +125,7 @@ class User
 
   def validate_email!(email, type)
     unless email.nil? || email.empty?
-      unless email =~ /^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/
+      unless email.is_email?
         errors.add(:email, "Your #{type} email address does not appear to be valid.")
         throw :halt
       else

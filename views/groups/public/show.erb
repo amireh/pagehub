@@ -6,10 +6,10 @@
   <h1><a href="<%= @group.public_url %>"><%= @group.title %></a></h1>
 <% end %>
 
-<%= erb :"/groups/public/_breadcrumbs" %>
+<%= partial "/groups/public/_breadcrumbs" %>
 
 <% if home_page = @group.pages({ title: "Home", folder_id: nil }).first %>
   <%= md home_page.content %>
 <% end %>
 
-<%= erb :"/groups/public/_listing" %>
+<%= partial "/groups/public/_listing" %>

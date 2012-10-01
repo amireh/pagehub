@@ -38,6 +38,7 @@ require 'dm-validations'
 require 'dm-constraints'
 require "digest/sha1"
 require 'json'
+require 'config/constants'
 require 'lib/common'
 require 'gravatarify'
 # require 'omniauth-google-oauth2'
@@ -149,8 +150,12 @@ error do
   erb :"500", layout: logged_in? ? :layout : :"layouts/guest"
 end
 
+before do
+  @layout = "layouts/#{logged_in? ? 'primary' : 'guest' }".to_sym
+end
+
 get '/' do
-  destination = "greeting"
+  destination = "static/greeting"
   layout = "layouts/guest"
 
   if logged_in?
@@ -164,7 +169,7 @@ end
 
 %w(/tutorial /testdrive).each { |uri|
   send("get", uri, auth: :user) do
-    erb :"/tutorial.md", layout: :"layouts/print"
+    erb :"static/tutorial.md", layout: :"layouts/print"
   end
 }
 
@@ -180,9 +185,9 @@ get '/help' do
 end
 
 get '/features' do
-  erb :"/features", layout: :"/layouts/guest"
+  erb :"static/features", layout: :"/layouts/guest"
 end
 
 get '/about' do
-  erb :"/about", layout: :"/layouts/guest"
+  erb :"static/about", layout: :"/layouts/guest"
 end

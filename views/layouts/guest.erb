@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title><%= yield_content :title %></title>
+  <title><%= yield_with_default(:title) { AppTitle } %></title>
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <script type="text/javascript" src="/js/shortcut.js"></script>
-  <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" /> -->
   <link href="/css/fonts/ubuntu/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/fonts/ubuntu-mono/stylesheet.css" rel="stylesheet" type="text/css" />
   <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
@@ -46,7 +46,8 @@
     <nav>
       <a href="/features">Features</a> &nbsp;
       <a href="/about">About</a> &nbsp;
-      <a id="login" href="/login">Sign in</a>
+      <a href="/users/new">Sign up</a>
+      <a id="login" href="/sessions/new">Sign in</a>
     </nav>
 
     <header>
@@ -76,7 +77,7 @@
       <%= yield %>
     </div>
 
-    <%= erb :"footer", locals: { guest: true } %>
+    <%= partial "layouts/_footer", locals: { guest: true } %>
   </div>
 
 </body>

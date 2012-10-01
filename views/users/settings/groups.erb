@@ -1,7 +1,7 @@
 <% content_for :title do %> Groups - Settings | <%= current_user.nickname %> | PageHub <% end %>
 
-<%= erb :"users/settings/_nav" %>
-<%= erb :"shared/_confirmation_dlg" %>
+<%= partial "users/settings/_nav" %>
+<%= partial "shared/_confirmation_dlg" %>
 <% content_for :js do %>
 <script>
   $(function() {

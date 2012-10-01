@@ -1,6 +1,6 @@
 <% content_for :title do %> <%= current_user.nickname %> | PageHub <% end %>
 
-<%= erb :"/shared/_editor" %>
+<%= partial "/shared/_editor" %>
 
 <% content_for :js do %>
   <script type="text/javascript">
@@ -25,6 +25,6 @@
   </script>
 <% end %>
 
-<%= erb :"/shared/_resource_listing", locals: { editor_content: File.read(File.join(settings.views, "tutorial.md")) } %>
+<%= partial "/shared/_resource_listing", locals: { editor_content: File.read(File.join(settings.views, "static", "tutorial.md")) } %>
 
-<%= erb :"/shared/_confirmation_dlg" %>
+<%= partial "/shared/_confirmation_dlg" %>

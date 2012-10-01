@@ -1,6 +1,6 @@
 <% content_for :title do %> <%= @group.title %> | PageHub <% end %>
 
-<%= erb :"/shared/_editor" %>
+<%= partial "/shared/_editor" %>
 
 <% content_for :js do %>
 
@@ -36,6 +36,6 @@
   </h3>
 <% end %>
 
-<%= erb :"/shared/_resource_listing", locals: { editor_content: "Load or create a new page to begin." } %>
+<%= partial "/shared/_resource_listing", locals: { editor_content: "Load or create a new page to begin." } %>
 
-<%= erb :"/shared/_confirmation_dlg" %>
+<%= partial "/shared/_confirmation_dlg" %>

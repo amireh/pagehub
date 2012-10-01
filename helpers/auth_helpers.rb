@@ -1,7 +1,14 @@
 module RoleInspector
 
   def logged_in?
-    session[:id]
+    !current_user.nil?
+  end
+
+  def current_user
+    return @user if @user
+    return nil unless session[:id]
+
+    @user = User.get(session[:id])
   end
 
   def restricted
@@ -64,13 +71,6 @@ module RoleInspector
       # elsif roles.include?(:user)
       # end
     end
-  end
-
-  def current_user
-    return @user if @user
-    return nil unless logged_in?
-
-    @user = User.get(session[:id])
   end
 
   private

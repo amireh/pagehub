@@ -7,7 +7,7 @@
           data-collapse
           id="collapser" hidden="hidden">&minus;</button>
 
-  <%= erb :"/shared/_actions" %>
+  <%= partial "/shared/_actions" %>
 
   <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
   <div class="scroller">
@@ -73,4 +73,4 @@
 
 --><div id="editor_container"><!--
 
---><%= erb :"/shared/_resource_actions" %><textarea id="page_editor"><%= editor_content %></textarea></div>
+--><%= partial "/shared/_resource_actions" %><textarea id="page_editor"><%= editor_content %></textarea></div>

@@ -260,7 +260,7 @@
       for skinning.
     </p>
 
-    <%= erb :"/shared/_editor" %>
+    <%= partial "/shared/_editor" %>
     <% content_for :js do %>
       <script>
         $(function() {
@@ -300,7 +300,7 @@
   <% end %>
 
 
-  <%= erb :"/shared/_confirmation_dlg" %>
+  <%= partial "/shared/_confirmation_dlg" %>
 </form>
 
 <div class="group_role_description">

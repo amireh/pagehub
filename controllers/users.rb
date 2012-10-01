@@ -15,7 +15,7 @@ before do
   end
 end
 
-get '/signup' do
+get '/users/new' do
   erb :"/users/new", layout: "layouts/guest".to_sym
 end
 
@@ -44,20 +44,21 @@ get '/demo' do
   redirect '/'
 end
 
-post '/signup' do
+post '/users' do
   p = params
-  
+
   # Validate input
   {
+    "Your email can not be empty" => !p[:email] || p[:email].to_s.empty?,
     "That email is already registered" => User.first(email: p[:email]),
-    "You must fill in your name" => !p[:name] || p[:name].empty?,
+    "You must fill in your name" => !p[:name] || p[:name].to_s.empty?,
     "You must type the same password twice" => p[:password].empty? || p[:password_confirmation].empty?,
     "The passwords you entered do not match" => p[:password] != p[:password_confirmation],
     "Passwords must be at least 5 characters long." => p[:password].length <= 4
   }.each_pair { |msg, cnd|
     if cnd then
       flash[:error] = msg
-      return redirect "/signup"
+      return redirect back
     end
   }
 
@@ -74,9 +75,11 @@ post '/signup' do
   params.delete("password_confirmation")
 
   # Create the user with a UUID
-  unless u = User.create!(params.merge({ uid: UUID.generate, nickname: nickname, auto_nickname: auto_nn, provider: "pagehub" }))
-    flash[:error] = "Something bad happened while creating your new account, please try again."
-    return redirect "/signup"
+  u = User.create(params.merge({ uid: UUID.generate, nickname: nickname, auto_nickname: auto_nn, provider: "pagehub" }))
+
+  unless u.persisted?
+    flash[:error] = u.collect_errors
+    return redirect back
   end
 
   flash[:notice] = "Welcome to PageHub! Your new personal account has been registered."
@@ -92,7 +95,7 @@ end
 
     # create the user if it's their first time
     unless u = User.first({ uid: auth.uid, provider: provider, name: auth.info.name })
-      
+
       uparams = { uid: auth.uid, provider: provider, name: auth.info.name }
       uparams[:email] = auth.info.email if auth.info.email
       uparams[:nickname] = auth.info.nickname if auth.info.nickname
@@ -147,16 +150,16 @@ get '/auth/failure' do
   redirect '/'
 end
 
-get '/login' do
-  erb :"/login", layout: "layouts/guest".to_sym
+get '/sessions/new' do
+  erb :"/sessions/new"
 end
 
-post '/login' do
+post '/sessions' do
   pw = Digest::SHA1.hexdigest(params[:password])
 
   unless u = User.first({ password: pw, email: params[:email] })
     flash[:error] = "Incorrect email or password, please try again."
-    return redirect "/login"
+    return redirect back
   end
 
   session[:id] = u.id
@@ -164,8 +167,8 @@ post '/login' do
 end
 
 
-get '/logout', auth: :user do
-  
+delete '/sessions', auth: :user do
+
   if current_user.demo?
     puts "Destroying demo account #{current_user}"
     current_user.operating_user = current_user
@@ -178,7 +181,7 @@ get '/logout', auth: :user do
 
   session[:id] = nil
 
-  redirect :"/"
+  redirect '/'
 end
 
 get '/settings' do
@@ -320,7 +323,7 @@ post "/settings/editing", auth: :user do
   else
     params[:settings][:editing][:autosave] = false
   end
-  
+
   prefs = preferences
   prefs["editing"] = params[:settings][:editing]
   current_user.settings = prefs.to_json.to_s

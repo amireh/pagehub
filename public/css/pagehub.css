@@ -458,6 +458,11 @@ img.loader {
   padding: 5px;
   height: 25px;
 }
+#flashes span {
+  display: block;
+  margin-right: 20px; /* to not overlap with the close button */
+}
+
 #flashes.hidden {
   opacity: 0;
   position: absolute;

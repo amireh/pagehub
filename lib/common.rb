@@ -1,6 +1,21 @@
 # encoding: UTF-8
 
 require 'addressable/uri'
+require 'tilt'
+require 'tilt/erb'
+
+module Tilt
+  class MixedERBMarkdownTemplate < ERBTemplate
+    def prepare
+
+      # puts "in precompiled_template with locals: \n#{locals.inspect}"
+      ret = super()
+      ret
+    end
+  end
+end
+
+Tilt.register Tilt::MixedERBMarkdownTemplate, 'erb'
 
 class Hash
   # Removes a key from the hash and returns the hash
@@ -41,12 +56,74 @@ class String
       ).normalized_path
   end
 
+  def is_email?
+    (self =~ /^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/u) != nil
+  end
+
   def to_markdown
     PageHub::Markdown.render(self)
   end
 end
 
 module Sinatra
+
+  class Base
+    class << self
+
+      # for every DELETE route defined, a "legacy" GET equivalent route is defined
+      # at @{path}/destroy for compatibility with browsers that do  not support
+      # XMLHttpRequest and thus the DELETE HTTP method
+      def delete(path, opts={}, &bk)
+        route 'GET'   , "#{path}/destroy",  opts, &bk
+        route 'DELETE', path,               opts, &bk
+      end
+
+    end
+  end
+
+  private
+
+  module Templates
+    private
+      MDBTag = '<markdown>'
+      MDETag = '</markdown>'
+    public
+
+    def erb(template, options={}, locals={})
+      mixed = render :erb, template.to_sym, { layout: @layout }.merge(options), locals
+
+      b = mixed.index(MDBTag)
+      while b && b >= 0
+        # locate the enclosing tag position
+        e = mixed.index(MDETag, b)
+
+        if e.nil?
+          raise RuntimeError.new(
+            "Missing enclosing </markdown> tag in #{template.to_s}" +
+            " for the Markdown block beginning at #{b}")
+        end
+
+        # capture the block from b+'<markdown>'.length to e-1
+        puts "Found a Markdown block @ #{b}-#{e}:"
+        block_boundaries = b..e+MDETag.length-1
+        md_block = mixed[b+MDBTag.length..e-1]
+        md_block = md_block.lines.map { |l| l.gsub(/^[ ]+/, '') }.join
+
+        # render the markdown block and replace it with the raw one
+        mixed[block_boundaries] = md_block.to_markdown
+
+        # locate the next <markdown> block, if any
+        b = mixed.index(MDBTag)
+      end
+
+      mixed
+    end
+
+    def partial(template, options={}, locals={})
+      erb template.to_sym, options.merge({ layout: false }), locals
+    end
+  end
+
   module ContentFor
     def yield_with_default(key, &default)
       unless default

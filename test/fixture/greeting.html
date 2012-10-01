@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>  PageHub - An online text editor
+</title>
+
+  <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
+  <script type="text/javascript" src="/js/shortcut.js"></script>
+  <!-- <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" /> -->
+  <link href="/css/fonts/ubuntu/stylesheet.css" rel="stylesheet" type="text/css" />
+  <link href="/css/fonts/ubuntu-mono/stylesheet.css" rel="stylesheet" type="text/css" />
+  <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
+
+
+
+  <script type="text/javascript">
+    $(function() {
+      $("nav a[href='/']").addClass("selected");
+    });
+
+  </script>
+
+
+
+  <link href="/css/skins/light.css" rel="stylesheet" type="text/css" />
+  <link href="/css/guest.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="guest">
+
+  <markdown>
+    ## Hello world!
+  </markdown>
+
+  <div class="nav_wrap"></div>
+  <div class="stuff">
+    <nav>
+      <a href="/features">Features</a> &nbsp;
+      <a href="/about">About</a> &nbsp;
+      <a href="/users/new">Sign up</a>
+      <a id="login" href="/sessions/new">Sign in</a>
+    </nav>
+
+    <header>
+      <h1><a href="/"><img src="/images/Logo-black-without-glass.png" alt="PageHub Logo" /></a></h1>
+    </header>
+
+    <div id="content">
+      <div id="status">
+      </div>
+
+
+
+<div class="block left">
+<h2 id="toc_0">What is it?</h2>
+
+<p><a href="http://www.pagehub.org">PageHub</a> is an online text editor that makes
+writing technical documents a snap. It can also be used for
+keeping notes.</p>
+
+<p>The pages you create on PageHub can be shared
+with people, groups of people, or be kept private to yourself.</p>
+
+</div>
+<div class="block right">
+<h2 id="toc_1">Why?</h2>
+
+<p>Because it&#39;s hassle-free, and it&#39;s all about writing.</p>
+
+<p>Pages are written in
+<a href="http://daringfireball.net/projects/markdown/">Markdown</a> so your
+documentation can be rendered as <code>man</code> entries, or as fully-fledged
+HTML and PDF documents.</p>
+
+<p>But that&#39;s only scratching at the surface; <a href="/features">this page</a> describes
+more of what PageHub offers.</p>
+
+</div>
+<div class="demo">
+  <span>&rarr;</span>
+  <a href="/demo" class="button ">Demo</a>
+  <p>You can try it out without signing up!</p>
+</div>
+<div class="spanner">
+
+<markdown>
+    ## Use an existing account...
+
+    <span id="login_buttons">
+    [Sign in with Facebook](/auth/facebook)
+    [Sign in with GitHub](/auth/github)
+    [Sign in with Twitter](/auth/twitter)
+    </span>
+
+    ## Or [click here](/users/new) to make a PageHub account
+
+    *Signing up is made as pain-free as possible; all
+    you need is an email address and a password.*
+</markdown>
+
+</div>
+    </div>
+
+
+
+<footer id="bottom">
+  <p>
+    <small>
+      <a href="http://www.pagehub.org">PageHub</a>
+      &copy;2012 <a href="http://www.mxvt.net">Ahmad Amireh</a>
+    </small>
+  </p>
+</footer>
+  </div>
+
+</body>
+
+</html>

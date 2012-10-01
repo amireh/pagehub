@@ -1,7 +1,7 @@
 <% content_for :title do %> Editing - Settings | <%= current_user.nickname %> | PageHub <% end %>
 
-<%= erb :"users/settings/_nav" %>
-<%= erb :"/shared/_editor" %>
+<%= partial "users/settings/_nav" %>
+<%= partial "/shared/_editor" %>
 
 <% content_for :css do %>
 <style>
