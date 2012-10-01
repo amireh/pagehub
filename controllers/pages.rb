@@ -2,7 +2,11 @@
 
 # Creates a blank new page
 def create_page()
-  @scope.pages.create({ user: current_user }).to_json
+  unless p = @scope.pages.create({ user: current_user })
+    halt 500, p.collect_errors
+  end
+  puts "Creating a new page for #{current_user.name} => #{p.inspect}"
+  p.to_json
 end
 
 def load_page(pid)

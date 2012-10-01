@@ -85,7 +85,7 @@ configure do
     }
   }
   
-  # DataMapper::Logger.new($stdout, :debug)
+  DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, 'mysql://root@localhost/notebook')
 
   # load the models and controllers

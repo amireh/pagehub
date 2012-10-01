@@ -844,7 +844,7 @@ pagehub_ui = function() {
             if (Modernizr.draganddrop) {
               var page_li = $("#page_" + page.id).parent();
               page_li.bind('dragstart', ui.resources.on_drag_start);
-              ui.resources.make_draggable(page_li);              
+              ui.resources.make_draggable(page_li.get(0));              
             }
           },
           error: function(e) {

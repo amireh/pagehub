@@ -53,6 +53,7 @@ end
 
 def assign_memberships(g)
 
+  params[:users] ||= {}
   params[:users].each_pair { |idx, user_info|
     next if idx.to_i == -1
 
