@@ -3,6 +3,8 @@ require 'resolv'
 class User
   include DataMapper::Resource
 
+  attr_accessor :operating_user
+
   property :id, Serial
 
   property :name,     String, length: 255, required: true
@@ -23,8 +25,8 @@ class User
   # has n, :notebooks
   has n, :pages, :constraint => :destroy
   has n, :folders, :constraint => :destroy
-  has n, :groups, :through => Resource
-  has n, :public_pages, :constraint => :destroy
+  has n, :groups, :through => Resource, :constraint => :destroy
+  has n, :public_pages, :constraint => :skip
   has n, :email_verifications, :constraint => :destroy
 
   validates_presence_of :name, :provider, :uid
@@ -36,6 +38,23 @@ class User
     validate_email!(self.gravatar_email, "gravatar")
 
     true
+  end
+
+  def demo?
+    name == "PageHub Demo"
+  end
+
+  def operating_user=(u)
+    puts "Attaching operating user #{operating_user} to child resources"
+
+    pages.each    { |p| p.operating_user = u }
+    folders.each  { |f| f.operating_user = u }
+
+    @operating_user = u
+  end
+  
+  before :destroy do
+    #puts ":destroy => self: #{self.inspect}"
   end
 
   def all_pages

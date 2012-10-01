@@ -19,6 +19,31 @@ get '/signup' do
   erb :"/users/new", layout: "layouts/guest".to_sym
 end
 
+get '/demo' do
+  if logged_in?
+    flash[:error] = "You are already logged in."
+    return redirect '/'
+  end
+
+  @user = User.create({
+    nickname: 'demo',
+    name: "PageHub Demo",
+    provider: "pagehub",
+    uid: "1234",
+    email: "demo@pagehub.org",
+    password: ""
+  })
+
+  unless @user
+    flash[:error] = "We're sorry, we could not launch a demo for you at this moment. Please try again later."
+    return redirect '/'
+  end
+
+  session[:id] = @user.id
+
+  redirect '/'
+end
+
 post '/signup' do
   p = params
   
@@ -41,7 +66,7 @@ post '/signup' do
 
   nickname = params[:name].to_s.sanitize
   auto_nn = false
-  if User.first({ nickname: nickname }) then
+  if u = User.first({ nickname: nickname }) then
     nickname = "#{nickname}_#{nickname_salt}"
     auto_nn = true
   end
@@ -139,10 +164,20 @@ post '/login' do
 end
 
 
-get '/logout' do
+get '/logout', auth: :user do
+  
+  if current_user.demo?
+    puts "Destroying demo account #{current_user}"
+    current_user.operating_user = current_user
+    current_user.destroy
+
+    flash[:notice] = "Thanks for trying out PageHub, we hope you come back!"
+  else
+    flash[:notice] = "Successfully logged out."
+  end
+
   session[:id] = nil
 
-  flash[:notice] = "Successfully logged out."
   redirect :"/"
 end
 

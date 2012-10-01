@@ -16,7 +16,7 @@ class Group
   has n,     :folders,  :constraint => :set_nil
   has n,     :pages,    :constraint => :set_nil
   has n,     :users,    :through => Resource, :constraint => :destroy
-  has n,     :group_users
+  has n,     :group_users, :constraint => :destroy
   has n,     :public_pages, :constraint => :destroy
   belongs_to :admin, 'User', key: true
 

@@ -15,18 +15,19 @@ header h1 a {
   color: #E94E77;
 }
 
-h1 {
-  color: #E94E77;
-}
 
 h2 {
   color: #8FBE00;
+  /*color: #555;*/
 }
 
 h3, a {
   color: #333;
 }
 
+code {
+  letter-spacing: 1px;
+}
 a {
   text-decoration: underline;
 }

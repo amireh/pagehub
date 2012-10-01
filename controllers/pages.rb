@@ -2,8 +2,10 @@
 
 # Creates a blank new page
 def create_page()
-  p = @scope.pages.create({ user: current_user })
-  puts p
+  unless p = @scope.pages.create({ user: current_user })
+    halt 500, p.collect_errors
+  end
+
   p.to_json
 end
 
