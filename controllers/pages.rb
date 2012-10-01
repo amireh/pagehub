@@ -296,7 +296,7 @@ end
 
 get '/:gname' do |gname|
   unless @scope = @group = Group.first({name: gname })
-    halt 404, "No such group #{gname}."
+    pass # it isn't a group, nevermind
   end
 
   if !@group.is_public && (!current_user || !@group.is_member?(current_user))
