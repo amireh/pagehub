@@ -3,46 +3,17 @@
 $ROOT ||= File.dirname(__FILE__)
 $LOAD_PATH << $ROOT
 
-gem 'sinatra'
-gem 'sinatra-contrib'
-gem 'sinatra-flash'
-gem 'mysql'
-gem "dm-core", ">=1.2.0"
-gem "dm-serializer", ">=1.2.0"
-gem "dm-migrations", ">=1.2.0"
-gem "dm-validations", ">=1.2.0"
-gem "dm-constraints", ">=1.2.0"
-gem "dm-types", ">=1.2.0"
-gem "dm-mysql-adapter", ">=1.2.0"
-gem 'redcarpet'
-gem 'albino'
-gem 'nokogiri'
-gem 'multi_json'
-gem 'addressable'
-gem 'diff-lcs'
-gem 'gravatarify', ">= 3.1.0"
-gem "pony"
-gem 'uuid'
+require 'rubygems'
+require 'bundler/setup'
 
-require 'sinatra'
-require 'sinatra/content_for'
-require 'sinatra/flash'
-require 'dm-core'
-# require 'dm-serializer'
-require 'dm-migrations'
-require 'dm-migrations/migration_runner'
-require 'dm-mysql-adapter'
-# require 'dm-constraints'
-require 'dm-types'
-require 'dm-validations'
-require 'dm-constraints'
-require "digest/sha1"
-require 'json'
+Bundler.require(:default)
+
 require 'config/constants'
 require 'lib/common'
-require 'gravatarify'
-# require 'omniauth-google-oauth2'
-# require 'openid/store/filesystem'
+
+configure :development do
+  Bundler.require(:development)
+end
 
 configure do
   # enable :sessions
@@ -56,7 +27,8 @@ configure do
   Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
   Gravatarify.styles[:profile] = { size: 128, html: { :class => 'gravatar' } }
 
-  DataMapper.setup(:default, 'mysql://root@localhost/notebook')
+  dbc = JSON.parse(File.read(File.join($ROOT, 'config', 'database.json')))
+  DataMapper.setup(:default, "mysql://#{dbc['username']}:#{dbc['password']}@localhost/#{dbc['db']}")
 
   # load the models and controllers
   def load(directory)
@@ -85,17 +57,18 @@ configure do
 end
 
 configure :production do
-  gem 'omniauth'
-  gem 'omniauth-facebook'
-  gem 'omniauth-github'
-  gem 'omniauth-twitter', '0.0.9'
-  gem "pony"
+  Bundler.require(:production)
+  # gem 'omniauth'
+  # gem 'omniauth-facebook'
+  # gem 'omniauth-github'
+  # gem 'omniauth-twitter', '0.0.9'
+  # gem "pony"
 
-  require 'omniauth'
-  require 'omniauth-facebook'
-  require 'omniauth-github'
-  require 'omniauth-twitter'
-  require 'pony'
+  # require 'omniauth'
+  # require 'omniauth-facebook'
+  # require 'omniauth-github'
+  # require 'omniauth-twitter'
+  # require 'pony'
 
   use OmniAuth::Builder do
     provider :developer if settings.development?

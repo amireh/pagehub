@@ -91,7 +91,7 @@ namespace :db do
       system("createdb", "-E", charset, "-h", host, "-U", user, database)
     when 'mysql'
       query = [
-        "mysql", "--user=#{user}", (password.blank? ? '' : "--password=#{password}"), (%w[127.0.0.1 localhost].include?(host) ? '-e' : "--host=#{host} -e"),
+        "mysql", "--user=#{user}", (password.empty? ? '' : "--password=#{password}"), (%w[127.0.0.1 localhost].include?(host) ? '-e' : "--host=#{host} -e"),
         "CREATE DATABASE #{database} DEFAULT CHARACTER SET #{charset} DEFAULT COLLATE #{collation}".inspect
       ]
       system(query.compact.join(" "))
