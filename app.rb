@@ -58,17 +58,6 @@ end
 
 configure :production do
   Bundler.require(:production)
-  # gem 'omniauth'
-  # gem 'omniauth-facebook'
-  # gem 'omniauth-github'
-  # gem 'omniauth-twitter', '0.0.9'
-  # gem "pony"
-
-  # require 'omniauth'
-  # require 'omniauth-facebook'
-  # require 'omniauth-github'
-  # require 'omniauth-twitter'
-  # require 'pony'
 
   use OmniAuth::Builder do
     provider :developer if settings.development?
@@ -101,7 +90,7 @@ not_found do
     return r.include?("<html>") ? "404 - bad link!" : r.to_json
   end
 
-  erb :"404", layout: logged_in? ? :layout : :"layouts/guest"
+  erb :"404"
 end
 
 error 403 do
@@ -111,7 +100,7 @@ error 403 do
     return r.include?("<html>") ? "403 - forbidden!" : r.to_json
   end
 
-  erb :"403", layout: logged_in? ? :layout : :"layouts/guest"
+  erb :"403"
 end
 
 error do
@@ -120,7 +109,7 @@ error do
     halt 500, "500 - internal error: " + env['sinatra.error'].name + " => " + env['sinatra.error'].message
   end
 
-  erb :"500", layout: logged_in? ? :layout : :"layouts/guest"
+  erb :"500"
 end
 
 before do
@@ -158,9 +147,9 @@ get '/help' do
 end
 
 get '/features' do
-  erb :"static/features", layout: :"/layouts/guest"
+  erb :"static/features"
 end
 
 get '/about' do
-  erb :"static/about", layout: :"/layouts/guest"
+  erb :"static/about"
 end

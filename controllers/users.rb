@@ -16,7 +16,7 @@ before do
 end
 
 get '/users/new' do
-  erb :"/users/new", layout: "layouts/guest".to_sym
+  erb :"/users/new"
 end
 
 get '/demo' do
