@@ -117,9 +117,14 @@ pagehub_ui = function() {
       return false;
 
     hide_list($("a.listlike.selected,a[data-listlike].selected"));
-
+    var list = $(this).next("ol");
     $(this).next("ol").show();
-    $(this).next("ol").css("left", $(this).position().left);
+
+    if (list.width() + list.parent().position().left + $(this).position().left >= $(window).width()) {
+      list.css({ right: 0, left: 0 });
+    } else {
+      list.css({ left: $(this).position().left, right: 0 });
+    }
       // .css("left", $(this).position().left);
     $(this).addClass("selected");
     $(this).unbind('click', show_list);
