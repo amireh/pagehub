@@ -1,21 +1,6 @@
 # encoding: UTF-8
 
 require 'addressable/uri'
-require 'tilt'
-require 'tilt/erb'
-
-module Tilt
-  class MixedERBMarkdownTemplate < ERBTemplate
-    def prepare
-
-      # puts "in precompiled_template with locals: \n#{locals.inspect}"
-      ret = super()
-      ret
-    end
-  end
-end
-
-Tilt.register Tilt::MixedERBMarkdownTemplate, 'erb'
 
 class Hash
   # Removes a key from the hash and returns the hash
@@ -61,7 +46,7 @@ class String
   end
 
   def to_markdown
-    PageHub::Markdown.render(self)
+    PageHub::Markdown.render!(self)
   end
 end
 
@@ -92,28 +77,30 @@ module Sinatra
     def erb(template, options={}, locals={})
       mixed = render :erb, template.to_sym, { layout: @layout }.merge(options), locals
 
-      b = mixed.index(MDBTag)
-      while b && b >= 0
-        # locate the enclosing tag position
-        e = mixed.index(MDETag, b)
-
-        if e.nil?
-          raise RuntimeError.new(
-            "Missing enclosing </markdown> tag in #{template.to_s}" +
-            " for the Markdown block beginning at #{b}")
-        end
-
-        # capture the block from b+'<markdown>'.length to e-1
-        puts "Found a Markdown block @ #{b}-#{e}:"
-        block_boundaries = b..e+MDETag.length-1
-        md_block = mixed[b+MDBTag.length..e-1]
-        md_block = md_block.lines.map { |l| l.gsub(/^[ ]+/, '') }.join
-
-        # render the markdown block and replace it with the raw one
-        mixed[block_boundaries] = md_block.to_markdown
-
-        # locate the next <markdown> block, if any
+      if template.to_s.include?('.md')
         b = mixed.index(MDBTag)
+        while b && b >= 0
+          # locate the enclosing tag position
+          e = mixed.index(MDETag, b)
+
+          if e.nil?
+            raise RuntimeError.new(
+              "Missing enclosing </markdown> tag in #{template.to_s}" +
+              " for the Markdown block beginning at #{b}")
+          end
+
+          # capture the block from b+'<markdown>'.length to e-1
+          puts "Found a Markdown block @ #{b}-#{e}:"
+          block_boundaries = b..e+MDETag.length-1
+          md_block = mixed[b+MDBTag.length..e-1]
+          md_block = md_block.lines.map { |l| l.gsub(/^[ ]+/, '') }.join
+
+          # render the markdown block and replace it with the raw one
+          mixed[block_boundaries] = md_block.to_markdown
+
+          # locate the next <markdown> block, if any
+          b = mixed.index(MDBTag)
+        end
       end
 
       mixed

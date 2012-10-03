@@ -15,14 +15,19 @@ gem "dm-validations", ">=1.2.0"
 gem "dm-constraints", ">=1.2.0"
 gem "dm-types", ">=1.2.0"
 gem "dm-mysql-adapter", ">=1.2.0"
-gem 'redcarpet'
-gem 'albino'
-gem 'nokogiri'
+# gem 'redcarpet'
+# gem 'albino'
+# gem 'nokogiri'
 gem 'multi_json'
 gem 'addressable'
 gem 'diff-lcs'
 gem 'uuid'
 gem 'gravatarify', ">= 3.1.0"
+gem 'pagehub-markdown', '>=0.1.0',
+  :require => 'pagehub-markdown',
+  # :git => "https://github.com/amireh/pagehub-markdown"
+  # :git => "/home/kandie/Workspace/Projects/pagehub-markdown/.git"
+  :path => "~/Workspace/Projects/pagehub-markdown"
 
 group :development do
   gem 'thin'

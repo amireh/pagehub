@@ -36,8 +36,8 @@ configure do
   end
 
   # Load the Markdown extensions
-  require "lib/markdown_ext/processor"
-  load "lib/markdown_ext"
+  # require "lib/markdown_ext/processor"
+  # load "lib/markdown_ext"
 
   load "helpers"
   load "models"
@@ -117,7 +117,7 @@ before do
 end
 
 get '/' do
-  destination = "static/greeting"
+  destination = "static/greeting.md"
   layout = "layouts/guest"
 
   if logged_in?
