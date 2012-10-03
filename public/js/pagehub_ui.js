@@ -88,15 +88,6 @@ pagehub_ui = function() {
           $("a[data-disabled], a.disabled").click(function(e) { e.preventDefault(); return false; });
         },
 
-        // flash messages close button
-        function() {
-          $("#flashes button").click(function() {
-            $(this).parent().next("hr:first").remove();
-            $(this).parent().addClass("hidden");
-            $(".flash_wrap").addClass("hidden");
-          });
-        },
-
         // "listlike" links
         function() {
           $("a.listlike:not(.selected),a[data-listlike]:not(.selected)").bind('click', show_list);
