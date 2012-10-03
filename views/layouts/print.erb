@@ -19,11 +19,9 @@
   <%= yield_content :scripts %>
   <%= yield_content :js %>
 
-  <% if params[:scheme] %>
-    <link href="/css/schemes/<%= params[:scheme].sanitize %>.css" rel="stylesheet" type="text/css" />
-  <% else %>
-    <link href="/css/schemes/<%= preferences["publishing"]["scheme"].sanitize %>.css" rel="stylesheet" type="text/css" />
-  <% end %>
+  <% scheme = params[:scheme] || preferences["publishing"]["scheme"] %>
+
+  <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
 
   <style>
     .stuff {
@@ -72,11 +70,9 @@
         <%= yield_content :sidebar %>
       </div>
     <% end %>
-
-    <!-- <hr /> -->
-    <!-- <a href="http://pdfcrowd.com/url_to_pdf/">Convert this page to a PDF</a> -->
   </div>
 
+  <%= partial "layouts/_google_analytics.erb" %>
 </body>
 
 </html>
