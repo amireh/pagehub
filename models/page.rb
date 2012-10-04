@@ -10,6 +10,14 @@ class Page
   property :title,        String, length: 120, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
   property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
   property :content,      Text,   default: ""
+
+  # browsable: whether the folder is browsable in a public group space,
+  # note that this has lower priority than the public page status;
+  # if the page _does_ have a PublicPage record, then it will still
+  # be accessible directly via its public URL, but it will simply not
+  # be browsable via the group space
+  property :browsable,    Boolean, default: true
+
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
   belongs_to :user

@@ -8,7 +8,7 @@ def create_folder(gid = nil)
     halt 400, "No such parent folder with the id #{parent_id}" if !parent
   end
 
-  f = @scope.folders.create({ 
+  f = @scope.folders.create({
     title: params[:title],
     user: current_user,
     folder: parent
@@ -40,7 +40,7 @@ def update_folder(fid, gid = nil)
     unless parent = @scope.folders.first(id: parent_id)
       halt 500, "No such parent folder with the id #{parent_id}"
     end
-    
+
     f.folder = parent
   end
 
@@ -71,12 +71,12 @@ def add_to_folder(fid, pid, gid = nil)
   end
 
   f.pages << p
-  
+
   unless f.save
     halt 500, f.collect_errors
   end
 
-  p.to_json  
+  p.to_json
 end
 
 def __dump_folder(f, out)
@@ -117,12 +117,14 @@ def delete_folder(fid, gid = nil)
     halt 500, f.collect_errors
   end
 
-  if parent
-    return { folders: [ parent.serialize ] }.to_json
-  else
+  # if parent
+  #   return { folders: [ parent.serialize ] }.to_json
+  # else
+  #   return orphans.to_json
+  # end
 
-    return orphans.to_json
-  end
+  # yeah, extremely inefficient, but bullet-proof and requires no extra logic
+  current_user.all_pages.to_json
 end
 
 get '/folders/new', :auth => :user do

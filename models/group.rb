@@ -11,6 +11,7 @@ class Group
   property :title,      String, length: 120
   property :is_public,  Boolean, default: false
   property :css,        Text, default: ""
+  property :settings,   Text, default: "{}"
   property :created_at, DateTime, default: lambda { |*_| DateTime.now }
 
   has n,     :folders,  :constraint => :set_nil
@@ -38,6 +39,10 @@ class Group
     "/#{self.name}"
   end
 
+  def url(suffix)
+    "/groups/#{self.id}#{suffix}"
+  end
+
   def all_pages
     c = { folders: [] }
     folders.each { |f| c[:folders] << f.serialize }
@@ -47,6 +52,39 @@ class Group
     c[:folders] << folderless
 
     c
+  end
+
+  def is_browsable?
+    is_public
+  end
+
+  def browsable_pages(cnd = {}, order = [])
+    pages.all({ conditions: cnd.merge({ browsable: true }), order: [ :title.asc ] + order })
+  end
+  def browsable_folders(cnd = {}, order = [])
+    folders.all({ conditions: cnd.merge({ browsable: true }), order: [ :title.asc ] + order })
+  end
+
+  def on_resources(handlers, cnd = {})
+    raise InvalidArgumentError unless handlers[:on_page] && handlers[:on_page].respond_to?(:call)
+    raise InvalidArgumentError unless handlers[:on_folder] && handlers[:on_folder].respond_to?(:call)
+
+    dump_pages = nil
+    dump_pages = lambda { |coll|
+      coll.each { |p| handlers[:on_page].call(p) }
+    }
+
+    dump_pages.call(pages.all({ conditions: cnd.merge({ folder_id: nil }), order: [ :title.asc ] }))
+
+    dump_folder = nil
+    dump_folder = lambda { |f|
+      handlers[:on_folder].call(f)
+      dump_pages.call(f.pages.all({ order: [ :title.asc ]} ))
+      f.folders.all({ conditions: cnd }).each { |cf| dump_folder.call(cf) }
+      handlers[:on_folder_done].call(f) if handlers[:on_folder_done]
+    }
+
+    folders.all({ conditions: cnd.merge({ folder_id: nil }), order: [ :title.asc ] }).each { |f| dump_folder.call(f) }
   end
 
   def all_users

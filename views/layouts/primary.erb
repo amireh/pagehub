@@ -52,7 +52,9 @@
 
     <nav>
 
-      <span>Hi <%= current_user.nickname %></span>
+      <span><%= current_user.nickname %>
+        <%= gravatar_tag @user, :icon %>
+      </span>
       <a class="listlike icon groups" rel="tooltip" title="Your groups" href="/groups">Groups</a>
       <ol class="listlike">
         <li><a href="/groups/new">Start a new group</a></li>
@@ -74,7 +76,10 @@
 
     <%= partial "layouts/_flashes" %>
 
-    <div id="content" class="<%= request.path.gsub('/', ' ').strip.sanitize.split('-').first %>">
+    <% klasses = [ request.path.gsub('/', ' ').strip.sanitize.split('-').first ] %>
+    <% klasses << (yield_content :section if content_for?(:section)) %>
+
+    <div id="content" class="<%= klasses.join(' ') %>">
       <%= yield %>
     </div>
 

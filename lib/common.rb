@@ -48,6 +48,13 @@ class String
   def to_markdown
     PageHub::Markdown.render!(self)
   end
+
+  def minify(type = :css)
+    case type
+    when :css
+      self.gsub(/(;\s+)/, ';').gsub(/\n+\s*/, '').gsub(/\s+\{\s*/, '{').gsub(/\s+\}/, '}')
+    end
+  end
 end
 
 module Sinatra

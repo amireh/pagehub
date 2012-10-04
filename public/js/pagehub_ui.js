@@ -51,6 +51,19 @@ pagehub_ui = function() {
           });
         },
 
+        // Togglable sections
+        function() {
+          $("section:not([data-untogglable])").
+            find("> h1:first-child, > h2:first-child, > h3:first-child").
+            addClass("togglable");
+
+          $("section > .togglable").click(function() {
+            // $(this).parent().toggle();
+            $(this).siblings(":not([data-untogglable])").toggle();
+            $(this).toggleClass("toggled")
+          })
+        },
+
         // Bind the title editor's key presses:
         // 1. on RETURN: update the page and the entry
         // 2. on ESCAPE: hide the editor and reset the title
@@ -105,6 +118,9 @@ pagehub_ui = function() {
         }
       ];
 
+  /* the minimum amount of pixels that must be available for the
+     the listlikes not to be wrapped */
+  var list_offset_threshold = 120;
   function show_list() {
     if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
       return false;
@@ -113,7 +129,7 @@ pagehub_ui = function() {
     var list = $(this).next("ol");
     $(this).next("ol").show();
 
-    if (list.width() + list.parent().position().left + $(this).position().left >= $(window).width()) {
+    if (list_offset_threshold + list.width() + list.parent().position().left + $(this).position().left >= $(window).width()) {
       list.css({ right: 0, left: 0 });
     } else {
       list.css({ left: $(this).position().left, right: 0 });
@@ -577,8 +593,11 @@ pagehub_ui = function() {
           $(this).addClass("drop-target");
         }
         // a normal folder's title <span>
-        else {
+        else if ($(this).is("span")) {
           $(this).parent().addClass("drop-target");
+        }
+        else {
+          return false;
         }
 
         $(this).append($("#indicator").show());
@@ -787,6 +806,8 @@ pagehub_ui = function() {
               });
 
               btn.click();
+              $("#page_listing :visible").remove();
+              dynamism.reset();
               dynamism.inject(new_parent, $("#page_listing"));
 
               ui.status.show("Folder deleted.", "good");
@@ -845,7 +866,7 @@ pagehub_ui = function() {
             if (Modernizr.draganddrop) {
               var page_li = $("#page_" + page.id).parent();
               page_li.bind('dragstart', ui.resources.on_drag_start);
-              ui.resources.make_draggable(page_li);
+              // ui.resources.make_draggable(page_li);
             }
           },
           error: function(e) {
@@ -1095,6 +1116,12 @@ pagehub_ui = function() {
 
         window.open(pagehub.namespace + "/pages/" + current_page_id() + "/pretty", "_pretty")
       }
+    },
+
+    process_hooks: function() {
+      for (var i = 0; i < ui.hooks.length; ++i) {
+        ui.hooks[i]();
+      }
     }
   }
 }
@@ -1104,7 +1131,7 @@ ui = new pagehub_ui();
 
 $(function() {
   // foreach(ui.hooks, function(hook) { hook(); });
-  for (var i = 0; i < ui.hooks.length; ++i) {
-    ui.hooks[i]();
-  }
+  // for (var i = 0; i < ui.hooks.length; ++i) {
+  //   ui.hooks[i]();
+  // }
 })

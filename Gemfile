@@ -20,7 +20,8 @@ gem 'addressable'
 gem 'diff-lcs'
 gem 'uuid'
 gem 'gravatarify', ">= 3.1.0"
-gem 'pagehub-markdown', '>=0.1.0', :require => 'pagehub-markdown'
+gem 'pagehub-markdown', '>=0.1.3', :require => 'pagehub-markdown'
+# gem 'pagehub-markdown', '>=0.1.3', :require => 'pagehub-markdown', path: '~/Workspace/Projects/pagehub-markdown'
 
 group :development do
   gem 'thin'

@@ -7,6 +7,8 @@ class Folder
 
   property :title,        String, length: 120, required: true
   property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
+  # Whether the folder is browsable in a public group listing
+  property :browsable,    Boolean, default: true
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
   belongs_to :user
@@ -39,7 +41,7 @@ class Folder
   }
 
   def serialize
-    pages = []; self.pages.each { |p| pages << p.serialize.delete!(:folder) }
+    pages = []; self.pages.each { |p| pages << p.serialize }
     out = { id: id, title: title, pages: pages }
     if folder
       out[:parent] = folder.id

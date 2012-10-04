@@ -17,7 +17,6 @@
   <% content_for :deferred_js do %>
     <script type="text/javascript">
       var flash = {
-        pulse: 2500,
         timer: null,
         hide: function() {
           if ($("#flashes").is(":visible")) { // might have been hidden already by the user
@@ -28,11 +27,11 @@
           flash.timer = null;
         },
 
-        hide_in_a_bit: function() {
+        hide_in_a_bit: function(pulse) {
           if (flash.timer)
             return;
 
-          flash.timer = setTimeout("flash.hide()", flash.pulse);
+          flash.timer = setTimeout("flash.hide()", pulse * 1000);
         }
       };
 
@@ -42,7 +41,7 @@
           // $(".flash_wrap").addClass("hidden");
         });
 
-        <% unless flash[:error] %> flash.hide_in_a_bit(); <% end %>
+        flash.hide_in_a_bit(<%= flash[:error] ? 10 : 2.5 %>);
       });
 
     </script>

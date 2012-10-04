@@ -8,7 +8,7 @@
 
 <h2><a href="/groups/<%= @group.name %>"><%= @group.title %></a>
   <% if @group.is_admin?(current_user)%>
-    <small><a href="/groups/<%= @group.name %>/edit"><em>manage</em></a></small>
+    <small><a href="<%= @group.url '/edit' %>"><em>manage</em></a></small>
   <% end %>
 </h2>
 
@@ -21,7 +21,7 @@
 
 <h3>Public Pages</h3>
 
-<p>Here's a list of all the pages you've currently shared. 
+<p>Here's a list of all the pages you've currently shared.
   Clicking on them will take you to the public link that you can share with others.</p>
 
 <ol>

@@ -143,10 +143,10 @@ header .subheader h3 {
   margin: 0;
 }
 h2 {
-  color: #7ea800;
+  /*color: #7ea800;*/
 }
 h3 {
-  color: #F0AD11;
+  /*color: #F0AD11;*/
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -225,7 +225,7 @@ textarea,
 input,
 a.button,
 button {
-  border-radius: 2px;
+  /*border-radius: 2px;*/
 }
 
 #page_editor,
@@ -269,18 +269,19 @@ button {
   max-height: 420px;
 }
 
-#pages li a:hover,
+/*#pages li a:hover,
 #pages .selected {
   color: #615B4E;
   color: #E2403D;
   color: #E94E77;
   cursor: pointer;
-}
+}*/
 #page_listing {
   position: relative;
   padding: 0;
   margin: 5px 5px 0 0;
 }
+
 #page_listing ul,
 #page_listing ol {
   /*list-style-type: none;*/
@@ -362,14 +363,6 @@ header a em {
   transition:         color 0.5s ease 0s;
 }
 
-a:hover,
-a:visited:hover,
-a.selected,
-.selected a,
-.selected {
-  /*text-decoration: underline;*/
-  cursor: pointer;
-}
 
 #resource_editor {
   width: 100%;
@@ -571,7 +564,8 @@ input[type=text],
 input[type=email],
 input[type=password],
 select {
-  border-radius: 8px;
+  /*border-radius: 8px;*/
+  border-radius: 0;
   padding: 5px 10px;
   outline: none;
 
@@ -725,8 +719,8 @@ ol.listlike {
   top: 99%;
   text-align: left;
   color: white;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius:     5px;
+  border-bottom-left-radius:  5px;
   border-bottom-right-radius: 5px;
 }
 .icon:hover,
@@ -767,7 +761,9 @@ ol.listlike li a { display: block; width: 100%; line-height: inherit; height: au
   height: 40px;
   margin: 0;
   padding: 0 10px;
+  cursor: pointer;
 }
+.actions a { cursor: pointer; }
 #page_actions > a:first-of-type {
   /*padding-left: 0;*/
 }
@@ -975,6 +971,7 @@ button[data-collapse] {
   .blocky_editor + .CodeMirror {
     border: 1px solid #ddd;
     margin-top: 0;
+    padding-top: 0;
     width: 100%;
     font-family: monospace, Monospace, courier;
   }
@@ -1044,8 +1041,8 @@ button[data-collapse] {
     -o-border-radius: 0;
     border-radius: 0;
     border-width: 0; margin: 0; padding: 0; background: transparent;
-    font-family: inherit;
-    font-size: inherit;
+    /*font-family: inherit;*/
+    /*font-size: inherit;*/
     padding: 0; margin: 0;
     white-space: pre;
     word-wrap: normal;
@@ -1154,7 +1151,8 @@ button[data-collapse] {
     display: inline-block;
     height: auto;
     font-family: inherit;
-    margin-top: 47px;
+    margin-top: 41px;
+    padding-top: 4px;
     letter-spacing: 0;
   }
   .CodeMirror-scroll {
@@ -1348,9 +1346,9 @@ button[data-collapse] {
   text-align: center;
   text-decoration: none;
   background-color: #000000;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
+  -webkit-border-radius:  4px;
+  -moz-border-radius:     4px;
+  border-radius:          4px;
 }
 .tooltip-arrow {
   position: absolute;
@@ -1397,8 +1395,6 @@ button[data-collapse] {
 /*.group_form table th:nth-of-type(3) { width: 10%; max-width: 10%; }*/
 .group_form table tbody tr:hover { background: rgba(0,0,0,0.05); }
 
-.group_role_description { opacity: 0.75; position: relative; top: -55px; width: 240px; margin-left: 20px; display: inline-block;}
-
 #content.profiles .gravatar {
   box-shadow: 0 0 3px 1px #555;
   padding: 2px;
@@ -1407,3 +1403,15 @@ button[data-collapse] {
   font-weight: normal;
 }
 
+
+.stuff > nav > span {
+  position: relative;
+}
+.stuff > nav > span > .gravatar {
+  position: absolute;
+  left: -38px;
+  /*box-shadow: 0 0 1px 1px #555;*/
+  border: 1px solid #ccc;
+  padding: 1px;
+  top: -6px;
+}

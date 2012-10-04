@@ -1,9 +1,5 @@
 <% content_for :title do %> <%= @page.title %> | PageHub <% end %>
 
-<% content_for :css do %>
-  <link rel="stylesheet" href="/css/code_highlighting.css" />
-<% end %>
-
 <% content_for :header do %>
   <% if @group then %>
     <h1><a href="<%= @group.public_url %>"><%= @group.title %></a></h1>

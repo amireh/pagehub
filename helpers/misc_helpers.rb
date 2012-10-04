@@ -2,7 +2,7 @@ module PageHub
   module Helpers
     module Preferences
       # mapping of displayable font names to actual CSS font-family names
-      FontMap = { 
+      FontMap = {
         "Proxima Nova" => "ProximaNova-Light",
         "Ubuntu" => "UbuntuRegular",
         "Ubuntu Mono" => "UbuntuMonoRegular",
@@ -26,17 +26,17 @@ module PageHub
     #
     # Side-effects:
     # => @preferences will be overridden with the current user's settings
-    def preferences(user = nil)
-      user ||= current_user
+    def preferences(scope = nil)
+      scope ||= current_user
 
-      if !user
+      if !scope
         return settings.default_preferences
       elsif @preferences
         return @preferences
       end
 
       @preferences = {}
-      prefs = user.settings
+      prefs = scope.settings
       if prefs && !prefs.empty?
         begin; @preferences = JSON.parse(prefs); rescue; @preferences = {}; end
       end

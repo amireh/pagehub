@@ -86,7 +86,7 @@ GEM
       omniauth (~> 1.0)
     omniauth-twitter (0.0.9)
       omniauth-oauth (~> 1.0)
-    pagehub-markdown (0.1.0)
+    pagehub-markdown (0.1.3)
       albino (>= 1.3.3)
       json (>= 1.7.0)
       nokogiri (>= 1.5.5)
@@ -149,7 +149,7 @@ DEPENDENCIES
   omniauth-facebook
   omniauth-github
   omniauth-twitter (= 0.0.9)
-  pagehub-markdown (>= 0.1.0)
+  pagehub-markdown (>= 0.1.3)
   pony
   sinatra
   sinatra-contrib

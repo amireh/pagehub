@@ -19,23 +19,27 @@
   <%= yield_content :scripts %>
   <%= yield_content :js %>
 
-  <% scheme = params[:scheme] || preferences["publishing"]["scheme"] %>
+  <% scheme = params[:scheme] || preferences(@group || current_user)["publishing"]["scheme"] %>
+  <% unless scheme == "None" %>
+    <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
+  <% end %>
 
-  <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
+  <% unless @group %>
+    <style>
+      .stuff {
+        width: <%= preferences["publishing"]["width"].to_i %>px;
+        text-align: <%= preferences["publishing"]["justified"] ? 'justify' : 'left' %>;
+      }
+    </style>
+  <% end %>
 
-  <style>
-    .stuff {
-      width: <%= preferences["publishing"]["width"].to_i %>px;
-      text-align: <%= preferences["publishing"]["justified"] ? 'justify' : 'left' %>;
-    }
-  </style>
 
   <link href="/css/print.css" rel="stylesheet" type="text/css" />
   <%= yield_content :css %>
 
   <% if @group && @group.css && !@group.css.empty? %>
     <style>
-      <%= @group.css %>
+      <%= @group.css.minify(:css) %>
     </style>
   <% end %>
 

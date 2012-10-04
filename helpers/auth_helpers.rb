@@ -26,7 +26,7 @@ module RoleInspector
     define_method "group_#{role}!" do |params|
       if g = locate_group(params)
         # puts "Checking if #{current_user.nickname} is a #{role} of the group #{g.name}"
-        halt 403, "You are not an #{role} of this group." unless g.send("has_#{role}?".to_sym, current_user)
+        halt 403, "You are not #{vowelize(role)} of this group." unless g.send("has_#{role}?".to_sym, current_user)
       else
         halt 400, "No such group."
       end

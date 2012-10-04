@@ -1,11 +1,15 @@
+#content.groups.settings {
+  padding-right: 0;
+}
+
 #content.settings {
   padding-left: 220px;
   padding-right: 100px;
   min-height: 300px;
 }
-#content.settings nav > ul { 
+#content.settings nav > ul {
   list-style-type: none;
-  margin: 0; 
+  margin: 0;
   width: 200px;
   padding: 0;
   position: absolute;
@@ -13,41 +17,43 @@
   left: 0;
 }
 
-#content.settings nav > ul li:last-child { 
+#content.settings nav > ul li:last-child {
   border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;  
+  border-bottom-left-radius: 5px;
 }
-#content.settings nav > ul li { 
-  display: block; 
+#content.settings nav > ul li {
+  display: block;
   /*background: rgba(0,0,0,0.015);*/
   border: 1px solid #ddd;
   border-top: none;
 }
 #content.settings nav > ul li:not(:first-child):hover,
-#content.settings nav > ul li.selected { 
+#content.settings nav > ul li.selected {
   background: rgba(0,0,0,0.025);
 }
 #content.settings nav > ul li:first-child,
-#content.settings nav > ul li a { 
+#content.settings nav > ul li a {
   display: block;
   width: 100%;
   padding: 5px 10px;
 }
-#content.settings nav > ul li:first-child { 
+#content.settings nav > ul li:first-child {
   border: 1px solid #ddd;
-  padding: 15px 10px;
-  font-weight: bold;
+  /*padding: 15px 10px;*/
+  /*font-weight: bold;*/
   display: block;
 
-  background: rgb(255,255,255); /* Old browsers */
-  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* IE10+ */
-  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
-  text-shadow: 0 -1px 0 white;
+/*  background: rgb(255,255,255);
+  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1)));
+  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); */
+  text-shadow: 0 1px 0 white;
+  background: #eee;
+  box-shadow: 0 0 5px 1px white inset;
 }
 #content.settings form + form,
 #content.settings section + section {
@@ -88,12 +94,16 @@
 #content.settings #editor_settings {
   position: relative;
 }
-#content.settings .CodeMirror {
+#content.settings:not(.groups) .CodeMirror {
   width: 320px;
   margin: 0;
   max-height: 320px;
   height: 320px;
   overflow: inherit;
+  font-family: inherit;
+}
+#content.settings:not(.groups) .CodeMirror pre {
+  font-family: inherit;
 }
 
 #content.settings .scheme_colour_group {
@@ -101,7 +111,7 @@
   border: 1px solid #555;
 }
 #content.settings .scheme_colours {
-  vertical-align: middle; height: 36px; width: 36px; display: inline-block; 
+  vertical-align: middle; height: 36px; width: 36px; display: inline-block;
   /*border: 1px solid #111;*/
 }
 
@@ -129,4 +139,43 @@
 }
 #content.settings .groups li > p {
   margin: 0;
+}
+
+#content.settings .group_role_description {
+  opacity: 0.75; position: relative; top: -55px; width: 240px; margin-left: 20px; display: inline-block;
+  vertical-align: top;
+}
+#content.groups.settings .group_role_description {
+  top: 0;
+  width: 217px;
+}
+
+#content.settings #user_listing > li:hover {
+  cursor: pointer;
+  color: red;
+}
+#content.settings #users > li > small > strong {
+  cursor: pointer;
+}
+
+#content.groups.settings.memberships nav ul { top: 17px; }
+/*.groups.settings.memberships form { display: inline-block; }*/
+/*.groups.settings.memberships form > :first-child { margin-top: 0; }*/
+#content.groups.settings.memberships form {
+  width: 500px;
+  display: inline-block;
+}
+#content.groups.settings.memberships form table { width: 100%; }
+#content.groups.settings.memberships form table th { text-align: left; vertical-align: top; }
+#content.groups.settings.memberships form table th:nth-of-type(1) { width: 51%; }
+#content.groups.settings.memberships form table th:nth-of-type(2) { width: 30%; }
+/*.groups.settings.memberships form table th:nth-of-type(3) { width: 10%; max-width: 10%; }*/*/
+#content.groups.settings.memberships form table tbody tr:hover { background: rgba(0,0,0,0.05); }
+
+#content.groups.settings ul.browsability {
+  padding: 0;
+}
+#content.groups.settings ul.browsability,
+#content.groups.settings ul.browsability ol {
+  list-style-type: none;
 }

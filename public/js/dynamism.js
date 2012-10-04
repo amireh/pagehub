@@ -15,7 +15,7 @@ dynamism = function(options) {
         log_target: null,
         log_out: null
       }, options);
-  
+
   $.apply_on = function(el, method) {
     $(el).each(function() { method($(this)); });
   }
@@ -29,7 +29,7 @@ dynamism = function(options) {
   }
 
   var log;
-  log = function(m, ctx) { 
+  log = function(m, ctx) {
     ctx = ctx || "D";
     log_out("[" + ctx + "] " + m);
   }
@@ -66,7 +66,7 @@ dynamism = function(options) {
     dump = function(el) {
       var self = $(el)[0];
       var out = '<' + self.tagName;
-      
+
       if (self.attributes) {
         for (var i = 0; i < self.attributes.length; ++i) {
           var pair = self.attributes[i]
@@ -78,7 +78,7 @@ dynamism = function(options) {
       return out;
     }
   }
-  
+
   /** Convenient closure-based array iterator */
   var foreach;
   if (!foreach) {
@@ -187,7 +187,7 @@ dynamism = function(options) {
    * with the injection value, @value. The substitution can either
    * be a full replacement, or a partial one when wildmarks are used.
    *
-   * For example, the following node will have its @href attribute 
+   * For example, the following node will have its @href attribute
    * injected with the `id` key's value _only_ where %id is placed.
    * However, its text() node will be emptied and replaced with `label`:
    *
@@ -226,7 +226,7 @@ dynamism = function(options) {
     targets.each(function() {
       var target = $(this);
 
-      // Find out whether we're injecting into an attribute or 
+      // Find out whether we're injecting into an attribute or
       // the target's inner text() node
       var parts = target.attr("data-dyn-inject").trim().split(/,\s*/);
 
@@ -239,7 +239,7 @@ dynamism = function(options) {
 
       // var nr_attrs = parts.length / 2;
       for (var j = 0; j < parts.length; j += 2) {
-        
+
         // Is not interested with the current injection
         if (parts[j+1] != reference) {
           if (target.is(el)) {
@@ -249,7 +249,7 @@ dynamism = function(options) {
         }
         // Has already been injected
         else if (is_injected(target, parts[j], reference)) {
-          log("this element has already been injected with " + 
+          log("this element has already been injected with " +
               parts[j] + " for " + reference + ", skipping", "N");
 
           continue;
@@ -282,8 +282,8 @@ dynamism = function(options) {
           }
           // or replace/create the attribute value
           else {
-            target.attr(node, value);                      
-          }                    
+            target.attr(node, value);
+          }
         } // dest is an @attribute
 
         track_injection(target, '@' + node, reference);
@@ -358,7 +358,7 @@ dynamism = function(options) {
     var el = $(this);
     if (!el.attr("data-dyn-hook").match(/\s*\S+,\s*\S+/)) {
       log("hooks: invalid syntax, unable to parse event or method in: " + el.attr("data-dyn-hook"), "E");
-      return false;   
+      return false;
     }
 
     var pairs = el.attr("data-dyn-hook").trim().split(/,\s*/);
@@ -401,7 +401,7 @@ dynamism = function(options) {
   } // dynamism::attach_hooks()
 
   return {
-    
+
     configure: function(opts) {
       options = $.extend(options, opts);
       setup();
@@ -503,8 +503,9 @@ dynamism = function(options) {
       }
     },
 
-    remove: function() {
-      var target  = locate_target($(this)),
+    remove: function(el) {
+
+      var target  = $(el).is("[data-dyn-entity]") ? $(el) : locate_target($(this)),
           btn     = $(this);
 
       if (!target)
@@ -523,7 +524,7 @@ dynamism = function(options) {
       foreach(callbacks["post-removal"],  function(cb) { cb(null, btn); });
       foreach(callbacks["all"],           function(cb) { cb(null, "post-removal", btn); });
     }, // dynamism.remove
-    
+
     /**
      * Parses the JSON feed @feed, traverses its values and
      * populates nodes found in @el that are interested in
@@ -603,6 +604,8 @@ dynamism = function(options) {
                     var me = $(this);
                     new_el = new_el.add( dynamism.add(me) );
                   });
+                } else {
+                  log("Unable to create model: " + model + ", no factory found.", "W");
                 }
               }
 
@@ -615,13 +618,13 @@ dynamism = function(options) {
                   // invoke any injection hooks attached to this element
                   if (me.attr("data-dyn-hook")) {
                     foreach(callbacks["post-injection"],  function(cb) { cb(me, value); });
-                    foreach(callbacks["all"],             function(cb) { cb(me, "post-injection", value); });                  
+                    foreach(callbacks["all"],             function(cb) { cb(me, "post-injection", value); });
                   }
                 })
               } else {
-                log("Unable to create model: " + model + ", no factory found.", "W");
+                log("Unable to create model: " + model + ", factory didn't create a proper entity.", "W");
               }
-            
+
             }
             break;
           default:
@@ -636,6 +639,10 @@ dynamism = function(options) {
         foreach(callbacks["all"],             function(cb) { cb(el, "post-injection", feed); });
       }
     }, // dynamism.inject
+
+    reset: function() {
+      injections = [];
+    },
 
     /**
      * Binds the dynamism addition and removal handlers
@@ -665,7 +672,7 @@ dynamism = function(options) {
     }, // dynasmism.bind
 
     /**
-     * 
+     *
      * @note Called internally whenever an entity is added.
      */
     hook: function(root) {
@@ -690,7 +697,7 @@ dynamism = function(options) {
      */
     add_callback: function(cb, action) {
       var action = action || "all";
-      
+
       if (!cb) {
         throw "Undefined " + action + " callback: " + cb;
       }
@@ -710,12 +717,12 @@ dynamism = function(options) {
      *
      * Callback will receive the element for the first argument.
      */
-    on_addition: function(cb) { 
+    on_addition: function(cb) {
       return dynamism.add_callback(cb, "addition");
     },
 
     /**
-     * Registers a method to be called right *before* an 
+     * Registers a method to be called right *before* an
      * entity is removed.
      *
      * Callback will receive the element for the first argument.

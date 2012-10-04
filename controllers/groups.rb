@@ -18,8 +18,20 @@ get "/groups/:name/space", :auth => :group_member do |name|
   erb :"/groups/public"
 end
 
-get '/groups/:name/edit', :auth => :group_admin do |name|
-  erb :"/groups/edit"
+[ "general" ].each { |domain|
+  get "/groups/:gid/edit/#{domain}", auth: :group_creator do
+    erb :"/groups/settings/#{domain}"
+  end
+}
+
+[ "publishing", "memberships", "browsability" ].each { |domain|
+  get "/groups/:gid/edit/#{domain}", auth: :group_admin do
+    erb :"/groups/settings/#{domain}"
+  end
+}
+
+get '/groups/:gid/edit', :auth => :group_admin do |name|
+  redirect "#{@group.url '/edit/general'}"
 end
 
 get '/groups/:name/destroy', :auth => :group_creator do |name|
@@ -48,7 +60,6 @@ get '/groups/:name/destroy', :auth => :group_creator do |name|
 
   redirect '/groups'
 end
-
 
 # Returns whether group name is available or not
 post '/groups/name', :auth => :user do
@@ -105,6 +116,16 @@ def assign_memberships(g)
 
 end
 
+def assign_browsability(g)
+  bpages = params[:browsable][:pages]
+  bfolders = params[:browsable][:folders]
+
+  g.folders.all.each  { |r| r.update({ browsable: bfolders.include?(r.id.to_s) })}
+  g.pages.all.each    { |r| r.update({ browsable: bpages.include?(r.id.to_s) })}
+end
+
+# Group creation
+
 post '/groups', :auth => :user do
   back_url = "/groups/new"
 
@@ -133,35 +154,27 @@ post '/groups', :auth => :user do
   redirect :"/groups/#{g.name}"
 end
 
-post '/groups/:current_name', :auth => :group_admin do |current_name|
+# Group update
+post "/groups/:gid/edit/general", auth: :group_creator do |gid|
   g = @group
 
-  name_changed = params[:name] && !params[:name].empty? && params[:name].to_s.sanitize != current_name
+  name_changed = params[:name] && !params[:name].empty? && params[:name] != g.title
 
   # Only the group creator can change its name
-  if g.is_master_admin?(current_user)
-    if name_changed
-      if !name_available?(params[:name])
-        flash[:error] = "That group name is unavailable."
-        return redirect back
-      end
-
-      if !params[:confirmed] || !params[:confirmed] == "do it" then
-        flash[:error] = "Will not modify the group name until you confirm your action."
-      else
-        g.title = params[:name]
-      end
+  if name_changed
+    if !name_available?(params[:name])
+      flash[:error] = "That group name is unavailable."
+      return redirect back
     end
 
-    g.is_public = params[:is_public] == "true"
-    g.css = params[:css]
-  else
-    if name_changed
-      flash[:error] = "Only the group creator can change its name."
+    if !params[:confirmed] || !params[:confirmed] == "do it" then
+      flash[:error] = "Will not modify the group name until you confirm your action."
+    else
+      g.title = params[:name]
     end
   end
 
-  assign_memberships(g)
+  g.is_public = params[:is_public] == "true"
 
   if g.save
     flash[:notice] = "Group updated successfully."
@@ -169,8 +182,91 @@ post '/groups/:current_name', :auth => :group_admin do |current_name|
     flash[:error] = "Unable to update group: #{g.collect_errors}"
   end
 
-  redirect :"/groups/#{g.name}/edit"
+  redirect "#{g.url('/edit/general')}".to_sym
 end
+
+post "/groups/:gid/edit/memberships", auth: :group_admin do |gid|
+  assign_memberships(@group)
+
+  if @group.save
+    flash[:notice] = "Group updated successfully."
+  else
+    flash[:error] = "Unable to update group: #{@group.collect_errors}"
+  end
+
+  redirect "#{@group.url('/edit/memberships')}".to_sym
+end
+
+post "/groups/:gid/edit/publishing", auth: :group_admin do |gid|
+
+  prefs = preferences(@group)
+  prefs["publishing"] = params[:settings][:publishing]
+  @group.settings = prefs.to_json.to_s
+  @group.css = params[:css]
+
+  if @group.save
+    flash[:notice] = "Group updated successfully."
+  else
+    flash[:error] = "Unable to update group: #{@group.collect_errors}"
+  end
+
+  redirect "#{@group.url('/edit/publishing')}".to_sym
+end
+
+post "/groups/:gid/edit/browsability", auth: :group_admin do |gid|
+  assign_browsability(@group)
+
+  if @group.save
+    flash[:notice] = "Group updated successfully."
+  else
+    flash[:error] = "Unable to update group: #{@group.collect_errors}"
+  end
+
+  redirect "#{@group.url('/edit/browsability')}".to_sym
+end
+
+# post '/groups/:current_name', :auth => :group_admin do |current_name|
+#   g = @group
+
+#   puts params.inspect
+
+#   name_changed = params[:name] && !params[:name].empty? && params[:name].to_s.sanitize != current_name
+
+#   # Only the group creator can change its name
+#   if g.is_master_admin?(current_user)
+#     if name_changed
+#       if !name_available?(params[:name])
+#         flash[:error] = "That group name is unavailable."
+#         return redirect back
+#       end
+
+#       if !params[:confirmed] || !params[:confirmed] == "do it" then
+#         flash[:error] = "Will not modify the group name until you confirm your action."
+#       else
+#         g.title = params[:name]
+#       end
+#     end
+
+#     g.is_public = params[:is_public] == "true"
+#     g.css = params[:css]
+#   else
+#     if name_changed
+#       flash[:error] = "Only the group creator can change its name."
+#     end
+#   end
+
+#   assign_memberships(g)
+
+#   assign_browsability(g)
+
+#   if g.save
+#     flash[:notice] = "Group updated successfully."
+#   else
+#     flash[:error] = "Unable to update group: #{g.collect_errors}"
+#   end
+
+#   redirect :"/groups/#{g.name}/edit"
+# end
 
 put '/groups/:gid/kick/:id', :auth => :group_admin do |gid, user_id|
   id = user_id.to_i
@@ -180,6 +276,10 @@ put '/groups/:gid/kick/:id', :auth => :group_admin do |gid, user_id|
 
   if gu.role == :admin && !@scope.is_creator?(current_user)
     halt 403, "Only the group creator can kick admins."
+  end
+
+  if @scope.is_creator?(gu.user)
+    halt 403, "Group creator can't be kicked!"
   end
 
   # puts "Removing member #{id} from group #{@scope.name}"

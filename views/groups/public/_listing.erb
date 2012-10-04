@@ -15,12 +15,12 @@
     <% if f.pages.empty? %>
       <li><em>This folder is empty.</em></li>
     <% else %>
-      <% f.pages.each do |p| %>
+      <% f.pages({ conditions: { browsable: true }, :order => [ :title.asc ] }).each do |p| %>
         <% dump_page(p) %>
       <% end %>
     <% end %>
 
-    <% f.folders.all({folder_id: f.id }).each { |cf| dump_folder(cf) } %>
+    <% f.folders.all({ browsable: true, folder_id: f.id }).each { |cf| dump_folder(cf) } %>
   </ol>
 <% end %>
 
@@ -28,8 +28,35 @@
   <div id="group_listing">
     <h2>Pages</h2>
     <ul>
-      <% @group.pages.all({ folder: nil }).each { |p| dump_page p } %>
-      <% @group.folders.all({ conditions: { folder_id: nil }, order: [ :title.asc ] }).each { |tlf| dump_folder(tlf) } %>
+      <%# @group.browsable_pages({ folder: nil }).each { |p| dump_page p } %>
+      <%# @group.browsable_folders.all({ folder_id: nil }).each { |tlf| dump_folder(tlf) } %>
+
+    <%
+      @group.on_resources({
+        on_page: lambda { |p| %>
+          <% selected = @page && @page.id == p.id ? 'class="selected"' : '' %>
+          <% url = selected.empty? ? "href=\"#{p.public_url}\"" : '' %>
+          <li>
+            <label>
+              <a <%= selected %> <%= url %>><%= p.title %></a>
+            </label>
+          </li>
+        <% },
+
+        on_folder: lambda { |f| %>
+          <% selected = @folder && @folder.id == f.id ? 'class="selected"' : '' %>
+          <ol>
+            <li>
+              <label>
+                <strong><a <%= selected %> href="<%= f.public_url %>"><%= f.title %></a></strong>
+              </label>
+        <% },
+
+        on_folder_done: lambda { |f| %>
+          </ol></li>
+        <% }
+      }, { browsable: true })
+    %>
     </ul>
   </div>
 <% end %>
