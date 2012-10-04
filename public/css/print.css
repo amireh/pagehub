@@ -5,18 +5,7 @@ body {
   padding: 0 10px;
 }
 
-h1,h2,h3,h4,h5,h6 {
-  font-family: inherit;
-  /*text-shadow: 0 1px 0 white;*/
-}
-body.print header {
-  max-height: inherit;
-  /*margin: 15px 0;*/
-}
-header h1 {
-  line-height: normal;
-}
-
+a:hover { text-decoration: underline; }
 #content.print img {
   max-width: 100%;
 }
@@ -38,11 +27,11 @@ header h1 {
   padding: 0 5px;
   position: relative;
 }
+
 #breadcrumbs > a {
   position: relative;
   display: inline-block;
 }
-
 
 #sidebar {
   background: rgba(0,0,0,0.075);
@@ -53,7 +42,7 @@ header h1 {
   font-size: 0.85em;
   width: 28%;
   text-align: left;
-  padding: 10px;
+  padding: 10px 10px 10px 20px;
   position: relative;
 }
 
@@ -67,5 +56,5 @@ header h1 {
   padding: 0 0 0 15px;
 }
 #sidebar #group_listing ol li:first-child { margin-left: -15px; }
-#sidebar #group_listing > h2:first-child { background: rgba(0,0,0,0.05); color: #555; }
+#sidebar #group_listing > h2:first-child { background: rgba(0,0,0,0.05); color: #555; margin-left: -10px; }
 #sidebar #group_listing > h2 { padding: 10px; margin-top: 0;}

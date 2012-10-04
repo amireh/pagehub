@@ -1,43 +1,16 @@
- /*"FFF", "615B4E", "E94E77", "8FBE00", "333"*/
-
- body {
-  background: #FFF;
-  color: #615B4E;
-}
-
-.stuff {
-  background: none;
-  box-shadow: none;
-  border: none;
-}
-
-header h1 a {
-  color: #E94E77;
-}
-
-
-h2 {
-  color: #8FBE00;
-  /*color: #555;*/
-}
-
-h3, a {
-  color: #333;
-}
-
-code {
-  letter-spacing: 1px;
-}
-a {
-  text-decoration: underline;
-}
-
+ body { background: #FFF; color: #615B4E;}
+.stuff { background: none; box-shadow: none; border: none; }
+header h1 a { color: #E94E77; }
+h2 { color: #8FBE00; }
+h3, a { color: #333; }
+code { letter-spacing: 1px; }
+a { text-decoration: underline; }
 hr {
   box-shadow: none;
   border-color: #aaa;
 }
 
-.highlight .nt { color: #5E8C6A; } /* Name.Tag */
+.highlight .nt { color: #5E8C6A; }
 .highlight .cp { color: #555;}
 
 #content {

@@ -353,8 +353,7 @@ button {
 
 a,
 #pages li,
-.highlighted,
-header a em {
+.highlighted {
   text-decoration: none;
   -webkit-transition: color 0.5s ease 0s;
   -moz-transition:    color 0.5s ease 0s;
