@@ -19,19 +19,9 @@
       $("#pages .scroller").css("max-height", $(window).height() - 135);
 
       data = <%= current_user.all_pages.to_json %>;
-      ui.hooks.push(function() {
-        dynamism.inject(data, $("#page_listing"));
-      });
+      dynamism.inject(data, $("#page_listing"));
     });
 
-  </script>
-<% end %>
-
-<% content_for :deferred_js do %>
-  <script>
-    $(function() {
-      ui.process_hooks();
-    })
   </script>
 <% end %>
 

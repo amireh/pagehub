@@ -9,7 +9,7 @@
   $(function() {
 
     pagehub.namespace = "/groups/<%= @group.id %>";
-    
+
     /* --- ------ *
      * The Editor *
      * --- ------ */
@@ -21,12 +21,12 @@
     $(".CodeMirror-scroll").css("min-height", editor_h + "px");
     ui.editor.refresh();
     // and the page listing
-    $("#pages .scroller").css("max-height", $(window).height() - 135);  
+    $("#pages .scroller").css("max-height", $(window).height() - 135);
 
     data = <%= @group.all_pages.to_json %>;
     dynamism.inject(data, $("#page_listing"));
 
-  }); 
+  });
 </script>
 <% end %>
 

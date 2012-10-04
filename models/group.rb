@@ -97,7 +97,7 @@ class Group
   end
 
   def role_of(user)
-    GroupUser.first({ group: self, user: user }).role.to_s
+    is_creator?(user) ? 'creator' : GroupUser.first({ group: self, user: user }).role.to_s
   end
 
   def has_admin?(user)

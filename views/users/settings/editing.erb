@@ -21,7 +21,7 @@
       readOnly: true
     });
 
-    $("input[type=radio][name*=editing]").change(function() { 
+    $("input[type=radio][name*=editing]").change(function() {
       var ff = $(this).parent().css("font-family");
       console.log(ff)
       $(".CodeMirror").css("font-family", ff);
@@ -46,7 +46,7 @@
 <% end %>
 
 <form action="/settings/editing" method="POST">
-  <section id="editor_settings">
+  <section class="editor_settings" id="editor_settings">
     <h2>Editing settings</h2>
 
     <p>These settings will apply only to PageHub's editor and <em>not</em>
@@ -60,11 +60,11 @@
     </label>
 
     <h3>Font face</h3>
-    
+
       <% Preferences::FontMap.each_pair do |name, font| %>
         <label style="font-family: <%= font %>; font-size: 14px">
-          <input 
-          type="radio" name="settings[editing][font_face]" 
+          <input
+          type="radio" name="settings[editing][font_face]"
           value="<%=name%>"
           <%= preferences["editing"]["font_face"] == name ? "checked='checked'" : "" %>
           ><%= name %></input>
@@ -72,26 +72,26 @@
         <br />
       <% end %>
     <h3>Font size &times; Line height &times; Letter spacing</h3>
-      <input 
+      <input
         type="text" name="settings[editing][font_size]"
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= preferences["editing"]["font_size"] %>" /> 
+        value="<%= preferences["editing"]["font_size"] %>" />
       <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
-      <input 
+      <input
         type="text" name="settings[editing][line_height]"
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= preferences["editing"]["line_height"] %>" /> 
+        value="<%= preferences["editing"]["line_height"] %>" />
       <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
-      <input 
+      <input
         type="text" name="settings[editing][letter_spacing]"
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= preferences["editing"]["letter_spacing"] %>" /> 
+        value="<%= preferences["editing"]["letter_spacing"] %>" />
       <span style="font-size: 18px;">px</span>
     <section class="editor_preview">
       <span class="curly">&rarr;</span>

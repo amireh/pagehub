@@ -169,7 +169,7 @@
 #content.groups.settings.memberships form table th { text-align: left; vertical-align: top; }
 #content.groups.settings.memberships form table th:nth-of-type(1) { width: 51%; }
 #content.groups.settings.memberships form table th:nth-of-type(2) { width: 30%; }
-/*.groups.settings.memberships form table th:nth-of-type(3) { width: 10%; max-width: 10%; }*/*/
+/*.groups.settings.memberships form table th:nth-of-type(3) { width: 10%; max-width: 10%; }*/
 #content.groups.settings.memberships form table tbody tr:hover { background: rgba(0,0,0,0.05); }
 
 #content.groups.settings ul.browsability {

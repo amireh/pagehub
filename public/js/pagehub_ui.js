@@ -1131,7 +1131,7 @@ ui = new pagehub_ui();
 
 $(function() {
   // foreach(ui.hooks, function(hook) { hook(); });
-  // for (var i = 0; i < ui.hooks.length; ++i) {
-  //   ui.hooks[i]();
-  // }
+  for (var i = 0; i < ui.hooks.length; ++i) {
+    ui.hooks[i]();
+  }
 })

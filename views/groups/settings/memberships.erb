@@ -75,7 +75,6 @@
     $("#user_search").keyup(function() {
       var nn = $(this).attr("value");
 
-      console.log("looking up " +nn)
       if (lookup_timer) {
         clearTimeout(lookup_timer);
         lookup_timer = null;
@@ -149,7 +148,7 @@
     <br /><br />
     <input type="text" id="user_search" autocomplete="off" class="very_fat" /> <small><em>(search by nickname)</em></small>
   </label>
-  <ul id="user_listing"></ul>
+  <ul class="user_listing" id="user_listing"></ul>
   <h2>Registered Members</h2>
   <table>
     <thead>
