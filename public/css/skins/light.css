@@ -5,6 +5,10 @@
   z-index: 101;
 }
 
+.guest .nav_wrap {
+  box-shadow: 0 -1px 4px 0px black;
+}
+
 .CodeMirror pre.CodeMirror-cursor {
   border-color: #615B4E;
 }

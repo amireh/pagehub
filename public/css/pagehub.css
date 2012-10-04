@@ -108,12 +108,12 @@ code {
   box-shadow: none;
 }
 
-header {
+body:not(.guest) header {
   /*margin-bottom: 30px;*/
   max-height: 48px;
 }
 
-header h1 {
+body:not(.guest) header h1 {
   margin: 0;
   line-height: 48px;
 }
@@ -447,8 +447,15 @@ img.loader {
   margin: 0 auto;
   border: 1px solid #DDD;
   border-top: 0;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius:  2px;
+
+  -webkit-transition: top 1s ease 0s;
+  -moz-transition:    top 1s ease 0s;
+  -ms-transition:     top 1s ease 0s;
+  -o-transition:      top 1s ease 0s;
+  transition:         top 1s ease 0s;
+
 }
 #flashes button {
   right: 7px;
@@ -464,9 +471,9 @@ img.loader {
 }
 
 #flashes.hidden {
-  opacity: 0;
-  position: absolute;
-  top: -150px;
+  /*opacity: 0;*/
+  /*position: absolute;*/
+  top: -100px;
 }
 #editor_container {
   position: relative;
@@ -648,13 +655,6 @@ a.button:hover {
   padding: 5px 20px;
 }
 
-body.guest #content {
-  text-align: justify;
-  /*width: 480px;*/
-  /*width: 640px;*/
-  margin: 0 auto;
-}
-
 #pages .scroller {
   max-height: 480px;
   overflow-y: auto;
@@ -681,41 +681,6 @@ body.guest #content {
   display: block;
   clear: both;
   font-style: italic;
-}
-
-body.guest #content span#login_buttons a
- {
-  display: inline-block;
-  width: 195px;
-  height: 54px;
-  line-height: 54px;
-  text-align: right;
-}
-/* Facebook login */
-body.guest #content span#login_buttons a:first-of-type {
-  background: url(/images/54_facebook.png) no-repeat 0 center;
-}
-
-/* GitHub login */
-body.guest #content span#login_buttons a:nth-of-type(2) {
-  background: url(/images/64_github.png) no-repeat 5px center;
-  padding-left: 70px;
-  margin: 0;
-}
-/* Twitter login */
-body.guest #content span#login_buttons a:last-of-type {
-  background: url(/images/64_twitter.png) no-repeat 10px center;
-  padding-left: 70px;
-  margin: 0;
-}
-
-
-.guest .stuff {
-  width: 600px;
-}
-.guest header h1 {
-  font-size: 0;
-  /*text-align: center;*/
 }
 
 a img {

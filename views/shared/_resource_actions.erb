@@ -10,13 +10,13 @@
     ui.on_action("save_content", ui.pages.save);
     ui.on_action("increase_height", function() {
       var step = parseInt($(".CodeMirror").css("line-height"));
-      $(".CodeMirror-scroll").css("min-height", 
+      $(".CodeMirror-scroll").css("min-height",
         (parseInt($(".CodeMirror-scroll").css("min-height")) + step) +"px");
       ui.editor.refresh();
     });
     ui.on_action("decrease_height", function() {
       var step = parseInt($(".CodeMirror").css("line-height"));
-      $(".CodeMirror-scroll").css("min-height", 
+      $(".CodeMirror-scroll").css("min-height",
         (parseInt($(".CodeMirror-scroll").css("min-height")) - step) +"px");
       ui.editor.refresh();
     });
@@ -34,7 +34,7 @@
       return true;
     });
 
-    // because it won't be spawned dynamically via dynamism and 
+    // because it won't be spawned dynamically via dynamism and
     // won't be injected and hooked by it
     $("a[data-action=move][data-folder=0]").click(ui.pages.move);
 
@@ -58,13 +58,13 @@
 
 <div class="disabled" id="page_actions">
   <a href="#" class="icon save_page" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a>
-  
-  <a target="PageHub - Preview" 
+
+  <a target="PageHub - Preview"
      class="icon pretty_page"
-     title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)" 
+     title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)"
      href="/pages/x/pretty"
      id="preview">Pretty Version</a>
-  
+
   <a id="destroy_page" class="confirm icon delete_page"
      data-confirm="Are you sure you want this page to be FOREVER deleted?"
      data-confirm-heading="Delete Page"
@@ -73,14 +73,14 @@
 
   <a class="listlike icon share_page" data-placement="top" title="Share this page with people">Share</a>
   <ol class="listlike">
-    <li><a  target="PageHub" 
-            title="Make a public version of this page that you can share with people" 
+    <li><a  target="PageHub"
+            title="Make a public version of this page that you can share with people"
             href="/pages/x/share"
             id="share_everybody">With Everybody
         </a>
     </li>
   </ol>
-  
+
   <a id="history" target="PageHub" class="icon history" title="View the history of this page">Revisions [0]</a>
 
   <a class="listlike icon move_page" data-placement="top" title="Move this page to a different folder">Move</a>
@@ -90,8 +90,8 @@
 
   <a class="listlike icon editor_settings" data-placement="top" title="A few editor actions">Editor Actions</a>
   <ol class="listlike">
-    <li class="sticky"><a href="#" title="Increase the height of the editor" id="increase_height">Grow</a></li>
-    <li class="sticky"><a href="#" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
-    <li class="sticky"><a href="#" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
+    <li class="sticky"><a href="#" data-placement="right" title="Increase the height of the editor" id="increase_height">Grow</a></li>
+    <li class="sticky"><a href="#" data-placement="right" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
+    <li class="sticky"><a href="#" data-placement="right" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
   </ol>
 </div>

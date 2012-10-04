@@ -7,7 +7,8 @@ pagehub_ui = function() {
       status_timer = null,
       timers = {
         autosave: null,
-        sync: null
+        sync: null,
+        flash: null
       },
       theme = "",
       is_dragging = false,
@@ -19,7 +20,8 @@ pagehub_ui = function() {
       animation_dur = 2500,
       pulses = {
         autosave: 30, /* autosave every half minute */
-        sync: 5
+        sync: 5,
+        flash: 2.5
       },
       defaults = {
         status: 1

@@ -1,25 +1,65 @@
+.stuff {
+  width: 720px;
+}
+
+.header_wrap {
+  position: fixed;
+  height: 100%;
+  width: 240px;
+  background: rgba(0,0,0,0.05);
+  z-index: -100;
+  box-shadow: 0 0 1px 1px #DDD inset;
+  /*margin-left: 30px;*/
+  /*right: 0;*/
+}
+
+body.guest #content {
+  text-align: justify;
+  /*width: 480px;*/
+  /*width: 640px;*/
+  margin: 0 auto;
+}
+
 body {
   /*font-family: "ProximaNova-Light", Arial, Verdana;*/
   /*font-size: 15px;*/
   font-weight: 100;
 }
 header {
-  padding: 15px 0 0 0;
+  /*padding: 15px 0 0 0;*/
   max-height: inherit;
-  height: 140px;
+  /*margin: 15px 0 0 0;*/
+  max-height: inherit;
+  width: 240px;
+  display: inline-block;
+  clear: none;
+  text-align: right;
+  /*font-size: 18px;*/
+  /*padding-left: 12px;*/
+  z-index: 1;
+  position: absolute;
+  right: 40px;
+  padding-right: 10px;
 }
 
-.header_wrap {
-  height: 160px;
-  background: none;
-  box-shadow: none;
+header > ul { list-style-type: none; padding: 0; margin: 0;}
+
+header h1 a,
+header h1 a:visited {
+  font-weight: bold;
+  letter-spacing: 10px;
+  color: #008CDD;
+  text-shadow: 0 2px 0 white;
+  margin-right: -13px;
+}
+
+#content {
+  width: 58%;
+  display: inline-block;
 }
 
 header img {
   margin-left: -15px;
-}
-header h1 {
-  margin: 0;
 }
 #flashes {
   width: 640px;
@@ -29,6 +69,7 @@ header h1 {
 
 .stuff > nav a:last-of-type {
   float: right;
+  margin-right: 50px;
 }
 
 .nav_wrap {
@@ -81,9 +122,9 @@ div.browser_notice {
   position: relative;
   width: 220px;
   display: inline-block;
-  margin-left: 15px;
+  /*margin-left: 15px;*/
   /*background: rgba(0,0,0,0.05);*/
-  padding: 0 30px;
+  padding: 0 40px 0 0;
   /*box-shadow: 0 0 3px 1px #aaa;*/
   /*border-radius: 5px;*/
   font-size: 0.9em;
@@ -141,5 +182,45 @@ div.browser_notice img {
   vertical-align: middle;
   line-height: normal;
   margin: 0;
-  display: inline;
+  display: inline-block;
+  width: 220px;
+}
+
+body.guest #content span#login_buttons a
+ {
+  display: inline-block;
+  width: 195px;
+  width: 70px;
+  height: 54px;
+  line-height: 54px;
+  text-align: right;
+  font-size: 0;
+}
+/* Facebook login */
+/*body.guest #content span#login_buttons a:first-of-type {
+  background: url(/images/54_facebook.png) no-repeat 0 center;
+}*/
+
+/* GitHub login */
+body.guest #content span#login_buttons a:nth-of-type(1) {
+  background: url(/images/64_github.png) no-repeat 5px center;
+  padding-left: 70px;
+  margin: 0;
+}
+/* Twitter login */
+/*body.guest #content span#login_buttons a:last-of-type {
+  background: url(/images/64_twitter.png) no-repeat 10px center;
+  padding-left: 70px;
+  margin: 0;
+}*/
+
+nav {
+  height: 40px;
+  padding-right: 40px;
+}
+
+div.greeting > h1 > span {
+  color: #aaa;
+  position: absolute;
+  left: -50px;
 }

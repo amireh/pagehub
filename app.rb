@@ -146,10 +146,6 @@ get '/help' do
   erb :"/shared/_nav_help_links"
 end
 
-get '/features' do
-  erb :"static/features"
-end
-
-get '/about' do
-  erb :"static/about"
-end
+get '/features' do erb :"static/features.md" end
+get '/about' do erb :"static/about.md" end
+get '/open-source' do erb :"static/open_source.md" end

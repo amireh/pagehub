@@ -9,7 +9,7 @@
 
   <script type="text/javascript">
     $(function() {
-      $("nav a[href='<%=request.path%>']").addClass("selected");
+      $("a[href='<%=request.path%>']").addClass("selected");
     });
 
   </script>
@@ -26,14 +26,20 @@
   <div class="nav_wrap"></div>
   <div class="stuff">
     <nav>
-      <a href="/features">Features</a> &nbsp;
-      <a href="/about">About</a> &nbsp;
-      <a href="/users/new">Sign up</a>
+      &nbsp;
       <a id="login" href="/sessions/new">Sign in</a>
     </nav>
 
     <header>
-      <h1><a href="/"><img src="/images/Logo-black-without-glass.png" alt="PageHub Logo" /></a></h1>
+      <div class="header_wrap"></div>
+      <!-- <h1><a href="/"><img src="/images/Logo-black-without-glass.png" alt="PageHub Logo" /></a></h1> -->
+      <h1><a href="/">PageHub</a></h1> <br/>
+      <ul>
+        <a href="/features">Features</a><br/>
+        <a href="/about">About</a><br/>
+        <a href="/open-source">Open Source</a><br/>
+        <a href="/users/new">Sign up</a>
+      </ul>
     </header>
 
     <div id="content">
@@ -47,6 +53,7 @@
     <%= partial "layouts/_footer" %>
   </div>
 
+  <%= yield_content :deferred_js %>
   <%= partial "layouts/_google_analytics" %>
 </body>
 

@@ -1,19 +1,4 @@
 <% unless flash.empty? %>
-  <% content_for :js do %>
-    <script type="text/javascript">
-      marker = null;
-
-      $(function() {
-        $("#flashes button").click(function() {
-          $(this).parent().next("hr:first").remove();
-          $(this).parent().addClass("hidden");
-          $(".flash_wrap").addClass("hidden");
-        });
-      });
-
-    </script>
-  <% end %>
-
   <div id="flashes">
     <% if flash.size > 1 then %>
       <ol>
@@ -29,4 +14,37 @@
     <button>&times;</button>
   </div>
 
+  <% content_for :deferred_js do %>
+    <script type="text/javascript">
+      var flash = {
+        pulse: 2500,
+        timer: null,
+        hide: function() {
+          if ($("#flashes").is(":visible")) { // might have been hidden already by the user
+            $("#flashes button").click();
+          }
+
+          clearTimeout(flash.timer);
+          flash.timer = null;
+        },
+
+        hide_in_a_bit: function() {
+          if (flash.timer)
+            return;
+
+          flash.timer = setTimeout("flash.hide()", flash.pulse);
+        }
+      };
+
+      $(function() {
+        $("#flashes button").click(function() {
+          $(this).parent().addClass("hidden");
+          // $(".flash_wrap").addClass("hidden");
+        });
+
+        <% unless flash[:error] %> flash.hide_in_a_bit(); <% end %>
+      });
+
+    </script>
+  <% end %>
 <% end %>
