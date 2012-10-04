@@ -12,6 +12,7 @@
   <ol>
     <li <%= 'class="selected"' if @folder && @folder.id == f.id %>>
       <strong><a href="<%= f.public_url %>"><%= f.title %></a></strong></li>
+
     <% if f.pages.empty? %>
       <li><em>This folder is empty.</em></li>
     <% else %>
@@ -50,6 +51,9 @@
               <label>
                 <strong><a <%= selected %> href="<%= f.public_url %>"><%= f.title %></a></strong>
               </label>
+              <% if f.pages(browsable: true).empty? %>
+                <li><em>No pages.</em></li>
+              <% end %>
         <% },
 
         on_folder_done: lambda { |f| %>

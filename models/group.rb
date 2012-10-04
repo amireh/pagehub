@@ -79,7 +79,7 @@ class Group
     dump_folder = nil
     dump_folder = lambda { |f|
       handlers[:on_folder].call(f)
-      dump_pages.call(f.pages.all({ order: [ :title.asc ]} ))
+      dump_pages.call(f.pages.all({ conditions: cnd, order: [ :title.asc ]} ))
       f.folders.all({ conditions: cnd }).each { |cf| dump_folder.call(cf) }
       handlers[:on_folder_done].call(f) if handlers[:on_folder_done]
     }

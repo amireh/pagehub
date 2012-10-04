@@ -108,12 +108,12 @@ code {
   box-shadow: none;
 }
 
-body:not(.guest) header {
+body.member header {
   /*margin-bottom: 30px;*/
   max-height: 48px;
 }
 
-body:not(.guest) header h1 {
+body.member header h1 {
   margin: 0;
   line-height: 48px;
 }
