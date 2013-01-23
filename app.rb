@@ -3,21 +3,39 @@
 $ROOT ||= File.dirname(__FILE__)
 $LOAD_PATH << $ROOT
 
+Encoding.default_external = "UTF-8"
+
 require 'rubygems'
 require 'bundler/setup'
 
 Bundler.require(:default)
 
-require 'config/constants'
-require 'lib/common'
+# ----
+# Validating that configuration files exist and are readable...
+config_files = [ 'application', 'database' ]
+config_files << 'credentials' unless settings.test?
+config_files.each { |config_file|
+  unless File.exists?(File.join($ROOT, 'config', "%s.yml" %[config_file] ))
+    class ConfigFileError < StandardError; end;
+    raise ConfigFileError, "Missing required config file: config/%s.yml" %[config_file]
+  end
+}
 
-configure :development do
-  Bundler.require(:development)
+require 'config/initializer'
+
+configure :test do
+  set :credentials, { 'cookie' => { 'secret' => 'adooken' } }
+end
+
+configure :development, :production do
+  config_file 'config/credentials.yml'
 end
 
 configure do
-  # enable :sessions
-  use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+  config_file 'config/application.yml'
+  config_file 'config/database.yml'
+
+  use Rack::Session::Cookie, :secret => settings.credentials['cookie']['secret']
 
   PageHub::Markdown::configure({}, { with_toc_data: true } )
   helpers Gravatarify::Helper
@@ -29,61 +47,71 @@ configure do
   Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
   Gravatarify.styles[:profile] = { size: 128, html: { :class => 'gravatar' } }
 
-  dbc = JSON.parse(File.read(File.join($ROOT, 'config', 'database.json')))
-  DataMapper.setup(:default, "mysql://#{dbc['username']}:#{dbc['password']}@localhost/#{dbc['db']}")
+  dbc = settings.database
+  # DataMapper::Logger.new($stdout, :debug)
+  DataMapper.setup(:default, "mysql://#{dbc[:un]}:#{dbc[:pw]}@#{dbc[:host]}/#{dbc[:db]}")
 
   # load the models and controllers
   def load(directory)
     Dir.glob("#{directory}/*.rb").each { |f| require f }
   end
 
-  # Load the Markdown extensions
-  # require "lib/markdown_ext/processor"
-  # load "lib/markdown_ext"
-
-  load "helpers"
-  load "models"
-  # load "controllers"
-  require 'controllers/helpers'
-  require 'controllers/groups'
+  [ 'lib', 'helpers', 'models' ].each { |d|
+    Dir.glob("#{d}/**/*.rb").each { |f| require f }
+  }
   require 'controllers/users'
   require 'controllers/folders'
+  require 'controllers/groups'
   require 'controllers/pages'
-
-  require 'lib/migrations'
 
   DataMapper.finalize
   DataMapper.auto_upgrade!
 
-  set :default_preferences, JSON.parse(File.read(File.join($ROOT, "default_preferences.json")))
+  set :default_preferences, JSON.parse(File.read(File.join($ROOT, "config/preferences.json")))
 end
 
-configure :production do
-  Bundler.require(:production)
-
+configure :production, :development do |app|
   use OmniAuth::Builder do
-    provider :developer if settings.development?
-    provider :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
-    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
-    provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
-    # provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], { access_type: 'online', approval_prompt: '' }
-    # provider :openid, :store => OpenID::Store::Filesystem.new(File.join($ROOT, 'tmp'))
+    provider :developer if app.settings.development?
+
+    provider :facebook,
+      app.settings.credentials['facebook']['key'],
+      app.settings.credentials['facebook']['secret']
+    # provider :twitter,  settings.credentials['twitter']['key'],  settings.credentials['twitter']['secret']
+
+    provider :google_oauth2,
+      app.settings.credentials['google']['key'],
+      app.settings.credentials['google']['secret'],
+      { access_type: "offline", approval_prompt: "" }
+
+    provider :github,
+      app.settings.credentials['github']['key'],
+      app.settings.credentials['github']['secret']
   end
 
   Pony.options = {
-    :from => "noreply@pagehub.org",
-    :via => :smtp, :via_options => {
-      :address => 'smtp.gmail.com',
-      :port => '587',
+    :from => settings.courier[:from],
+    :via => :smtp,
+    :via_options => {
+      :address    => settings.credentials['courier']['address'],
+      :port       => settings.credentials['courier']['port'],
+      :user_name  => settings.credentials['courier']['key'],
+      :password   => settings.credentials['courier']['secret'],
       :enable_starttls_auto => true,
-      :user_name => ENV['GMAIL_ID'],
-      :password => ENV['GMAIL_PW'],
       :authentication => :plain, # :plain, :login, :cram_md5, no auth by default
       :domain => "HELO", # don't know exactly what should be here
     }
   }
-
 end
+
+configure :production do
+  Bundler.require(:production)
+end
+
+configure :development do
+  Bundler.require(:development)
+end
+
 
 not_found do
   # return "Bad link!".to_json if request.xhr?

@@ -61,6 +61,15 @@ module Sinatra
 
   class Base
     class << self
+      def get(path, opts={}, &block)
+        puts "GET: #{path}"
+
+        conditions = @conditions.dup
+        route('GET', path, opts, &block)
+
+        @conditions = conditions
+        route('HEAD', path, opts, &block)
+      end
 
       # for every DELETE route defined, a "legacy" GET equivalent route is defined
       # at @{path}/destroy for compatibility with browsers that do  not support
@@ -97,7 +106,7 @@ module Sinatra
           end
 
           # capture the block from b+'<markdown>'.length to e-1
-          puts "Found a Markdown block @ #{b}-#{e}:"
+          # puts "Found a Markdown block @ #{b}-#{e}:"
           block_boundaries = b..e+MDETag.length-1
           md_block = mixed[b+MDBTag.length..e-1]
           md_block = md_block.lines.map { |l| l.gsub(/^[ ]+/, '') }.join
@@ -110,7 +119,7 @@ module Sinatra
         end
       end
 
-      mixed
+      mixed.force_encoding('UTF-8')
     end
 
     def partial(template, options={}, locals={})
@@ -119,6 +128,14 @@ module Sinatra
   end
 
   module ContentFor
+    # def content_for(key, &block)
+    #   content_blocks[key.to_sym] << capture_later { |*a| block.call(a).force_encoding('UTF-8') }
+    # end
+
+    # def yield_content(key, *args)
+    #   content_blocks[key.to_sym].map { |b| capture(*args) { |*a| puts b.call(a); b.call(a).force_encoding('UTF-8')} }.join
+    # end
+
     def yield_with_default(key, &default)
       unless default
         raise RuntimeError.new "Missing required default block"
@@ -131,8 +148,5 @@ module Sinatra
       yield_content(key)
     end
 
-    def content_for?(key)
-      content_blocks[key.to_sym].any?
-    end
   end
 end

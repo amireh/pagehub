@@ -10,7 +10,9 @@ def create_page()
 end
 
 def load_page(pid)
-  unless p = @scope.pages.first(id: pid)
+  puts @scope.inspect
+
+  unless p = @scope.pages.get(pid.to_i)
     halt 400, "Page ##{pid} does not exist."
   end
 
@@ -315,7 +317,7 @@ end
 # the person isn't a member, instead we will pass into
 # the anonymous capturer below this one.
 get '/:gname/*' do |gname, crammed_path|
-  pass if !group_member?
+  pass if !group_member? || reserved?(gname)
 
   unless @scope = @group = Group.first({name: gname })
     halt 404, "No such group #{gname}."
@@ -338,6 +340,7 @@ end
 
 # A group shared page
 get '/:gname/*' do |gname, crammed_path|
+  pass if reserved?(gname)
   unless @scope = @group = Group.first({name: gname })
     halt 404, "No such group #{gname}."
   end

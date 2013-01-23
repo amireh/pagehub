@@ -63,4 +63,14 @@ end
 
 helpers do
   include PageHub::Helpers
+
+  def name_available?(name)
+    nn = name.to_s.sanitize
+    !reserved?(nn) && !nn.empty? && User.first(nickname: nn).nil? && Group.first(name: nn).nil?
+  end
+
+  ReservedNames = [ 'name', 'pagehub', 'pages', 'groups' ]
+  def reserved?(name)
+    ReservedNames.include?(name)
+  end
 end

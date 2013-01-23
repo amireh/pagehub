@@ -1,10 +1,31 @@
+GIT
+  remote: https://github.com/sinatra/sinatra
+  revision: 9984d0d2b3f1ea12273c6c25f8e102b2329f33e9
+  specs:
+    sinatra (1.4.0)
+      rack (~> 1.4)
+      rack-protection (~> 1.3)
+      tilt (~> 1.3, >= 1.3.3)
+
+GIT
+  remote: https://github.com/sinatra/sinatra-contrib
+  revision: a7a7acdcbd5c51388633a98471d6f7506cce4712
+  specs:
+    sinatra-contrib (1.4.0)
+      backports (>= 2.0)
+      eventmachine
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (~> 1.3)
+
 GEM
   remote: http://rubygems.org/
   specs:
     addressable (2.2.8)
     albino (1.3.3)
       posix-spawn (>= 0.3.6)
-    backports (2.6.4)
+    backports (2.6.5)
     bcrypt-ruby (3.0.1)
     daemons (1.1.8)
     data_objects (0.10.9)
@@ -63,7 +84,6 @@ GEM
     multipart-post (1.1.5)
     mysql (2.8.1)
     nokogiri (1.5.5)
-    oauth (0.4.7)
     oauth2 (0.8.0)
       faraday (~> 0.8)
       httpauth (~> 0.1)
@@ -78,14 +98,12 @@ GEM
     omniauth-github (1.0.3)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.1)
-    omniauth-oauth (1.0.1)
-      oauth
+    omniauth-google-oauth2 (0.1.13)
       omniauth (~> 1.0)
+      omniauth-oauth2
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
-    omniauth-twitter (0.0.9)
-      omniauth-oauth (~> 1.0)
     pagehub-markdown (0.1.3)
       albino (>= 1.3.3)
       json (>= 1.7.0)
@@ -95,23 +113,12 @@ GEM
     pony (1.4)
       mail (> 2.0)
     posix-spawn (0.3.6)
-    rack (1.4.1)
-    rack-protection (1.2.0)
+    rack (1.4.3)
+    rack-protection (1.3.2)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
     redcarpet (2.1.1)
-    sinatra (1.3.3)
-      rack (~> 1.3, >= 1.3.6)
-      rack-protection (~> 1.2)
-      tilt (~> 1.3, >= 1.3.3)
-    sinatra-contrib (1.3.1)
-      backports (>= 2.0)
-      eventmachine
-      rack-protection
-      rack-test
-      sinatra (~> 1.3.0)
-      tilt (~> 1.3)
     sinatra-flash (0.3.0)
       sinatra (>= 1.0.0)
     stringex (1.4.0)
@@ -148,11 +155,11 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   omniauth-github
-  omniauth-twitter (= 0.0.9)
+  omniauth-google-oauth2
   pagehub-markdown (>= 0.1.3)
   pony
-  sinatra
-  sinatra-contrib
+  sinatra (= 1.4.0)!
+  sinatra-contrib!
   sinatra-flash
   thin
   uuid

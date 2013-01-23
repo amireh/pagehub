@@ -224,3 +224,6 @@ div.greeting > h1 > span {
   position: absolute;
   left: -50px;
 }
+
+footer { border: none; }
+footer > p { width: 720px;}

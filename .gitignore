@@ -1,3 +1,4 @@
 exclude
 *.xcf
 dumps
+config/credentials.yml

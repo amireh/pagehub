@@ -1,0 +1,15 @@
+production:
+  database: &common
+    host: 'localhost'
+    un:   'root'
+    pw:   ''
+    db:   'pagehub'
+
+test:
+  database:
+    <<: *common
+    db: 'pagehub_test'
+
+development:
+  database:
+    <<: *common

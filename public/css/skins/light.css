@@ -1,5 +1,6 @@
 .header_wrap,
-.guest .nav_wrap {
+.guest .nav_wrap,
+.member header {
   background: rgb(255,255,255); /* Old browsers */
   box-shadow: 0 -1px 6px 0px black;
   z-index: 101;
@@ -119,8 +120,8 @@ a.button {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
   border: 1px solid #ddd;
   /*border-color: #C60 #C60 #AD5700;*/
-  box-shadow: 0 0 5px 2px rgba(255,255,255,0.5) inset;
-  border-radius: 5px;
+  /*box-shadow: 0 0 5px 2px rgba(255,255,255,0.5) inset;*/
+  border-radius: 2px;
 }
 
 button:hover,

@@ -1,8 +1,10 @@
+<% # coding: UTF-8 %>
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title><%= yield_with_default(:title) { AppTitle } %></title>
+  <title><%= (yield_with_default(:title) { AppTitle }).force_encoding('UTF-8') %></title>
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <!-- <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" /> -->
@@ -62,7 +64,7 @@
 
   <div class="stuff">
     <header>
-      <%= yield_content :header %>
+      <%= yield_content(:header).force_encoding('UTF-8') %>
     </header>
     <div id="content" class="print">
       <%= yield %>

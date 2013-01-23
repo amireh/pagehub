@@ -40,37 +40,40 @@
 
 <body class="member">
 
-  <div class="header_wrap">
-  </div>
+  <!-- <div class="header_wrap"></div> -->
 
   <%= yield_content :wraps %>
-  <div class="stuff">
-    <header>
+  <header>
+    <div class="stuff">
       <h1><a href="/">Page<em>Hub</em></a></h1>
       <div class="subheader"><%= yield_content :header %></div>
-    </header>
 
-    <nav>
+      <nav>
+        <span><%= current_user.nickname %>
+          <%= gravatar_tag @user, :icon %>
+        </span>
+        <a class="listlike icon groups" rel="tooltip" title="Your groups" href="/groups">Groups</a>
+        <ol class="listlike">
+          <li><a href="/groups/new">Start a new group</a></li>
+          <% current_user.groups.each do |g| %>
+            <li>
+              <a href="/groups/<%= g.name %>"><%= g.title %></a>
+              <!-- <small><a style="padding: 0; margin: 0" href="/groups/<%= g.name %>/info">( info )</a></small> -->
+            </li>
+          <% end %>
+        </ol>
+        <a class="listlike icon help" href="/help" title="Help">Help</a>
+        <%= partial "/shared/_nav_help_links" %>
+        <a class="listlike icon settings" href="/settings" title="Your account">Account</a>
+        <%= partial "/shared/_nav_account_links" %>
+      </nav>
+    </div>
 
-      <span><%= current_user.nickname %>
-        <%= gravatar_tag @user, :icon %>
-      </span>
-      <a class="listlike icon groups" rel="tooltip" title="Your groups" href="/groups">Groups</a>
-      <ol class="listlike">
-        <li><a href="/groups/new">Start a new group</a></li>
-        <% current_user.groups.each do |g| %>
-          <li>
-            <a href="/groups/<%= g.name %>"><%= g.title %></a>
-            <!-- <small><a style="padding: 0; margin: 0" href="/groups/<%= g.name %>/info">( info )</a></small> -->
-          </li>
-        <% end %>
-      </ol>
-      <a class="listlike icon help" href="/help" title="Help">Help</a>
-      <%= partial "/shared/_nav_help_links" %>
-      <a class="listlike icon settings" href="/settings" title="Your account">Account</a>
-      <%= partial "/shared/_nav_account_links" %>
 
-    </nav>
+  </header>
+
+  <div class="stuff">
+
 
     <div id="status"></div>
 
@@ -99,8 +102,8 @@
       </p>
     </aside>
 
-    <%= partial "layouts/_footer" %>
   </div>
+  <%= partial "layouts/_footer" %>
 
   <%= yield_content :deferred_js %>
   <%= partial "layouts/_google_analytics" %>

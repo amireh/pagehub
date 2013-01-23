@@ -39,11 +39,32 @@ module RoleInspector
       if g = locate_group(params)
         return false unless g.send("has_#{role}?".to_sym, current_user)
       else
-        halt 400, "No such group."
+        halt 400, "No such group #{params.inspect}."
       end
       true
     end
   }
+
+
+  private
+
+  def locate_group(params)
+    if params[:gid]
+      return Group.first({ id: params[:gid] })
+    elsif params[:current_name]
+      return Group.first({ name: params[:current_name] })
+    elsif params[:name] || params[:gname]
+      return Group.first({ name: params[:name] || params[:gname] })
+    else
+      puts "ERROR: Can't find parameter to locate group with from #{params.inspect}"
+    end
+    nil
+  end
+
+end
+
+helpers do
+  include RoleInspector
 
   set(:auth) do |*roles|
     condition do
@@ -72,24 +93,4 @@ module RoleInspector
       # end
     end
   end
-
-  private
-
-  def locate_group(params)
-    if params[:gid]
-      return Group.first({ id: params[:gid] })
-    elsif params[:current_name]
-      return Group.first({ name: params[:current_name] })
-    elsif params[:name] || params[:gname]
-      return Group.first({ name: params[:name] || params[:gname] })
-    else
-      puts "ERROR: Can't find parameter to locate group with from #{params.inspect}"
-    end
-    nil
-  end
-
-end
-
-helpers do
-  include RoleInspector
 end

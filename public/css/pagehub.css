@@ -56,7 +56,7 @@ body {
   font-size: 14px;
   /*font-size: 15px;*/
   line-height: 22px;
-  position: relative;
+  /*position: relative;*/
   margin: 0;
   padding: 0;
   color: #615B4E;
@@ -125,7 +125,9 @@ header h1 a {
   /*color: #FFFEDF !important;*/
 }
 
-header { position: relative; }
+header {
+  position: relative;
+}
 header, .stuff > nav { z-index: 102; }
 
 header h1, header h3 {
@@ -185,19 +187,14 @@ h1,h2,h3,h4,h5,h6 {
   border-bottom: 1px solid #eee;
 }
 
-.stuff,
-footer {
-  /*padding-left: 10px;*/
-  /*padding-right: 10px;*/
-}
-.stuff > nav {
+header nav {
   position: absolute;
   right: 0px;
   top: 0;
   /*top: 2px;*/
 }
 
-.stuff > nav > a {
+header nav > a {
   padding: 0 15px;
   margin: -1px 0 0 0; /* to disable the top part of the box shadow */
   height: 49px;
@@ -609,9 +606,9 @@ a.button.thin,
 input .thin,
 form input.thin,
 button.thin {
-  padding: 5px;
+  /*padding: 5px;*/
   font-size: 12px;
-  line-height: 14px;
+  /*line-height: 14px;*/
   font-weight: 100;
   /*vertical-align: middle;*/
 }
@@ -626,11 +623,11 @@ a.button {
   margin: 0;
   cursor: pointer;
 
-  padding: 5px 10px;
+  padding: 2px 10px;
 
   border: none;
 
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-weight: bold;
   display: inline-block;
 
@@ -645,7 +642,8 @@ button:hover,
 input[type=submit]:hover,
 a.button:hover {
   /*background-position: 0 -5px;*/
-  padding: 5px 20px;
+  box-shadow: 0 0 3px 0 rgba(0,0,0,0.25);
+  padding: 2px 15px;
 }
 
 #pages .scroller {
@@ -718,9 +716,9 @@ ol.listlike {
   top: 99%;
   text-align: left;
   color: white;
-  border-top-left-radius:     5px;
-  border-bottom-left-radius:  5px;
-  border-bottom-right-radius: 5px;
+  border-top-left-radius:     2px;
+  border-bottom-left-radius:  2px;
+  border-bottom-right-radius: 2px;
 }
 .icon:hover,
 a.listlike:hover {
@@ -797,7 +795,8 @@ a.button.kinda_bad:not(:active) {
 button.good:not(:active),
 input[type=submit].good:not(:active),
 a.button.good:not(:active) {
-  color: #555;
+  /*color: #555;*/
+  color: #fff;
   text-shadow: none;
   background: rgb(143,200,0); /* Old browsers */
   background: -moz-linear-gradient(top, rgba(143,200,0,1) 0%, rgba(143,200,0,1) 100%); /* FF3.6+ */
@@ -1413,4 +1412,23 @@ button[data-collapse] {
   border: 1px solid #ccc;
   padding: 1px;
   top: -6px;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin: 0 0 24px; /* bottom = footer height */
+}
+footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 24px;
+  width: 100%;
+}
+footer p {
+  width: 960px;
+  margin: 0 auto;
 }

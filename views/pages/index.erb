@@ -13,13 +13,13 @@
 
       // Resize it to fill up the remainder of the screen's height
       var editor_h = $(window).height() - 135;
+      // var editor_h = $(window).height() - 125;
       $(".CodeMirror-scroll").css("min-height", editor_h + "px");
       ui.editor.refresh();
       // and the page listing
-      $("#pages .scroller").css("max-height", $(window).height() - 135);
+      $("#pages .scroller").css("max-height", editor_h);
 
-      data = <%= current_user.all_pages.to_json %>;
-      dynamism.inject(data, $("#page_listing"));
+      dynamism.inject(<%= current_user.all_pages.to_json %>, $("#page_listing"));
     });
 
   </script>
