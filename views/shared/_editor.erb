@@ -1,4 +1,5 @@
 <% content_for :css do %>
+<link rel="stylesheet" href="/js/codemirror-3.0/lib/codemirror.css">
 <!-- <link rel="stylesheet" href="/js/codemirror-2.3/lib/codemirror.css"> -->
 <!-- <link rel="stylesheet" href="/js/codemirror-2.3/theme/neat.css"> -->
 <!-- <link rel="stylesheet" href="/css/codemirror.css"> -->
@@ -6,11 +7,12 @@
 <!-- apply user preferences -->
 <style>
   .CodeMirror {
-    font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
+    font-family: <%= Preferences::FontMap[preferences["editing"]["font_face"]] %>;
     font-size: <%= preferences["editing"]["font_size"].to_i %>px;
     line-height: <%= preferences["editing"]["line_height"].to_i %>px;
     letter-spacing: <%= preferences["editing"]["letter_spacing"].to_i %>px;
-
+    <% if false %>
+    <% end %>
   }
 </style>
 <% end %>
@@ -18,11 +20,22 @@
 <% content_for :scripts do %>
 <!-- <script src="/js/codemirror-compressed.js"></script> -->
 
-<script src="/js/codemirror-2.3/lib/codemirror.js"></script>
+<!-- <script src="/js/codemirror-2.3/lib/codemirror.js"></script>
 <script src="/js/codemirror-2.3/mode/markdown/markdown.js"></script>
 <script src="/js/codemirror-2.3/mode/css/css.js"></script>
 <script src="/js/codemirror-2.3/mode/gfm/gfm.js"></script>
 <script src="/js/codemirror-2.3/keymap/mxvt.js"></script>
+ -->
+<script src="/js/codemirror-3.0/lib/codemirror.js"></script>
+<script src="/js/codemirror-3.0/addon/mode/overlay.js"></script>
+<script src="/js/codemirror-3.0/mode/javascript/javascript.js"></script>
+<script src="/js/codemirror-3.0/mode/markdown/markdown.js"></script>
+<script src="/js/codemirror-3.0/mode/css/css.js"></script>
+<script src="/js/codemirror-3.0/mode/gfm/gfm.js"></script>
+<script src="/js/codemirror-3.0/mode/ruby/ruby.js"></script>
+<script src="/js/codemirror-3.0/mode/clike/clike.js"></script>
+<script src="/js/codemirror-3.0/mode/shell/shell.js"></script>
+<!-- <script src="/js/codemirror-2.3/keymap/mxvt.js"></script> -->
 
 <!-- <script src="/js/codemirror-2.3/mode/javascript/javascript.js"></script>
 <script src="/js/codemirror-2.3/mode/xml/xml.js"></script>

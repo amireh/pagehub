@@ -196,3 +196,5 @@ header h1 a.selected { text-decoration: none; }
   background: #008CDD;
   color: white;
 }
+
+#editor_container { width: 720px; padding-top: 41px;}

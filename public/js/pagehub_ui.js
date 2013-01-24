@@ -199,9 +199,9 @@ pagehub_ui = function() {
 
     create_editor: function(textarea_id, opts) {
       opts = opts || {};
-      mxvt.markdown.setup_bindings();
+      // mxvt.markdown.setup_bindings();
       var editor = CodeMirror.fromTextArea(document.getElementById(textarea_id), $.extend({
-        mode: "markdown",
+        mode: "gfm",
         lineNumbers: false,
         matchBrackets: true,
         theme: "neat",
@@ -209,7 +209,7 @@ pagehub_ui = function() {
         gutter: false,
         autoClearEmptyLines: false,
         lineWrapping: true,
-        keyMap: "mxvt",
+        // keyMap: "mxvt",
         onChange: function() {
           pagehub.content_changed = true;
         },
