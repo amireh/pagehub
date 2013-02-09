@@ -188,7 +188,13 @@ get '/settings' do
   redirect "/settings/profile"
 end
 
-[ "account", "editing", "publishing", "profile", "notifications", "groups" ].each { |domain|
+%w(
+   account
+   editing
+   publishing
+   profile
+   notifications
+   groups).each { |domain|
   get "/settings/#{domain}", auth: :user do
     erb :"/users/settings/#{domain}"
   end

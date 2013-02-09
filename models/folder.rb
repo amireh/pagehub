@@ -48,6 +48,14 @@ class Folder
     end
     out
   end
+  
+  def empty?(scope = :public)
+    self.folders.empty? && self.pages.all({browsable: true}).empty?
+  end
+  
+  def has_homepage?()
+    pages({ title: "Home" }).first
+  end
 
   def to_json
     serialize.to_json

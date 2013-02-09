@@ -1,3 +1,6 @@
+<% no_title ||= false %>
+<% show_homepages ||= is_on("publishing.layout.show_homepages_in_sidebar") %>
+<% coll ||= nil %>
 <% def dump_page(p) %>
   <li>
   <% if @page && @page.id == p.id %>
@@ -25,42 +28,46 @@
   </ol>
 <% end %>
 
-<% content_for :sidebar do %>
-  <div id="group_listing">
-    <h2>Pages</h2>
-    <ul>
-      <%# @group.browsable_pages({ folder: nil }).each { |p| dump_page p } %>
-      <%# @group.browsable_folders.all({ folder_id: nil }).each { |tlf| dump_folder(tlf) } %>
+<section class="group_listing">
+  <% unless no_title %><header><h1>Navigation</h1></header><% end %>
+  <ul>
+    <%# @group.browsable_pages({ folder: nil }).each { |p| dump_page p } %>
+    <%# @group.browsable_folders.all({ folder_id: nil }).each { |tlf| dump_folder(tlf) } %>
 
-    <%
-      @group.on_resources({
-        on_page: lambda { |p| %>
-          <% selected = @page && @page.id == p.id ? 'class="selected"' : '' %>
-          <% url = selected.empty? ? "href=\"#{p.public_url}\"" : '' %>
-          <li>
-            <label>
-              <a <%= selected %> <%= url %>><%= p.title %></a>
-            </label>
-          </li>
-        <% },
+  <% 5.times do
+    @group.on_resources({
+      on_page: lambda { |p| %>
+        <% return if !show_homepages && p.title == "Home" %>
+        <% selected = @page && @page.id == p.id ? 'class="selected"' : '' %>
+        <% url = selected.empty? ? "href=\"#{p.public_url}\"" : '' %>
+        <li>
+          <label>
+            <a <%= selected %> <%= url %>><%= p.title %></a>
+          </label>
+        </li>
+      <% },
 
-        on_folder: lambda { |f| %>
-          <% selected = @folder && @folder.id == f.id ? 'class="selected"' : '' %>
+      on_folder: lambda { |f| %>
+        <% selected = @folder && @folder.id == f.id ? 'class="selected"' : '' %>
+        <% is_empty = f.empty?(:public) %>
+        <li>
+          <label>
+            <% if f.pages.all({ browsable:true }).empty? || !f.has_homepage? %>
+              <strong><%= f.title %></strong>
+            <% else %>
+              <strong><a <%= selected %> href="<%= f.public_url %>"><%= f.title %></a></strong>
+            <% end %>
+          </label>
           <ol>
-            <li>
-              <label>
-                <strong><a <%= selected %> href="<%= f.public_url %>"><%= f.title %></a></strong>
-              </label>
-              <% if f.pages(browsable: true).empty? %>
-                <li><em>No pages.</em></li>
-              <% end %>
-        <% },
+          <% if is_empty %>
+            <li><em>No pages.</em></li>
+          <% end %>
+      <% },
 
-        on_folder_done: lambda { |f| %>
-          </ol></li>
-        <% }
-      }, { browsable: true })
-    %>
-    </ul>
-  </div>
-<% end %>
+      on_folder_done: lambda { |f| %>
+        </ol></li>
+      <% }
+    }, { browsable: true }, coll)
+   end %>
+  </ul>
+</section>

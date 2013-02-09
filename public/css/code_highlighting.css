@@ -10,6 +10,9 @@
   font-size: 14px;
   word-wrap: break-word;
   line-height: 16px;
+  background: #FCFCFC;
+  border-left: 5px solid #DDD;
+  padding: 5px;  
 }
 /*#8FBE00*/
 .highlight .c { color: #999988; font-style: italic } /* Comment */

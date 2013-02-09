@@ -1,19 +1,23 @@
-<div id="breadcrumbs">
-  <a href="/<%= @group.name %>">Home</a>
+<% content_for :breadcrumbs do %>
 
-  <% if @folder %>
-    <% folders = [ @folder ] %>
-    <% f = @folder.folder %>
-    <% while f do folders.insert(0,f); f = f.folder end %>
-    <% folders.each do |f| %>
-      &raquo;
+  <div id="breadcrumbs">
+    <a href="/<%= @group.name %>">Home</a>
 
-      <% if f.id == @folder.id %>
-        <span><%= f.title %></span>
-      <% else %>
-        <a href="/<%= @group.name %>/<%= f.pretty_title%>"><%= f.title %></a>
+    <% if @folder %>
+      <% folders = [ @folder ] %>
+      <% f = @folder.folder %>
+      <% while f do folders.insert(0,f); f = f.folder end %>
+      <% folders.each do |f| %>
+        &raquo;
+
+        <% if f.id == @folder.id %>
+          <span><%= f.title %></span>
+        <% else %>
+          <a href="/<%= @group.name %>/<%= f.pretty_title%>"><%= f.title %></a>
+        <% end %>
+
       <% end %>
-
     <% end %>
-  <% end %>
-</div>
+  </div>
+
+<% end %>

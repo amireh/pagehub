@@ -8,7 +8,7 @@
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <!-- <link href="/css/fonts/proximanova/proximanova.css" rel="stylesheet" type="text/css" /> -->
-  <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="/css/pagehub.css" rel="stylesheet" type="text/css" /> -->
   <link href="/css/code_highlighting.css" rel="stylesheet" type="text/css" />
 
   <% # I'm not really proud of the following but it's the quickest way to
@@ -20,8 +20,8 @@
 
   <%= yield_content :scripts %>
   <%= yield_content :js %>
-
-  <% scheme = params[:scheme] || preferences(@group || current_user)["publishing"]["scheme"] %>
+  <% puts p().inspect %>
+  <% scheme = p('publishing.theme.name') %>
   <% unless scheme == "None" %>
     <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
   <% end %>
@@ -39,11 +39,21 @@
   <link href="/css/print.css" rel="stylesheet" type="text/css" />
   <%= yield_content :css %>
 
-  <% if @group && @group.css && !@group.css.empty? %>
-    <style>
-      <%= @group.css.minify(:css) %>
-    </style>
+  <% layout = "" %>
+  <% if @group %>
+    <% layout = p('publishing.layout.name') %>
+    <link href="/css/layouts/<%= layout %>.css" rel="stylesheet" type="text/css" />
+    
+    <% if @group.css && !@group.css.empty? %>
+      <style>
+        <%= @group.css.minify(:css) %>
+      </style>
+    <% end %>
+  <% else %>
+    <% layout = 'focused' %>
+    <link href="/css/layouts/focused.css" rel="stylesheet" type="text/css" />
   <% end %>
+  
 
 </head>
 <% klasses = [ ] %>
@@ -53,31 +63,51 @@
     klasses << @resource.pretty_title
     klasses << @page.folder.pretty_title if @page && @page.folder
   end
+  
   klasses << 'with_sidebar' if content_for? :sidebar
 %>
 
-<body class="print <%= klasses.join(' ') %>">
+<body class="print <%= klasses.join(' ') %> <%= layout %> <%= scheme.sanitize %>">
   <div id="top"></div>
 
-  <a href="#top">top &uarr;</a>
-  <a href="#bottom">bottom &darr;</a>
+  <div id="jumpers">
+    <a href="#top">&uarr;</a>
+    <a href="#bottom">&darr;</a>
+  </div>
 
-  <div class="stuff">
-    <header>
-      <%= yield_content(:header).force_encoding('UTF-8') %>
+  <div class="wrap">
+    
+    <header class="scope_title">
+      <% if @group %>
+        <h1><a href="<%= @group.public_url %>"><%= @group.title %></a></h1>
+        <em><%= @group.brief %></em>
+        <div class="nav_links">
+          <% p('publishing.navigation_links').each do |e| %>
+            <a href="<%= e["uri"] %>"><%= e["title"] %></a>
+          <% end %>
+        </div>
+      <% end %>
     </header>
-    <div id="content" class="print">
+    
+    <article class="content">
+      <header class="page_title">
+        <%= yield_content(:header).force_encoding('UTF-8') %>
+      </header>
+      
+      <%= yield_content :breadcrumbs %>
       <%= yield %>
-      <div id="bottom"></div>
-    </div>
+    </article>
+    
 
     <% if content_for?(:sidebar) %>
-      <div id="sidebar">
+      <div class="sidebar">
         <%= yield_content :sidebar %>
       </div>
     <% end %>
+  
   </div>
-
+  
+  <div id="bottom"></div>
   <%= partial "layouts/_google_analytics" %>
 </body>
 

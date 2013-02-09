@@ -1,19 +1,15 @@
-<% content_for :header do %>
-  <h1><a href="<%= @group.public_url %>"><%= @group.title %></a></h1>
-<% end %>
+<% @page = home_page = @folder.pages({ title: "Home" }).first %>
 
-<%= partial "/groups/public/_breadcrumbs" %>
-
-<% if home_page = @folder.pages({ title: "Home" }).first %>
-  <%= md home_page.content %>
-<% else %>
+<% unless @page %>
+  <% @page = @folder.pages.new({ title: @folder.title, content: ' ' }) %>
   <p>This folder has no home page,
     <% if @folder.pages.any? %>
-      but it does have <%= pluralize(@folder.pages({browsable:true}).size, "page") %>
-      you will find in the sidebar.
-    <% else %>and it has no pages either.<% end %>
+      but it does have <%= pluralize(@folder.pages({browsable:true}).size, "page") %>:
+      <%= partial "/groups/public/_listing", locals: { no_title: true, coll: [ @folder ] } %>
+    <% else %>
+      and it has no pages either.
+    <% end %>
   </p>
-
 <% end %>
 
-<%= partial "/groups/public/_listing" %>
+<%= partial "/pages/pretty" %>

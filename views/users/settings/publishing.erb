@@ -54,11 +54,12 @@
     <span id="colour_explanation">Colour: &minus;</span>
 
     <h3>Page width</h3>
-    <input 
+    <label><input 
       type="text" name="settings[publishing][width]" class="very_fat" 
       value="<%= preferences["publishing"]["width"] %>"
       style="width: 70px; text-align: center;" />
       px
+    </label>
 
     <h3>Text Alignment: J u s t i f y</h3>
     <label>
@@ -66,8 +67,9 @@
       <%= preferences["publishing"]["justified"] ? 'checked="checked"' : '' %> />
       Stretch out the spacing between words so they span the full width of the line, when possible.
     </label>
+    <br />
+    <br />
+    <input type="submit" value="Update preferences" />
   </section>
 
-  <br />
-  <input type="submit" value="Update preferences" />
 </form>

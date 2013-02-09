@@ -307,7 +307,9 @@ get '/:gname' do |gname|
     halt 403, "You are not authorized to view this group's pages."
   end
 
-  erb :"/groups/public/show", layout: :"layouts/print"
+  @page = @group.home_page
+
+  return erb :"pages/pretty", layout: :"layouts/print"
 end
 
 # A group page. Group pages are visible to all members.

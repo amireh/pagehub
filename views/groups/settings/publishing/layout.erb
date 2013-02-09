@@ -1,0 +1,38 @@
+<%= partial "groups/settings/publishing/_nav" %>
+
+<% content_for :publishing_setting_form do %>
+  <section>
+    <h1>Publishing Layout</h1>
+    <% layouts = {
+      "Fluid" => "fluid",
+      "Easy read" => "easy"
+    } %>
+
+    <% layouts.each_pair do |layout, css| %>
+      <label>
+        <input type="radio" name="layout[name]" value="<%= css %>"
+          <%= p('publishing.layout.name') == css ? "checked='checked'" : "" %> />
+        <%= layout %>
+      </label>
+    <% end %>
+    
+    <p>
+      <label>
+        <input type="checkbox" name="layout[show_homepages_in_sidebar]" value="true"
+          <%= checkify('publishing.layout.show_homepages_in_sidebar') %> />
+          Hide 'Home' pages from sidebar
+      </label>
+    </p>
+    
+    <p>
+      <label>
+        <input type="checkbox" name="layout[show_breadcrumbs]" value="true"
+        <%= checkify('publishing.layout.show_breadcrumbs') %> />
+          Show breadcrumbs
+      </label>
+    </p>
+    
+  </section>
+<% end %>
+
+<%= partial "groups/settings/publishing/_form" %>

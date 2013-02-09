@@ -8,6 +8,16 @@
   },
   "publishing": {
     "scheme": "Clean",
+    "theme": {
+      "name": "Clean"
+    },
+    
+    "layout": {
+      "name": "fluid",
+      "show_homepages_in_sidebar": null,
+      "show_breadcrumbs": null
+    },
+    
     "width": "960",
     "justified": false
   },

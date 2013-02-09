@@ -29,6 +29,9 @@ pagehub_ui = function() {
       actions = {},
       removed = {},
       action_hooks = { pages: { on_load: [] } },
+      CodeMirror_aliases = {
+        "shell": [ "bash" ]
+      },
       hooks = [
         // HTML5 compatibility tests
         function() {
@@ -39,7 +42,7 @@ pagehub_ui = function() {
 
         // initialize dynamism
         function() {
-          dynamism.configure({ debug: false, logging: false });
+          dynamism.configure({ debug: false, logging: true });
 
           // element tooltips
           $("a[title]").tooltip({ placement: "bottom" });
@@ -114,6 +117,12 @@ pagehub_ui = function() {
             }
 
             return true; // let the event propagate
+          });
+        },
+        
+        function() {
+          $("[data-nosubmit]").bind('click', function(e) {
+            e.preventDefault();
           });
         }
       ];
@@ -199,6 +208,19 @@ pagehub_ui = function() {
 
     create_editor: function(textarea_id, opts) {
       opts = opts || {};
+      for(var mode in CodeMirror_aliases) {
+        if (!CodeMirror.modes[mode])
+          continue;
+        
+        var aliases = CodeMirror_aliases[mode];
+        for (var alias_idx = 0; alias_idx < aliases.length; ++alias_idx) {
+          var alias = aliases[alias_idx];
+          if (!CodeMirror.modes[alias]) {
+            CodeMirror.defineMode(alias, CodeMirror.modes[mode]);
+          }
+        }
+      }
+      
       // mxvt.markdown.setup_bindings();
       var editor = CodeMirror.fromTextArea(document.getElementById(textarea_id), $.extend({
         mode: "gfm",
@@ -209,10 +231,6 @@ pagehub_ui = function() {
         gutter: false,
         autoClearEmptyLines: false,
         lineWrapping: true,
-        // keyMap: "mxvt",
-        onChange: function() {
-          pagehub.content_changed = true;
-        },
         onKeyEvent: function(editor,e) {
           if (editor_disabled) {
             e.preventDefault();
@@ -222,7 +240,13 @@ pagehub_ui = function() {
             return false;
           }
         }
+        // keyMap: "mxvt",
       }, opts));
+
+      editor.on("change", function() {
+        pagehub.content_changed = true;
+      });
+      
 
       return editor;
     },
@@ -233,19 +257,22 @@ pagehub_ui = function() {
       if (source.attr("data-collapse") == null)
         return source.siblings("[data-collapse]:first").click();
 
+      var folder_id = parseInt(source.attr("data-folder")).toString();
+      
       if (source.attr("data-collapsed")) {
         source.siblings(":not(span.folder_title)").show();
         source.attr("data-collapsed", null).html("&minus;");
         source.parent().removeClass("collapsed");
 
-        pagehub.settings.runtime.cf.pop_value(parseInt(source.attr("data-folder")));
+        pagehub.settings.runtime.cf.pop_value(folder_id);
         pagehub.settings_changed = true;
       } else {
         source.siblings(":not(span.folder_title)").hide();
         source.attr("data-collapsed", true).html("&plus;");
         source.parent().addClass("collapsed");
 
-        pagehub.settings.runtime.cf.push(parseInt(source.attr("data-folder")));
+        pagehub.settings.runtime.cf.pop_value(folder_id);
+        pagehub.settings.runtime.cf.push(folder_id);
         pagehub.settings_changed = true;
       }
     },

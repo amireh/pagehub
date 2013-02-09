@@ -87,9 +87,6 @@ hr {
   border-top: 1px solid #ddd;
 }
 
-code {
-  font-size: 14px;
-}
 .strikes {
   position: relative;
   width: 962px;
@@ -352,11 +349,11 @@ a,
 #pages li,
 .highlighted {
   text-decoration: none;
-  -webkit-transition: color 0.5s ease 0s;
-  -moz-transition:    color 0.5s ease 0s;
-  -ms-transition:     color 0.5s ease 0s;
-  -o-transition:      color 0.5s ease 0s;
-  transition:         color 0.5s ease 0s;
+  -webkit-transition: color 0.25s ease 0s;
+  -moz-transition:    color 0.25s ease 0s;
+  -ms-transition:     color 0.25s ease 0s;
+  -o-transition:      color 0.25s ease 0s;
+  transition:         color 0.25s ease 0s;
 }
 
 
@@ -559,7 +556,8 @@ a[href="#top"] {
 input[type=text],
 input[type=email],
 input[type=password],
-select {
+select,
+textarea {
   /*border-radius: 8px;*/
   border-radius: 0;
   padding: 5px 10px;
@@ -573,7 +571,8 @@ select {
 }
 input[type=text]:focus,
 input[type=email]:focus,
-input[type=password]:focus {
+input[type=password]:focus,
+textarea {
   background: none;
 }
 
@@ -628,7 +627,7 @@ a.button {
   border: none;
 
   text-transform: capitalize;
-  font-weight: bold;
+  font-weight: normal;
   display: inline-block;
 
   -webkit-transition: all 0.25s ease 0s;
@@ -643,7 +642,7 @@ input[type=submit]:hover,
 a.button:hover {
   /*background-position: 0 -5px;*/
   box-shadow: 0 0 3px 0 rgba(0,0,0,0.25);
-  padding: 2px 15px;
+  /*padding: 2px 15px;*/
 }
 
 #pages .scroller {
@@ -682,7 +681,7 @@ a img {
   font-style: normal;
 }
 
-.stuff > nav {
+.member .stuff > nav {
   min-width: 220px;
   text-align: right;
 }
@@ -719,6 +718,9 @@ ol.listlike {
   border-top-left-radius:     2px;
   border-bottom-left-radius:  2px;
   border-bottom-right-radius: 2px;
+  
+  max-height: 320px;
+  overflow-y: auto;
 }
 .icon:hover,
 a.listlike:hover {
@@ -771,7 +773,10 @@ iframe {
 
 button.bad:not(:active),
 input[type=submit].bad:not(:active),
-a.button.bad:not(:active) {
+a.button.bad:not(:active),
+button.kinda_bad:not(:active),
+input[type=submit].kinda_bad:not(:active),
+a.button.kinda_bad:not(:active) {
   color: #eee;
   text-shadow: none;
   background: rgb(255,48,25); /* Old browsers */
@@ -786,11 +791,11 @@ a.button.bad:not(:active) {
   border-color: rgba(0,0,0,0.3);
 }
 
-button.kinda_bad:not(:active),
+/*button.kinda_bad:not(:active),
 input[type=submit].kinda_bad:not(:active),
 a.button.kinda_bad:not(:active) {
   color: rgb(255,48,25);
-}
+}*/
 
 button.good:not(:active),
 input[type=submit].good:not(:active),

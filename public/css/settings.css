@@ -3,58 +3,67 @@
 }
 
 #content.settings {
-  padding-left: 220px;
-  padding-right: 100px;
-  min-height: 300px;
+}
+
+#content.settings nav {
+  padding: 10px 0;
 }
 #content.settings nav > ul {
   list-style-type: none;
   margin: 0;
-  width: 200px;
+  /*width: 200px;*/
   padding: 0;
-  position: absolute;
-  top: 0px;
-  left: 0;
+  /*position: absolute;*/
+  /*top: 0px;*/
+  /*left: 0;*/
 }
 
-#content.settings nav > ul li:last-child {
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
 #content.settings nav > ul li {
-  display: block;
+  display: inline-block;
   /*background: rgba(0,0,0,0.015);*/
-  border: 1px solid #ddd;
-  border-top: none;
+  border-bottom: 5px solid #ddd;
+  
 }
+
+#content.settings nav > ul li:not(:first-child) {
+  -webkit-transition: border-color 0.25s linear 0s;
+  -moz-transition:    border-color 0.25s linear 0s;
+  -ms-transition:     border-color 0.25s linear 0s;
+  -o-transition:      border-color 0.25s linear 0s;
+  transition:         border-color 0.25s linear 0s;
+}
+    
+#content.settings nav > ul li.selected {
+  position: relative;
+}
+
 #content.settings nav > ul li:not(:first-child):hover,
 #content.settings nav > ul li.selected {
-  background: rgba(0,0,0,0.025);
+  border-color: #008CDD;
 }
-#content.settings nav > ul li:first-child,
+
 #content.settings nav > ul li a {
   display: block;
   width: 100%;
   padding: 5px 10px;
+  min-width: 100px;
+  text-align: center;
 }
-#content.settings nav > ul li:first-child {
-  border: 1px solid #ddd;
-  /*padding: 15px 10px;*/
-  /*font-weight: bold;*/
-  display: block;
 
-/*  background: rgb(255,255,255);
-  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1)));
-  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
-  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
-  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
-  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); */
-  text-shadow: 0 1px 0 white;
-  background: #eee;
-  box-shadow: 0 0 5px 1px white inset;
+#content.settings nav > ul li:first-child {
+  display: inline-block;
+  font-size: 0;
+  width:  32px;
+  height: 32px;
+  border: none;
+  /*background-position: -28px 0;*/
+  background-position: 0 0;
+  margin-left: -36px;
+  margin-right: 4px;
+  top: -4px;
+  position: relative;
 }
+
 #content.settings form + form,
 #content.settings section + section {
   margin-top: 20px;
@@ -178,4 +187,64 @@
 #content.groups.settings ul.browsability,
 #content.groups.settings ul.browsability ol {
   list-style-type: none;
+}
+
+#content.groups.settings .subnav li:first-child {
+  display: none;
+}
+
+#content.groups.settings.with_subnav nav {
+  /*margin-bottom: 30px;*/
+}
+
+#content.groups.settings .subnav {
+  position: absolute;
+  font-size: 0.85em;
+  width: auto;
+  left: 0;
+  padding: 0;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  background: rgba(0,0,0,0.0125);
+  white-space:nowrap;
+}
+
+#content.groups.settings .subnav li {
+  border-width: 3px;
+  white-space:nowrap;
+}
+#content.groups.settings .subnav li a {
+  padding: 0 10px;
+}
+
+#content.settings nav > ul .subnav li:not(:first-child):hover,
+#content.settings nav > ul .subnav li.selected {
+  border-color: orange;
+}
+
+@-keyframes         running_wheel { 100% { transform: rotate(360deg); } }
+@-ms-keyframes      running_wheel { 100% { -ms-transform: rotate(360deg); } }
+@-webkit-keyframes  running_wheel { 100% { -webkit-transform: rotate(360deg); } }
+@-moz-keyframes     running_wheel { 100% { -moz-transform: rotate(360deg); } }
+@-o-keyframes       running_wheel { 100% { -o-transform: rotate(360deg); } }
+
+.settings nav .icon {
+  animation:          running_wheel infinite ease 10s alternate;
+  -webkit-animation:  running_wheel infinite ease 10s alternate;
+  -moz-animation:     running_wheel infinite ease 10s alternate;
+  -o-animation:       running_wheel infinite ease 10s alternate;
+  -ms-animation:      running_wheel infinite ease 10s alternate;
+}
+.settings nav .icon:hover {
+  animation-duration:         2s;
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration:    2s;
+  -o-animation-duration:      2s;
+  -ms-animation-duration:     2s;
+  
+  animation-type:         linear;
+  -webkit-animation-type: linear;
+  -moz-animation-type:    linear;
+  -o-animation-type:      linear;
+  -ms-animation-type:     linear;
 }

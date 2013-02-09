@@ -1,0 +1,57 @@
+<%= partial "groups/settings/publishing/_nav" %>
+
+<% if false %>
+  <% content_for :js do %>
+  <script>
+    $(function() {
+      var colour_scheme_map =
+        [ "Background", "Foreground", "Heading #1", "Heading #2", "Heading #3 and Links" ];
+
+      $("span.scheme_colours").hover(function() {
+        var idx = $(this).attr("class").substr(-1);
+        // $(this).addClass("zoom").html(colour_scheme_map[idx]);
+        $("#colour_explanation").html("Colour: " + colour_scheme_map[idx]);
+      }, function() {
+        $("#colour_explanation").html("Colour: &minus;");
+        // $(this).removeClass("zoom").html("");
+      });
+    });
+  </script>
+  <% end %>
+<% end %>
+
+<% content_for :publishing_setting_form do %>
+  <section>
+    <h1>Colour Scheme</h1>
+
+    <% themes = {
+      "Clean" => [ "FFF", "615B4E", "008CDD", "008CDD", "008CDD" ],
+      "Hazzle Dazzle" => [ "443a34", "F4FAD2", "E94E77", "D4EE5E", "F0AD11" ],
+      "Dusty" => [ "F0F2EB", "1C140D", "FF4242", "99173C", "5E8C6A" ],
+      "Antimatter" => [ "111", "fff", "7B97A4", "869BA4", "293338" ],
+      "None" => [ "fff", "fff", "fff", "fff", "fff" ]
+    } %>
+    <% themes.each_pair do |theme, colours| %>
+      <label style="vertical-align: middle; font-size: 18px; margin-bottom: 5px; display: inline-block; width: 100%;">
+        <div class="scheme_colour_group">
+          <% colours.each_with_index do |hex, idx| %><!--
+            --><span class="scheme_colours colour_<%=idx%>" style="background: #<%= hex %>;"></span><!--
+          --><% end %>
+        </div>
+        <input  type="radio"
+                style="vertical-align: middle;"
+                name="theme[name]"
+                value="<%= theme %>"
+                <%= checkify('publishing.theme.name') { |v| v == theme } %>
+        />
+        <%= theme %>
+        <small><a href="/testdrive?scheme=<%=theme%>" target="_blank">preview</a></small>
+      </label>
+      <!-- <br /> -->
+    <% end %>
+    <!-- <span id="colour_explanation">Colour: &minus;</span> -->
+
+  </section>
+<% end %>
+
+<%= partial "groups/settings/publishing/_form" %>

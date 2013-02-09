@@ -110,6 +110,19 @@ class User
     end
   end
 
+  def preferences(*scope)
+    if scope.length == 1 && scope.first.is_a?(String)
+      scope = scope.first.split('.')
+    end
+    
+    @preferences ||= Config.defaults.deep_merge(JSON.parse(self.settings))
+    scoped_preferences = @preferences
+    scope.each { |s| scoped_preferences = scoped_preferences[s.to_s] || {} }
+    scoped_preferences
+  end
+  
+  alias_method :p, :preferences
+  
   private
 
   # Validates an email domain using Ruby's DNS resolver.
@@ -136,5 +149,6 @@ class User
       end
     end
   end
+  
 
 end

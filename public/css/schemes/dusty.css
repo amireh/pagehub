@@ -3,16 +3,6 @@ body {
   color: #1C140D;
 }
 
-.stuff {
-  background: none;
-  box-shadow: none;
-  border: none;
-}
-
-header h1 a {
-	color: #FF4242 !important;
-}
-
 h1 {
   color: #FF4242;
 }
@@ -21,8 +11,12 @@ h2 {
   color: #99173C;
 }
 
-h3,a, a:visited {
+h2, h3, a, a:visited {
   color: #5E8C6A;
+}
+
+a:hover {
+  color: #1C140D;
 }
 
 hr {
@@ -35,4 +29,22 @@ hr {
 
 #content {
   padding-bottom: 0;
+}
+
+.dusty .highlight pre,
+.dusty code {
+  background: rgba(205,160,95, 0.075);
+  border-color: #CDA05F;
+}
+
+.fluid .sidebar {
+  text-shadow: 0 1px 0 #fff;
+  background: rgba(205,160,95, 0.075);
+  border-right: 1px solid #CCC;  
+}
+
+.fluid .scope_title {
+  background: rgba(205,160,95, 0.075);
+  border-bottom: 1px solid #ccc;
+  /*box-shadow: 0 0 10px 2px white inset;*/
 }

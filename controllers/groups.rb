@@ -19,12 +19,21 @@ get "/groups/:name/space", :auth => :group_member do |name|
 end
 
 [ "general" ].each { |domain|
-  get "/groups/:gid/edit/#{domain}", auth: :group_creator do
+  get "/groups/:gid/edit/#{domain}", auth: :group_admin do
     erb :"/groups/settings/#{domain}"
   end
 }
 
-[ "publishing", "memberships", "browsability" ].each { |domain|
+
+%w(
+  publishing
+  publishing/layout
+  publishing/theme
+  publishing/navigation_links
+  publishing/custom_css
+  memberships
+  browsability
+).each { |domain|
   get "/groups/:gid/edit/#{domain}", auth: :group_admin do
     erb :"/groups/settings/#{domain}"
   end
@@ -137,7 +146,7 @@ post '/groups', :auth => :user do
     return redirect back
   end
 
-  unless g = Group.new({ title: params[:name], is_public: params[:is_public], admin: current_user })
+  unless g = Group.new({ title: params[:name], brief: params[:brief], is_public: params[:is_public], admin: current_user })
     flash[:error] = "Group could not be created, please try again."
     return redirect back
   end
@@ -174,6 +183,7 @@ post "/groups/:gid/edit/general", auth: :group_creator do |gid|
     end
   end
 
+  g.brief = params[:brief]
   g.is_public = params[:is_public] == "true"
 
   if g.save
@@ -197,12 +207,27 @@ post "/groups/:gid/edit/memberships", auth: :group_admin do |gid|
   redirect "#{@group.url('/edit/memberships')}".to_sym
 end
 
-post "/groups/:gid/edit/publishing", auth: :group_admin do |gid|
+post "/groups/:gid/edit/publishing/:scope", auth: :group_admin do |gid, scope|
 
-  prefs = preferences(@group)
-  prefs["publishing"] = params[:settings][:publishing]
+  puts params.inspect
+  
+  # prefs = preferences(@group)
+  prefs = @group.preferences
+  prefs["publishing"]             ||= {}
+  prefs["publishing"][scope.to_s] ||= {}
+  prefs["publishing"][scope.to_s] = params[scope.to_s]
+  puts prefs.inspect
+  
+  if scope == 'navigation_links'
+    prefs["publishing"][scope.to_s].reject! { |e|
+      !e["uri"] || e["uri"].empty? || !e["title"] || e["title"].empty?
+    }
+  end
+  
   @group.settings = prefs.to_json.to_s
-  @group.css = params[:css]
+  # if params[:css]
+    # @group.css = params[:css]
+  # end
 
   if @group.save
     flash[:notice] = "Group updated successfully."
@@ -210,7 +235,7 @@ post "/groups/:gid/edit/publishing", auth: :group_admin do |gid|
     flash[:error] = "Unable to update group: #{@group.collect_errors}"
   end
 
-  redirect "#{@group.url('/edit/publishing')}".to_sym
+  redirect back
 end
 
 post "/groups/:gid/edit/browsability", auth: :group_admin do |gid|

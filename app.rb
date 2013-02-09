@@ -67,7 +67,9 @@ configure do
   DataMapper.finalize
   DataMapper.auto_upgrade!
 
-  set :default_preferences, JSON.parse(File.read(File.join($ROOT, "config/preferences.json")))
+  Config.init
+  
+  set :default_preferences, Config.defaults
 end
 
 configure :production, :development do |app|

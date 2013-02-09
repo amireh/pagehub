@@ -57,6 +57,25 @@ class String
   end
 end
 
+module Config
+  class << self
+    def init
+      @@defaults = load
+    end
+    
+    def load(file = 'config/preferences.json')
+      JSON.parse(File.read(File.join($ROOT, file)))
+    end
+    
+    def defaults
+      @@defaults
+    end
+    
+    def get(*key)
+    end
+  end
+end
+
 module Sinatra
 
   class Base

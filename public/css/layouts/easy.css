@@ -1,0 +1,36 @@
+.wrap {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.content,
+.sidebar {
+  vertical-align: top;
+}
+
+.content {
+  width: 680px;
+  display: inline-block;
+}
+
+.sidebar {
+  width: 260px;
+  display: inline-block;
+  margin: 20px 0 10px 10px;
+  padding: 0 0 0 20px;
+}
+.sidebar header { display: none; }
+
+.scope_title {
+  padding-bottom: 10px;
+}
+#jumpers a[href="#top"] {
+  position: fixed;
+  top:    5px;
+  right:  5px;
+}
+#jumpers a[href="#bottom"] {
+  position: fixed;
+  bottom: 5px;
+  right:  5px;
+}

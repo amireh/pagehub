@@ -1,0 +1,15 @@
+.wrap {
+  width: 960px;
+  margin: 0 auto;
+}
+
+#jumpers a[href="#top"] {
+  position: fixed;
+  top:    5px;
+  right:  5px;
+}
+#jumpers a[href="#bottom"] {
+  position: fixed;
+  bottom: 5px;
+  right:  5px;
+}

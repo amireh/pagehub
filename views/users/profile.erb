@@ -1,3 +1,4 @@
+<% content_for :title do %><%= @user.name %> | PageHub <% end %>
 <h1><strong><%= @user.nickname %></strong> <span>(<%= @user.name %>)</span></h1>
 <%= gravatar_tag @user, :profile %>
 <div>
@@ -11,5 +12,18 @@
     </ol>
   <% else %>
     <p><%= @user.nickname %> has not shared any pages yet.</p>
+  <% end %>
+</div>
+
+<div>
+  <% if @user.groups.any? %>
+    <p><%= @user.nickname %> is an active member of the following <%= pluralize(@user.groups.length, "group") %>:</p>
+    <ol>
+    <% @user.groups.each do |g| %>
+      <li><a href="<%= g.public_url %>"><%= g.title %></a></li>
+    <% end %>
+    </ol>
+  <% else %>
+    <p><%= @user.nickname %> is not a member of any group.</p>
   <% end %>
 </div>

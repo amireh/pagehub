@@ -1,0 +1,43 @@
+<%= partial "groups/settings/publishing/_nav" %>
+
+<% content_for :publishing_setting_form do %>
+
+  <section>
+    <h1>Custom CSS</h1>
+    <p>You can also customize how your space look like by writing your own CSS code below.
+      <a href="http://www.pagehub.org/pagehub/css-skinning">The skinning guide</a>
+      contains a reference of the page structure, DOM, and everything you need
+      for skinning.
+    </p>
+
+    <p>The custom CSS code is applied <em>after</em> the selected scheme is included, effectively overriding it.</p>
+
+    <%= partial "/shared/_editor" %>
+
+    <% 
+      css = p('publishing.custom_css')
+      css = css.empty? ?
+      "/* you can write your own CSS here that will be applied to all the group public pages */" :
+      css
+    %>
+    <textarea data-untogglable name="custom_css" id="css_editor" class="blocky_editor"><%= css %></textarea>
+  </section>
+  
+<% end %>
+
+<% content_for :deferred_js do %>
+  <script>
+    $(function() {
+      ui.editor = editor = ui.create_editor("css_editor", {
+        mode: "css"
+      });
+
+      $("form").submit(function() {
+        ui.editor.save();
+        return true;
+      })
+    });
+  </script>
+<% end %>
+
+<%= partial "groups/settings/publishing/_form" %>

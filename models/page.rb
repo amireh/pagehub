@@ -6,6 +6,8 @@ class Page
 
   attr_writer :operating_user
 
+  default_scope(:default).update(:order => [ :title.asc ])
+
   property :id,           Serial
   property :title,        String, length: 120, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
   property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
@@ -19,7 +21,8 @@ class Page
   property :browsable,    Boolean, default: true
 
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
-
+  property :updated_at,   DateTime, default: lambda { |*_| DateTime.now }
+  
   belongs_to :user
   belongs_to :folder, default: nil, required: false
   belongs_to :group,  default: nil, required: false
@@ -32,6 +35,7 @@ class Page
 
   before :valid? do
     self.pretty_title = self.title.sanitize
+    self.updated_at = DateTime.now
   end
 
   # [ :update, :save ].each { |advice|

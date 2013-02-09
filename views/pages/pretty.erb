@@ -1,26 +1,29 @@
 <% content_for :title do %> <%= @page.title %> | PageHub <% end %>
+<% content_for :section do %><%= p('publishing.layout.name') %><% end %>
 
 <% content_for :header do %>
-  <% if @group then %>
-    <h1><a href="<%= @group.public_url %>"><%= @group.title %></a></h1>
+  <% if @group %>
+    <%= partial "groups/public/_heading", locals: { page: @page } %>
   <% elsif @public then %>
-    <h1><a href="<%= @page.public_url true %>"><%= @page.title %></a></h1>
+    <!-- <h1><a href="<%= @page.public_url true %>"><%= @page.title %></a></h1> -->
+    <%= partial "groups/public/_heading", locals: { page: @page } %>
   <% else %>
-    <h1><%= @page.title %></h1>
+  <%= partial "groups/public/_heading", locals: { page: @page } %>
   <% end %>
 <% end %>
 
 <% if @group %>
   <% @folder ||= @page %>
-  <%= partial "/groups/public/_breadcrumbs" %>
+  
+  <%= partial "/groups/public/_breadcrumbs" if is_on('publishing.layout.show_breadcrumbs') %>
+  
+  <% content_for :sidebar do %>
+    <%= partial "/groups/public/_listing" %>
+  <% end %>  
 <% end %>
 
-<% if @page.content.empty? %>
+<% if @page.nil? || @page.content.empty? %>
   <p>This page is a stub.</p>
 <% else %>
   <%= @page.content.to_markdown %>
-<% end %>
-
-<% if @group %>
-  <%= partial "/groups/public/_listing" %>
 <% end %>

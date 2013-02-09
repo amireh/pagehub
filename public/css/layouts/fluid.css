@@ -1,0 +1,84 @@
+body, html {
+  height: 100%;
+}
+
+.fluid {
+  overflow-y: hidden;
+}
+
+.fluid .wrap {
+  overflow-y: auto;
+  max-height: 100%;
+  padding-top: 50px;
+  /*margin-top:     24px;*/
+  /*margin-top:     23px;*/
+  top: 23px;
+  padding-bottom: 23px;
+  padding-top:    5px;
+  position: fixed;
+  width: 100%;
+}
+.content {
+  overflow-y: none;
+  margin-left: 270px;   
+  margin-top: 0px;
+  padding-right: 1%;  
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 260px;
+  height: 100%;
+  padding: 5px 20px 0 20px;
+  overflow-y: auto;
+  margin-top:     23px;
+  /*padding-bottom: 40px;*/
+  /*margin-bottom: 40px;*/
+}
+.content,
+.sidebar {
+  /*padding-bottom: 23px;*/
+}
+
+.content > :last-child,
+.sidebar > :last-child {
+  margin-bottom: 30px;
+  
+}
+
+#jumpers {
+  display: none;
+}
+
+.scope_title {
+  position: fixed;
+  width: 100%;
+  height: 24px;
+  left: 0;
+  top: 0;
+  padding: 0 20px;
+  line-height: 22px;
+  text-align: left;
+  z-index: 200;
+}
+
+.scope_title > * {
+  font-size: 11px;
+  display: inline-block;
+  margin: 0;
+  vertical-align: top;
+}
+.scope_title em {
+  font-style: normal;
+}
+
+.scope_title .nav_links {
+  position: absolute;
+  right: 1%;
+}
+
+.page_title {
+  width: 100%;
+}

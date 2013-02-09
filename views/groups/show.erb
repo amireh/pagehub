@@ -18,8 +18,9 @@
 
     // Resize it to fill up the remainder of the screen's height
     var editor_h = $(window).height() - 135;
-    $(".CodeMirror-scroll").css("min-height", editor_h + "px");
-    ui.editor.refresh();
+    // $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+    $(".CodeMirror").css("height", editor_h + "px");
+    // ui.editor.refresh();
     // and the page listing
     $("#pages .scroller").css("max-height", $(window).height() - 135);
 

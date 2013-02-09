@@ -500,7 +500,8 @@ dynamism = function(options) {
     utility: {
       lookup_method: function(fqn) {
         return method_from_fqn(fqn);
-      }
+      },
+      escape: escape_indexes
     },
 
     remove: function(el) {

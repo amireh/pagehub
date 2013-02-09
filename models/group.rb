@@ -8,6 +8,7 @@ class Group
   property :id, Serial
 
   property :name,       String, length: 120, unique: true, required: true
+  property :brief,      Text, default: "No description available."
   property :title,      String, length: 120
   property :is_public,  Boolean, default: false
   property :css,        Text, default: ""
@@ -53,6 +54,10 @@ class Group
 
     c
   end
+  
+  def home_page
+    pages.first({ title: "Home", folder_id: nil }) || pages.first({ folder_id: nil })
+  end
 
   def is_browsable?
     is_public
@@ -65,7 +70,7 @@ class Group
     folders.all({ conditions: cnd.merge({ browsable: true }), order: [ :title.asc ] + order })
   end
 
-  def on_resources(handlers, cnd = {})
+  def on_resources(handlers, cnd = {}, coll = nil)
     raise InvalidArgumentError unless handlers[:on_page] && handlers[:on_page].respond_to?(:call)
     raise InvalidArgumentError unless handlers[:on_folder] && handlers[:on_folder].respond_to?(:call)
 
@@ -74,7 +79,9 @@ class Group
       coll.each { |p| handlers[:on_page].call(p) }
     }
 
-    dump_pages.call(pages.all({ conditions: cnd.merge({ folder_id: nil }), order: [ :title.asc ] }))
+    unless coll
+      dump_pages.call(pages.all({ conditions: cnd.merge({ folder_id: nil }), order: [ :title.asc ] }))
+    end
 
     dump_folder = nil
     dump_folder = lambda { |f|
@@ -84,7 +91,7 @@ class Group
       handlers[:on_folder_done].call(f) if handlers[:on_folder_done]
     }
 
-    folders.all({ conditions: cnd.merge({ folder_id: nil }), order: [ :title.asc ] }).each { |f| dump_folder.call(f) }
+    (coll || folders.all({ conditions: cnd.merge({ folder_id: nil }), order: [ :title.asc ] })).each { |f| dump_folder.call(f) }
   end
 
   def all_users
@@ -165,4 +172,21 @@ class Group
     user.id == self.admin.id
   end
 
+  def navigation_links
+    prefs = JSON.parse((self.settings || '{}'))
+    prefs["publishing"]["navigation_links"] || []
+  end
+  
+  def preferences(*scope)
+    if scope.length == 1 && scope.first.is_a?(String)
+      scope = scope.first.split('.')
+    end
+    
+    @preferences ||= Config.defaults.deep_merge(JSON.parse(self.settings))
+    scoped_preferences = @preferences
+    scope.each { |s| scoped_preferences = scoped_preferences[s.to_s] || {} }
+    scoped_preferences
+  end
+  
+  alias_method :p, :preferences
 end
