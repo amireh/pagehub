@@ -57,21 +57,23 @@ class String
   end
 end
 
-module Config
-  class << self
-    def init
-      @@defaults = load
-    end
-    
-    def load(file = 'config/preferences.json')
-      JSON.parse(File.read(File.join($ROOT, file)))
-    end
-    
-    def defaults
-      @@defaults
-    end
-    
-    def get(*key)
+module PageHub
+  module Config
+    class << self
+      def init
+        @@defaults = load
+      end
+      
+      def load(file = 'config/preferences.json')
+        JSON.parse(File.read(File.join($ROOT, file)))
+      end
+      
+      def defaults
+        @@defaults
+      end
+      
+      def get(*key)
+      end
     end
   end
 end
@@ -81,7 +83,7 @@ module Sinatra
   class Base
     class << self
       def get(path, opts={}, &block)
-        puts "GET: #{path}"
+        # puts "GET: #{path}"
 
         conditions = @conditions.dup
         route('GET', path, opts, &block)

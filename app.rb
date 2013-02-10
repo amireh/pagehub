@@ -3,7 +3,7 @@
 $ROOT ||= File.dirname(__FILE__)
 $LOAD_PATH << $ROOT
 
-Encoding.default_external = "UTF-8"
+# Encoding.default_external = "UTF-8"
 
 require 'rubygems'
 require 'bundler/setup'
@@ -32,12 +32,35 @@ configure :development, :production do
 end
 
 configure do
-  config_file 'config/application.yml'
-  config_file 'config/database.yml'
+ config_files.each { |cf| config_file 'config/%s.yml' %[cf] }
 
   use Rack::Session::Cookie, :secret => settings.credentials['cookie']['secret']
 
   PageHub::Markdown::configure({}, { with_toc_data: true } )
+
+  dbc = settings.database
+  # DataMapper::Logger.new($stdout, :debug)
+  DataMapper.setup(:default, "mysql://#{dbc[:un]}:#{dbc[:pw]}@#{dbc[:host]}/#{dbc[:db]}")
+
+  [ 'lib', 'helpers', 'models' ].each { |d|
+    Dir.glob("#{d}/**/*.rb").each { |f| require f }
+  }
+  require 'controllers/users'
+  require 'controllers/folders'
+  require 'controllers/groups'
+  require 'controllers/application'
+  require 'controllers/pages'
+
+  DataMapper.finalize
+  DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
+
+  PageHub::Config.init
+  
+  set :default_preferences, PageHub::Config.defaults
+  Space.set_default_preferences(settings.default_preferences.dup)
+end
+
+configure :production, :development do |app|
   helpers Gravatarify::Helper
 
   # Gravatarify.options[:default] = "wavatar"
@@ -46,33 +69,7 @@ configure do
   Gravatarify.styles[:icon] = { size: 32, html: { :class => 'gravatar gravatar-icon' } }
   Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
   Gravatarify.styles[:profile] = { size: 128, html: { :class => 'gravatar' } }
-
-  dbc = settings.database
-  # DataMapper::Logger.new($stdout, :debug)
-  DataMapper.setup(:default, "mysql://#{dbc[:un]}:#{dbc[:pw]}@#{dbc[:host]}/#{dbc[:db]}")
-
-  # load the models and controllers
-  def load(directory)
-    Dir.glob("#{directory}/*.rb").each { |f| require f }
-  end
-
-  [ 'lib', 'helpers', 'models' ].each { |d|
-    Dir.glob("#{d}/**/*.rb").each { |f| require f }
-  }
-  require 'controllers/users'
-  require 'controllers/folders'
-  require 'controllers/groups'
-  require 'controllers/pages'
-
-  DataMapper.finalize
-  DataMapper.auto_upgrade!
-
-  Config.init
-  
-  set :default_preferences, Config.defaults
-end
-
-configure :production, :development do |app|
+    
   use OmniAuth::Builder do
     provider :developer if app.settings.development?
 
@@ -113,71 +110,3 @@ end
 configure :development do
   Bundler.require(:development)
 end
-
-
-not_found do
-  # return "Bad link!".to_json if request.xhr?
-  if request.xhr?
-    r = response.body.first
-    return r.include?("<html>") ? "404 - bad link!" : r.to_json
-  end
-
-  erb :"404"
-end
-
-error 403 do
-  # return response.body.first.to_json if request.xhr?
-  if request.xhr?
-    r = response.body.first
-    return r.include?("<html>") ? "403 - forbidden!" : r.to_json
-  end
-
-  erb :"403"
-end
-
-error do
-  # return response.body.first.to_json if request.xhr?
-  if request.xhr?
-    halt 500, "500 - internal error: " + env['sinatra.error'].name + " => " + env['sinatra.error'].message
-  end
-
-  erb :"500"
-end
-
-before do
-  @layout = "layouts/#{logged_in? ? 'primary' : 'guest' }".to_sym
-end
-
-get '/' do
-  destination = "static/greeting.md"
-  layout = "layouts/guest"
-
-  if logged_in?
-    @pages = Page.all(user_id: current_user.id)
-    destination = "pages/index"
-    layout = "layout"
-  end
-
-  erb destination.to_sym, layout: layout.to_sym
-end
-
-%w(/tutorial /testdrive).each { |uri|
-  send("get", uri, auth: :user) do
-    erb :"static/tutorial.md", layout: :"layouts/print"
-  end
-}
-
-# Legacy support
-get '/account' do
-  @legacy = true
-  erb :"/shared/_nav_account_links"
-end
-
-get '/help' do
-  @legacy = true
-  erb :"/shared/_nav_help_links"
-end
-
-get '/features' do erb :"static/features.md" end
-get '/about' do erb :"static/about.md" end
-get '/open-source' do erb :"static/open_source.md" end

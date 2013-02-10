@@ -4,13 +4,11 @@ require 'base64'
 class Page
   include DataMapper::Resource
 
-  attr_writer :operating_user
+  attr_writer :editor
 
   default_scope(:default).update(:order => [ :title.asc ])
 
   property :id,           Serial
-  property :title,        String, length: 120, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
-  property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
   property :content,      Text,   default: ""
 
   # browsable: whether the folder is browsable in a public group space,
@@ -23,44 +21,46 @@ class Page
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
   property :updated_at,   DateTime, default: lambda { |*_| DateTime.now }
   
-  belongs_to :user
-  belongs_to :folder, default: nil, required: false
-  belongs_to :group,  default: nil, required: false
+  belongs_to :folder
+  belongs_to :creator, 'User'
+  
   has n, :public_pages, :constraint => :destroy
   has n, :revisions, :constraint => :destroy
   has 1, :carbon_copy, :constraint => :destroy
 
-  validates_presence_of :title
-  validates_length_of   :title, :within => 3..120
+  is :titlable, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
+  validates_uniqueness_of :title, :scope => [ :folder_id ],
+    message: 'You already have such a page in that folder.'
 
   before :valid? do
     self.pretty_title = self.title.sanitize
     self.updated_at = DateTime.now
+    
+    true
   end
 
+  alias_method :cc, :carbon_copy
+  
   # [ :update, :save ].each { |advice|
   #   before advice do |context|
   #   end
   # }
 
-  after :create, :init_cc
-  before :valid?, :init_cc
+  after :create,  :init_cc
 
   def init_cc(context = nil)
     # Don't initialize the CC with our content because
     # we want the first revision to reflect the entire
     # changes the post was first created with.
-    if !self.carbon_copy
-      self.carbon_copy = CarbonCopy.new
-      self.carbon_copy.page = self
-      self.carbon_copy.save! # make sure to use the bang version here
-    end
+    self.carbon_copy = CarbonCopy.new
+    self.carbon_copy.page = self
+    self.carbon_copy.save! # make sure to use the bang version here
   end
 
   before :destroy, :deletable_by?
 
   def generate_revision(new_content, editor)
-    if !persisted?
+    if !saved?
       errors.add :revisions, "Page revisions can not be generated from new pages."
       return false
     end
@@ -133,9 +133,8 @@ class Page
     ancestry.join('/')
   end
 
-  def editable_by?(u = nil)
-    u ||= current_user
-    self.user == u || self.group && self.group.has_editor?(u)
+  def editable_by?(user)
+    folder.space.editor?(user)
   end
 
   def public_url(relative = false)
@@ -173,10 +172,14 @@ class Page
   #
   # Pages are deletable only by their authors.
   def deletable_by?(context = :default)
-    if user != @operating_user
-      errors.add :_, "Pages can be deleted only by their author."
+    if !@editor
+      errors.add :creator, "An editor must be assigned before attempting to remove a page."
+    elsif creator.id != @editor.id
+      errors.add :creator, "Pages can be deleted only by their author."
     end
 
     throw :halt unless errors.empty?
+    
+    errors.empty?
   end
 end

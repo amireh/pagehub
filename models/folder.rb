@@ -1,27 +1,32 @@
 class Folder
   include DataMapper::Resource
 
-  attr_writer :operating_user
+  attr_writer :editor
 
   property :id, Serial
 
-  property :title,        String, length: 120, required: true
-  property :pretty_title, String, length: 120, default: lambda { |r, _| r.title.sanitize }
   # Whether the folder is browsable in a public group listing
   property :browsable,    Boolean, default: true
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
 
-  belongs_to :user
-  belongs_to :folder, default: nil, required: false
-  belongs_to :group,  default: nil, required: false
+  belongs_to :space
+  belongs_to :folder, required: false, default: lambda { |f, *_| f.space && f.space.root_folder }
+  belongs_to :creator, 'User'
+  
   has n, :pages,    :constraint => :skip
   has n, :folders,  :constraint => :skip
 
-  validates_presence_of :title
-  validates_length_of   :title, :within => 3..120
+  # validates_with_method :folder,  method: :validate_hierarchy!
+  # validates_with_method :title,   method: :validate_title!
+  # validates_uniqueness_of :title, :scope => [ :space_id ],
+  #   message: 'You already have a folder with that title.'
 
-  before :valid? do
-    self.pretty_title = self.title.sanitize
+  # alias_method :creator, :user
+
+  is :titlable
+
+  def create_homepage
+    pages.create({ title: "README", creator: creator })
   end
 
   # Only the folder creator can destroy it, and only if it
@@ -35,14 +40,14 @@ class Folder
       validate_title!
 
       throw :halt unless errors.empty?
-
-      true
     end
   }
+  
+  after :create, :create_homepage
 
   def serialize
-    pages = []; self.pages.each { |p| pages << p.serialize }
-    out = { id: id, title: title, pages: pages }
+    serialized_pages = pages.collect { |p| p.serialize }
+    out = { id: id, title: title, pages: serialized_pages }
     if folder
       out[:parent] = folder.id
     end
@@ -50,11 +55,15 @@ class Folder
   end
   
   def empty?(scope = :public)
-    self.folders.empty? && self.pages.all({browsable: true}).empty?
+    self.folders.empty? && self.pages.all({ browsable: true }).empty?
   end
   
   def has_homepage?()
     pages({ title: "Home" }).first
+  end
+  
+  def homepage
+    pages.first({ title: [ "Home", "README" ] }) || pages.first
   end
 
   def to_json
@@ -68,14 +77,26 @@ class Folder
 
     false
   end
+  
+  def siblings
+    space.folders({ folder: self.folder, :id.not => self.id })
+  end
+  
+  def ancestors
+    parents = []
+    p = self
+    while p = p.folder do; parents << p end
+    parents
+  end
 
-  def public_url(relative = true)
-    scope = group ? group.public_url : user.public_url
-    path = [ pretty_title ]
-    p = folder
-    while p do path.insert(0,p.pretty_title); p = p.folder end
+  def descendants
+    folders.collect { |f| f.descendants }.flatten + folders + pages
+  end
+  
+  def public_url()
+    path = ([ self ] + ancestors).collect { |f| f.pretty_title }.join('/')
 
-    return "#{scope}/#{path.join('/')}"
+    "#{space.public_url}/#{path}"
   end
 
   private
@@ -85,19 +106,17 @@ class Folder
   # Folders are deletable only by their authors and  only when all their
   # children are owned by that same author.
   def deletable_by?(context = :default)
-    if user != @operating_user
-      errors.add :_, "You are not authorized to delete folders created by others."
-    elsif folders.count({ :user.not => @operating_user }) != 0
-      errors.add :_, "The folder contains others created by someone else, they must be removed first."
+    if !folder
+      errors.add :id, "You can not remove the root folder."
+    elsif !@editor
+      errors.add :editor, "An editor must be assigned before attempting to remove a folder."
+    elsif !space.is_member?(@editor)
+      errors.add :editor, "You are not authorized to delete folders in this space."
+    elsif creator.id != @editor.id
+      errors.add :creator, "You are not authorized to delete folders created by others."
+    elsif folders.all({ :creator.not => creator }).any?
+      errors.add :folders, "The folder contains others created by someone else, they must be removed first."
     end
-
-    # puts "Folder: in #{context.state} checking if i can be deleted, my state: #{@state.inspect}"
-
-    # if errors.empty?
-      # puts "Folder #{id} can be deleted"
-    # else
-      # puts "Folder #{id} can NOT be deleted because: #{collect_errors}"
-    # end
 
     throw :halt unless errors.empty?
   end
@@ -116,16 +135,21 @@ class Folder
 
   # Folder title must be unique within its scope (user or group)
   def validate_title!
-    scope, extra = nil, {}
-    if group
-      scope = group
-    else
-      scope = user; extra = { group: nil }
+    self.pretty_title ||= self.title.sanitize
+    
+    q = {
+      pretty_title: self.pretty_title
+    }
+    
+    if saved?
+      q.merge!({ :id.not => self.id })
     end
-
-    unless scope.folders.count({ pretty_title: self.pretty_title, :id.not => self.id }.merge(extra)) == 0
+    
+    if siblings.count(q) > 0
       errors.add :title, "That name is unavailable."
     end
+    
+    errors.empty?
   end
 
   # A folder cannot be its own parent, or a child
@@ -134,14 +158,22 @@ class Folder
     if folder
       # prevent the folder from being its own parent
       if folder.id == self.id then
-        errors.add :folder_id, "You cannot add a folder to itself!"
+        errors.add :folder_id, "You cannot add a folder to itself!"        
 
       # or a parent being a child of one of its children
       elsif folder.is_child_of?(self) then
-        errors.add :folder_id,
-          "Folder '#{title}' currently contains '#{folder.title}', it cannot become its child."
+        errors.add :folder_id, "Folder '#{title}' currently contains '#{folder.title}', it cannot become its child." 
+      elsif folder.space != self.space then
+        errors.add :folder_id, "Parent folder is not in the same space!"
+      end
+    else
+      # no folder?
+      if space.folders.count > 0
+        errors.add :folder_id, "A folder must be set inside another."
       end
     end
+    
+    errors.empty?
   end
 
 end

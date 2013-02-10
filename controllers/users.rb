@@ -77,7 +77,7 @@ post '/users' do
   # Create the user with a UUID
   u = User.create(params.merge({ uid: UUID.generate, nickname: nickname, auto_nickname: auto_nn, provider: "pagehub" }))
 
-  unless u.persisted?
+  unless u.saved?
     flash[:error] = u.collect_errors
     return redirect back
   end

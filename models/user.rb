@@ -3,40 +3,51 @@ require 'resolv'
 class User
   include DataMapper::Resource
 
-  attr_accessor :operating_user
+  attr_accessor :operating_user, :password_confirmation
 
   property :id, Serial
 
   property :name,     String, length: 255, required: true
   property :provider, String, length: 255, required: true
-  property :uid,      String, length: 255, required: true
+  property :uid,      String, length: 255, default: lambda { |*_| UUID.generate }
 
   property :email,          String, length: 255, default: ""
   property :gravatar_email, String, length: 255, default: lambda { |r,_| r.email }
   property :nickname,       String, length: 120, default: ""
   property :password,       String, length: 64
-  property :settings,       Text, default: "{}"
   property :oauth_token,    Text
   property :oauth_secret,   Text
   property :extra,          Text
   property :auto_nickname,  Boolean, default: false
   property :created_at,     DateTime, default: lambda { |*_| DateTime.now }
 
-  # has n, :notebooks
-  has n, :pages, :constraint => :destroy
-  has n, :folders, :constraint => :destroy
-  has n, :groups, :through => Resource, :constraint => :destroy
-  has n, :public_pages, :constraint => :skip
+  is :preferencable
+
+  has n, :owned_spaces, 'Space', :child_key => [ :creator_id ], :constraint => :destroy
+  has n, :spaces, :through => Resource, :constraint => :destroy
+  has n, :space_users, :constraint => :skip
+  has n, :pages,    :child_key => [ :creator_id ], :constraint => :destroy
+  has n, :folders,  :child_key => [ :creator_id ], :constraint => :destroy
+  # has n, :public_pages, :constraint => :skip
+  # has n, :pages,    :constraint => :destroy
+  # has n, :folders,  :constraint => :destroy
   has n, :email_verifications, :constraint => :destroy
 
   validates_presence_of :name, :provider, :uid
 
+  def create_default_space
+    owned_spaces.create({ title: "Personal" }) if owned_spaces.empty?
+  end
+  
+  after :create,  :create_default_space
+  after :save,    :create_default_space
+  
   [ :create, :save ].each { |advice|
     before advice do |_|
       self.nickname = self.name.to_s.sanitize if self.nickname.empty?
 
-      validate_email!(self.email, "primary")
-      validate_email!(self.gravatar_email, "gravatar")
+      # validate_email!(self.email, "primary")
+      # validate_email!(self.gravatar_email, "gravatar")
 
       errors.empty?
     end
@@ -56,7 +67,14 @@ class User
   end
 
   before :destroy do
-    #puts ":destroy => self: #{self.inspect}"
+    space_users.destroy!
+  end
+
+  class << self
+    # TODO: this needs to be changed
+    def encrypt(pw)
+      Digest::SHA1.hexdigest(pw || "")
+    end
   end
 
   def all_pages
@@ -109,19 +127,6 @@ class User
       return ev.pending?
     end
   end
-
-  def preferences(*scope)
-    if scope.length == 1 && scope.first.is_a?(String)
-      scope = scope.first.split('.')
-    end
-    
-    @preferences ||= Config.defaults.deep_merge(JSON.parse(self.settings))
-    scoped_preferences = @preferences
-    scope.each { |s| scoped_preferences = scoped_preferences[s.to_s] || {} }
-    scoped_preferences
-  end
-  
-  alias_method :p, :preferences
   
   private
 

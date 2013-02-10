@@ -2,6 +2,8 @@ require 'diff/lcs'
 class Revision
   include DataMapper::Resource
 
+  default_scope(:default).update(:order => [ :created_at.asc ])
+
   class NothingChangedError < RuntimeError; end
   class InvalidContextError < RuntimeError; end
 
@@ -18,10 +20,7 @@ class Revision
   property :patchsz, Integer
 
   belongs_to :page
-  belongs_to :user
-
-  alias_method :editor, :user
-  alias_method :editor=, :user=
+  belongs_to :editor, 'User'
 
   before :valid? do
     if !@context || !@context[:content]

@@ -15,7 +15,7 @@ def create_folder(gid = nil)
   })
 
   # see models/datamapper_resource.rb for DataMapper::Resource.persisted?
-  unless f.persisted?
+  unless f.saved?
     halt 400, f.collect_errors
   end
 

@@ -24,7 +24,7 @@
     // and the page listing
     $("#pages .scroller").css("max-height", $(window).height() - 135);
 
-    data = <%= @group.all_pages.to_json %>;
+    data = <%= @group.folder_pages.to_json %>;
     dynamism.inject(data, $("#page_listing"));
 
   });

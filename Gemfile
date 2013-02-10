@@ -21,7 +21,7 @@ gem "dm-types", ">=1.2.0"
 gem "dm-mysql-adapter", ">=1.2.0"
 gem 'multi_json'
 gem 'addressable'
-gem 'diff-lcs'
+gem 'diff-lcs', '1.1.3'
 gem 'uuid'
 gem 'gravatarify', ">= 3.1.0"
 gem 'pagehub-markdown', '>=0.1.3', :require => 'pagehub-markdown'
@@ -35,4 +35,10 @@ gem 'omniauth-google-oauth2'
 
 group :development do
   gem 'thin'
+end
+
+group :test do
+  gem 'rake'
+  gem 'rspec', '2.12'
+  gem 'rack-test', :require => "rack/test"
 end
