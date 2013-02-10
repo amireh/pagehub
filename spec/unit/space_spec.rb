@@ -3,20 +3,24 @@ describe Space do
     mockup_user
   end
 
-  context "Bootstrapping a user" do
+  context "Creation" do
 
     it "should create a default space for a new user" do
       @user.owned_spaces.count.should == 1
       @user.spaces.count.should == 1
     end
 
+    it "should implicitly define a :creator membership for the creator" do
+      @s.space_users.count.should == 1
+      @s.space_users.all({ role: :creator, user: @u }).count.should == 1
+    end
+    
+    it "should create a homepage for the space by default" do
+      @s.root_folder.pages.count.should == 1
+    end
   end
   
-  it "should implicitly define a :creator membership for the creator" do
-    @s.space_users.count.should == 1
-    @s.space_users.all({ role: :creator, user: @u }).count.should == 1
-  end
-
+  
   it "update its pretty title whenever the title is updated" do
     @s.pretty_title.should == @s.title.sanitize
     @s.update({ title: "New Title" })

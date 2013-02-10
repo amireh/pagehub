@@ -4,28 +4,60 @@ describe Folder do
   end
 
   it "should be created" do
-    f = @u.folders.create({ title: "Test Container", space: @s })
-    puts f.all_errors
-    f.saved?.should be_true
-    f.folder.should == @s.root_folder
-    @s.folders.count.should == 2
+    f = valid! rmock(:folder)
+    f.folder.should == f.space.root_folder
   end
   
   it "should nest folders" do
-    f = rmock(:folder)
-    f.saved?.should be_true
-    f2 = rmock(:folder, { q: { folder: f } })
-    f2.saved?.should be_true
+    f = valid! rmock(:folder)
+    f = valid! rmock(:folder, { q: { folder: f } })
+  end
+    
+  it "should nest folders with the same title in different levels" do
+    f = valid! rmock(:folder, { q: { title: "Mock" } })
+    f = valid! rmock(:folder, { q: { title: "Mock", folder: f } })
   end
   
-  it "should not allow nesting of cross-space folders" do
-    new_space = @u.owned_spaces.create({ title: "Moo" })
-    new_space.saved?.should be_true
-    
-    f = @u.folders.create({ title: "Test", folder: @u.spaces.first.root_folder, space: new_space })
-    f.saved?.should be_false
-    f.report_errors.should match(/is not in the same space!/)
+  it "should not allow for duplicate-titled folders" do
+    f = valid! rmock(:folder, { q: { title: "Test" } })
+    f = invalid! rmock(:folder, { q: { title: "Test" } })
+
+    f.report_errors.should match(/already have a folder with that title/)
   end
+   
+  it "should not allow for duplicate-titled pages" do
+    p = rmock(:page, { q: { title: "README" } })
+    p.saved?.should be_false
+    
+    p.report_errors.should match(/already have such a page/)
+  end
+    
+  context "Placement" do
+    it "should reject self-parenting" do
+      f = valid! rmock(:folder)
+      f.update({ folder: f }).should be_false
+      f.report_errors.should match(/cannot add a folder to itself/)
+    end
+    
+    it "should reject child becoming a parent" do
+      f = valid! rmock(:folder)
+      c = valid! rmock(:folder, { q: { folder: f }})
+      f.update({ folder: c })
+      f.report_errors.should match(/cannot become its child/)
+    end
+    
+    it "should not allow nesting of cross-space folders" do
+      new_space = valid! @u.owned_spaces.create({ title: "Moo" })
+      
+      f = invalid! @u.folders.create({ title: "Test", folder: @u.spaces.first.root_folder, space: new_space })
+      f.report_errors.should match(/is not in the same space!/)
+    end
+    
+    it "should reject parent-less placement" do
+      f = invalid! rmock(:folder, { q: { folder: nil }})
+      f.report_errors.should match(/must be set inside another/)
+    end
+  end    
   
   describe "Instance methods" do
     before do
@@ -37,12 +69,10 @@ describe Folder do
     end
     
     it "siblings()" do
-      f  = rmock(:folder)
-      f.siblings.count.should == 0
-      f2 = rmock(:folder)
-      f.siblings.count.should == 1
+      @root.siblings.count.should == 0
+      @parent.siblings.count.should == 1
       f3 = rmock(:folder)
-      f.siblings.count.should == 2
+      @parent.siblings.count.should == 2
     end
     
     it "is_child_of?" do
@@ -150,19 +180,18 @@ describe Folder do
       cp.refresh.folder.should == f      
     end
     
-  end # Destruction context
-  
-  it "should create a homepage for the folder by default" do
-    @s.root_folder.pages.count.should == 1
-    f = rmock(:folder)
-    f.saved?.should be_true
-    f.pages.count.should == 1
-  end
-  
-  it "should not allow for duplicate-titled pages" do
-    p = rmock(:page, { q: { title: "README" } })
-    p.saved?.should be_false
+    it "should prefix its homepage title when migrating to parent folder" do
+      f = valid! rmock(:folder)
+      f.create_homepage
+      
+      folder_title = f.title
+      
+      f.editor = @u
+      f.destroy.should be_true
+      
+      @s.pages.all({ title: "#{folder_title} - README" }).count.should == 1
+    end
     
-    p.report_errors.should match(/already have such a page/)
-  end
+  end # Destruction context
+
 end

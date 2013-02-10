@@ -18,16 +18,10 @@ class Folder
 
   # validates_with_method :folder,  method: :validate_hierarchy!
   # validates_with_method :title,   method: :validate_title!
-  # validates_uniqueness_of :title, :scope => [ :space_id ],
-  #   message: 'You already have a folder with that title.'
-
-  # alias_method :creator, :user
+  validates_uniqueness_of :title, :scope => [ :space_id, :folder_id ],
+    message: 'You already have a folder with that title.'
 
   is :titlable
-
-  def create_homepage
-    pages.create({ title: "README", creator: creator })
-  end
 
   # Only the folder creator can destroy it, and only if it
   # doesn't contain folders created by others
@@ -37,14 +31,16 @@ class Folder
   [ :save, :update ].each { |advice|
     before advice.to_sym do |*args|
       validate_hierarchy!
-      validate_title!
+      # validate_title!
 
       throw :halt unless errors.empty?
     end
   }
   
-  after :create, :create_homepage
-
+  def create_homepage
+    pages.create({ title: "README", creator: creator })
+  end
+    
   def serialize
     serialized_pages = pages.collect { |p| p.serialize }
     out = { id: id, title: title, pages: serialized_pages }
@@ -59,7 +55,7 @@ class Folder
   end
   
   def has_homepage?()
-    pages({ title: "Home" }).first
+    pages({ title: [ "Home", "README" ] }).first
   end
   
   def homepage
@@ -89,8 +85,8 @@ class Folder
     parents
   end
 
-  def descendants
-    folders.collect { |f| f.descendants }.flatten + folders + pages
+  def descendants(with_pages = false)
+    folders.collect { |f| f.descendants }.flatten + folders + (with_pages ? pages : [])
   end
   
   def public_url()
@@ -125,35 +121,16 @@ class Folder
   #
   # If this folder is attached to another, we will
   # move all its children pages and folders to that parent,
-  # otherwise they are orphaned into the general folder.
+  # otherwise they are orphaned into the root folder.
   def nullify_references(context = :default)
     new_parent = self.folder
 
+    self.pages.all({ title: "README" }).update({ title: "#{self.title} - README" })
     self.pages.update!(folder: new_parent)
     self.folders.update!(folder: new_parent)
   end
 
-  # Folder title must be unique within its scope (user or group)
-  def validate_title!
-    self.pretty_title ||= self.title.sanitize
-    
-    q = {
-      pretty_title: self.pretty_title
-    }
-    
-    if saved?
-      q.merge!({ :id.not => self.id })
-    end
-    
-    if siblings.count(q) > 0
-      errors.add :title, "That name is unavailable."
-    end
-    
-    errors.empty?
-  end
-
-  # A folder cannot be its own parent, or a child
-  # of one of its children
+  # Checks for placement of a folder
   def validate_hierarchy!
     if folder
       # prevent the folder from being its own parent

@@ -28,7 +28,8 @@ class Space
 
   after :create do
     space_users.create({ user: self.creator, role: :creator })
-    folders.create({ title: "None", creator: creator })
+    f = folders.create({ title: "None", creator: creator })
+    f.create_homepage
   end
   
   before :destroy do
