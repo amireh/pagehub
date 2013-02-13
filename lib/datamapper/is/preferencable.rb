@@ -4,10 +4,10 @@ require 'dm-types'
 module DataMapper
   module Is
     module Preferencable
-
+      
       def is_preferencable(options = {}, defaults = {})
-        extend DataMapper::Is::Preferencable::ClassMethods
-        include DataMapper::Is::Preferencable::InstanceMethods
+        extend  ClassMethods
+        include InstanceMethods
 
         options = {
           :on => :settings
@@ -15,29 +15,76 @@ module DataMapper
         
         property options[:on].to_sym, DataMapper::Property::Text, default: '{}'
         
-        @@default_preferences = defaults
+        @preferencable_options  = options
+        @default_preferences    = defaults
       end
 
       module ClassMethods
-        def set_default_preferences(p)
-          @@default_preferences = p
-        end
+        attr_accessor :default_preferences, :preferencable_options
       end
       
       module InstanceMethods
         
-        def preferences(*scope)
-          if scope.length == 1 && scope.first.is_a?(String)
-            scope = scope.first.split('.')
+        def get_preference(k = nil)
+          # if k.is_a?(String)
+          #   k = k.split('.')
+          # else
+          #   unless k.is_a?(Array)
+          #     raise RuntimeError,
+          #       'preference key must be either a String or an Array of strings' <<
+          #       " got #{k.class} => #{k.inspect}"
+          #   end
+          # end
+
+          unless @preferences
+            @preferences = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
+            @preferences.merge! model.
+              default_preferences.
+                deep_merge JSON.
+                  parse attribute_get(model.preferencable_options[:on]).to_s
           end
           
-          @preferences ||= @@default_preferences.deep_merge(JSON.parse(self.settings))
-          scoped_preferences = @preferences
-          scope.each { |s| scoped_preferences = scoped_preferences[s.to_s] || {} }
-          scoped_preferences
+          prefs = @preferences
+          
+          if k && k.is_a?(String)
+            k.split('.').each { |key|
+              prefs = prefs[key]
+            }
+          end
+          
+          prefs
         end
         
-        alias_method :p, :preferences
+        def save_preferences
+          self.update!({
+            :"#{model.preferencable_options[:on]}" => @preferences.to_json.to_s
+          })
+        end
+        
+        alias_method :p, :get_preference
+        
+        def is_on?(*setting)
+          value = get_preference(*setting)
+          
+          if block_given?
+            return yield(value)
+          end
+          
+          case value
+          when String
+            !value.empty? && !%w(off false).include?(value)
+          when Hash
+            !value.empty?
+          when TrueClass
+            true
+          when FalseClass
+            false
+          when NilClass
+            false
+          else
+            !value.nil?
+          end
+        end
       end
       
     end

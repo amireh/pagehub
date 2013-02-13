@@ -42,9 +42,16 @@ configure do
   # DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, "mysql://#{dbc[:un]}:#{dbc[:pw]}@#{dbc[:host]}/#{dbc[:db]}")
 
-  [ 'lib', 'helpers', 'models' ].each { |d|
+  [ 'lib', 'helpers' ].each { |d|
     Dir.glob("#{d}/**/*.rb").each { |f| require f }
   }
+  
+  PageHub::Config.init
+
+  [ 'models' ].each { |d|
+    Dir.glob("#{d}/**/*.rb").each { |f| require f }
+  }
+  
   require 'controllers/users'
   require 'controllers/folders'
   require 'controllers/groups'
@@ -53,11 +60,8 @@ configure do
 
   DataMapper.finalize
   DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
-
-  PageHub::Config.init
   
   set :default_preferences, PageHub::Config.defaults
-  Space.set_default_preferences(settings.default_preferences.dup)
 end
 
 configure :production, :development do |app|

@@ -56,9 +56,29 @@ def mockup_user_params
   }
 end
 
+def cleanup_resources
+  # Page.destroy!
+  # PublicPage.destroy!
+  # CarbonCopy.destroy!
+  # Revision.destroy!
+  # Folder.destroy!
+  # Space.destroy!
+  # SpaceUser.destroy!
+  # EmailVerification.destroy!
+  User.destroy
+  User.count.should              == 0
+  Page.count.should              == 0
+  PublicPage.count.should        == 0
+  CarbonCopy.count.should        == 0
+  Revision.count.should          == 0
+  Folder.count.should            == 0
+  Space.count.should             == 0
+  SpaceUser.count.should         == 0
+  EmailVerification.count.should == 0
+end
+
 def create_user(q = {}, cleanup = true)
-  User.destroy if cleanup
-  
+  cleanup_resources if cleanup
   u = User.create(mockup_user_params.merge(q))
   s = u.spaces.first
   f = s.root_folder

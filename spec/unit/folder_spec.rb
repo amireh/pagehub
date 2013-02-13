@@ -99,23 +99,21 @@ describe Folder do
   context "Destruction" do
     it "should be destroyed" do
       f = rmock(:folder)
-      f.editor = @u
       rc = f.destroy
       rc.should be_true
     end
     
-    it "should not be destroyed if it's the root folder" do
-      f = @s.root_folder
-      f.editor = @u
-      f.destroy.should be_false
-      f.report_errors.should match(/can not remove the root/)
-    end
+    # it "should not be destroyed if it's the root folder" do
+    #   f = @s.root_folder
+    #   f.destroy.should be_false
+    #   f.report_errors.should match(/can not remove the root/)
+    # end
     
-    it "should not be destroyed if no editor is assigned" do
-      f = @s.folders.create({ title: "Test" })
-      f.destroy.should be_false
-      f.report_errors.should match(/editor must be assigned/)
-    end
+    # it "should not be destroyed if no editor is assigned" do
+    #   f = @s.folders.create({ title: "Test" })
+    #   f.destroy.should be_false
+    #   f.report_errors.should match(/editor must be assigned/)
+    # end
         
     it "should not be destroyed if it contains folders created by others" do
       mockup_another_user()
@@ -130,23 +128,29 @@ describe Folder do
       child.saved?.should be_true
       child.creator.should == @u1      
       
-      parent.editor = @u2 # creator
-      parent.destroy.should be_false
-      parent.report_errors.should match(/folder contains others created by someone else/)
+      # parent.editor = @u2 # creator
+      # parent.destroy.should be_false
+      s, msg = *parent.deletable_by?(@u2)
+      s.should be_false 
+      msg.should match(/folder contains others created by someone else/)
     end
     
     it "should be destroyed only by the creator" do
       mockup_another_user()
       
       f = rmock(:folder)
+      # f.space.editor = f.space.creator
       
       [ :member, :editor, :admin ].each do |role|
         f.errors.clear
         
         f.space.send(:"add_#{role}", @u2)
-        f.editor = @u2
-        f.destroy.should be_false
-        f.report_errors.should match(/not authorized to delete/)
+        # f.editor = @u2
+        # f.destroy.should be_false
+        # f.report_errors.should match(/not authorized to delete/)
+        s, msg = *f.deletable_by?(@u2)
+        s.should be_false 
+        msg.should match(/not authorized to delete/)
       end
     end  
     
@@ -154,8 +158,7 @@ describe Folder do
       f = rmock(:folder)
       p = rmock(:page, { q: { folder: f } })
       p.folder.should == f
-      f.editor = @u
-      f.destroy.should be_true
+      f.nullify_references.destroy.should be_true
       p.refresh.folder.should == @space.root_folder
       
       f   = rmock(:folder)
@@ -163,8 +166,7 @@ describe Folder do
       p   = rmock(:page,    { q: { folder: f } })
       cp  = rmock(:page,    { q: { folder: cf }})
       
-      f.editor = @u
-      f.destroy.should be_true
+      f.nullify_references.destroy.should be_true
       p.refresh.folder.should == @space.root_folder
       cf.refresh.folder.should == @space.root_folder
       cp.refresh.folder.should == cf
@@ -174,8 +176,7 @@ describe Folder do
       p   = rmock(:page,    { q: { folder: f } })
       cp  = rmock(:page,    { q: { folder: cf }})
       
-      cf.editor = @u
-      cf.destroy.should be_true
+      cf.nullify_references.destroy.should be_true
       p.refresh.folder.should ==  f
       cp.refresh.folder.should == f      
     end
@@ -186,8 +187,7 @@ describe Folder do
       
       folder_title = f.title
       
-      f.editor = @u
-      f.destroy.should be_true
+      f.nullify_references.destroy.should be_true
       
       @s.pages.all({ title: "#{folder_title} - README" }).count.should == 1
     end

@@ -3,7 +3,8 @@ require 'resolv'
 class User
   include DataMapper::Resource
 
-  attr_accessor :operating_user, :password_confirmation
+  # attr_accessor :editor, :password_confirmation
+  attr_accessor :password_confirmation
 
   property :id, Serial
 
@@ -24,7 +25,7 @@ class User
   is :preferencable
 
   has n, :owned_spaces, 'Space', :child_key => [ :creator_id ], :constraint => :destroy
-  has n, :spaces, :through => Resource, :constraint => :destroy
+  has n, :spaces, :through => Resource, :constraint => :skip
   has n, :space_users, :constraint => :skip
   has n, :pages,    :child_key => [ :creator_id ], :constraint => :destroy
   has n, :folders,  :child_key => [ :creator_id ], :constraint => :destroy
@@ -35,12 +36,24 @@ class User
 
   validates_presence_of :name, :provider, :uid
 
+  # class << self
+  #   attr_accessor :editor
+  # end
+  
+  # def editor
+  #   @editor || self.class.editor
+  # end
+  
   def create_default_space
-    owned_spaces.create({ title: "Personal" }) if owned_spaces.empty?
+    owned_spaces.create({ title: Space::DefaultSpace }) if owned_spaces.empty?
+  end
+  
+  def default_space
+    owned_spaces.first({ title: Space::DefaultSpace })
   end
   
   after :create,  :create_default_space
-  after :save,    :create_default_space
+  # after :save,    :create_default_space
   
   [ :create, :save ].each { |advice|
     before advice do |_|
@@ -55,15 +68,6 @@ class User
 
   def demo?
     name == "PageHub Demo"
-  end
-
-  def operating_user=(u)
-    puts "Attaching operating user #{operating_user} to child resources"
-
-    pages.each    { |p| p.operating_user = u }
-    folders.each  { |f| f.operating_user = u }
-
-    @operating_user = u
   end
 
   before :destroy do

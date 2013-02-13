@@ -1,7 +1,8 @@
 class Folder
   include DataMapper::Resource
 
-  attr_writer :editor
+  # attr_writer :editor
+  DefaultFolder = 'None'
 
   property :id, Serial
 
@@ -13,8 +14,8 @@ class Folder
   belongs_to :folder, required: false, default: lambda { |f, *_| f.space && f.space.root_folder }
   belongs_to :creator, 'User'
   
-  has n, :pages,    :constraint => :skip
-  has n, :folders,  :constraint => :skip
+  has n, :pages,    :constraint => :destroy
+  has n, :folders,  :constraint => :destroy
 
   # validates_with_method :folder,  method: :validate_hierarchy!
   # validates_with_method :title,   method: :validate_title!
@@ -25,9 +26,9 @@ class Folder
 
   # Only the folder creator can destroy it, and only if it
   # doesn't contain folders created by others
-  before :destroy, :deletable_by?
-  before :destroy, :nullify_references
-
+  # before :destroy, :deletable_by?
+  # before :destroy, :nullify_references
+  
   [ :save, :update ].each { |advice|
     before advice.to_sym do |*args|
       validate_hierarchy!
@@ -37,6 +38,10 @@ class Folder
     end
   }
   
+  # def editor
+  #   @editor || User.editor
+  # end
+    
   def create_homepage
     pages.create({ title: "README", creator: creator })
   end
@@ -95,28 +100,17 @@ class Folder
     "#{space.public_url}/#{path}"
   end
 
-  private
-
-  # pre-destroy validation hook:
-  #
-  # Folders are deletable only by their authors and  only when all their
-  # children are owned by that same author.
-  def deletable_by?(context = :default)
-    if !folder
-      errors.add :id, "You can not remove the root folder."
-    elsif !@editor
-      errors.add :editor, "An editor must be assigned before attempting to remove a folder."
-    elsif !space.is_member?(@editor)
-      errors.add :editor, "You are not authorized to delete folders in this space."
-    elsif creator.id != @editor.id
-      errors.add :creator, "You are not authorized to delete folders created by others."
+  def deletable_by?(editor)
+    if !space.is_member?(editor)
+      [ false, "You are not authorized to delete folders in this space." ]
+    elsif creator.id != editor.id
+      [ false, "You are not authorized to delete folders created by others." ]
     elsif folders.all({ :creator.not => creator }).any?
-      errors.add :folders, "The folder contains others created by someone else, they must be removed first."
-    end
-
-    throw :halt unless errors.empty?
+      [ false, "The folder contains others created by someone else, they must be removed first." ]
+    else
+      true
+    end    
   end
-
   # pre-destroy hook:
   #
   # If this folder is attached to another, we will
@@ -125,10 +119,38 @@ class Folder
   def nullify_references(context = :default)
     new_parent = self.folder
 
-    self.pages.all({ title: "README" }).update({ title: "#{self.title} - README" })
-    self.pages.update!(folder: new_parent)
-    self.folders.update!(folder: new_parent)
+    if new_parent
+      self.pages.all({ title: "README" }).update({ title: "#{self.title} - README" })
+      self.pages.update!(folder: new_parent)
+      self.folders.update!(folder: new_parent)
+    end
+    
+    refresh
   end
+  
+  private
+
+  # pre-destroy validation hook:
+  #
+  # Folders are deletable only by their authors and  only when all their
+  # children are owned by that same author.
+  # def deletable_by?(context = :default)
+  #   if !folder
+  #     errors.add :id, "You can not remove the root folder."
+  #   elsif !editor
+  #     errors.add :editor, "An editor must be assigned before attempting to remove a folder."
+  #   elsif !space.is_member?(editor)
+  #     errors.add :editor, "You are not authorized to delete folders in this space."
+  #   elsif creator.id != editor.id
+  #     errors.add :creator, "You are not authorized to delete folders created by others."
+  #   elsif folders.all({ :creator.not => creator }).any?
+  #     errors.add :folders, "The folder contains others created by someone else, they must be removed first."
+  #   end
+
+  #   throw :halt unless errors.empty?
+  # end
+
+ 
 
   # Checks for placement of a folder
   def validate_hierarchy!

@@ -1,7 +1,10 @@
 class Space
   include DataMapper::Resource
+  # include Sentinel
 
-  MemberRoles = [ :member, :editor, :admin, :creator ]
+  DefaultSpace = 'Personal'
+  
+  # attr_writer :editor
 
   property :id, Serial
 
@@ -19,56 +22,63 @@ class Space
   
   # alias_method :creator, :user
   
-  is :preferencable
+  is :preferencable, {}, PageHub::Config.defaults
   is :titlable
   
+  # def editor
+  #   @editor || User.editor
+  # end
+
+  # def authorized_editor(*args)
+  #   if !editor
+  #     raise DataMapper::MissingOperatorError.new(:editor)
+  #   elsif !admin?(editor)
+  #     errors.add :editor, "You are not authorized to modify memberships of this space."
+  #   end
+    
+  #   errors.empty?
+  # end
+    
   validates_uniqueness_of :title, :scope => [ :creator_id ],
     message: 'You already have a space with that title.'
 
-
   after :create do
-    space_users.create({ user: self.creator, role: :creator })
-    f = folders.create({ title: "None", creator: creator })
+    space_users.create({ user: creator, role: :creator })
+    f = folders.create({ title: Folder::DefaultFolder, creator: creator })
     f.create_homepage
   end
+
+  # the default space should never be destroyed
+  # before :destroy do
+  #   if default?
+  #     errors.add :id, 'You can not remove the default space!'
+  #     throw :halt
+  #   end
+  # end
   
+  # before :destroy, :orphanize
   before :destroy do
-    # puts "space[#{pretty_title}]: migrating orphaned pages authored by #{users.count} users"
-    users.each { |u|
-      next if u.id == creator.id
-      
-      user_pages = pages.all({ creator: u })
-      if user_pages.empty?
-        # puts "\tuser #{u.email} has authored no pages in #{pretty_title}, nothing to migrate"
-        next
-      end
-      
-      # puts "space: \tmigrating orphaned pages for #{u.email}"
-      s = u.owned_spaces.create({ title: "Orphaned: #{title}" })
-      f = s.root_folder
-      user_pages.each { |p|
-        p.update({ folder: f })
-      }
-    }
-    
+    folders.destroy
     space_users.destroy!
   end
-
   
+  # guard :destroy, with: :authorized_editor
+    
   def root_folder
     folders.first({ folder_id: nil })
   end
+  alias_method :root, :root_folder
   
   def public_url
-    "/#{self.pretty_title}"
+    "#{user.public_url}/#{self.pretty_title}"
   end
 
   def url(suffix)
-    "#{pretty_titlespace}#{suffix}"
+    "#{namespace}#{suffix}"
   end
   
-  def pretty_titlespace
-    "/spaces/#{self.id}"
+  def namespace
+    "#{user.namespace}/spaces/#{self.id}"
   end
 
   def folder_pages
@@ -84,11 +94,11 @@ class Space
   end
 
   def browsable_pages(cnd = {}, order = [])
-    pages.all({ conditions: cnd.merge({ browsable: true }), order: [ :title.asc ] + order })
+    pages.all({ conditions: cnd.merge({ browsable: true }), order: order })
   end
   
   def browsable_folders(cnd = {}, order = [])
-    folders.all({ conditions: cnd.merge({ browsable: true }), order: [ :title.asc ] + order })
+    folders.all({ conditions: cnd.merge({ browsable: true }), order: order })
   end
 
   # TODO: helperize this, seriously
@@ -126,11 +136,18 @@ class Space
   end
 
   def role_of(user)
-    space_users.first({ user: user }).role.to_s
+    if entry = space_users.first({ user: user })
+      entry.role.to_s
+    else
+      nil
+    end
   end
 
   SpaceUser::Roles.flags.each { |role|
-
+    
+    # is_member?
+    # has_member?
+    # member?
     define_method(:"has_#{role}?") do |user|
       unless entry = space_users.first({ user: user })
         return false
@@ -139,18 +156,33 @@ class Space
       SpaceUser.weigh(entry.role) >= SpaceUser.weigh(role)
     end
     
-    alias_method :"#{role}?", :"has_#{role}?"
-    alias_method :"is_#{role}?", :"has_#{role}?"
+    alias_method :"#{role}?",     :"has_#{role}?"
+    alias_method :"is_#{role}?",  :"has_#{role}?"
     
     next if role == :creator
     
+    # add_member
     define_method(:"add_#{role}") do |user|
-      entry = space_users.first_or_create({ user: user })
+      entry = space_users.first_or_create({ user: user }, { role: role })
       if entry.role != role
-        entry.update({ role: role })
+        entry.update!({ role: role })
       end
+      
+      entry.saved?
     end
+    
+    # members
+    define_method("#{role}s") do
+      space_users.all({ role: role }).collect { |membership| membership.user }
+    end
+    
+    # guard :"add_#{role}", with: :authorized_editor
   }
+  
+  # Members that can write, edit, and remove pages and folders.
+  def authors
+    space_users.all({ :role.not => :member }).collect { |m| m.user }
+  end
   
   def has_member_by_nickname?(nn)
     users.select { |u| nn == u.nickname }.any?
@@ -165,18 +197,34 @@ class Space
   end
 
   def is_creator?(user)
-    creator.id == user.id
+    user && creator.id == user.id
   end
 
-  alias_method :has_creator?, :is_creator?
-  alias_method :is_master_admin?, :is_creator?
-
-  def admins()
-    space_users.all({ role: :admin }).collect { |membership| membership.user }
+  def default?
+    title == DefaultSpace
   end
+  
+  def orphanize
+    authors.each { |u|
+      next if u.id == creator.id
+      next if u.is_on? 'spaces.no_orphanize'
+      
+      user_pages = pages.all({ creator: u })
 
-  def admin_nicknames
-    admins.collect { |u| u.nickname }
+      next if user_pages.empty?
+
+      s = u.owned_spaces.first_or_create({
+        title: "Orphaned: #{title}"
+      }, {
+        brief: brief
+      })
+      
+      f = s.root_folder
+      
+      user_pages.each { |p|
+        p.update({ folder: s.root_folder })
+      }
+    }
+    refresh
   end
-
 end

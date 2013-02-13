@@ -4,7 +4,7 @@ require 'base64'
 class Page
   include DataMapper::Resource
 
-  attr_writer :editor
+  # attr_writer :editor
 
   default_scope(:default).update(:order => [ :title.asc ])
 
@@ -39,6 +39,10 @@ class Page
     true
   end
 
+  # def editor
+  #   @editor || User.editor
+  # end
+  
   alias_method :cc, :carbon_copy
   
   # [ :update, :save ].each { |advice|
@@ -57,7 +61,7 @@ class Page
     self.carbon_copy.save! # make sure to use the bang version here
   end
 
-  before :destroy, :deletable_by?
+  # before :destroy, :deletable_by?
 
   def generate_revision(new_content, editor)
     if !saved?
@@ -171,15 +175,17 @@ class Page
   # pre-destroy validation hook:
   #
   # Pages are deletable only by their authors.
-  def deletable_by?(context = :default)
-    if !@editor
-      errors.add :creator, "An editor must be assigned before attempting to remove a page."
-    elsif creator.id != @editor.id
-      errors.add :creator, "Pages can be deleted only by their author."
-    end
-
-    throw :halt unless errors.empty?
+  # def deletable_by?(context = :default)
+  #   errors.delete(:creator)
     
-    errors.empty?
-  end
+  #   if !editor
+  #     errors.add :creator, "An editor must be assigned before attempting to remove a page."
+  #   elsif creator.id != editor.id
+  #     errors.add :creator, "Pages can be deleted only by their author."
+  #   end
+
+  #   throw :halt unless errors.empty?
+    
+  #   errors.empty?
+  # end
 end
