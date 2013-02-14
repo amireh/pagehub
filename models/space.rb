@@ -168,7 +168,7 @@ class Space
         entry.update!({ role: role })
       end
       
-      entry.saved?
+      entry
     end
     
     # members

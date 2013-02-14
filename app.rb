@@ -32,7 +32,7 @@ configure :development, :production do
 end
 
 configure do
- config_files.each { |cf| config_file 'config/%s.yml' %[cf] }
+  config_files.each { |cf| config_file 'config/%s.yml' %[cf] }
 
   use Rack::Session::Cookie, :secret => settings.credentials['cookie']['secret']
 
@@ -43,13 +43,13 @@ configure do
   DataMapper.setup(:default, "mysql://#{dbc[:un]}:#{dbc[:pw]}@#{dbc[:host]}/#{dbc[:db]}")
 
   [ 'lib', 'helpers' ].each { |d|
-    Dir.glob("#{d}/**/*.rb").each { |f| require f }
+    Dir.glob("#{d}/**/*.rb").reject { |f| f =~ /\.exclude/ }.each { |f| require f }
   }
   
   PageHub::Config.init
 
   [ 'models' ].each { |d|
-    Dir.glob("#{d}/**/*.rb").each { |f| require f }
+    Dir.glob("#{d}/**/*.rb").reject { |f| f =~ /\.exclude/ }.each { |f| require f }
   }
   
   require 'controllers/users'

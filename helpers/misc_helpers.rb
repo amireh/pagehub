@@ -110,11 +110,17 @@ module PageHub
     def pluralize(number, word)
       number == 1 ? "#{number} #{word}" : "#{number} #{word}s"
     end
-
-    Vowels = ['a','o','u','i','e']
+    
     def vowelize(word)
-      Vowels.include?(word[0]) ? "an #{word}" : "a #{word}"
+      word.to_s.vowelize
     end
+  end
+end
+
+class String
+  Vowels = ['a','o','u','i','e']
+  def vowelize
+    Vowels.include?(self[0]) ? "an #{self}" : "a #{self}"
   end
 end
 
