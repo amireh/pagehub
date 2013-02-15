@@ -1,25 +1,6 @@
 # Create an empty folder, must be unique by title in the user's scope
 def create_folder(gid = nil)
-  # locate parent folder, if any
-  parent = nil
-  if params[:folder_id] && params[:folder_id].to_i != 0 then
-    parent = @scope.folders.first({ id: params[:folder_id] })
 
-    halt 400, "No such parent folder with the id #{parent_id}" if !parent
-  end
-
-  f = @scope.folders.create({
-    title: params[:title],
-    user: current_user,
-    folder: parent
-  })
-
-  # see models/datamapper_resource.rb for DataMapper::Resource.persisted?
-  unless f.saved?
-    halt 400, f.collect_errors
-  end
-
-  f.to_json
 end
 
 # Updates the folder's title and its parent containing folder
@@ -135,42 +116,93 @@ get '/groups/:gid/folders/new', :auth => :group_editor do |gid|
   erb :"/folders/new", layout: !request.xhr?
 end
 
-# User folder creation
-post '/folders', :auth => :user do
-  create_folder
-end
 
-# Group folder creation
-post '/groups/:gid/folders', :auth => :group_editor do |gid|
-  create_folder(gid)
+get '/spaces/:space_id/folders/:folder_id',
+  auth:     [ :member ],
+  requires: [ :space, :folder ],
+  provides: [ :json ] do
+ 
+  authorize! :read, @folder, :message => "You need to be a member of this space to browse its folders."
+  
+  respond_with @folder do |f|
+    f.json { rabl :"/folders/show" }
+  end
+end
+  
+post '/spaces/:space_id/folders',
+  auth: [ :editor ],
+  requires: [ :space ],
+  provides: [ :json ] do
+
+  authorize! :create, Folder, :message => "You need to be an editor in this space to create folders."
+
+  api_required!({
+    :title => nil
+  })
+  
+  api_optional!({
+    :parent_id  => lambda { |fid|
+      "No such parent folder #{fid}" unless @parent = @space.folders.get(fid.to_i) }
+  })
+  
+  api_consume! :parent_id
+  
+  @folder = @space.folders.new api_params({
+    creator:  @user,
+    folder:   @parent || @space.root_folder
+  })
+  
+  unless @folder.save
+    halt 400, @folder.errors
+  end
+  
+  respond_with @folder do |f|
+    f.json { rabl :"/folders/show" }
+  end
 end
 
 # User folder update
-put '/folders/:id', :auth => :user do |folder_id|
-  update_folder(folder_id)
+put '/spaces/:space_id/folders/:folder_id',
+  auth: [ :editor ],
+  provides: [ :json ],
+  requires: [ :space, :folder ] do
+    
+  authorize! :update, @folder, :message => "You need to be an editor in this space to edit folders."
+
+  api_optional!({
+    :title => nil,
+    :parent_id  => lambda { |fid|
+      "No such parent folder #{fid}" unless @parent = @space.folders.get(fid.to_i) }
+  })
+  
+  api_consume! :parent_id
+  
+  unless @folder.update api_params({ folder: @parent || @folder.folder })
+    halt 400, @folder.errors
+  end
+  
+  respond_with @folder do |f|
+    f.json { rabl :"/folders/show" }
+  end
 end
 
-# Group folder update
-put "/groups/:gid/folders/:id", :auth => :group_editor do |gid, id|
-  update_folder(id, gid)
-end
 
-# User page to folder addition
-put '/folders/:gid/add/:page_id', :auth => :user do |fid, pid|
-  add_to_folder(fid, pid)
-end
-
-# Group page to folder addition
-put '/groups/:gid/folders/:id/add/:page_id', :auth => :group_editor do |gid, fid, pid|
- add_to_folder(fid,pid,gid)
-end
-
-# User folder deletion
-delete '/folders/:id', :auth => [ :user ] do |fid|
-  delete_folder(fid)
-end
-
-# Group folder deletion
-delete '/groups/:gid/folders/:id', :auth => :group_editor do |gid, fid|
-  delete_folder(fid, gid)
+delete '/spaces/:space_id/folders/:folder_id',
+  auth:     [ :admin ],
+  provides: [ :json   ],
+  requires: [ :space, :folder ] do
+  
+  authorize! :delete, @folder, :message => "You can not remove folders created by someone else."
+  
+  unless @folder.destroy
+    halt 500, @folder.errors
+  end
+  
+  respond_to do |f|
+    f.html {
+      flash[:notice] = "Folder has been removed."
+      redirect back
+    }
+    f.json { halt 200 }
+  end
 end

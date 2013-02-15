@@ -1,18 +1,17 @@
-messages: &messages
-  forbidden: 'You are not allowed to perform this action.'
-  unauthorized: 'You must authenticate first.'
+# messages: &messages
+  # forbidden: 'You are not allowed to perform this action.'
+  # unauthorized: 'You must authenticate first.'
 
 development: &common
   courier:
     enabled:  true
     from:     'noreply@pagehub.org'
-  <<: *messages
 
 production:
   <<: *common
-  <<: *messages
+  # <<: *messages
 
 test:
   courier:
     enabled: false
-  <<: *messages
+  # <<: *messages

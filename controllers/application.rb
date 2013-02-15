@@ -11,9 +11,14 @@ def on_api_error(msg = response.body)
   status response.status
   
   msg = case
-  when msg.is_a?(String); [ msg ]
-  when msg.is_a?(Array);  msg
-  else;                   [ 'unexpected response' ]
+  when msg.is_a?(String)
+    [ msg ]
+  when msg.is_a?(Array)
+    msg
+  when msg.is_a?(DataMapper::Validations::ValidationErrors)
+    msg.to_hash.collect { |k,v| v }.flatten
+  else
+    [ "unexpected response: #{msg}" ]
   end
   
   {

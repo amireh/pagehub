@@ -27,6 +27,14 @@ module Sinatra
         }
       end
       
+      def api_consume!(keys)
+        keys = [ keys ] unless keys.is_a?(Array)
+        keys.each do |k|
+          @api[:required].delete!(k.to_sym)
+          @api[:optional].delete!(k.to_sym)
+        end
+      end
+      
       def api_params(q = {})
         @api[:optional].merge(@api[:required]).merge(q)
       end
@@ -109,7 +117,7 @@ module Sinatra
             halt 400, errmsg if errmsg && errmsg.is_a?(String)
           end
           
-          @api[type][name] = params[name]
+          @api[type][name.to_sym] = params[name]
         end
       end
     end

@@ -145,12 +145,10 @@ post '/spaces/:space_id/pages',
     :content => nil    
   })
   
-  @page = @space.pages.new(
-    @api[:required].merge(@api[:optional]).merge({
-      creator: @user,
-      folder: @folder
-    })
-  )
+  @page = @space.pages.new api_params({
+    creator: @user,
+    folder: @folder
+  })
   
   unless @page.save
     halt 400, @page.errors

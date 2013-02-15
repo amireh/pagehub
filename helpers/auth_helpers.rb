@@ -10,7 +10,7 @@ module Sinatra
         # support HTTP basic auth
         @auth ||= Rack::Auth::Basic::Request.new(request.env)
         if @auth.provided? && @auth.basic? && @auth.credentials
-          if u = authenticate(@auth.credentials.first, @auth.credentials.last, false)
+          if u = authenticate(@auth.credentials.first, @auth.credentials.last, true)
             authorize(u)
           end
         end

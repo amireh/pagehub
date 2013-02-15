@@ -70,19 +70,19 @@ module Fixtures
   end
   
   class UserFixture < Fixture
-    attr_reader :password
+    def self.password
+      'verysalty123'
+    end
     
     def build(params, cleanup = false)
       Fixtures.teardown if cleanup
-      
-      @password ||= 'verysalty123'
       
       @params = accept(params, {
         name:     'Mysterious Mocker',
         email:    'very@mysterious.com',
         provider: 'pagehub',
-        password:               @password,
-        password_confirmation:  @password
+        password:               User.encrypt(self.class.password),
+        password_confirmation:  User.encrypt(self.class.password)
       })
       
       u,s,f = nil,nil,nil

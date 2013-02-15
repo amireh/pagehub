@@ -42,10 +42,14 @@ class Space
   validates_uniqueness_of :title, :scope => [ :creator_id ],
     message: 'You already have a space with that title.'
 
-  after :create do
-    space_users.create({ user: creator, role: :creator })
+  def create_root_folder
     f = folders.create({ title: Folder::DefaultFolder, creator: creator })
     f.create_homepage
+  end
+  
+  after :create do
+    space_users.create({ user: creator, role: :creator })
+    create_root_folder
   end
 
   # the default space should never be destroyed
