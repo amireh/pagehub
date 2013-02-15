@@ -73,12 +73,13 @@ class Space
     "#{user.public_url}/#{self.pretty_title}"
   end
 
-  def url(suffix)
+  def url(suffix = '')
     "#{namespace}#{suffix}"
   end
   
   def namespace
-    "#{user.namespace}/spaces/#{self.id}"
+    "/spaces/#{self.id}"
+    # creator.url("/spaces/#{self.id}")
   end
 
   def folder_pages

@@ -122,6 +122,15 @@ class String
   def vowelize
     Vowels.include?(self[0]) ? "an #{self}" : "a #{self}"
   end
+  
+  def to_plural
+    DataMapper::Inflector.pluralize(self)
+  end
+
+  def pluralize(n = nil)
+    plural = to_plural
+    n && n != 1 ? "#{n} #{plural}" : "1 #{self}"
+  end
 end
 
 helpers do
@@ -132,7 +141,7 @@ helpers do
     !reserved?(nn) && !nn.empty? && User.first(nickname: nn).nil? && Group.first(name: nn).nil?
   end
 
-  ReservedNames = [ 'name', 'pages', 'groups' ]
+  ReservedNames = [ 'name', 'spaces', 'pages', 'groups', 'spec' ]
   def reserved?(name)
     ReservedNames.include?(name)
   end

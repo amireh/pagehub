@@ -4,7 +4,11 @@ gem 'sinatra', '=1.4.0',
   :git => 'https://github.com/sinatra/sinatra'
 gem 'sinatra-contrib',
   :git => 'https://github.com/sinatra/sinatra-contrib',
-  :require => [ 'sinatra/content_for', 'sinatra/config_file' ]
+  :require => [
+    'sinatra/content_for',
+    'sinatra/config_file',
+    'sinatra/respond_with'
+   ]
 
 gem 'sinatra-flash', :require => 'sinatra/flash'
 gem 'mysql'
@@ -32,6 +36,8 @@ gem 'omniauth-facebook'
 gem 'omniauth-github'
 gem 'omniauth-google-oauth2'
 # gem 'omniauth-twitter', '0.0.9'
+gem 'sinatra-can', :require => "sinatra/can"
+gem 'rabl'
 
 group :development do
   gem 'thin'

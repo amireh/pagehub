@@ -23,121 +23,48 @@ RSpec.configure do |config|
   # order dependency and want to debug it, you can fix the order by providing
   # the seed, which is printed after each run.
   #     --seed 1234
-  # config.order = 'random'
+  config.order = 'random'
+  
+  # include Rack::Test::Methods
   config.include Rack::Test::Methods
-
+  
   def app
     Sinatra::Application
   end
-
-end
-
-module RSpec
-  module Core
-    module DSL
-      alias_method :feature, :describe
-    end
-    class ExampleGroup
-      class << self
-        alias_method :scenario, :it
-      end
-    end
+  
+  # use this for stubbing methods to be used in the instance scope
+  # @example usage
+  #   app_instance.stub(:puts)
+  #   app_instance.should_receive(:puts).with('hello world')
+  #   
+  #   # somewhere in a route
+  #   app.get('/') { puts "hello world" }
+  #   get '/' # => true
+  def app_instance
+    Sinatra::Application.any_instance
   end
-end
-
-def mockup_user_params
-  @some_salt = PageHub::Helpers::salt
-  @mockup_user_params = {
-    name:     'Mysterious Mocker',
-    email:    'very@mysterious.com',
-    provider: 'pagehub',
-    password:               User.encrypt(@some_salt),
-    password_confirmation:  User.encrypt(@some_salt)
-  }
-end
-
-def cleanup_resources
-  # Page.destroy!
-  # PublicPage.destroy!
-  # CarbonCopy.destroy!
-  # Revision.destroy!
-  # Folder.destroy!
-  # Space.destroy!
-  # SpaceUser.destroy!
-  # EmailVerification.destroy!
-  User.destroy
-  User.count.should              == 0
-  Page.count.should              == 0
-  PublicPage.count.should        == 0
-  CarbonCopy.count.should        == 0
-  Revision.count.should          == 0
-  Folder.count.should            == 0
-  Space.count.should             == 0
-  SpaceUser.count.should         == 0
-  EmailVerification.count.should == 0
-end
-
-def create_user(q = {}, cleanup = true)
-  cleanup_resources if cleanup
-  u = User.create(mockup_user_params.merge(q))
-  s = u.spaces.first
-  f = s.root_folder
   
-  [ u, s, f ]
-end
-
-def mockup_user(q = {}, cleanup = true)
-  @u, @s, @f = *create_user(q, cleanup)
-  @user, @space, @root = @u, @s, @f
-  
-  @u.saved?
-end
-
-def mockup_another_user()
-  @u2, @s2, @f2 = create_user({ email: "more@mysterious" }, false)
-  
-  @u2.saved?
-end
-
-def sign_in()
-  raise RuntimeError.new('Must create a mockup user before signing in') unless @user
-  rc = prc post '/sessions', { email: @user.email, password: @some_salt }
-  rc.resp.status.should == 200
-end
-
-# resource mock
-def rmock(resource, o = {})
-  user, space = o[:user] || @u, o[:space] || @s
-  salt = PageHub::Helpers.tiny_salt
-  
-  o[:q] ||= {}
-  
-  case resource
-  when :folder
-    p = {
-      title: "Mock #{salt}",
-      space: space,
-      creator: user
-    }.merge(o[:q])
-    
-    user.folders.create(p)
-  when :page
-    p = {
-      title: "Mock Page #{salt}",
-      folder: space.root_folder,
-      creator: user
-    }.merge(o[:q])
-    
-    user.pages.create(p)
+  config.before do
+    header "Accept", "application/json"
+    # header "Content-Type", "application/json"
   end
+  
+  app.set :dump_errors, true
+  app.set :raise_errors, true  
+  app.set :show_exceptions , false  
 end
 
-def invalid!(r)
-  r.saved?.should be_false
-  r
+Dir.glob("spec/helpers/**/*.rb").each { |h| require h }
+
+def some_salt
+  PageHub::Helpers.tiny_salt
 end
 
-def valid!(r)
-  r.saved?.should be_true
-  r
+def sign_out
+end
+
+def sign_in(u = @u)
+  raise 'Must create a mockup user before signing in' unless u
+ 
+  authorize u.email, u.password
 end

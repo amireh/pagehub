@@ -1,10 +1,10 @@
 describe Page do
   before do
-    mockup_user
+    fixture(:user)
   end
 
   it "should be creatable" do
-    f = valid! rmock(:folder)
+    f = valid! fixture(:folder)
     p = valid! f.pages.create({ title: "Test", creator: @u })
     p.folder.should == f
     f.pages.count.should == 1
@@ -18,7 +18,7 @@ describe Page do
     end
     
     # it "should be deletable only by its creator" do
-    #   mockup_another_user
+    #   fixture(:another_user)
     #   u1, u2 = @u, @u2
       
     #   p = @s.pages.create({ creator: u2 })
@@ -31,7 +31,8 @@ describe Page do
       
     #   p.editor = u2
     #   p.destroy.should be_true
-    # end
+    # end    
+    
   end
   
   it "should generate a carbon copy on creation" do

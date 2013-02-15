@@ -80,7 +80,12 @@ class Folder
   end
   
   def siblings
-    space.folders({ folder: self.folder, :id.not => self.id })
+    if !folder
+      return []
+    end
+    
+    folder.folders.all({ :id.not => self.id })
+    # space.folders({ folder: self.folder, :id.not => self.id })
   end
   
   def ancestors
@@ -93,7 +98,15 @@ class Folder
   def descendants(with_pages = false)
     folders.collect { |f| f.descendants }.flatten + folders + (with_pages ? pages : [])
   end
+
+  def url(suffix = '')
+    "#{namespace}#{suffix}"
+  end
   
+  def namespace
+    "#{space.namespace}/folders/#{id}"
+  end
+    
   def public_url()
     path = ([ self ] + ancestors).collect { |f| f.pretty_title }.join('/')
 

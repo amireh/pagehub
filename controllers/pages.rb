@@ -1,74 +1,3 @@
-# @scope is identified in helpers/auth_helper.rb, it points to a user or a group
-
-# Creates a blank new page
-def create_page()
-  unless p = @scope.pages.create({ user: current_user })
-    halt 500, p.collect_errors
-  end
-
-  p.to_json
-end
-
-def load_page(pid)
-  puts @scope.inspect
-
-  unless p = @scope.pages.get(pid.to_i)
-    halt 400, "Page ##{pid} does not exist."
-  end
-
-  p.serialize.merge({ content: p.content }).to_json
-end
-
-def update_page(pid)
-  unless p = @scope.pages.first({ id: pid })
-    halt 501, "No such page: #{pid}!"
-  end
-
-  force_content_update = false
-  unless params[:attributes][:autosave]
-    if params[:attributes][:content]
-      force_content_update = PageHub::Markdown::mutate! params[:attributes][:content]
-    end
-
-    begin
-      unless p.generate_revision(params[:attributes][:content], current_user)
-        puts "Page failed to generate RV"
-        halt 400, p.collect_errors
-      end
-
-      # p.save
-    rescue Revision::NothingChangedError
-      # it's ok, we'll just not store a revision
-    end
-  end
-
-  if p.dirty?
-    halt 500, "Something _really_ bad happened."
-  end
-
-  params[:attributes].delete("autosave")
-
-  unless p.update(params[:attributes])
-    halt 400, p.collect_errors
-  end
-
-  p.serialize(force_content_update).to_json
-end
-
-def delete_page(pid)
-  unless p = @scope.pages.first({ id: pid })
-    halt 400, "No such page."
-  end
-
-  p.operating_user = current_user
-
-  if !p.destroy
-    halt 500, p.collect_errors
-  end
-
-  true
-end
-
 def pretty_view(pid)
   unless @page = @scope.pages.first({ id: pid })
     halt 500, "This link seems to point to a non-existent page."
@@ -198,17 +127,110 @@ def rollback_page(pid, rid)
 end
 
 # CRUDs
-post '/pages', auth: :user do create_page end
-post '/groups/:gid/pages', auth: :group_editor do |gid| create_page end
+post '/spaces/:space_id/pages',
+  auth:     [ :editor ],
+  provides: [ :json ],
+  requires: [ :space ] do
+  
+  authorize! :create, Page, :message => "You need to be an editor in this space to create pages."
+  
+  api_required!({
+    :title      => nil,
+    :folder_id  => lambda { |fid|
+      "No such folder" unless @folder = @space.folders.get(fid)
+    }
+  })
+  
+  api_optional!({
+    :content => nil    
+  })
+  
+  @page = @space.pages.new(
+    @api[:required].merge(@api[:optional]).merge({
+      creator: @user,
+      folder: @folder
+    })
+  )
+  
+  unless @page.save
+    halt 400, @page.errors
+  end
+  
+  respond_with @page do |f|
+    f.json { rabl :"/pages/show" }
+  end
+end
+# post '/groups/:gid/pages', auth: :group_editor do |gid| create_page end
 
-get '/pages/:id.json', auth: :user do |id| load_page(id) end
-get '/groups/:gid/pages/:id.json', auth: :group_member do |gid, id| load_page(id) end
+get '/spaces/:space_id/pages/:page_id',
+  auth:     [ :user ],
+  provides: [ :json ],
+  requires: [ :space, :page ] do
+    
+  authorize! :read, @page, :message => "You need to be a member of this space to browse its pages."
+  
+  respond_with @page do |f|
+    f.json { rabl :"pages/show" }
+  end
+end
 
-put '/pages/:id', auth: :user do |id| update_page(id) end
-put '/groups/:gid/pages/:id', :auth => :group_editor do |gid, id| update_page(id) end
+put '/spaces/:space_id/pages/:page_id',
+  auth:     [ :editor ],
+  provides: [ :json, :html ],
+  requires: [ :space, :page ] do
 
-delete '/pages/:id', auth: :user do |id| delete_page(id) end
-delete '/groups/:gid/pages/:id', auth: :group_editor do |gid, id| delete_page(id) end
+  authorize! :update, @page, :message => "You need to be an editor in this space to edit pages."
+    
+  api_optional!({
+    :title      => nil,
+    :content    => nil,
+    :folder_id  => nil,
+    :browsable  => nil
+  })
+  
+  if @api[:optional][:content]
+    PageHub::Markdown::mutate! @api[:optional][:content]
+
+    begin
+      unless @page.generate_revision(@api[:optional][:content], current_user)
+        halt 500, @page.collect_errors
+      end
+    rescue Revision::NothingChangedError
+      # it's ok
+    end
+  end
+
+  unless @page.update(api_params)
+    halt 400, @page.errors
+  end
+
+  respond_with @page do |f|
+    f.html { erb :"pages/show" }
+    f.json { rabl :"pages/show" }
+  end
+end
+
+delete '/spaces/:space_id/pages/:page_id',
+  auth:     [ :editor ],
+  provides: [ :json, :html ],
+  requires: [ :space, :page ] do
+  
+  authorize! :delete, @page, :message => "You can not remove pages authored by someone else."
+  
+  unless @page.destroy
+    halt 500, @page.errors
+  end
+  
+  respond_to do |f|
+    f.html {
+      flash[:notice] = "Page has been removed."
+      redirect back
+    }
+    f.json { halt 200 }
+  end
+end
+
+# delete '/groups/:gid/pages/:id', auth: :group_editor do |gid, id| delete_page(id) end
 
 # Version control
 get '/pages/:id/revisions', auth: :user do |pid| load_revisions(pid) end
@@ -299,6 +321,8 @@ get '/:nickname/*' do |nn, crammed_path|
 end
 
 get '/:gname' do |gname|
+  pass if reserved?(gname)
+  
   unless @scope = @group = Group.first({name: gname })
     pass # it isn't a group, nevermind
   end
@@ -319,7 +343,7 @@ end
 # the person isn't a member, instead we will pass into
 # the anonymous capturer below this one.
 get '/:gname/*' do |gname, crammed_path|
-  pass if !group_member? || reserved?(gname)
+  pass if reserved?(gname) || !group_member?
 
   unless @scope = @group = Group.first({name: gname })
     halt 404, "No such group #{gname}."

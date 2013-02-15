@@ -1,6 +1,12 @@
-exclude
-*.xcf
-dumps
+[config]
 config/credentials.yml
+
+[raw assets]
 glyphicons*
 *.zip
+*.xcf
+
+[transients]
+dumps
+tmp
+exclude

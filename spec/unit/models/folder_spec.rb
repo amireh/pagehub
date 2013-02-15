@@ -1,32 +1,32 @@
 describe Folder do
   before do
-    mockup_user
+    fixture(:user)
   end
 
   it "should be created" do
-    f = valid! rmock(:folder)
+    f = valid! fixture(:folder)
     f.folder.should == f.space.root_folder
   end
   
   it "should nest folders" do
-    f = valid! rmock(:folder)
-    f = valid! rmock(:folder, { q: { folder: f } })
+    f = valid! fixture(:folder)
+    f = valid! fixture(:folder, { folder: f })
   end
     
   it "should nest folders with the same title in different levels" do
-    f = valid! rmock(:folder, { q: { title: "Mock" } })
-    f = valid! rmock(:folder, { q: { title: "Mock", folder: f } })
+    f = valid! fixture(:folder, { title: "Mock" })
+    f = valid! fixture(:folder, { title: "Mock", folder: f })
   end
   
   it "should not allow for duplicate-titled folders" do
-    f = valid! rmock(:folder, { q: { title: "Test" } })
-    f = invalid! rmock(:folder, { q: { title: "Test" } })
+    f = valid! fixture(:folder, { title: "Test" })
+    f = invalid! fixture(:folder, { title: "Test" })
 
     f.report_errors.should match(/already have a folder with that title/)
   end
    
   it "should not allow for duplicate-titled pages" do
-    p = rmock(:page, { q: { title: "README" } })
+    p = fixture(:page, { title: "README" })
     p.saved?.should be_false
     
     p.report_errors.should match(/already have such a page/)
@@ -34,14 +34,14 @@ describe Folder do
     
   context "Placement" do
     it "should reject self-parenting" do
-      f = valid! rmock(:folder)
+      f = valid! fixture(:folder)
       f.update({ folder: f }).should be_false
       f.report_errors.should match(/cannot add a folder to itself/)
     end
     
     it "should reject child becoming a parent" do
-      f = valid! rmock(:folder)
-      c = valid! rmock(:folder, { q: { folder: f }})
+      f = valid! fixture(:folder)
+      c = valid! fixture(:folder, { folder: f })
       f.update({ folder: c })
       f.report_errors.should match(/cannot become its child/)
     end
@@ -54,7 +54,7 @@ describe Folder do
     end
     
     it "should reject parent-less placement" do
-      f = invalid! rmock(:folder, { q: { folder: nil }})
+      f = invalid! fixture(:folder, { folder: nil })
       f.report_errors.should match(/must be set inside another/)
     end
   end    
@@ -62,17 +62,17 @@ describe Folder do
   describe "Instance methods" do
     before do
       @root        = @space.root_folder
-      @parent      = rmock(:folder, { q: { title: "Parent" }})
-      @child       = rmock(:folder, { q: { title: "Child", folder: @parent } })
-      @grandchild  = rmock(:folder, { q: { title: "Granchild", folder: @child  } })
-      @uncle       = rmock(:folder, { q: { title: "Uncle" }})
+      @parent      = valid! fixture(:folder, { title: "Parent" })
+      @child       = valid! fixture(:folder, { title: "Child",     folder: @parent })
+      @grandchild  = valid! fixture(:folder, { title: "Granchild", folder: @child  })
+      @uncle       = valid! fixture(:folder, { title: "Uncle" })
     end
     
     it "siblings()" do
       @root.siblings.count.should == 0
       @parent.siblings.count.should == 1
-      f3 = rmock(:folder)
-      @parent.siblings.count.should == 2
+      f3 = valid! fixture(:folder)
+      @parent.refresh.siblings.count.should == 2
     end
     
     it "is_child_of?" do
@@ -98,7 +98,7 @@ describe Folder do
     
   context "Destruction" do
     it "should be destroyed" do
-      f = rmock(:folder)
+      f = fixture(:folder)
       rc = f.destroy
       rc.should be_true
     end
@@ -116,7 +116,7 @@ describe Folder do
     # end
         
     it "should not be destroyed if it contains folders created by others" do
-      mockup_another_user()
+      fixture(:another_user)
       
       @u1 = @u
       
@@ -136,9 +136,9 @@ describe Folder do
     end
     
     it "should be destroyed only by the creator" do
-      mockup_another_user()
+      fixture(:another_user)
       
-      f = rmock(:folder)
+      f = fixture(:folder)
       # f.space.editor = f.space.creator
       
       [ :member, :editor, :admin ].each do |role|
@@ -155,26 +155,26 @@ describe Folder do
     end  
     
     it "should attach its descendants to its parent folder" do
-      f = rmock(:folder)
-      p = rmock(:page, { q: { folder: f } })
+      f = fixture(:folder)
+      p = fixture(:page, { folder: f })
       p.folder.should == f
       f.nullify_references.destroy.should be_true
       p.refresh.folder.should == @space.root_folder
       
-      f   = rmock(:folder)
-      cf  = rmock(:folder,  { q: { folder: f } })
-      p   = rmock(:page,    { q: { folder: f } })
-      cp  = rmock(:page,    { q: { folder: cf }})
+      f   = fixture(:folder)
+      cf  = fixture(:folder,  { folder: f })
+      p   = fixture(:page,    { folder: f })
+      cp  = fixture(:page,    { folder: cf })
       
       f.nullify_references.destroy.should be_true
       p.refresh.folder.should == @space.root_folder
       cf.refresh.folder.should == @space.root_folder
       cp.refresh.folder.should == cf
       
-      f   = rmock(:folder)
-      cf  = rmock(:folder,  { q: { folder: f } })
-      p   = rmock(:page,    { q: { folder: f } })
-      cp  = rmock(:page,    { q: { folder: cf }})
+      f   = fixture(:folder)
+      cf  = fixture(:folder,  { folder: f })
+      p   = fixture(:page,    { folder: f })
+      cp  = fixture(:page,    { folder: cf })
       
       cf.nullify_references.destroy.should be_true
       p.refresh.folder.should ==  f
@@ -182,7 +182,7 @@ describe Folder do
     end
     
     it "should prefix its homepage title when migrating to parent folder" do
-      f = valid! rmock(:folder)
+      f = valid! fixture(:folder)
       f.create_homepage
       
       folder_title = f.title

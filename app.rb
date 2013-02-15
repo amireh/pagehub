@@ -25,6 +25,7 @@ require 'config/initializer'
 
 configure :test do
   set :credentials, { 'cookie' => { 'secret' => 'adooken' } }
+  # set :show_exceptions, true
 end
 
 configure :development, :production do
@@ -33,6 +34,8 @@ end
 
 configure do
   config_files.each { |cf| config_file 'config/%s.yml' %[cf] }
+  
+  respond_to :html, :json
 
   use Rack::Session::Cookie, :secret => settings.credentials['cookie']['secret']
 

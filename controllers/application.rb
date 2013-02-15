@@ -1,35 +1,34 @@
-
-not_found do
-  # return "Bad link!".to_json if request.xhr?
-  if request.xhr?
-    r = response.body.first
-    return r.include?("<html>") ? "404 - bad link!" : r.to_json
-  end
-
-  erb :"404"
-end
-
-error 403 do
-  # return response.body.first.to_json if request.xhr?
-  if request.xhr?
-    r = response.body.first
-    return r.include?("<html>") ? "403 - forbidden!" : r.to_json
-  end
-
-  erb :"403"
-end
-
-error do
-  # return response.body.first.to_json if request.xhr?
-  if request.xhr?
-    halt 500, "500 - internal error: " + env['sinatra.error'].name + " => " + env['sinatra.error'].message
-  end
-
-  erb :"500"
-end
-
 before do
-  @layout = "layouts/#{logged_in? ? 'primary' : 'guest' }".to_sym
+  if api_call?
+    request.body.rewind
+    params.merge!(JSON.parse(request.body.read.to_s))
+  else
+    @layout = "layouts/#{logged_in? ? 'primary' : 'guest' }".to_sym
+  end
+end
+
+def on_api_error(msg = response.body)
+  status response.status
+  
+  msg = case
+  when msg.is_a?(String); [ msg ]
+  when msg.is_a?(Array);  msg
+  else;                   [ 'unexpected response' ]
+  end
+  
+  {
+    :status   => 'error',
+    :messages => msg
+  }
+end
+
+[ 400, 401, 403, 404 ].each do |http_rc|
+  error http_rc, :provides => [ :json, :html ] do
+    respond_to do |f|
+      f.html { erb :"#{http_rc}" }
+      f.json { on_api_error.to_json }
+    end
+  end
 end
 
 get '/' do
@@ -65,3 +64,11 @@ end
 get '/features' do erb :"static/features.md" end
 get '/about' do erb :"static/about.md" end
 get '/open-source' do erb :"static/open_source.md" end
+  
+user do
+  current_user
+end
+
+cancan_space do
+  @space
+end

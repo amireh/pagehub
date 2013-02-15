@@ -11,7 +11,7 @@ module DataMapper
   
   module Validations
     class ValidationErrors
-      def to_json
+      def to_json(ctx = nil)
         self.to_hash.to_json
       end
     end

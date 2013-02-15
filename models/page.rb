@@ -38,7 +38,7 @@ class Page
     
     true
   end
-
+  
   # def editor
   #   @editor || User.editor
   # end
@@ -125,16 +125,8 @@ class Page
     true
   end
 
-  def compound_url
-    f = folder
-    ancestry = []
-    while f
-      ancestry.insert(0,f.pretty_title)
-      f = f.folder
-    end
-
-    ancestry << pretty_title
-    ancestry.join('/')
+  def url
+    folder.space.url("/pages/#{id}")
   end
 
   def editable_by?(user)
@@ -168,6 +160,10 @@ class Page
 
   def to_json(*args)
     serialize(args).to_json
+  end
+  
+  def space
+    folder.space
   end
 
   private

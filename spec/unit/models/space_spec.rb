@@ -1,6 +1,6 @@
 describe Space do
   before do
-    mockup_user
+    fixture(:user)
   end
 
   context "Creation" do
@@ -24,7 +24,7 @@ describe Space do
       s = invalid! @user.owned_spaces.create({ title: "Moo" })
       s.report_errors.should match(/already have a space with that title/)
       
-      mockup_another_user
+      fixture(:another_user)
       s = valid! @u2.owned_spaces.create({ title: "Moo" })
     end
   end
@@ -54,14 +54,14 @@ describe Space do
     # end
         
     it "should add a member" do
-      mockup_another_user
+      fixture(:another_user)
       @s.add_member(@u2)
       @s.refresh.users.count.should == 2
       @u2.spaces.count.should == 2
     end
     
     it "should uprank a member" do
-      mockup_another_user
+      fixture(:another_user)
       @s.add_member(@u2)
       @s.role_of(@u2).should == 'member'
       
@@ -70,7 +70,7 @@ describe Space do
     end
     
     it "should downrank a member" do
-      mockup_another_user
+      fixture(:another_user)
       @s.add_admin(@u2)
       @s.role_of(@u2).should == 'admin'
       
@@ -119,7 +119,7 @@ describe Space do
     end
     
     it "should orphanize its folders into a new user space" do
-      mockup_another_user()
+      fixture(:another_user)
       
       u1, u2 = @u, @u2
 
@@ -150,7 +150,7 @@ describe Space do
     end
     
     it "should respect the user's orphanizing setting" do
-      mockup_another_user()
+      fixture(:another_user)
       
       u1, u2 = @u, @u2
 
@@ -188,8 +188,7 @@ describe Space do
       orphan = u1.spaces.first({ title: "Orphaned: The Zoo 123" })
       orphan.should be_false
     end
-    
-    
   end
+  
   
 end

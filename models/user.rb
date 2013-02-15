@@ -91,8 +91,12 @@ class User
     pages
   end
 
+  def url(suffix = '')
+    "#{namespace}#{suffix}"
+  end
+  
   def namespace
-    ""
+    "/users/#{id}"
   end
 
   def profile_url

@@ -139,7 +139,8 @@ end
     end
 
     # puts "User seems to already exist: #{u.id}"
-    session[:id] = u.id
+    authorize(u)
+    # session[:id] = u.id
 
     redirect '/'
   end
@@ -154,34 +155,50 @@ get '/sessions/new' do
   erb :"/sessions/new"
 end
 
-post '/sessions' do
-  pw = Digest::SHA1.hexdigest(params[:password])
+# post '/sessions', :provides => [ :json, :html ] do
+post '/sessions', auth: :guest, :provides => [ :json, :html ] do
 
-  unless u = User.first({ password: pw, email: params[:email] })
-    flash[:error] = "Incorrect email or password, please try again."
-    return redirect back
+  if u = authenticate(params[:email], params[:password], params[:no_digest])
+    authorize(u)
   end
-
-  session[:id] = u.id
-  redirect '/'
+  
+  respond_to do |f|
+    f.html {
+      unless u
+        flash[:error] = "Incorrect email or password, please try again."
+        return redirect back
+      end
+      
+      redirect '/'
+    }
+    
+    f.json { halt 401 if !u }
+  end
 end
 
+delete '/sessions', auth: :user, provides: [ :json, :html ] do
 
-delete '/sessions', auth: :user do
-
+  demo = current_user.demo?
+  
   if current_user.demo?
-    puts "Destroying demo account #{current_user}"
-    current_user.operating_user = current_user
     current_user.destroy
-
-    flash[:notice] = "Thanks for trying out PageHub, we hope you come back!"
-  else
-    flash[:notice] = "Successfully logged out."
   end
-
+  
   session[:id] = nil
-
-  redirect '/'
+  
+  respond_to do |f|
+    f.html {
+      if demo
+        flash[:notice] = "Thanks for trying out PageHub, we hope you come back!"
+      else
+        flash[:notice] = "Successfully logged out."
+      end
+      
+      redirect '/'
+    }
+    
+    f.json { halt 200 }
+  end
 end
 
 get '/settings' do
