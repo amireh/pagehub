@@ -73,19 +73,15 @@ class Space
   end
   alias_method :root, :root_folder
   
-  def public_url
-    "#{user.public_url}/#{self.pretty_title}"
-  end
 
-  def url(suffix = '')
-    "#{namespace}#{suffix}"
+  def url(root = false)
+    root ? "/spaces/#{id}" : "#{creator.url}/spaces/#{self.id}"
   end
   
-  def namespace
-    "/spaces/#{self.id}"
-    # creator.url("/spaces/#{self.id}")
+  def href
+    "#{creator.href}/#{self.pretty_title}"
   end
-
+  
   def folder_pages
     { folders: folders.collect { |f| f.serialize } }
   end

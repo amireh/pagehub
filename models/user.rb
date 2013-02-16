@@ -91,22 +91,14 @@ class User
     pages
   end
 
-  def url(suffix = '')
-    "#{namespace}#{suffix}"
-  end
-  
-  def namespace
+  def url(root = nil)
     "/users/#{id}"
   end
-
-  def profile_url
-    "/profiles/#{self.nickname}"
-  end
-
-  def public_url
+  
+  def href
     "/#{self.nickname}"
   end
-
+    
   def verified?(address)
     if address == self.email
       unless ev = self.email_verifications.first({ primary: true })

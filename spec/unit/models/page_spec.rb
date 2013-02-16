@@ -14,7 +14,6 @@ describe Page do
     it "should be destroyed" do
       p = @f.pages.first
       p.destroy.should be_true
-      @f.refresh.pages.empty?.should be_true
     end
     
     # it "should be deletable only by its creator" do
@@ -42,4 +41,5 @@ describe Page do
   
   it "should generate revisions on content update" do
   end
+
 end

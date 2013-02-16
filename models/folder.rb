@@ -99,20 +99,14 @@ class Folder
     folders.collect { |f| f.descendants }.flatten + folders + (with_pages ? pages : [])
   end
 
-  def url(suffix = '')
-    "#{namespace}#{suffix}"
+  def url(root = false)
+    root ? "/folders#{id}" : "#{space.url(true)}/folders/#{id}"
+  end
+      
+  def href
+    folder ? folder.href + "/#{pretty_title}" : space.href
   end
   
-  def namespace
-    "#{space.namespace}/folders/#{id}"
-  end
-    
-  def public_url()
-    path = ([ self ] + ancestors).collect { |f| f.pretty_title }.join('/')
-
-    "#{space.public_url}/#{path}"
-  end
-
   def deletable_by?(editor)
     if !space.is_member?(editor)
       [ false, "You are not authorized to delete folders in this space." ]

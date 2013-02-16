@@ -78,8 +78,12 @@ class Revision
     page.revisions.last({ :created_at.lt => self.created_at })
   end
 
-  def url(prefix = "")
-    "#{prefix}/pages/#{page.id}/revisions/#{self.id}"
+  def url
+    "#{page.url(true)}/revisions/#{id}"
+  end
+  
+  def href
+    "#{page.href}/revisions/#{id}"
   end
 
   def apply(string)

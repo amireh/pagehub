@@ -106,7 +106,7 @@ feature "Space pages" do
   context "as a member" do
     before do
       fixture(:another_user)
-      @p = fixture(:page)
+      @p = valid! fixture(:page)
       @s.add_member(@u2)
       sign_in(@u2)
     end
@@ -141,7 +141,7 @@ feature "Space pages" do
         delete "/spaces/#{@s.id}/pages/#{@p.id}"
       }
       
-      rc.should fail(403, 'need to be an editor')
+      rc.should fail(403, 'can not remove')
     end
   end
 end

@@ -11,13 +11,13 @@ child(:folder => :folder) do |f|
 end
 
 node(:folders) { |f|
-  f.folders.map { |f|
-    { id: f.id, title: f.title }
+  f.folders.map { |cf|
+    partial("folders/_show", object: cf)
   }
 }
 
 node(:pages) { |f|
-  f.pages.map { |p|
-    { id: p.id, title: p.title }
+  f.pages.collect { |p|
+    partial("pages/_show", object: p)
   }
 }

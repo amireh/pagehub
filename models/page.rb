@@ -4,6 +4,13 @@ require 'base64'
 class Page
   include DataMapper::Resource
 
+  class CarbonCopy
+    include DataMapper::Resource
+
+    property :content, Text, default: ""
+    belongs_to :page, key: true
+  end
+
   # attr_writer :editor
 
   default_scope(:default).update(:order => [ :title.asc ])
@@ -25,8 +32,8 @@ class Page
   belongs_to :creator, 'User'
   
   has n, :public_pages, :constraint => :destroy
-  has n, :revisions, :constraint => :destroy
-  has 1, :carbon_copy, :constraint => :destroy
+  has n, :revisions,    :constraint => :destroy
+  has 1, :carbon_copy,  :constraint => :destroy
 
   is :titlable, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
   validates_uniqueness_of :title, :scope => [ :folder_id ],
@@ -125,28 +132,18 @@ class Page
     true
   end
 
-  def url
-    folder.space.url("/pages/#{id}")
+  def url(root = false)
+    root ? "/pages/#{id}" : "#{space.url(true)}/pages/#{id}"
   end
-
+  
+  def href
+    "#{folder.href}/#{pretty_title}"
+  end
+  
   def editable_by?(user)
     folder.space.editor?(user)
   end
 
-  def public_url(relative = false)
-    # prefix = relative ? "" : "http://www.pagehub.org"
-    prefix = ''
-    if folder then
-      return "#{prefix}#{folder.public_url}/#{self.pretty_title}"
-    else
-      scope = group ? group.public_url : user.public_url
-      return "#{prefix}#{scope}/#{self.pretty_title}"
-    end
-  end
-
-  def revisions_url(prefix = "")
-    "#{prefix}/pages/#{self.id}/revisions"
-  end
 
   def self.random_suffix
     Base64.urlsafe_encode64(Random.rand(12345 * 100).to_s)

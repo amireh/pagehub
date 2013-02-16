@@ -25,7 +25,7 @@ module Fixtures
         User,
         Page,
         PublicPage,
-        CarbonCopy,
+        Page::CarbonCopy,
         Revision,
         Folder,
         Space,
@@ -81,6 +81,7 @@ module Fixtures
         name:     'Mysterious Mocker',
         email:    'very@mysterious.com',
         provider: 'pagehub',
+        nickname: nil,
         password:               User.encrypt(self.class.password),
         password_confirmation:  User.encrypt(self.class.password)
       })
