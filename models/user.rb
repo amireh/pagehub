@@ -57,7 +57,7 @@ class User
   
   [ :create, :save ].each { |advice|
     before advice do |_|
-      self.nickname = self.name.to_s.sanitize if self.nickname.empty?
+      self.nickname = self.name.to_s.sanitize if (self.nickname || '').empty?
 
       # validate_email!(self.email, "primary")
       # validate_email!(self.gravatar_email, "gravatar")

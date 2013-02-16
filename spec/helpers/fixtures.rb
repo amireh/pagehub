@@ -26,7 +26,7 @@ module Fixtures
         Page,
         PublicPage,
         Page::CarbonCopy,
-        Revision,
+        Page::Revision,
         Folder,
         Space,
         SpaceUser,

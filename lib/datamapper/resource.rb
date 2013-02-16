@@ -19,7 +19,7 @@ module DataMapper
 
   module Resource
     def all_errors
-      errors.map { |e| e.first }
+      errors.map(&:first).flatten
     end
     alias_method :collect_errors, :all_errors
 

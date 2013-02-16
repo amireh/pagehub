@@ -1,6 +1,10 @@
 describe Page do
-  before do
+  before(:all) do
     fixture(:user)
+  end
+  
+  after do
+    @user.pages.destroy
   end
 
   it "should be creatable" do
@@ -12,34 +16,62 @@ describe Page do
   
   context "Destruction" do
     it "should be destroyed" do
-      p = @f.pages.first
+      p = valid! fixture(:page)
       p.destroy.should be_true
-    end
-    
-    # it "should be deletable only by its creator" do
-    #   fixture(:another_user)
-    #   u1, u2 = @u, @u2
-      
-    #   p = @s.pages.create({ creator: u2 })
-    #   p.saved?.should be_true
-      
-    #   p.destroy.should be_false
-    #   p.report_errors.should match(/can be deleted only by their author/)
-      
-    #   p.errors.clear
-      
-    #   p.editor = u2
-    #   p.destroy.should be_true
-    # end    
-    
+    end    
   end
   
   it "should generate a carbon copy on creation" do
-    @root.homepage.cc.should be_true
-    @root.homepage.cc.content.should == ''
-  end
+    p = valid! fixture(:page)
+    p.cc.should be_true
+    p.cc.content.should == ''
+  end  
   
-  it "should generate revisions on content update" do
+  context "versioning" do
+    before(:all) do
+      fixture(:user)
+    end
+        
+    before do
+      @p = valid! fixture(:page)
+      
+      @updates    = [ "foobar", "adooken", "got\n\nya" ]
+      @revisions  = []
+      @updates.each do |new_content|
+        @p.generate_revision(new_content, @p.creator).should be_true
+        @p.update!({ content: new_content })
+        @revisions << @p.revisions.last
+      end
+      
+      @p.revisions.count.should == @updates.length
+      @p.content.should == @updates.last
+    end
+    
+    it 'snapshotting' do
+      @p.snapshot(@revisions[0]).should == 'foobar'
+      @p.snapshot(@revisions[1]).should == 'adooken'
+      @p.snapshot(@revisions[2]).should == "got\n\nya"
+    end
+    
+    it 'rolling back' do
+      @p.content.should == @updates.last
+      @p.rollback(@revisions[0]).should be_true
+      @p.refresh.content.should == 'foobar'
+      @p.refresh.revisions.count.should == 1
+    end
+    
+    it 'rolling back to the latest HEAD' do
+      @p.rollback(@revisions.last).should be_true
+      @p.refresh.content.should == "got\n\nya"
+    end
+    
+    it 'rolling back sequentially' do
+      @revisions.reverse.each_with_index do |rv, i|
+        @p.rollback(rv).should be_true
+        @p.content.should == @updates.reverse[i]
+      end
+    end
+
   end
 
 end

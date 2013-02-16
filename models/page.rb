@@ -7,8 +7,11 @@ class Page
   class CarbonCopy
     include DataMapper::Resource
 
-    property :content, Text, default: ""
+    property :content, Text, default: "", length: 2**24-1
     belongs_to :page, key: true
+  end
+  
+  class Revision
   end
 
   # attr_writer :editor
@@ -16,7 +19,7 @@ class Page
   default_scope(:default).update(:order => [ :title.asc ])
 
   property :id,           Serial
-  property :content,      Text,   default: ""
+  property :content,      Text,   default: "", length: 2**24-1 # 16 MBytes (MySQL MEDIUMTEXT)
 
   # browsable: whether the folder is browsable in a public group space,
   # note that this has lower priority than the public page status;
@@ -57,7 +60,7 @@ class Page
   #   end
   # }
 
-  after :create,  :init_cc
+  after :create, :init_cc
 
   def init_cc(context = nil)
     # Don't initialize the CC with our content because
@@ -80,27 +83,24 @@ class Page
       return true
     end
 
-    rv = Revision.new
+    rv = revisions.new
     rv.context = { content: new_content }
     rv.editor = editor
-    rv.page = self # doing otherwise will make the page dirty
     unless rv.save
-      errors.add :revisions, "Unable to generate revision: #{rv.collect_errors}"
-      rv = nil
+      errors.add :revisions, rv.all_errors
       return false
     end
 
-    carbon_copy.update({ content: new_content })
+    self.carbon_copy.update!({ content: new_content })
 
     true
   end
 
   def snapshot(dest_rv, snapshotted = nil)
-    snapshotted ||= carbon_copy.content.dup
-    revisions.all({ :order => [ :created_at.desc ] }).each { |rv|
+    snapshotted ||= self.carbon_copy.content.dup
+    self.revisions.all({ :order => [ :created_at.desc ] }).each { |rv|
       break if rv == dest_rv
       snapshotted = rv.apply(snapshotted)
-      # snapshotted = Diff::LCS.unpatch!(snapshotted.split("\n"), Marshal.load(rv.blob)).join("\n")
     }
     snapshotted
   end
@@ -109,14 +109,14 @@ class Page
   # the snapshot taken from the specified revision. All revisions
   # created after the specified one will be destroyed.
   def rollback(dest_rv)
-    new_content = snapshot(dest_rv)
+    new_content     = snapshot(dest_rv)
     current_content = self.content.dup
 
-    unless carbon_copy.update({ content: new_content })
+    unless carbon_copy.update!({ content: new_content })
       return false
     end
 
-    unless update({ content: new_content })
+    unless update!({ content: new_content })
       carbon_copy.update!({ content: current_content })
       return false
     end

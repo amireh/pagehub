@@ -9,9 +9,39 @@ namespace :pagehub do
       require 'lib/tasks/pagehub/legacy_schema.exclude'
     end
 
+    desc "renames table carbon_copies to page_carbon_copies"
+    task :page_scoped_carbon_copies => :environment do
+      require 'dm-migrations/migration_runner'
+      migration -1, :page_scoped_carbon_copies do
+        up do
+          drop_table :page_carbon_copies;
+          execute "RENAME TABLE carbon_copies TO page_carbon_copies;"
+        end
+        down do
+        end
+      end
+      
+      @@migrations.select { |m| m.name == 'page_scoped_carbon_copies' }.first.perform_up
+    end
+    
+    desc "renames table revisions to page_revisions"
+    task :page_scoped_revisions => :environment do
+      require 'dm-migrations/migration_runner'
+      migration -1, :page_scoped_revisions do
+        up do
+          drop_table :page_revisions;
+          execute "RENAME TABLE revisions TO page_revisions;"
+        end
+        down do
+        end
+      end
+      
+      @@migrations.select { |m| m.name == 'page_scoped_revisions' }.first.perform_up
+    end
+    
     desc "sets an updated_at timestamp for pages that don't have it"
     task :update_page_timestamps => :environment do
-      Page.all({updated_at: nil}).update({ updated_at: DateTime.now })
+      Page.all({ updated_at: nil }).update({ updated_at: DateTime.now })
     end
       
     desc "cleans up stale demo accounts"
@@ -23,7 +53,18 @@ namespace :pagehub do
     
     desc "shows some hard resource numbers"
     task :stats => :mimic do
-      [ User, Space, Group, Page, Folder, Revision, PublicPage, SpaceUser, GroupUser ].each { |r|
+      [
+        User,
+        Space,
+        Group,
+        Page,
+        Page::Revision,
+        Page::CarbonCopy,
+        Folder,
+        PublicPage,
+        SpaceUser,
+        GroupUser
+      ].each { |r|
         puts "#{r}: ##{r.count}"
       }
     end
@@ -218,6 +259,8 @@ namespace :pagehub do
     
     desc "migrates data and structure from legacy version to the Space-driven one"
     task :perform => [
+      :page_scoped_carbon_copies,
+      :page_scoped_revisions,
       :cleanup_demos,
       :stats,
       :create_default_spaces,
