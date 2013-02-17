@@ -3,7 +3,7 @@ module Sinatra
     module Helpers
       Messages = {
         lacks_privilege: "You lack privilege to visit this section.",
-        unauthorized:    "You must sign in first"
+        unauthorized:    "You must sign in first."
       }
       
       def logged_in?

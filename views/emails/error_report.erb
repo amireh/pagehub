@@ -1,0 +1,13 @@
+<markdown>
+## Error report <%= Time.now.strftime("%D") %>
+
+### Message
+
+**<%= @error.name %>**
+
+<%= @error.message %>
+
+### Backtrace
+
+<%= @error.backtrace %>
+</markdown>

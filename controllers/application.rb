@@ -1,7 +1,10 @@
 before do
-  if api_call?
+  if api_call?    
     request.body.rewind
-    params.merge!(JSON.parse(request.body.read.to_s))
+    body = request.body.read.to_s || ''
+    unless body.empty?
+      begin; params.merge!(JSON.parse(body)) rescue nil end
+    end
   else
     @layout = "layouts/#{logged_in? ? 'primary' : 'guest' }".to_sym
   end
@@ -9,7 +12,7 @@ end
 
 def on_api_error(msg = response.body)
   status response.status
-  
+
   msg = case
   when msg.is_a?(String)
     [ msg ]
@@ -27,14 +30,51 @@ def on_api_error(msg = response.body)
   }
 end
 
+error Sinatra::NotFound do
+  return if @internal_error_handled
+  @internal_error_handled = true
+  
+    
+  if api_call?
+    content_type :json
+    on_api_error("No such resource.").to_json
+  else
+    erb :"404", :layout => :"layouts/guest"
+  end
+end
+
 [ 400, 401, 403, 404 ].each do |http_rc|
   error http_rc, :provides => [ :json, :html ] do
+    return if @internal_error_handled
+    @internal_error_handled = true
+      
     respond_to do |f|
-      f.html { erb :"#{http_rc}" }
+      f.html { erb :"#{http_rc}", :layout => :"layouts/guest" }
       f.json { on_api_error.to_json }
     end
   end
 end
+
+error 500 do
+  return if @internal_error_handled
+  @internal_error_handled = true
+  
+  if !settings.intercept_internal_errors
+    raise request.env['sinatra.error']
+  end
+  
+  begin
+    courier.report_error(request.env['sinatra.error'])
+  rescue Exception => e
+    # raise e
+  end
+  
+  respond_to do |f|
+    f.html { erb :"500", :layout => :"layouts/guest" }
+    f.json { on_api_error("Internal error").to_json }
+  end
+end
+
 
 get '/' do
   destination = "static/greeting.md"

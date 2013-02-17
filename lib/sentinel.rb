@@ -159,8 +159,5 @@ module Sentinel
   
   def self.included(base)
     base.extend(InstanceMethods)
-    # base.class_eval {
-    #   attr_accessor :guard_map
-    # }
   end
 end

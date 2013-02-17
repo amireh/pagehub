@@ -17,7 +17,7 @@ describe "Access control" do
     
     it "as a member" do
       @s.add_member(@u2)
-      app.get('/spec/:space_id/:page_id', :requires => [ :space, :page ]) {
+      app.get('/spec/:space_id/:page_id', auth: :user, :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
           (can? :create,  @page),
@@ -30,7 +30,7 @@ describe "Access control" do
     
     it "as an editor" do
       @s.add_editor(@u2)
-      app.get('/spec/:space_id/:page_id', :requires => [ :space, :page ]) {
+      app.get('/spec/:space_id/:page_id', auth: :user , :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
           (can? :create,  @page),
@@ -43,7 +43,7 @@ describe "Access control" do
 
     it "as an admin" do
       @s.add_admin(@u2)
-      app.get('/spec/:space_id/:page_id', :requires => [ :space, :page ]) {
+      app.get('/spec/:space_id/:page_id', auth: :user , :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
           (can? :create,  @page),
@@ -55,7 +55,7 @@ describe "Access control" do
     end
     it "as a creator" do
       sign_in(@u)
-      app.get('/spec/:space_id/:page_id', :requires => [ :space, :page ]) {
+      app.get('/spec/:space_id/:page_id', auth: :user, :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
           (can? :create,  @page),
@@ -86,7 +86,7 @@ describe "Access control" do
     
     it "as a member" do
       @s.add_member(@u2)
-      app.get('/spec/:space_id/:folder_id', :requires => [ :space, :folder ]) {
+      app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
           (can? :create,  @folder),
@@ -99,7 +99,7 @@ describe "Access control" do
     
     it "as an editor" do
       @s.add_editor(@u2)
-      app.get('/spec/:space_id/:folder_id', :requires => [ :space, :folder ]) {
+      app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
           (can? :create,  @folder),
@@ -112,7 +112,7 @@ describe "Access control" do
 
     it "as an admin" do
       @s.add_admin(@u2)
-      app.get('/spec/:space_id/:folder_id', :requires => [ :space, :folder ]) {
+      app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
           (can? :create,  @folder),
@@ -125,7 +125,7 @@ describe "Access control" do
     
     it "as a creator" do
       sign_in(@u)
-      app.get('/spec/:space_id/:folder_id', :requires => [ :space, :folder ]) {
+      app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
           (can? :create,  @folder),
@@ -155,7 +155,7 @@ describe "Access control" do
     
     it "as a member" do
       @space.add_member(@u2)
-      app.get('/spec/:space_id', :requires => [ :space ]) {
+      app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         [
           (can? :read,    @space),
           (can? :create,  @space),
@@ -168,7 +168,7 @@ describe "Access control" do
     
     it "as an editor" do
       @space.add_editor(@u2)
-      app.get('/spec/:space_id', :requires => [ :space ]) {
+      app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         [
           (can? :read,    @space),
           (can? :create,  @space),
@@ -181,7 +181,7 @@ describe "Access control" do
 
     it "as an admin" do
       @space.add_admin(@u2)
-      app.get('/spec/:space_id', :requires => [ :space ]) {
+      app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         [
           (can? :read,    @space),
           (can? :create,  @space),
@@ -194,7 +194,7 @@ describe "Access control" do
     
     it "as a creator" do
       sign_in(@u)
-      app.get('/spec/:space_id', :requires => [ :space ]) {
+      app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         [
           (can? :read,    @space),
           (can? :create,  @space),

@@ -2,7 +2,7 @@ module Sinatra
   module API
     module Helpers
       def api_call?
-        request.content_type =~ /json/
+        (request.accept || '').to_s.include?('json')
       end
       
       def api_required!(args)
@@ -88,7 +88,6 @@ module Sinatra
           if container
             m << " in #{container.class.name.to_s}##{container.id}"
           end
-          puts m
           halt 404, m          
         end
         

@@ -3,15 +3,23 @@
   # unauthorized: 'You must authenticate first.'
 
 development: &common
-  courier:
+  intercept_internal_errors: false
+  courier: &courier
     enabled:  true
+    host:     'pagehub.org'
+    app_name: 'PageHub'
     from:     'noreply@pagehub.org'
+    admin:    'admin@pagehub.org'
 
 production:
   <<: *common
+  intercept_internal_errors: true
   # <<: *messages
 
 test:
+  intercept_internal_errors: false
   courier:
+    <<: *courier
     enabled: false
+    test:    true
   # <<: *messages
