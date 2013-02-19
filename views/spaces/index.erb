@@ -7,7 +7,7 @@
 <% else %>
   <ol>
     <% current_user.spaces.each do |space| %>
-      <li><a href="/spaces/<%= space.pretty_title %>"><%= space.title %></a></li>
+      <li><a href="<%= space.url %>"><%= space.title %></a></li>
     <% end %>
   </ol>
 <% end %>

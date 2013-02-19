@@ -13,7 +13,6 @@ describe "Spaces" do
     }
     
     rc.should succeed
-    puts rc.rr.body
     @user.refresh.owned_spaces.count.should == nr_spaces + 1
   end
   
@@ -29,13 +28,32 @@ describe "Spaces" do
       sign_in
     end
   
-    it "should update a space's info" do
+    it "should update info" do
       rc = api_call put "/spaces/#{@space.id}", {
         title: "The Zoofighters"
       }
       
       rc.should succeed
       @space.refresh.title.should == 'The Zoofighters'
+    end
+    
+    it "should update settings" do
+      api {
+        put "/spaces/#{@space.id}", {
+          preferences: {
+            'publishing' => {
+              'layout' => {
+                'name' => 'fluid'
+              },
+              'theme' => {
+                'name' => 'Clean'
+              }
+            }
+          }
+        }
+      }.should succeed
+      @space.refresh.p('publishing.layout.name').should == 'fluid'
+      @space.refresh.p('publishing.theme.name').should == 'Clean'
     end
     
     it "should add members" do
@@ -247,7 +265,8 @@ describe "Spaces" do
   
   context "as a guest" do
     before(:all) do
-      @space  = valid! fixture(:space)
+      @user   = valid! fixture(:user)
+      @space  = valid! fixture(:space,  { creator: @user })
       @folder = valid! fixture(:folder, { space: @space, folder: @space.root_folder })
       @page   = valid! fixture(:page,   { folder: @folder })
     end

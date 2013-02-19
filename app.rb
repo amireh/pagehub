@@ -61,6 +61,7 @@ configure do
   require 'controllers/application'
   require 'controllers/pages'
   require 'controllers/browser'
+  require 'controllers/errors'
 
   DataMapper.finalize
   DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
@@ -105,11 +106,4 @@ end
 
 configure :development do
   Bundler.require(:development)
-end
-
-get '/foo' do
-  catch(:halt) do
-    halt 400
-    puts "got halted"
-  end
 end

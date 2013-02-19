@@ -1,6 +1,7 @@
 get '/:user_nickname/:space_pretty_title/*' do |user_nn, space_pt, path|
   unless u = User.first(nickname: user_nn)
     # halt 404, "No such user #{user_nn}."
+    puts "doesnt look like a browser hit"
     pass
   end
   

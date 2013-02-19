@@ -36,15 +36,7 @@ module DataMapper
           #   end
           # end
 
-          unless @preferences
-            @preferences = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
-            @preferences.merge! model.
-              default_preferences.
-                deep_merge JSON.
-                  parse attribute_get(model.preferencable_options[:on]).to_s
-          end
-          
-          prefs = @preferences
+          prefs = preferences
           
           if k && k.is_a?(String)
             k.split('.').each { |key|
@@ -55,9 +47,20 @@ module DataMapper
           prefs
         end
         
-        def save_preferences
+        def preferences
+          unless @preferences
+            @preferences = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
+            @preferences.merge! model.
+              default_preferences.
+                deep_merge JSON.
+                  parse attribute_get(model.preferencable_options[:on]).to_s
+          end
+          @preferences   
+        end
+        
+        def save_preferences(prefs = @preferences)
           self.update!({
-            :"#{model.preferencable_options[:on]}" => @preferences.to_json.to_s
+            :"#{model.preferencable_options[:on]}" => prefs.to_json.to_s
           })
         end
         
