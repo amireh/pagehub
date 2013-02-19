@@ -40,7 +40,7 @@ module DataMapper
       module InstanceMethods
         def validate_title(*ctx)
           if attribute_dirty?(model.title_base_prop)
-            self.send(:"#{model.title_sane_prop}=", self.send(model.title_base_prop).sanitize)
+            self.send(:"#{model.title_sane_prop}=", (self.send(model.title_base_prop) || '').sanitize)
           end
           
           true

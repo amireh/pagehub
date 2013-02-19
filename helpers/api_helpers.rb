@@ -30,11 +30,24 @@ module Sinatra
       def api_consume!(keys)
         keys = [ keys ] unless keys.is_a?(Array)
         keys.each do |k|
-          @api[:required].delete!(k.to_sym)
-          @api[:optional].delete!(k.to_sym)
+          if val = @api[:required].delete(k.to_sym)
+            yield(val) if block_given?
+          end
+          
+          if val = @api[:optional].delete(k.to_sym)
+            yield(val) if block_given?
+          end
         end
       end
       
+      def api_has_param?(key)
+        @api[:optional].has_key?(key)
+      end
+      
+      def api_param(key)
+        @api[:optional][key.to_sym] || @api[:required][key.to_sym]
+      end
+
       def api_params(q = {})
         @api[:optional].merge(@api[:required]).merge(q)
       end

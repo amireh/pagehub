@@ -1,10 +1,10 @@
 describe Page do
   before(:all) do
-    fixture(:user)
+    valid! fixture(:user)
   end
   
   after do
-    @user.pages.destroy
+    @user.pages.destroy.should be_true
   end
 
   it "should be creatable" do
@@ -12,13 +12,12 @@ describe Page do
     p = valid! f.pages.create({ title: "Test", creator: @u })
     p.folder.should == f
     f.pages.count.should == 1
+    f.destroy
   end
   
-  context "Destruction" do
-    it "should be destroyed" do
-      p = valid! fixture(:page)
-      p.destroy.should be_true
-    end    
+  it "should be destroyed" do
+    p = valid! fixture(:page)
+    p.destroy.should be_true
   end
   
   it "should generate a carbon copy on creation" do
@@ -28,12 +27,9 @@ describe Page do
   end  
   
   context "versioning" do
-    before(:all) do
-      fixture(:user)
-    end
-        
     before do
-      @p = valid! fixture(:page)
+      @u = valid! fixture(:user)
+      @p = valid! fixture(:page, { title: "Versionable page" })
       
       @updates    = [ "foobar", "adooken", "got\n\nya" ]
       @revisions  = []

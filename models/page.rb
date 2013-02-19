@@ -35,15 +35,14 @@ class Page
   belongs_to :creator, 'User'
   
   has n, :public_pages, :constraint => :destroy
-  has n, :revisions,    :constraint => :destroy
-  has 1, :carbon_copy,  :constraint => :destroy
+  has n, :revisions,    Page::Revision,    :constraint => :destroy
+  has 1, :carbon_copy,  Page::CarbonCopy,  :constraint => :destroy
 
   is :titlable, default: lambda { |r, _| "Untitled ##{Page.random_suffix}" }
   validates_uniqueness_of :title, :scope => [ :folder_id ],
     message: 'You already have such a page in that folder.'
 
   before :valid? do
-    self.pretty_title = self.title.sanitize
     self.updated_at = DateTime.now
     
     true
@@ -69,6 +68,10 @@ class Page
     self.carbon_copy = CarbonCopy.new
     self.carbon_copy.page = self
     self.carbon_copy.save! # make sure to use the bang version here
+  end
+  
+  def browsable_by?(user)
+    (browsable && folder.browsable_by?(user)) || space.member?(user)
   end
 
   # before :destroy, :deletable_by?

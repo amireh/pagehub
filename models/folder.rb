@@ -55,6 +55,10 @@ class Folder
     out
   end
   
+  def browsable_by?(user)
+    browsable && (folder ? folder.browsable_by?(user) : true) || space.member?(user)
+  end
+  
   def empty?(scope = :public)
     self.folders.empty? && self.pages.all({ browsable: true }).empty?
   end

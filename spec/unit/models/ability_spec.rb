@@ -20,7 +20,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user, :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  @page),
+          (can? :create,  Page),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -33,7 +33,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user , :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  @page),
+          (can? :create,  Page),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -46,7 +46,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user , :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  @page),
+          (can? :create,  Page),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -58,7 +58,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user, :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  @page),
+          (can? :create,  Page),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -89,7 +89,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  @folder),
+          (can? :create,  Folder),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -102,7 +102,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  @folder),
+          (can? :create,  Folder),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -115,7 +115,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  @folder),
+          (can? :create,  Folder),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -128,7 +128,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  @folder),
+          (can? :create,  Folder),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -158,7 +158,7 @@ describe "Access control" do
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         [
           (can? :read,    @space),
-          (can? :create,  @space),
+          (can? :create,  Space),
           (can? :update,  @space),
           (can? :delete,  @space)
         ].to_json
@@ -171,7 +171,7 @@ describe "Access control" do
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         [
           (can? :read,    @space),
-          (can? :create,  @space),
+          (can? :create,  Space),
           (can? :update,  @space),
           (can? :delete,  @space)
         ].to_json
@@ -181,28 +181,142 @@ describe "Access control" do
 
     it "as an admin" do
       @space.add_admin(@u2)
+      u3 = valid! fixture(:some_user)
+      u4 = valid! fixture(:some_user)
+      u5 = valid! fixture(:some_user)
+      u6 = valid! fixture(:some_user)
+      @space.add_member(u3)
+      @space.add_editor(u4)
+      @space.add_admin(u5)
+      
+      sign_in(@u2)
+      
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
+        member  = @space.users.get(params[:member_id])
+        editor  = @space.users.get(params[:editor_id])
+        admin   = @space.users.get(params[:admin_id])
+        guest   = User.get(params[:guest_id])
+        
         [
           (can? :read,    @space),
-          (can? :create,  @space),
+          (can? :create,  Space),
           (can? :update,  @space),
+          (can? :update_meta,  @space),
+          (can? :invite, [ guest, :member ]),
+          (can? :invite, [ guest, :editor ]),
+          (can? :invite, [ guest, :admin  ]),
+          (can? :kick, member),
+          (can? :kick, editor),
+          (can? :kick, admin),
+          (can? :promote, [ member, :editor ]),
+          (can? :promote, [ editor, :admin ]),
+          (can? :demote, [ editor, :member ]),
+          (can? :demote, [ admin, :member ]),
           (can? :delete,  @space)
         ].to_json
       }
-      api { get "/spec/#{@space.id}" }.body.should == [ true, true, true, false ]
+      api {
+        get "/spec/#{@space.id}", {
+          member_id: u3.id,
+          editor_id: u4.id,
+          admin_id:  u5.id,
+          guest_id:  u6.id
+        }
+      }.body.should ==
+        [
+          true,   # read
+          true,   # create
+          true,   # update
+          false,  # update_meta
+          true,   # invite member
+          true,   # invite editor
+          false,  # invite admin
+          true,   # kick member
+          true,   # kick editor
+          false,  # kick admin
+          true,   # promote member to editor
+          false,  # promote editor to admin
+          true,   # demote editor to member
+          false,  # demote admin        
+          false,  # delete
+        ]
     end
     
     it "as a creator" do
       sign_in(@u)
+      u3 = valid! fixture(:some_user)
+      u4 = valid! fixture(:some_user)
+      u5 = valid! fixture(:some_user)
+      u6 = valid! fixture(:some_user)
+      @space.add_member(u3)
+      @space.add_editor(u4)
+      @space.add_admin(u5)
+            
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
+        member  = @space.users.get(params[:member_id])
+        editor  = @space.users.get(params[:editor_id])
+        admin   = @space.users.get(params[:admin_id])
+        guest   = User.get(params[:guest_id])
+        
         [
           (can? :read,    @space),
-          (can? :create,  @space),
+          (can? :create,  Space),
+          (can? :update,  @space),
+          (can? :update_meta,  @space),
+          (can? :invite, [ guest, :member ]),
+          (can? :invite, [ guest, :editor ]),
+          (can? :invite, [ guest, :admin  ]),
+          (can? :kick, member),
+          (can? :kick, editor),
+          (can? :kick, admin),
+          (can? :promote, [ member, :editor ]),
+          (can? :promote, [ editor, :admin ]),
+          (can? :demote, [ editor, :member ]),
+          (can? :demote, [ admin, :member ]),
+          (can? :delete,  @space)
+        ].to_json
+      }
+      api {
+        get "/spec/#{@space.id}", {
+          member_id: u3.id,
+          editor_id: u4.id,
+          admin_id:  u5.id,
+          guest_id:  u6.id
+        }
+      }.body.should ==
+        [
+          true,   # read
+          true,   # create
+          true,   # update
+          true,  # update_meta
+          true,   # invite member
+          true,   # invite editor
+          true,  # invite admin
+          true,   # kick member
+          true,   # kick editor
+          true,  # kick admin
+          true,   # promote member to editor
+          true,  # promote editor to admin
+          true,   # demote editor to member
+          true,  # demote admin        
+          true,  # delete
+        ]
+    end # as a creator context
+    
+    it "as a guest" do
+      some_space = valid! fixture(:space, { is_public: true })
+      app.get('/spec/:space_id', :requires => [ :space ]) {
+        [
+          (can? :read,    @space),
+          (can? :browse,  @space),
+          (can? :create,  Space),
           (can? :update,  @space),
           (can? :delete,  @space)
         ].to_json
       }
-      api { get "/spec/#{@space.id}" }.body.should == [ true, true, true, true ]      
+      api { get "/spec/#{some_space.id}" }.body.should == [ false, true, false, false, false ]
+      
     end
-  end
+    
+  end # Spaces context
 end

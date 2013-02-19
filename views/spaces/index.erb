@@ -1,0 +1,13 @@
+<h2>Spaces</h2>
+
+<a href="/spaces/new">Create a new space</a>
+
+<% if current_user.spaces.empty? %>
+  <p>You do not currently belong to any space.</p>
+<% else %>
+  <ol>
+    <% current_user.spaces.each do |space| %>
+      <li><a href="/spaces/<%= space.pretty_title %>"><%= space.title %></a></li>
+    <% end %>
+  </ol>
+<% end %>

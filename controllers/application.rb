@@ -43,7 +43,20 @@ error Sinatra::NotFound do
   end
 end
 
-[ 400, 401, 403, 404 ].each do |http_rc|
+error 400, :provides => [ :json, :html ] do
+  return if @internal_error_handled
+  @internal_error_handled = true
+  
+  respond_to do |f|
+    f.html {
+      session["flash"]["error"] = response.body
+      return redirect back
+    }
+    f.json { on_api_error.to_json }
+  end
+end
+
+[ 401, 403, 404 ].each do |http_rc|
   error http_rc, :provides => [ :json, :html ] do
     return if @internal_error_handled
     @internal_error_handled = true
@@ -75,18 +88,14 @@ error 500 do
   end
 end
 
+get '/' do
+  pass unless logged_in?
+  
+  erb :"spaces/index"
+end
 
 get '/' do
-  destination = "static/greeting.md"
-  layout = "layouts/guest"
-
-  if logged_in?
-    @pages = Page.all(user_id: current_user.id)
-    destination = "pages/index"
-    layout = "layout"
-  end
-
-  erb destination.to_sym, layout: layout.to_sym
+  erb :"static/greeting.md"
 end
 
 %w(/tutorial /testdrive).each { |uri|

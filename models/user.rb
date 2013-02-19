@@ -14,7 +14,7 @@ class User
 
   property :email,          String, length: 255, default: ""
   property :gravatar_email, String, length: 255, default: lambda { |r,_| r.email }
-  property :nickname,       String, length: 120, default: ""
+  property :nickname,       String, length: 120
   property :password,       String, length: 64
   property :oauth_token,    Text
   property :oauth_secret,   Text
@@ -34,7 +34,8 @@ class User
   # has n, :folders,  :constraint => :destroy
   has n, :email_verifications, :constraint => :destroy
 
-  validates_presence_of :name, :provider, :uid
+  validates_presence_of :name, :provider, :uid, :nickname
+  validates_uniqueness_of :nickname
 
   # class << self
   #   attr_accessor :editor

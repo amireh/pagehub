@@ -31,7 +31,7 @@
 .member nav > a {
   height: 49px;
 }
-.member .icon.groups          { background-position: -88px  -32px;}
+.member .icon.spaces          { background-position: -88px  -32px;}
 .member .icon.help            { background-position: -56px  16px; }
 .member .icon.settings        { background-position: -88px  16px; }
 .member .icon.save_page       { background-position: -152px 12px; }

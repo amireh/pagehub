@@ -31,6 +31,7 @@ namespace :pagehub do
         up do
           drop_table :page_revisions;
           execute "RENAME TABLE revisions TO page_revisions;"
+          execute "ALTER TABLE page_revisions CHANGE user_id editor_id int(10) UNSIGNED NOT NULL;"
         end
         down do
         end

@@ -37,6 +37,11 @@ module Fixtures
         end
       end
     end
+    
+    def salt
+      # PageHub::Helpers.tiny_salt(10)
+      PageHub::Helpers.salt
+    end
   end
   
   class Fixture
@@ -51,7 +56,7 @@ module Fixtures
     end
     
     def salt
-      PageHub::Helpers.tiny_salt
+      Fixtures.salt
     end
     
     def accept(params, p = @params)
@@ -81,7 +86,7 @@ module Fixtures
         name:     'Mysterious Mocker',
         email:    'very@mysterious.com',
         provider: 'pagehub',
-        nickname: nil,
+        nickname: "boogey-#{salt}",
         password:               User.encrypt(self.class.password),
         password_confirmation:  User.encrypt(self.class.password)
       })
@@ -104,7 +109,7 @@ module Fixtures
         title: "Mocky page #{salt}",
         content: "Teehee.",
         creator: nil,
-        browsable: false,
+        browsable: true,
         folder:  nil        
       }))
     end
@@ -114,7 +119,7 @@ module Fixtures
     def build(p)
       Folder.create(accept(p, {
         title: "Mocky folder #{salt}",
-        browsable: false,
+        browsable: true,
         space: nil,
         folder: nil,
         creator: nil
@@ -125,7 +130,7 @@ module Fixtures
   class SpaceFixture < Fixture
     def build(p)
       Space.create(accept(p, {
-        title: "The Zoo",
+        title: "The Zoo #{salt}",
         brief: "Where all monkeys meet.",
         is_public: false,
         creator: nil
@@ -145,12 +150,18 @@ def fixture(resource, o = {})
     # @u, @s, @f = *create_user(o, cleanup)
     @u, @s, @f = *Fixtures[:user].build(o, true)
     @user, @space, @root = @u, @s, @f
-    @u.saved?
+    @u
   when :another_user
     # @u2, @s2, @f2 = create_user({ email: "more@mysterious" }, false)
-    @u2, @s2, @f2 = *Fixtures[:user].build({ email: "more@mysterious.com" }.merge(o))
+    @u2, @s2, @f2 = *Fixtures[:user].build({
+      email: "more@mysterious.com"
+    }.merge(o))
     @user2, @space2, @root2 = @u2, @s2, @f2
-    @u2.saved?    
+    @u2
+  when :some_user
+    Fixtures[:user].build({
+      email: "really_#{Fixtures.salt}@mysterious.com"
+    }.merge(o)).first
   when :folder
     Fixtures[:folder].build({
       creator: @u,
@@ -186,6 +197,7 @@ def invalid!(r)
 end
 
 def valid!(r)
+  r.all_errors.should == []
   r.saved?.should be_true
   r
 end

@@ -138,7 +138,7 @@ helpers do
 
   def name_available?(name)
     nn = name.to_s.sanitize
-    !reserved?(nn) && !nn.empty? && User.first(nickname: nn).nil? && Group.first(name: nn).nil?
+    !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ title: nn }).nil?
   end
 
   ReservedNames = [ 'name', 'spaces', 'pages', 'groups', 'spec' ]

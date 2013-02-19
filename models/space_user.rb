@@ -6,7 +6,7 @@ class SpaceUser
   
   class << self
     def weigh(role)
-      Flags.index(role) || -1
+      Flags.index(role.to_sym) || -1
     end
     
     alias_method :weight_of, :weigh

@@ -22,7 +22,7 @@ class Space
   
   # alias_method :creator, :user
   
-  is :preferencable, {}, PageHub::Config.defaults
+  is :preferencable, {}, PageHub::Config.defaults['spaces']
   is :titlable
   
   # def editor
@@ -93,6 +93,10 @@ class Space
   def is_browsable?
     is_public
   end
+  
+  def browsable_by?(user)
+    is_public || member?(user)
+  end
 
   def browsable_pages(cnd = {}, order = [])
     pages.all({ conditions: cnd.merge({ browsable: true }), order: order })
@@ -100,6 +104,19 @@ class Space
   
   def browsable_folders(cnd = {}, order = [])
     folders.all({ conditions: cnd.merge({ browsable: true }), order: order })
+  end
+  
+  def locate_resource(path)
+    path = [ path ] if !path.is_a?(Array)
+    path = path.collect { |r| r.to_s }
+    folder = root_folder
+    
+    path[0..-2].each do |pt|
+      folder = folder.folders.first({ pretty_title: pt })
+      return nil if !folder
+    end
+    
+    folder.pages.first({ pretty_title: path.last })
   end
 
   # TODO: helperize this, seriously
@@ -141,6 +158,16 @@ class Space
       entry.role.to_s
     else
       nil
+    end
+  end
+  
+  def add_with_role(user, role)
+    self.send("add_#{role.to_s}".to_sym, user)
+  end
+  
+  def kick(user)
+    if membership = space_users.first({ user: user })
+      membership.destroy
     end
   end
 

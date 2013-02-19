@@ -1,9 +1,9 @@
-<% content_for :title do %> Group Registration | PageHub <% end %>
+<% content_for :title do %> Creating a new space | PageHub <% end %>
 
 <% content_for :js do %>
   <script>
     $(function() {
-      // Checks whether the typed in group name is available
+      // Checks whether the typed in space name is available
       $("#check_availability").click(function() {
         var btn = $(this);
         var name = $("input[name=name]").attr("value");
@@ -14,7 +14,7 @@
         }
 
         $.ajax({
-          url: "/groups/name",
+          url: "/spaces/name",
           type: "POST",
           data: { name: $("input[name=name]").attr("value") },
 
@@ -35,28 +35,28 @@
   </script>
 <% end %>
 
-<h1>Group Registration</h1>
+<h1>Space Registration</h1>
 
-<p>Groups in PageHub are useful for a group of people to write, share, and present pages
+<p>Spaces in PageHub are useful for a space of people to write, share, and present pages
   to each other, or to the public, in a customized way.
 </p>
 
-<p>Read more about groups <a href="http://www.pagehub.org/pagehub/groups">here</a>,
-  or take a look at a live example of a group; the actual
+<p>Read more about spaces <a href="http://www.pagehub.org/pagehub/spaces">here</a>,
+  or take a look at a live example of a space; the actual
   <a href="http://pagehub.org/pagehub">PageHub one</a>!
 </p>
 
-<form method="POST" action="/groups">
+<form method="POST" action="/spaces">
   <h2>Name</h2>
-  <label>The group name must be unique, and cool too.
+  <label>The space name must be unique, and cool too.
     <br /><br />
-    <input type="text" name="name" class="very_fat" placeholder="The Screwdrivers" />
+    <input type="text" name="title" class="very_fat" placeholder="The Screwdrivers" />
     <button id="check_availability">check availability</button>
     <span></span>
   </label>
   
   <h2>Brief</h2>
-  <label>A 1-line description of what this group is for.
+  <label>A 1-line description of what this space is for.
     <br /><br />
     <input type="text" name="brief" style="width: 600px" placeholder="Building nuclear plants with style"></textarea>
   </label>
@@ -64,13 +64,13 @@
   <h2>Public access</h2>
   <label>
     <input type="checkbox" value="true" name="is_public" />
-    Allow non-members to read and browse the group documents
+    Allow non-members to read and browse the space documents
     <small>(don't worry, you can always change this later)</small>
   </label>
 
   <hr />
   <p class="sidetip"><em>Note:</em>
-    you will get to manage the group settings and members once you register it.</p>
-  <input type="submit" value="Register Group" />
+    you will get to manage the space settings and members once you register it.</p>
+  <input type="submit" value="Register Space" />
 
 </form>

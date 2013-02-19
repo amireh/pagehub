@@ -108,6 +108,6 @@ describe Sinatra::API do
       }
       rc = api_call get "/spec/123/pages/456"
       rc.should fail(404, 'No such resource: Space#123')
-    end    
+    end
   end
 end
