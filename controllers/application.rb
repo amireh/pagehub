@@ -1,9 +1,15 @@
 before do
   if api_call?    
+    puts "its an api call"
     request.body.rewind
     body = request.body.read.to_s || ''
     unless body.empty?
-      begin; params.merge!(JSON.parse(body)) rescue nil end
+      begin; 
+        params.merge!(JSON.parse(body))
+      rescue JSON::ParserError => e
+        puts e.message
+        puts e.backtrace
+      end
     end
   else
     @layout = "layouts/#{logged_in? ? 'primary' : 'guest' }".to_sym

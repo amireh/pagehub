@@ -145,15 +145,17 @@ post '/spaces/:space_id/pages',
   
   authorize! :create, Page, :message => "You need to be an editor in this space to create pages."
   
+  puts params.inspect
+  
   api_required!({
-    :title      => nil,
     :folder_id  => lambda { |fid|
       "No such folder" unless @folder = @space.folders.get(fid)
     }
   })
   
   api_optional!({
-    :content => nil    
+    :title   => nil,
+    :content => nil
   })
   
   @page = @space.pages.new api_params({
@@ -191,9 +193,11 @@ put '/spaces/:space_id/pages/:page_id',
       unless @page.generate_revision(@api[:optional][:content], current_user)
         halt 500, @page.collect_errors
       end
-    rescue Revision::NothingChangedError
+    rescue Page::Revision::NothingChangedError
       # it's ok
     end
+    
+    @page = @page.refresh
   end
 
   unless @page.update(api_params)

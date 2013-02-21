@@ -1,23 +1,17 @@
 object @folder
 
-attributes :id, :title, :browsable
+extends "folders/_show"
 
-child(:space) do |f|
-  attributes :id
-end
+attributes :browsable
 
-child(:folder => :folder) do |f|
-  attributes :id
+child(:space) do |space|
+  partial "spaces/_show", object: space
 end
 
 node(:folders) { |f|
-  f.folders.map { |cf|
-    partial("folders/_show", object: cf)
-  }
+  f.folders.collect { |cf| partial "folders/_show", object: cf }
 }
 
 node(:pages) { |f|
-  f.pages.collect { |p|
-    partial("pages/_show", object: p)
-  }
+  f.pages.collect { |p| partial "pages/_show", object: p }
 }

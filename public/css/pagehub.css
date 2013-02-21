@@ -270,14 +270,14 @@ button {
   color: #E94E77;
   cursor: pointer;
 }*/
-#page_listing {
+.browser {
   position: relative;
   padding: 0;
   margin: 5px 5px 0 0;
 }
 
-#page_listing ul,
-#page_listing ol {
+.browser ul,
+.browser ol {
   /*list-style-type: none;*/
   padding: 0 0 0 15px;
   /*margin: 10px 0 0 0;*/
@@ -827,7 +827,7 @@ a.button.good:not(:active) {
 #pages li.folder.general-folder > ol {
   padding: 0; margin: 0;
 }
-#pages li.folder.general-folder span {
+#pages li.folder.general-folder > span.folder_title {
   display: none;
 }
 

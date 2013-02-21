@@ -1,4 +1,4 @@
-<% content_for :title do %> <%= @group.title %> | PageHub <% end %>
+<% content_for :title do %> <%= @space.title %> | PageHub <% end %>
 
 <%= partial "/shared/_editor" %>
 
@@ -8,9 +8,8 @@
 
   $(function() {
 
-    Space = <%= rabl :"spaces/show", object: @space %>;
-    // pagehub.namespace = "/groups/<%= @group.id %>";
-
+    space = <%= rabl :"spaces/show", object: @space %>.space;
+    console.log(space)
     /* --- ------ *
      * The Editor *
      * --- ------ */
@@ -25,8 +24,8 @@
     // and the page listing
     $("#pages .scroller").css("max-height", $(window).height() - 135);
 
-    data = <%= @group.folder_pages.to_json %>;
-    dynamism.inject(data, $("#page_listing"));
+    // data = <%#= @group.folder_pages.to_json %>;
+    dynamism.inject(space, $("#browser"));
 
   });
 </script>

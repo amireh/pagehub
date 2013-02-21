@@ -27,13 +27,25 @@ pagehub = function() {
       content_changed = false,
       setting_sync_uri = "/profile/preferences/runtime";
 
-  $(document).ajaxStart(function() {
+  $.ajaxSetup({
+    accepts:      { json: "application/json" },
+    // contentType:  "application/json; charset=UTF-8",
+    dataType:     "json"
+  });
+
+  $(document).ajaxStart(function(xhr) {
     ui.status.mark_pending();
   });
+  
   $(document).ajaxComplete(function(xhr) {
     ui.status.mark_ready();
   });
-
+  
+  $(document).ajaxError(function(_, e) {
+    var err = JSON.parse(e.responseText);
+    ui.status.show(err.messages.join(','), "bad");
+  })
+  
   return {
     config: config,
     namespace: namespace,
@@ -60,24 +72,24 @@ pagehub = function() {
     },
 
     pages: {
-      create: function(handlers) {
-        var uri = pagehub.namespace + "/pages";
+      create: function(data, handlers) {
+        // var uri = pagehub.namespace + "/pages";
+        var uri = space.media.pages.url;
 
         $.ajax({
           url: uri,
           type: "POST",
+          data: data,
           success: handlers.success,
           error: handlers.error
         });
       },
 
-      update: function(page_id, attributes, handlers) {
-        var uri = pagehub.namespace + "/pages/" + page_id;
-
+      update: function(uri, attributes, handlers) {
         $.ajax({
           type: "PUT",
           url: uri,
-          data: { attributes: attributes },
+          data: attributes,
           success: handlers.success,
           error: handlers.error
         })

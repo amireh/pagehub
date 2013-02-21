@@ -142,7 +142,11 @@ class Page
   def href
     "#{folder.href}/#{pretty_title}"
   end
-  
+
+  def revisions_url
+    self.url(true) + '/revisions'
+  end
+    
   def editable_by?(user)
     folder.space.editor?(user)
   end

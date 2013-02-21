@@ -69,11 +69,14 @@ class Space
   # guard :destroy, with: :authorized_editor
     
   def root_folder
-    folders.first({ folder_id: nil })
+    folders.first({ title: Folder::DefaultFolder, folder_id: nil })
   end
   alias_method :root, :root_folder
   
-
+  def self.url(user)
+    user.url + "/spaces"
+  end
+  
   def url(root = false)
     root ? "/spaces/#{id}" : "#{creator.url}/spaces/#{self.id}"
   end

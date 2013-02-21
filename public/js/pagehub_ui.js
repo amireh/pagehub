@@ -42,7 +42,7 @@ pagehub_ui = function() {
 
         // initialize dynamism
         function() {
-          dynamism.configure({ debug: false, logging: true });
+          dynamism.configure({ debug: false, logging: false });
 
           // element tooltips
           $("a[title]").tooltip({ placement: "bottom" });
@@ -94,10 +94,10 @@ pagehub_ui = function() {
         // toggle autosaving
         function() {
           if (pagehub !== undefined) {
-            if (pagehub.settings.editing.autosave) {
-              timers.autosave = setInterval("ui.pages.save(true)", pulses.autosave * 1000);
-              timers.sync = setInterval("pagehub.sync()", pulses.sync * 1000);
-            }
+            // if (pagehub.settings.editing.autosave) {
+              // timers.autosave = setInterval("ui.pages.save(true)", pulses.autosave * 1000);
+              // timers.sync = setInterval("pagehub.sync()", pulses.sync * 1000);
+            // }
           }
         },
 
@@ -192,11 +192,11 @@ pagehub_ui = function() {
     },
 
     current_page: function() {
-      return $("#page_listing li.selected:not(.folder) a");
+      return $("#browser li.selected:not(.folder) a");
     },
 
     current_folder: function() {
-      return $("#page_listing .folder > .selected");
+      return $("#browser .folder > .selected");
     },
 
     is_page_selected: function() {
@@ -460,9 +460,8 @@ pagehub_ui = function() {
 
           ui.status.show("Updating folder...", "pending");
           pagehub.folders.update(resource_id, { title: title, folder_id: parent_folder },
-            function(f) {
-              var f = JSON.parse(f);
-              ui.folders.on_update(f);
+            function(data) {
+              ui.folders.on_update(data.folder);
             },
             function(rc) {
               ui.status.show("Unable to update folder: " + rc.responseText, "bad");
@@ -470,14 +469,11 @@ pagehub_ui = function() {
 
         } else {
           resource_id = current_page_id();
-
+          resource = ui.current_page();
           // nope, a page
           ui.status.show("Saving page title...", "pending");
-          pagehub.pages.update(resource_id, { title: title }, {
-            success: ui.pages.on_update,
-            error: function(e) {
-              ui.status.show("Unable to update page: " + e.responseText, "bad");
-            }
+          pagehub.pages.update(resource.attr("href"), { title: title }, {
+            success: ui.pages.on_update
           });
         }
 
@@ -519,14 +515,14 @@ pagehub_ui = function() {
         ui.current_folder().removeClass("selected");
       else
         ui.current_page().parent().removeClass("selected");
-      // $("#page_listing .selected").removeClass("selected");
+      // $("#browser .selected").removeClass("selected");
     },
 
     resources: {
       on_drag_start: function(jQuery_evt) {
         var e = jQuery_evt.originalEvent;
 
-        $("#page_listing .drag-src").removeClass("drag-src");
+        $("#browser .drag-src").removeClass("drag-src");
         $(this).addClass("drag-src");
 
         // This is a necessary hack for Firefox to even accept the
@@ -550,7 +546,7 @@ pagehub_ui = function() {
           return false;
         }
 
-        var src_node = $("#page_listing .drag-src");
+        var src_node = $("#browser .drag-src");
 
         console.log(src_node);
         is_dragging = false;
@@ -563,8 +559,8 @@ pagehub_ui = function() {
                               : $(this).parent().attr("id").replace("folder_", "");
 
           pagehub.folders.update(src_folder_id, { folder_id: tgt_folder_id },
-            function(f) {
-              ui.folders.on_update(JSON.parse(f));
+            function(data) {
+              ui.folders.on_update(data.folder);
             },
             function(rc) {
               ui.status.show("Unable to move folder: " + rc.responseText, "bad");
@@ -572,11 +568,11 @@ pagehub_ui = function() {
         } // folder drag
 
         else {
-          var page_id   = $("#page_listing .drag-src a").attr("id").replace("page_", ""),
+          var page_id   = $("#browser .drag-src a").attr("id").replace("page_", ""),
               folder_id = $(this).hasClass("general-folder")
                           ? $(this).attr("id").replace("folder_", "") // gf has no title span
                           : $(this).parent().attr("id").replace("folder_", ""),
-              page_link = $("#page_listing .drag-src a"),
+              page_link = $("#browser .drag-src a"),
               move_link = $("a[data-action=move][data-folder=" + folder_id + "]");
 
           if (current_page_id() != page_id) {
@@ -594,7 +590,7 @@ pagehub_ui = function() {
         } // page drag
 
         // Unmark the nodes
-        $("#page_listing .drag-src, #page_listing .drop-target")
+        $("#browser .drag-src, #browser .drop-target")
           .removeClass("drag-src drop-target");
 
         $("#indicator").hide();
@@ -612,7 +608,7 @@ pagehub_ui = function() {
       },
 
       on_dragenter: function() {
-        $("#page_listing").find(".drop-target").removeClass("drop-target");
+        $("#browser").find(".drop-target").removeClass("drop-target");
 
         // add a drop-target class:
         // general folder? (it has no title <span>)
@@ -656,10 +652,10 @@ pagehub_ui = function() {
                 // actually create the folder
                 pagehub.folders
                   .create($("#confirm form#folder_form").serialize(), {
-                          success: function(folder) {
-                            var folder = JSON.parse(folder);
+                          success: function(data) {
+                            var folder = data.folder;
                             console.log(folder)
-                            dynamism.inject({ folders: [ folder ] }, $("#page_listing"));
+                            dynamism.inject({ folders: [ folder ] }, $("#browser"));
                             ui.status.show("Folder " + folder.title + " has been created.", "good");
                           },
                           error: function(e) {
@@ -682,7 +678,7 @@ pagehub_ui = function() {
       on_update: function(f) {
         ui.status.show("Folder updated!", "good");
 
-        console.log(f);
+        // console.log(f);
 
         // if its parent has changed, we need to reorder
         // it and re-sort the folder listing
@@ -693,7 +689,7 @@ pagehub_ui = function() {
           folder.attr("data-parent", null);
 
         folder.find("> span:first").html(f.title);
-        ui.folders.arrange($("#page_listing"));
+        ui.folders.arrange($("#browser"));
 
         // update the Move-To action for this folder
         $("a[data-action=move][data-folder=" + f.id + "]").html(f.title);
@@ -704,13 +700,14 @@ pagehub_ui = function() {
 
       on_injection: function(el) {
         var folder_id = parseInt(el.attr("id").replace("folder_", "")),
-            is_general_folder = folder_id == 0;
+            is_general_folder = !(parseInt(el.attr("data-parent")));
 
         // toggle the "This folder is empty" label if it has any pages
-        if (el.find("> ol > li[data-dyn-index][data-dyn-index!=-1]").length > 0) {
-          el.find("> ol > li:first").hide();
+        var page_listing = el.find("> ol.pages");
+        if (page_listing.find("> li:visible:not(.empty_folder)").length > 0) {
+          page_listing.find("> li.empty_folder").hide();
         } else {
-          el.find("> ol > li:first").show();
+          page_listing.find("> li.empty_folder").show();
         }
 
         // if it's the general folder, we don't want to display its title
@@ -751,44 +748,50 @@ pagehub_ui = function() {
         }
       },
 
+      sort_folders: function(folder_listing) {
+        folder_listing.
+        find("> li.folder > span:first-child").
+        sort(function(a, b) {
+          var compA = a.innerHTML.trim().toUpperCase();
+          var compB = b.innerHTML.trim().toUpperCase();
+          return (compA > compB) ? -1 : (compA < compB) ? 1 : 0;
+        }).
+        each(function(idx, itm) { folder_listing.prepend($(itm).parent()); });
+      },
+      
       arrange: function(ul) {
         ui.status.mark_pending();
 
         // Parent-less folders go to the top
-        ul.prepend(ul.find('li.folder:not([data-parent]):visible'));
+        // ul.prepend(ul.find('li.folder:not([data-parent]):visible'));
 
-        ul.find('li.folder[data-parent]:visible').each(function() {
-          var parent_id = parseInt($(this).attr("data-parent") || "0");
-          var parent = $("#folder_" + parent_id);
+        ul.find('li.folder[data-parent!=""]:visible').each(function() {
+          var parent = $("#folder_" + $(this).attr("data-parent"));
           if (parent.length == 1) {
-            // parent.append('<ul></ul>');
-            parent.find("> ol").append($(this));
+            // console.log(parent)
+            // console.log(parent.find("> ol > li").length);
+            // parent.find("> ol:first > li:visible:first").after($(this));
+            // parent.find("> ol:first > li:visible:first").before($(this));
+            // parent.prepend($(this));
+            parent.find("> ol.folders:first").append($(this));
+            // parent.find("> ol:first").prepend($(this));
           } else {
-            console.log("[ERROR]: Unknown parent " + parent_id + "!")
-            console.log($(this))
+            throw("[ERROR]: Unknown parent " + $(this).attr("data-parent") + "!")
+            // console.log($(this))
           }
         });
-
-
-        // sort the folders alphabetically
-        // code adapted from: http://www.onemoretake.com/2009/02/25/sorting-elements-with-jquery/
-        var __sort_folders = function(ul) {
-          ul.find("> li.folder:visible")
-            .sort(function(a, b) {
-              var compA = $(a).find("> span:first-child").html().trim().toUpperCase();
-              var compB = $(b).find("> span:first-child").html().trim().toUpperCase();
-              return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
-            }).each(function(idx, itm) { ul.append(itm); });
-        }
-        __sort_folders(ul);
-        ul.find("ol > li.folder:visible").each(function() {
-          __sort_folders($(this).parent());
-        })
-
-        // keep the general folder at the bottom of the list
-        var general_folder
-          = $("#page_listing").find(".folder.general-folder");
-            $("#page_listing").append(general_folder);
+        
+        var parent_folders = _.uniq(
+          _.collect(
+            $(".folder[data-parent!='']"), function(e) {
+              return parseInt(e.getAttribute('data-parent'))
+            }
+          )
+        );
+        _.each(parent_folders, function(folder_id)  {
+          var folder = $("#folder_" + folder_id);
+          ui.folders.sort_folders(folder.find("> ol.folders:first"));
+        });
 
         ui.status.mark_ready();
       },
@@ -817,8 +820,8 @@ pagehub_ui = function() {
         if (!removed[el.attr("id")]) {
           pagehub.folders.destroy(folder_id,
             // success handler
-            function(new_parent) {
-              var new_parent = JSON.parse(new_parent);
+            function(data) {
+              var new_parent = data.folder;
 
               ui.status.show("Re-building the entire page listing,"
                            + "this could take a while...", "pending");
@@ -833,9 +836,9 @@ pagehub_ui = function() {
               });
 
               btn.click();
-              $("#page_listing :visible").remove();
+              $("#browser :visible").remove();
               dynamism.reset();
-              dynamism.inject(new_parent, $("#page_listing"));
+              dynamism.inject(new_parent, $("#browser"));
 
               ui.status.show("Folder deleted.", "good");
             },
@@ -873,13 +876,18 @@ pagehub_ui = function() {
     pages: {
       create: function() {
         ui.status.show("Creating a new page...", "pending");
-
+        var folder = space.root_folder.id;
+        if (ui.is_folder_selected()) {
+          folder = ui.current_folder().attr("id");
+        }
         pagehub.pages.create({
-          success: function(page) {
-            var page = JSON.parse(page);
-
+          folder_id: folder
+        }, {
+          success: function(data) {
+            var page = data.page;
+            console.log(page);
             // Inject it
-            dynamism.inject({ folders: [ { id: 0, pages: [ page ] } ] }, $("#page_listing"));
+            dynamism.inject({ folders: [ { id: 0, pages: [ page ] } ] }, $("#browser"));
 
             // And load it
             $("#page_" + page.id).click();
@@ -895,11 +903,6 @@ pagehub_ui = function() {
               page_li.bind('dragstart', ui.resources.on_drag_start);
               // ui.resources.make_draggable(page_li);
             }
-          },
-          error: function(e) {
-            ui.status.show("Could not create a new page: " + e.responseText, "bad");
-            console.log("smth bad happened")
-            console.log(e)
           }
         });
 
@@ -922,25 +925,22 @@ pagehub_ui = function() {
         ui.highlight($(this).parent());
 
         // ui.status.show("Loading page...", "pending");
-        ui.status.mark_pending();
+        // ui.status.mark_pending();
 
         ui.editor.save();
 
-        var title = $(this).attr("id").replace("page_", "");
         $.ajax({
           type: "GET",
-          url: pagehub.namespace + "/pages/" + title + ".json",
+          url: $(this).attr("href"),
           success: function(page) {
-            var page    = JSON.parse(page),
-                content = page.content,
-                groups  = page.groups;
-
+            page = page.page;
             ui.editor.clearHistory();
-            ui.editor.setValue(content);
+            ui.editor.setValue(page.content);
             pagehub.content_changed = false;
-            $("#preview").attr("href", pagehub.namespace + "/pages/" + title + "/pretty");
-            $("#share_everybody").attr("href", pagehub.namespace + "/pages/" + title + "/share");
-            $("#history").attr("href", pagehub.namespace + "/pages/" + page.id + "/revisions")
+            
+            $("#preview").attr("href", page.media.href);
+            // $("#share_everybody").attr("href", pagehub.namespace + "/pages/" + title + "/share");
+            $("#history").attr("href", page.media.revisions.href)
                          .html($("#history").html().replace(/\d+/, page.nr_revisions));
             if (page.nr_revisions == 0)
               $("#history").attr("disabled", "true").addClass("disabled");
@@ -949,39 +949,36 @@ pagehub_ui = function() {
 
             // Disable the group share links for all the groups this page
             // is already shared with
-            $("a[data-action=share][data-group]").each(function() {
-              var group           = $(this).attr("data-group"),
-                  already_shared  = false;
+            // $("a[data-action=share][data-group]").each(function() {
+            //   var group           = $(this).attr("data-group"),
+            //       already_shared  = false;
 
-              for (var i = 0; i < groups.length; ++i) {
-                if (groups[i] == group) {
-                  $(this).attr("data-disabled", true);
-                  already_shared = true;
-                  break;
-                }
-              }
+            //   for (var i = 0; i < groups.length; ++i) {
+            //     if (groups[i] == group) {
+            //       $(this).attr("data-disabled", true);
+            //       already_shared = true;
+            //       break;
+            //     }
+            //   }
 
-              if (!already_shared) {
-                $(this).attr("href", pagehub.namespace + "/pages/" + title + "/share/" + group);
-                $(this).attr("data-disabled", null);
-              } else {
-                $(this).attr("href", null);
-                $(this).attr("data-disabled", true);
-              }
-            });
+            //   if (!already_shared) {
+            //     $(this).attr("href", pagehub.namespace + "/pages/" + title + "/share/" + group);
+            //     $(this).attr("data-disabled", null);
+            //   } else {
+            //     $(this).attr("href", null);
+            //     $(this).attr("data-disabled", true);
+            //   }
+            // });
 
             // disable the "move to" of the folder the page is in, if any
             $("a[data-action=move]").attr("data-disabled", null);
-            $("a[data-action=move][data-folder=" + page.folder + "]")
+            $("a[data-action=move][data-folder=" + page.folder.id + "]")
               .attr({ "data-disabled": true });
 
             // $("a[data-action=move]").unbind('click');
             $("a[data-action=move]").each(function() {
-              $(this).attr("href",
-                pagehub.namespace
-                + "/folders/"
-                + $(this).attr("data-folder")
-                + "/add/" + page.id);
+              var folder = $("#folder_" + $(this).attr("data-folder"));
+              $(this).attr("href", folder.attr("data-url"));
             });
 
             for (var i = 0; i < action_hooks.pages.on_load.length; ++i) {
@@ -989,9 +986,6 @@ pagehub_ui = function() {
             }
 
             ui.editor.focus();
-          },
-          complete: function() {
-            ui.status.mark_ready();
           }
         });
 
@@ -1017,8 +1011,8 @@ pagehub_ui = function() {
           ui.disable_editor();
 
           handlers = {
-            success: function(p) {
-              var p = JSON.parse(p);
+            success: function(data) {
+              var p = data.page;
               ui.status.show("Page updated.", "good");
               if (p.nr_revisions == 0) {
                 $("#history").attr("disabled", "true").addClass("disabled");
@@ -1036,13 +1030,12 @@ pagehub_ui = function() {
               ui.enable_editor();
             },
             error: function(e)  {
-              ui.status.show("Unable to update page: " + e.responseText, "bad");
               ui.enable_editor();
             }
           }
         }
 
-        pagehub.pages.update(page_id, {
+        pagehub.pages.update(ui.current_page().attr("href"), {
           content: content,
           autosave: dont_show_status
         }, handlers);
@@ -1051,8 +1044,8 @@ pagehub_ui = function() {
         pagehub.sync();
       }, // pagehub_ui.pages.save
 
-      on_update: function(p) {
-        var p = JSON.parse(p);
+      on_update: function(data) {
+        var p = data.page;
 
         ui.status.show("Page updated!", "good");
 
@@ -1104,9 +1097,9 @@ pagehub_ui = function() {
         $.ajax({
           url: uri,
           type: "PUT",
-          success: function(page) {
-            var page    = JSON.parse(page),
-                folder  = $("#folder_" + page.folder);
+          success: function(data) {
+            var page    = data.page,
+                folder  = $("#folder_" + page.folder.id);
 
             var current_listing = page_li.parent();
 

@@ -16,6 +16,7 @@
   <%= yield_content :css %>
 
   <script type="text/javascript" src="/js/modernizr.js"></script>
+  <script type="text/javascript" src="/js/underscore-min.js"></script>
   <script type="text/javascript" src="/js/json2.min.js"></script>
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
   <script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
@@ -49,12 +50,13 @@
       <div class="subheader"><%= yield_content :header %></div>
 
       <nav>
-        <span><%= current_user.nickname %>
+        <span>
+          <%= current_user.nickname %>
           <%= gravatar_tag @user, :icon %>
         </span>
         <a class="listlike icon spaces" rel="tooltip" title="Your spaces" href="/spaces">Spaces</a>
         <ol class="listlike">
-          <li><a href="/spaces/new">Start a new space</a></li>
+          <li><a href="<%= Space.url(@user) %>">Start a new space</a></li>
           <% current_user.spaces.each do |s| %>
             <li>
               <a href="<%= s.url %>"><%= s.title %></a>
