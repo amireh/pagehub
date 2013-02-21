@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title><%= yield_with_default(:title) { AppTitle } %></title>
 
-  <% if settings.development? %>
+  <% unless settings.production? %>
     <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
     <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
     <!-- <link href="/js/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
@@ -26,7 +26,7 @@
     last_error = null; // used for debugging
   </script>
 
-  <% if settings.development? %>
+  <% unless settings.production? %>
     <script type="text/javascript" src="/js/shortcut.js"></script>
     <script src="/js/dynamism.js"></script>
     <script src="/js/pagehub.js"></script>
@@ -52,7 +52,9 @@
       <nav>
         <span>
           <%= current_user.nickname %>
-          <%= gravatar_tag @user, :icon %>
+          <% unless settings.test? %>
+            <%= gravatar_tag @user, :icon %>
+          <% end %>
         </span>
         <a class="listlike icon spaces" rel="tooltip" title="Your spaces" href="/spaces">Spaces</a>
         <ol class="listlike">

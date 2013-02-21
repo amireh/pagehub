@@ -6,8 +6,15 @@ get '/users/:user_id/spaces/new', :auth => :user do
   erb :'/spaces/new'
 end
 
-get "/users/:user_id/spaces/:space_id", auth: :member, requires: [ :space ] do
-  erb :"/spaces/show"
+get "/users/:user_id/spaces/:space_id",
+  auth: [ :member ],
+  provides: [ :json, :html ],
+  requires: [ :space ] do
+  
+  respond_with @space do |f|
+    f.json { rabl :"/spaces/show", object: @space }
+    f.html { erb :"/spaces/show" }
+  end
 end
 
 get "/users/:user_id/spaces/:space_id/dashboard", auth: :member, requires: [ :space ] do

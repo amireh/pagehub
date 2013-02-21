@@ -1,5 +1,5 @@
 <% content_for :js do %>
-<% if settings.development? %>
+<% unless settings.production? %>
   <script src="/js/ugly/jqModal.js"></script>
 <% end %>
 
