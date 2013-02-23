@@ -913,6 +913,8 @@ pagehub_ui = function() {
       },
 
       load: function() {
+        return false;
+        
         if ($(this).parent().hasClass("selected")) {
           ui.resource_editor.show();
           return false;

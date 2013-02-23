@@ -178,11 +178,15 @@ put '/spaces/:space_id/pages/:page_id',
   requires: [ :space, :page ] do
 
   authorize! :update, @page, :message => "You need to be an editor in this space to edit pages."
-    
+  
+  puts params.inspect
+  
   api_optional!({
     :title      => nil,
     :content    => nil,
-    :folder_id  => nil,
+    :folder_id  => lambda { |fid|
+      "No such folder" unless @folder = @space.folders.get(fid)
+    },
     :browsable  => nil
   })
   

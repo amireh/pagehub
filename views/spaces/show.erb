@@ -2,33 +2,42 @@
 
 <%= partial "/shared/_editor" %>
 
-<% content_for :js do %>
+<% content_for :deferred_js do %>
 
-<script type="text/javascript">
+  <script type="text/javascript">
 
-  $(function() {
+    $(function() {
 
-    space = <%= rabl :"spaces/show", object: @space %>.space;
-    console.log(space)
-    /* --- ------ *
-     * The Editor *
-     * --- ------ */
-    ui.editor = editor = ui.create_editor("page_editor");
-    ui.actions = $("#page_actions");
+      /* --- ------ *
+       * The Editor *
+       * --- ------ */
+      // ui.editor = editor = ui.create_editor("page_editor");
+      ui.actions = $("#page_actions");
 
-    // Resize it to fill up the remainder of the screen's height
-    var editor_h = $(window).height() - 135;
-    // $(".CodeMirror-scroll").css("min-height", editor_h + "px");
-    $(".CodeMirror").css("height", editor_h + "px");
-    // ui.editor.refresh();
-    // and the page listing
-    $("#pages .scroller").css("max-height", $(window).height() - 135);
+      // // Resize it to fill up the remainder of the screen's height
+      // var editor_h = $(window).height() - 135;
+      // // $(".CodeMirror-scroll").css("min-height", editor_h + "px");
+      // $(".CodeMirror").css("height", editor_h + "px");
+      // // ui.editor.refresh();
+      // // and the page listing
+      // $("#pages .scroller").css("max-height", $(window).height() - 135);
 
-    // data = <%#= @group.folder_pages.to_json %>;
-    dynamism.inject(space, $("#browser"));
+      // data = <%#= @group.folder_pages.to_json %>;
+      // dynamism.inject(space, $("#browser"));
+      // var source   = $("#folder_template").html();
+      // var template = Handlebars.compile(source);
+      
+      // $("#browser").html( template(space) );
+      // dynamism.bind("#browser");
+    });
+  </script>
+  <%#= jstemplate("folder") %>
+  <script>
+    require([ 'views/spaces/show' ],function(SpaceView) {
+      s = new SpaceView(<%= rabl :"spaces/show", object: @space %>);
+    });
+  </script>
 
-  });
-</script>
 <% end %>
 
 <% content_for :header do %>

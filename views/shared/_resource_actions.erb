@@ -5,9 +5,9 @@
     /* ------ -------- *
      * Action bindings *
      * ------ -------- */
-    ui.on_action("new_page", ui.pages.create, { is_editor_action: false }); // action[new_page]
-    ui.on_action("new_folder", ui.folders.create, { is_editor_action: false }); // action[new_page]
-    ui.on_action("save_content", ui.pages.save);
+    // ui.on_action("new_page", ui.pages.create, { is_editor_action: false }); // action[new_page]
+    // ui.on_action("new_folder", ui.folders.create, { is_editor_action: false }); // action[new_page]
+    // ui.on_action("save_content", ui.pages.save);
     ui.on_action("increase_height", function() {
       var step = parseInt($(".CodeMirror").css("line-height"));
       $(".CodeMirror-scroll").css("min-height",
@@ -56,7 +56,7 @@
 </script>
 <% end %>
 
-<div class="disabled" id="page_actions">
+<div class="" id="page_actions">
   <a href="#" class="icon save_page" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a>
 
   <a target="PageHub - Preview"
@@ -85,7 +85,6 @@
 
   <a class="listlike icon move_page" data-placement="top" title="Move this page to a different folder">Move</a>
   <ol class="listlike" id="movement_listing">
-    <!-- <li><a data-action="move" data-folder="0" href="/folders/x/add/y">Top folder</a></li> -->
   </ol>
 
   <a class="listlike icon editor_settings" data-placement="top" title="A few editor actions">Editor Actions</a>

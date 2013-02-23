@@ -67,6 +67,7 @@ configure do
   DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
   
   set :default_preferences, PageHub::Config.defaults
+  set :jstemplates, File.join(settings.root, 'app', 'templates')
 end
 
 configure :production, :development do |app|
@@ -106,4 +107,8 @@ end
 
 configure :development do
   Bundler.require(:development)
+end
+
+get '/test' do
+  erb :"test"
 end

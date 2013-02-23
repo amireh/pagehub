@@ -16,11 +16,18 @@
   <%= yield_content :css %>
 
   <script type="text/javascript" src="/js/modernizr.js"></script>
-  <script type="text/javascript" src="/js/underscore-min.js"></script>
-  <script type="text/javascript" src="/js/json2.min.js"></script>
-  <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
+  <script type="text/javascript" src="/assets/lib/json2.min.js"></script>
+  <script type="text/javascript" src="/assets/lib/jquery.min.js"></script>
   <script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
-
+  <!--
+  <script type="text/javascript" src="/js/lib/require.js"></script>
+  <script type="text/javascript" src="/js/lib/handlebars.js"></script>
+  <script type="text/javascript" src="/js/lib/underscore-min.js"></script>
+  <script type="text/javascript" src="/js/lib/backbone-min.js"></script>
+  <script src="/assets/app.js"></script>
+  -->
+  <script data-main="/assets/main" src="/assets/lib/require.js"></script>
+  
   <script>
     pagehub_settings = <%= preferences.to_json %>;
     last_error = null; // used for debugging

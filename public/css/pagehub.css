@@ -889,18 +889,22 @@ button.edit_folder:hover {
 
 
 #indicator,
-#drag_indicator {
-  display: none;
+#drag_indicator,
+#browser .selected:before {
+  /*display: none;*/
   position: absolute;
-  top: 2px;
+  top: 5px;
   left: -12px;
   width: 0;
   height: 0;
-  border-top:     7px solid transparent;
-  border-bottom:  7px solid transparent;
-  border-left:    7px solid #ddd;
+  border-top:     5px solid transparent;
+  border-bottom:  5px solid transparent;
+  border-left:    5px solid #ddd;
+  content: '  ';
 }
-
+#browser .selected.folder_title:before {
+  top: 10px;
+}
 #drag_indicator {
   right: 0;
   left: auto;
@@ -1098,7 +1102,7 @@ button[data-collapse] {
   .clearfix {display: block;}
 */
 .modal {
-    display: none;
+  display: none;
 }
 .modal.alert {
   background: white;

@@ -1,6 +1,6 @@
 object @space
 
-attributes :title, :brief, :is_public
+attributes :id, :title, :brief, :is_public
 
 node(:media) do |s|
   {
@@ -13,4 +13,8 @@ node(:media) do |s|
       url: s.url(true) + '/folders'
     }
   }
+end
+
+child(:creator => :creator) do |s|
+  attributes :id
 end

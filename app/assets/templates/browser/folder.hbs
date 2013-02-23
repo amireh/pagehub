@@ -1,0 +1,18 @@
+<li data-url="{{media.url}}"
+    data-parent="{{parent.id}}"
+    data-collapsible
+    id="folder_{{id}}"
+    class="folder">
+
+  <span class="folder_title" draggable="true">
+    {{title}}
+  </span>
+
+  <button class="edit_folder icon edit_folder"></button>
+  <button data-dyn-action="remove">&times;</button>
+
+  <ol class="listing folders"></ol>
+  <ol class="listing pages">
+    <li class="empty_folder">This folder is empty.</li>
+  </ol>
+</li>

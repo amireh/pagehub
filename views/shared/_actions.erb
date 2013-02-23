@@ -3,32 +3,12 @@
 <% end %>
 
 <% content_for :js do %>
-<script type="text/javascript">
-  $(function() {
-
-    dynamism.register_factory("folders", function(el, folder) {
-      var existing_folder = $("#folder_" + folder.id);
-      if (existing_folder.length == 1) {
-        // the folder exists, don't create another one
-        return existing_folder;
-      }
-
-      var target = $("[data-dyn-spawn-on='folders'][data-dyn-index=-1]");
-      if (target.length == 1) {
-        return dynamism.add(target);
-      }
-
-      return null;
-    });
-  });
-
-</script>
 <% end %>
 
 <div class="actions">
   <a class="listlike icon new_page" tabindex="1" title="Create a new page or folder">New</a>
   <ol class="listlike">
-    <li><a href="#" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
-    <li><a href="/folders/new" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">New folder</a></li>
+    <li><a href="<%= @space.url(true) + '/pages/new' %>" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
+    <li><a href="<%= @space.url(true) + '/folders/new' %>" role="button" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">New folder</a></li>
   </ol>
 </div>
