@@ -37,10 +37,6 @@ define('models/space',
         _.select(this.folders.models, function(f) { return f.get('parent') == null; })[0];
         
       return this.__root_folder;
-    },
-    
-    attach_to_space: function(folder) {
-      folder.space = this;
     }
   });
   

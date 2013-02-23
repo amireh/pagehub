@@ -7,6 +7,7 @@ map '/assets' do
   environment.append_path 'app/assets/javascripts'
   environment.append_path 'app/assets/stylesheets'
   environment.append_path 'app/assets/templates'
+  environment.append_path 'app/assets/images'
   run environment
 end
 

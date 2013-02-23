@@ -1087,6 +1087,21 @@ button[data-collapse] {
     bottom: 15px;
     left: 15px;
   }
+  .ui-dialog .actionbar {
+    position: relative;
+    min-height: 1em;
+  }
+  
+  .ui-dialog .actionbar :first-child {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+  .ui-dialog .actionbar :last-child {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 
 /*  .clearfix:after {
       content: ".";
@@ -1243,3 +1258,4 @@ footer p {
   margin: 0 auto;
 }
 
+.ui-dialog img { vertical-align: middle; }

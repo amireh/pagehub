@@ -5,7 +5,8 @@ function($, Backbone) {
   var CodeMirror_aliases = {
     "shell": [ "bash" ]
   };
-  var editor_disabled = false;
+  var editor_disabled = false,
+      content_changed = false;
   var create_editor = function(textarea_id, opts) {
     opts = opts || {};
     for(var mode in CodeMirror_aliases) {
@@ -44,7 +45,7 @@ function($, Backbone) {
     }, opts));
 
     editor.on("change", function() {
-      pagehub.content_changed = true;
+      content_changed = true;
     });
     
     return editor;
@@ -59,12 +60,18 @@ function($, Backbone) {
       this.space  = data.space;
       this.ctx    = data.ctx;
       this.space.on('page_loaded', this.populate_editor, this);
+      this.space.on('reset', this.reset, this);
       this.bootstrap();
     },
     
     bootstrap: function() {
       this.editor = create_editor("page_editor");
       this.resize_editor();
+    },
+    
+    reset: function() {
+      this.editor.clearHistory();
+      this.editor.setValue('Load or create a new page to begin.');
     },
     
     // Resize it to fill up the remainder of the screen's height
@@ -74,14 +81,16 @@ function($, Backbone) {
     },
     
     populate_editor: function(page) {
-      this.editor.clearHistory();
+      this.reset();
       this.editor.setValue(page.get('content'));
     },
     
     serialize: function() {
       this.editor.save();
       this.ctx.current_page.set('content', this.editor.getValue());
-    }
+    },
+    
+    content_changed: content_changed
   });
   
   return EditorView;

@@ -1,11 +1,12 @@
 define('views/spaces/page_actionbar',
-[ 'backbone', 'hb!move_folder_link.hbs' ],
-function(Backbone, MoveFolderLinkTemplate) {
+[ 'backbone', 'hb!move_folder_link.hbs', 'hb!dialogs/destroy_page.hbs', 'shortcut', 'pagehub' ],
+function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
   return Backbone.View.extend({
     el: $("#page_actions"),
     
     events: {
-      'click a.save_page': 'save_page'
+      'click a.save_page': 'save_page',
+      'click a#destroy_page': 'destroy_page'
     },
     
     MovementListing: Backbone.View.extend({
@@ -43,19 +44,30 @@ function(Backbone, MoveFolderLinkTemplate) {
       this.ctx    = data.ctx;
       this.movement_listing = new this.MovementListing(data);      
       this.space.on('page_loaded', this.on_page_loaded, this);
+      this.space.on('reset',       this.reset, this);
       
       this.anchors = {
         preview: this.$el.find('#preview')
       };      
     
+      
       this.bootstrap();
     },
     
     bootstrap: function() {
+      var view = this;
+      
+      Shortcut.add("ctrl+alt+s", function() { view.save_page(); });
+      Shortcut.add("ctrl+alt+v", function() { view.preview_page(); });
+      Shortcut.add("ctrl+alt+d", function() { view.destroy_page(); });
+      
       this.disable();
       this.movement_listing.render();
     },
-
+    
+    reset: function() {
+      this.disable();
+    },
     
     disable: function() {
       this.$el.attr("disabled", "disabled").addClass("disabled");
@@ -83,7 +95,29 @@ function(Backbone, MoveFolderLinkTemplate) {
       p.save({ content: p.get('content')}, {
         patch: true,
         success: function() {
-          ui.status.show("Page updated!", "good");
+          UI.status.show("Page updated!", "good");
+        }
+      });
+    },
+    
+    preview_page: function() {
+      window.open(this.ctx.current_page.get('media').href, "_preview")
+    },
+    destroy_page: function() {
+      var view  = this,
+          page  = this.ctx.current_page,
+          el    = DestroyPageTmpl(page.toJSON());
+
+      $(el).dialog({
+        title: "Page removal",
+        buttons: {
+          Cancel: function() {
+            $(this).dialog("close");
+          },
+          Remove: function() {
+            page.destroy();
+            $(this).dialog("close");
+          }
         }
       });
     }

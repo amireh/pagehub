@@ -4,7 +4,11 @@ get '/spaces/:space_id/folders/new',
   requires: [ :space ] do
   
   respond_to do |f|
-    f.html { erb :"/folders/new", layout: !request.xhr? }
+    f.html {
+      options = {}
+      options[:layout] = false if request.xhr?
+      erb :"/folders/new", options
+    }
   end
 end
 

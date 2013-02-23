@@ -1,21 +1,23 @@
-<% @f ||= Folder.new %>
+<% @f ||= @space.folders.new %>
 
-<form id="folder_form" action="/folders">
-  <label>Title: <br />
-    <% if settings.development? %>
-      <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= @f.title || "Personal" %>" />
-    <% else %>
+<div title="Create a new folder" id="new_folder_dialog">
+  <form method="POST" id="folder_form" action="<%= @space.url(true) %>/folders">
+    <label>Title: <br />
       <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= @f.title %>" />
-    <% end %>
-  </label>
-  <br />
-  <label>Parent folder:<br />
-    <select name="folder_id">
-      <option value="0" <%= 'selected="selected"' unless @f.folder_id %>>None</option>
-      <% (@group || current_user).folders.each do |f| %>
-        <option value="<%= f.id %>"
-          <%= 'selected="selected"' if @f.folder_id == f.id %>><%= f.title %></option>
-      <% end %>
-    </select>
-  </label>
-</form>
+    </label>
+    <br />
+    <label>Parent folder:<br />
+      <select name="parent_id">
+        <% @space.folders.each do |f| %>
+          <option value="<%= f.id %>" <%= 'selected="selected"' if @f.folder && @f.folder.id == f.id %>><%= f.title %></option>
+        <% end %>
+      </select>
+    </label>
+    <br />
+    <br />
+    <div class="actionbar">
+      <button class="cancel">Cancel</button>
+      <input type="submit" class="good" value="Create" />
+    </div>
+  </form>
+</div>

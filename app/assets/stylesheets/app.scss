@@ -1,1 +1,23 @@
-//= require twitter_bootstrap
+// require twitter_bootstrap
+//= require vendor/jquery-ui/pagehub-jqueryui/jquery-ui-1.10.1.custom.min
+
+.ui-dialog .ui-widget-content a {
+  color: #008CDD;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  padding: 0.3em 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+  right: 0.4em;
+}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+  float: none;
+}
+.ui-dialog .ui-dialog-buttonpane button {
+  margin: .5em .4em 0em 0.4em;
+}
+.ui-dialog .ui-dialog-buttonpane button:last-of-type {
+  float: right;
+}

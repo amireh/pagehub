@@ -3,9 +3,10 @@ define('views/spaces/browser',
   'jquery',
   'backbone',
   'hb!browser/folder.hbs',
-  'hb!browser/page.hbs'
+  'hb!browser/page.hbs',
+  'pagehub'
 ],
-function( $, Backbone, FolderTemplate, PageTemplate ) {
+function( $, Backbone, FolderTemplate, PageTemplate, UI ) {
   return Backbone.View.extend({
     el: $("#browser"),
     templates: {
@@ -24,6 +25,7 @@ function( $, Backbone, FolderTemplate, PageTemplate ) {
       this.space.on('load_page',    this.on_load_page, this);
       this.space.on('page_loaded',  this.highlight, this);
       this.space.on('page_created', this.on_page_loaded, this);
+      this.space.on('reset', this.reset, this);
       this.space.folders.on('add', this.render_folder, this);
       this.space.folders.on('change:title', this.update_folder_title, this);
       
@@ -42,6 +44,10 @@ function( $, Backbone, FolderTemplate, PageTemplate ) {
       return this;
     },
     
+    reset: function() {
+      this.$el.find('.selected').removeClass('selected');
+    },
+    
     resize: function() {
       $("#pages .scroller").css("max-height", $(window).height() - 135);
     },    
@@ -56,6 +62,7 @@ function( $, Backbone, FolderTemplate, PageTemplate ) {
       };
       
       f.pages.on('add', this.render_page, this);
+      f.pages.on('destroy', this.remove_page, this);
       f.pages.every(function(p) {
         return this.pages.trigger('add', p);
       }, f);
@@ -85,10 +92,18 @@ function( $, Backbone, FolderTemplate, PageTemplate ) {
       
       return this;
     },
+    
+    remove_page: function(page) {
+      page.ctx.browser.el.remove();
+      if (this.ctx.current_page == page) {
+        this.ctx.current_page = null;
+        this.space.trigger('reset');
+      }
+    },
         
     highlight: function(page) {
       if (!page) { page = this.ctx.current_page; }
-      this.$el.find('.selected').removeClass('selected');
+      this.reset();
       page.ctx.browser.el.addClass('selected');
       page.folder.ctx.browser.title.addClass('selected');
       // page.ctx.browser.el.append( $("#indicator").show() );
@@ -116,7 +131,7 @@ function( $, Backbone, FolderTemplate, PageTemplate ) {
           page.fetch();          
         }
       } catch(err) {
-        ui.status.show(err, "bad");
+        UI.status.show(err, "bad");
         // console.log(err)
       }
     },
@@ -126,7 +141,7 @@ function( $, Backbone, FolderTemplate, PageTemplate ) {
       console.log(page);
       this.ctx.current_page   = page;
       this.ctx.current_folder = page.folder;
-      page.folder.space.trigger('page_loaded', page);
+      page.folder.collection.space.trigger('page_loaded', page);
     }
   })
 })

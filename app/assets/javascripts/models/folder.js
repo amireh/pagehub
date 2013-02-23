@@ -9,7 +9,7 @@ define('models/folder',
     },
     
     urlRoot: function() {
-      return '/spaces/' + this.get('space').get('id') + '/folders';
+      return '/spaces/' + this.collection.space.get('id') + '/folders';
     },
     
     initialize: function(data) {
@@ -21,10 +21,9 @@ define('models/folder',
       this.pages.space  = this.collection.space;
       // this.pages.reset(data.pages);
 
-      var self = this;
       _.each(data.pages, function(pdata) {
-        self.pages.add(pdata);
-      });
+        this.pages.add(pdata);
+      }, this);
     },
     
     attach_to_folder: function(page) {
