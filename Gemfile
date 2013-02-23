@@ -38,7 +38,9 @@ gem 'omniauth-google-oauth2'
 # gem 'omniauth-twitter', '0.0.9'
 gem 'sinatra-can', :require => "sinatra/can"
 gem 'rabl'
+gem 'sass'
 gem 'sprockets', '~> 2.0'
+gem 'sprockets-sass'
 
 group :development do
   gem 'thin'
