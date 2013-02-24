@@ -18,9 +18,21 @@ define('models/folder',
     },
     
     get_parent: function() {
-      return this.collection.get(this.get('parent').id);
+      if (this.has_parent())
+        return this.collection.get(this.get('parent').id);
+      else
+        return null;
     },
 
+    ancestors: function() {
+      var ancestors = [ this ];
+      if (this.has_parent()) {
+        ancestors.push( this.get_parent().ancestors() );
+      }
+      
+      return _.reject(_.uniq(_.flatten(ancestors)), function(f) { return f == null; });
+    },
+    
     children: function() {
       return this.collection.space.folders.where({ 'parent.id': this.get('id') });
     },

@@ -239,3 +239,13 @@ header h1 a.selected { text-decoration: none; }
 #browser .folder_title:hover button {
   display: block;
 }
+
+#movement_listing {
+  white-space:nowrap;
+  right: auto !important;
+  font-size: 0.9em;  
+}
+#movement_listing a {
+  padding: 3px 10px;
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
 <h1>
   <%= page.title %>
-  <em class="small"><%= page.updated_at.strftime("Last updated on %D") %></em>
+  <em class="small"><%= (page.updated_at || page.created_at).strftime("Last updated on %D") %></em>
 </h1>

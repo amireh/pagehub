@@ -124,7 +124,7 @@ class Space
       return nil if !folder
     end
     
-    folder.pages.first({ pretty_title: path.last })
+    folder.pages.first({ pretty_title: path.last.to_s.sanitize })
   end
 
   # TODO: helperize this, seriously

@@ -25,7 +25,18 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       },
       
       add_link: function(folder) {
-        var link = MoveFolderLinkTemplate(folder.toJSON());
+        var data = folder.toJSON();
+        data.full_path =
+          _.collect(
+          _.reject(folder.ancestors(), function(f) { return f.get('title') == 'None' })
+          .reverse(),
+          function(f){ return f.get('title') }).join(' >> ');
+        
+        if (data.full_path.trim().length == 0)
+          data.full_path = 'None';
+        
+        var link = MoveFolderLinkTemplate(data);
+        
         this.$el.append("<li>" + link + "</li>");
         
         if (!folder.ctx) { folder.ctx = {} }

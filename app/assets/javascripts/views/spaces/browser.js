@@ -36,9 +36,9 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.space.folders.on('add', this.render_folder, this);
       this.space.folders.on('remove', this.remove_folder, this);
       this.space.folders.on('change:title', this.update_title, this);
-      this.space.folders.on('change:title', this.update_folder_position, this);
-      this.space.folders.on('change:parent.id', this.update_folder_position, this);
-      // this.space.folders.on('sync', this.update_folder_position, this);
+      this.space.folders.on('change:title', this.reorder_folder, this);
+      this.space.folders.on('change:parent.id', this.reorder_folder, this);
+      // this.space.folders.on('sync', this.reorder_folder, this);
       
       this.bootstrap();
     },
@@ -50,6 +50,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       
       this.space.folders.every(function(f) {
         this.space.folders.trigger('add', f);
+        f.pages.on('add', this.reorder_page, this);
         return true;
       }, this);
 
@@ -70,18 +71,9 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
     },    
     
     render_folder: function(f) {
-      var entry = this.templates.folder(f.toJSON());
-          // target = f.has_parent() ? f.get_parent().ctx.browser.folder_listing : this.$el,
-          // target = this.$el,
-      
-      var target = this.$el;
-      
-      // if (f.has_parent()) {
-      //   try { target = f.get_parent().ctx.browser.folder_listing }
-      //   catch (e) { target = this.$el; console.log("Unable to attach folder to parent: " + e) }
-      // }
-      
-      var el = target.append( entry ).children().last();
+      var entry   = this.templates.folder(f.toJSON()),
+          target  = this.$el,
+          el      = target.append( entry ).children().last();
       
       f.ctx.browser = {
         el:             el,
@@ -96,9 +88,10 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         f.ctx.browser.el.addClass('general-folder');
       }
             
-      f.pages.on('add',     this.render_page, this);
-      f.pages.on('remove',  this.remove_page, this);
-      f.pages.on('change:title', this.update_title, this);
+      f.pages.on('add',           this.render_page, this);
+      f.pages.on('remove',        this.remove_page, this);
+      f.pages.on('change:title',  this.update_title, this);
+      f.pages.on('change:title',  this.reorder_page, this);
       f.pages.every(function(p) {
         return this.pages.trigger('add', p);
       }, f);
@@ -126,7 +119,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       r.ctx.browser.title.html(r.get('title'))
     },
     
-    update_folder_position: function(f) {
+    reorder_folder: function(f) {
       
       if (f.ctx.browser && f.has_parent()) {
         var parent = f.get_parent();
@@ -142,17 +135,14 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
               listing  = parent.ctx.browser.folder_listing,
               el       = f.ctx.browser.el;
           
-          console.log("positioning folder " + f.get('title') + ' -> ' + position + ' [' + listing.children().length + ']');
+          // console.log("positioning folder " + f.get('title') + ' -> ' + position + ' [' + listing.children().length + ']');
           
           if (position == 0) {
             listing.prepend(el);
           } else if (position >= listing.children().length) {
             listing.append(el)
           } else {
-            // console.log($(listing.children()[position-1]))
-            // console.log(listing.children())
             $(listing.children()[position-1]).after(el);
-            // listing.append(el);
           }
         }
       }
@@ -166,8 +156,8 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       folder.ctx.browser.empty_label.hide();
       
       page.on('sync', this.on_page_loaded, this);
-      // page.on('change:folder_id', this.on_page_moved, this);
-      page.on('change:title', this.on_page_moved, this);
+      // page.on('change:folder_id', this.reorder_page, this);
+      // page.on('change:title', this.reorder_page, this);
       
       page.ctx.browser = {
         el:     el,
@@ -178,7 +168,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       if (page.isNew()) {
         page.save();
       }
-      
+            
       return this;
     },
     
@@ -241,21 +231,28 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       page.folder.collection.space.trigger('page_loaded', page);
     },
     
-    on_page_moved: function(page) {
-      var length   = page.get('title').length,
-          position =  _.sortedIndex(page.folder.pages.collect(function(p) {
-                        return p.get('title').substr(0, length).toUpperCase()
-                      }), page.get('title').toUpperCase()),
+    reorder_page: function(page) {
+      var page_titles = _.collect(
+                          _.reject(page.collection.pluck("title"),
+                            function(s) { return s == page.get('title') }),
+                          function(s) { return s.toUpperCase() }),
+          position =  _.sortedIndex(page_titles, page.get('title').toUpperCase()),
           listing  = page.folder.ctx.browser.page_listing,
           el       = page.ctx.browser.el;
       
+      el.hide();
+      
+      // console.log("positioning page " + page.get('title') + ' -> ' + position + ' [' + listing.children(":visible").length + ']');
+            
       if (position == 0) {
         listing.prepend(el);
-      } else if (position == listing.children().length) {
+      } else if (position == listing.children(":visible").length) {
         listing.append(el)
       } else {
-        $(listing.children()[position]).after(el);
+        $(listing.children(":visible")[position]).before(el);
       }
+      
+      el.show();
     },
     
     edit_folder: function(evt) {

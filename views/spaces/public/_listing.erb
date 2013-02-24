@@ -1,5 +1,5 @@
 <% no_title ||= false %>
-<% show_homepages ||= is_on("publishing.layout.show_homepages_in_sidebar") %>
+<% show_homepages ||= @space.is_on?("publishing.layout.show_homepages_in_sidebar") %>
 <% coll ||= nil %>
 <% def dump_page(p) %>
   <li>
@@ -34,12 +34,12 @@
     <%# @group.browsable_pages({ folder: nil }).each { |p| dump_page p } %>
     <%# @group.browsable_folders.all({ folder_id: nil }).each { |tlf| dump_folder(tlf) } %>
 
-  <% 5.times do
-    @group.on_resources({
+  <% 1.times do
+    @space.on_resources({
       on_page: lambda { |p| %>
         <% return if !show_homepages && p.title == "Home" %>
         <% selected = @page && @page.id == p.id ? 'class="selected"' : '' %>
-        <% url = selected.empty? ? "href=\"#{p.public_url}\"" : '' %>
+        <% url = selected.empty? ? "href=\"#{p.href}\"" : '' %>
         <li>
           <label>
             <a <%= selected %> <%= url %>><%= p.title %></a>
@@ -55,7 +55,7 @@
             <% if f.pages.all({ browsable:true }).empty? || !f.has_homepage? %>
               <strong><%= f.title %></strong>
             <% else %>
-              <strong><a <%= selected %> href="<%= f.public_url %>"><%= f.title %></a></strong>
+              <strong><a <%= selected %> href="<%= f.href %>"><%= f.title %></a></strong>
             <% end %>
           </label>
           <ol>

@@ -15,21 +15,21 @@
      # get things done: we need the preferences of the author of the page,
      # not the current (or none) user, and Helpers::preferences uses either
      # current_user or @user, so overriding it would do exactly what we want:
-     if @page then @user = @page.user end
+     if @page then @user = @page.creator end
   %>
 
   <%= yield_content :scripts %>
   <%= yield_content :js %>
-  <% puts p().inspect %>
-  <% scheme = p('publishing.theme.name') %>
+  
+  <% scheme = @space.p('publishing.theme.name') %>
   <% unless scheme == "None" %>
     <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
   <% end %>
 
-  <% unless @group %>
+  <% unless @space %>
     <style>
       .stuff {
-        width: <%= preferences["publishing"]["width"].to_i %>px;
+        width:      <%= preferences["publishing"]["width"].to_i %>px;
         text-align: <%= preferences["publishing"]["justified"] ? 'justify' : 'left' %>;
       }
     </style>
@@ -40,13 +40,13 @@
   <%= yield_content :css %>
 
   <% layout = "" %>
-  <% if @group %>
-    <% layout = p('publishing.layout.name') %>
+  <% if @space %>
+    <% layout = @space.p('publishing.layout.name') %>
     <link href="/css/layouts/<%= layout %>.css" rel="stylesheet" type="text/css" />
     
-    <% if @group.css && !@group.css.empty? %>
+    <% if @space.p('publishing.custom_css') %>
       <style>
-        <%= @group.css.minify(:css) %>
+        <%= @space.p('publishing.custom_css').minify(:css) %>
       </style>
     <% end %>
   <% else %>
@@ -78,11 +78,11 @@
   <div class="wrap">
     
     <header class="scope_title">
-      <% if @group %>
-        <h1><a href="<%= @group.public_url %>"><%= @group.title %></a></h1>
-        <em><%= @group.brief %></em>
+      <% if @space %>
+        <h1><a href="<%= @space.href %>"><%= @space.title %></a></h1>
+        <em><%= @space.brief %></em>
         <div class="nav_links">
-          <% p('publishing.navigation_links').each do |e| %>
+          <% (@space.p('publishing.navigation_links') || []).each do |e| %>
             <a href="<%= e["uri"] %>"><%= e["title"] %></a>
           <% end %>
         </div>

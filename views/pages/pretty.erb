@@ -1,24 +1,24 @@
 <% content_for :title do %> <%= @page.title %> | PageHub <% end %>
-<% content_for :section do %><%= p('publishing.layout.name') %><% end %>
+<% content_for :section do %><%= @space.p('publishing.layout.name') %><% end %>
 
 <% content_for :header do %>
-  <% if @group %>
-    <%= partial "groups/public/_heading", locals: { page: @page } %>
+  <% if @space %>
+    <%= partial "spaces/public/_heading", locals: { page: @page } %>
   <% elsif @public then %>
     <!-- <h1><a href="<%= @page.public_url true %>"><%= @page.title %></a></h1> -->
-    <%= partial "groups/public/_heading", locals: { page: @page } %>
+    <%= partial "spaces/public/_heading", locals: { page: @page } %>
   <% else %>
-  <%= partial "groups/public/_heading", locals: { page: @page } %>
+  <%= partial "spaces/public/_heading", locals: { page: @page } %>
   <% end %>
 <% end %>
 
-<% if @group %>
+<% if @space %>
   <% @folder ||= @page %>
   
-  <%= partial "/groups/public/_breadcrumbs" if is_on('publishing.layout.show_breadcrumbs') %>
+  <%= partial "/spaces/public/_breadcrumbs" if @space.is_on?('publishing.layout.show_breadcrumbs') %>
   
   <% content_for :sidebar do %>
-    <%= partial "/groups/public/_listing" %>
+    <%= partial "/spaces/public/_listing" %>
   <% end %>  
 <% end %>
 

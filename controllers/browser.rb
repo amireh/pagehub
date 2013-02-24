@@ -22,11 +22,11 @@ get '/:user_nickname/:space_pretty_title/*' do |user_nn, space_pt, path|
   unless can? :browse, p
     halt 401, "You are not allowed to view that page."
   end
-  
+  @space = s
   @page = p
   
   respond_to do |f|
-    f.html { erb  :"pages/pretty" }
+    f.html { erb  :"pages/pretty", layout: :"layouts/print" }
     f.json { rabl :"pages/show", object: p }
   end
 end

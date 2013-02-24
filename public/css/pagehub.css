@@ -915,7 +915,7 @@ button.delete_folder:hover {
 #browser .selected {
   text-decoration: none;
 }
-#browser .selected.folder_title:before {
+#browser .folder_title .selected:before {
   display: none;
 }
 #drag_indicator {

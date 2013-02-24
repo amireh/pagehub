@@ -13,6 +13,5 @@ Handlebars.registerHelper('escape', function(word) {
 });
 
 Handlebars.registerHelper('h', function(word) {
-  return word;
-  // return _.escape(word);
+  return _.escape(word);
 });

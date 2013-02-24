@@ -24,9 +24,16 @@ function(Backbone, Folder, UI, Shortcut) {
       if (e) { e.preventDefault(); }
       
       UI.status.show("Creating a new page...", "pending");
-      var folder  = this.ctx.current_folder || this.space.root_folder(),
-          page    = folder.pages.add({});
+      var folder  = this.ctx.current_folder || this.space.root_folder();
       
+      folder.pages.add({ folder_id: folder.get('id') }, { silent: true });
+      var page = _.last(folder.pages.models);
+      
+      page.save({}, {
+        success: function() {
+          page.collection.trigger('add', page);
+        }
+      })
       // this.space.trigger('load_page', page);
       
       return false;
@@ -56,7 +63,6 @@ function(Backbone, Folder, UI, Shortcut) {
               Create: function(e) {
                 var folder_data = dialog.find('form').serializeObject();
                 space.folders.add(folder_data, { silent: true });
-                // space.folders.add(folder_data);
                 var folder = _.last(space.folders.models);
                 console.log(folder)
                 folder.save({}, {
@@ -67,19 +73,9 @@ function(Backbone, Folder, UI, Shortcut) {
                   }
                 });
                 e.preventDefault();
-                // $(this).dialog("close");
               }
             }
           });
-          
-          // dialog.find('form').on('submit', function(e) {
-            
-          // });
-          
-          // dialog.find('button.cancel').on('click', function(e) {
-          //   e.preventDefault();
-          //   dialog.dialog("close");
-          // });
         }
       });
       
