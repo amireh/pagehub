@@ -53,6 +53,10 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
     
     reset: function() {
       this.$el.find('.selected').removeClass('selected');
+      
+      this.space.folders.every(function(f) {
+        f.ctx.browser.empty_label.show(f.pages.length == 0)
+      });
     },
     
     resize: function() {
@@ -170,7 +174,6 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.reset();
       page.ctx.browser.el.addClass('selected');
       page.folder.ctx.browser.title.addClass('selected');
-      // page.ctx.browser.el.append( $("#indicator").show() );
     },
     
     load_page: function(e) {
@@ -207,7 +210,26 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
     },
     
     on_page_moved: function(page) {
-      page.folder.ctx.browser.page_listing.append(page.ctx.browser.el)
+      var position = _.sortedIndex(page.folder.pages.collect(function(p) { return p.get('title') }), page.get('title')),
+          listing  = page.folder.ctx.browser.page_listing,
+          el       = page.ctx.browser.el;
+      
+      if (position == 0) {
+        listing.prepend(el);
+      } else if (position == listing.children().length) {
+        listing.append(el)
+      } else {
+        $(listing.children()[position]).after(el);
+      }
+      
+      page.folder.ctx.browser.empty_label.hide();
+      
+      var last_folder = this.space.folders.get(page.previous('folder_id'));
+      if (last_folder && last_folder.pages.length <= 1) {
+        last_folder.ctx.browser.empty_label.show();
+      }
+      
+      console.log("page should be at " + position + " out of " + listing.children().length);
     },
     
     edit_folder: function(evt) {
