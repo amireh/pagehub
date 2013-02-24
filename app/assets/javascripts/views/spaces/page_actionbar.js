@@ -27,9 +27,15 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       add_link: function(folder) {
         var link = MoveFolderLinkTemplate(folder.toJSON());
         this.$el.append("<li>" + link + "</li>");
+        
+        if (!folder.ctx) { folder.ctx = {} }
+        if (!folder.ctx.page_actionbar) { folder.ctx.page_actionbar = {} }
+
+        folder.ctx.page_actionbar.movement_anchor = this.$el.find('li:last');
       },
       
       rm_link: function(folder) {
+        folder.ctx.page_actionbar.movement_anchor.remove();
       },
       
       render: function() {
@@ -49,16 +55,23 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
           return false;
         }
         
-        var page = this.ctx.current_page;
-        page.save({ folder_id: folder.get('id') }, { patch: true });
+        var page        = this.ctx.current_page,
+            old_folder  = page.folder;
+        
+        page.save({ folder_id: folder.get('id') }, {
+          patch: true,
+          success: function() {
+            old_folder.pages.remove(page);
+            folder.pages.add(page);
+          }
+        });
         
         e.preventDefault();
       }
     }),
     
     _ctx: {
-      disabled:     false,
-      current_page: null
+      disabled:     false
     },
     
     initialize: function(data) {

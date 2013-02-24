@@ -34,7 +34,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.space.on('page_created', this.on_page_loaded, this);
       this.space.on('reset', this.reset, this);
       this.space.folders.on('add', this.render_folder, this);
-      this.space.folders.on('destroy', this.remove_folder, this);
+      this.space.folders.on('remove', this.remove_folder, this);
       this.space.folders.on('change:title', this.update_title, this);
       this.space.folders.on('change:title', this.update_folder_position, this);
       this.space.folders.on('change:parent.id', this.update_folder_position, this);
@@ -58,18 +58,11 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         return true;
       }, this);
       
-      
-      // this.space.folders.on('add', this.update_folder_position, this);
-
       return this;
     },
     
     reset: function() {
       this.$el.find('.selected').removeClass('selected');
-      
-      this.space.folders.every(function(f) {
-        f.ctx.browser.empty_label.show(f.pages.length == 0)
-      });
     },
     
     resize: function() {
@@ -104,7 +97,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       }
             
       f.pages.on('add',     this.render_page, this);
-      f.pages.on('destroy', this.remove_page, this);
+      f.pages.on('remove',  this.remove_page, this);
       f.pages.on('change:title', this.update_title, this);
       f.pages.every(function(p) {
         return this.pages.trigger('add', p);
@@ -173,7 +166,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       folder.ctx.browser.empty_label.hide();
       
       page.on('sync', this.on_page_loaded, this);
-      page.on('change:folder_id', this.on_page_moved, this);
+      // page.on('change:folder_id', this.on_page_moved, this);
       page.on('change:title', this.on_page_moved, this);
       
       page.ctx.browser = {
@@ -191,8 +184,10 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
     
     remove_page: function(page) {
       page.ctx.browser.el.remove();
-      if (page.folder.pages.length == 0) {
-        page.folder.ctx.browser.empty_label.show();
+      
+      // is the last folder empty now?
+      if (page.collection.folder.pages.length == 0) {
+        page.collection.folder.ctx.browser.empty_label.show();
       }
       
       if (this.ctx.current_page == page) {
@@ -216,6 +211,11 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
           page      = folder.pages.get(page_id);
 
       e.preventDefault();
+      
+      if (!page) {
+        UI.report_error("unable to load page " + page_id + "!")
+        return false;
+      }
       
       this.space.trigger('load_page', page);
       
@@ -255,13 +255,6 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         listing.append(el)
       } else {
         $(listing.children()[position]).after(el);
-      }
-      
-      page.folder.ctx.browser.empty_label.hide();
-      
-      var last_folder = this.space.folders.get(page.previous('folder_id'));
-      if (last_folder && last_folder.pages.length <= 1) {
-        last_folder.ctx.browser.empty_label.show();
       }
     },
     
