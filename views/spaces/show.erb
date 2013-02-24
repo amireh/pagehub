@@ -6,7 +6,7 @@
 <script>
   pagehub_hooks.push(
     require([ 'views/spaces/show' ],function(SpaceView) {
-      s = new SpaceView(<%= rabl :"spaces/show", object: @space %>);
+      s = new SpaceView(<%= rabl :"/spaces/show", object: @space %>);
     })
   );
 </script>

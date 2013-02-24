@@ -82,7 +82,7 @@ function($, Backbone) {
     
     populate_editor: function(page) {
       this.reset();
-      this.editor.setValue(page.get('content'));
+      this.editor.setValue(_.unescape( page.get('content') ));
     },
     
     serialize: function() {

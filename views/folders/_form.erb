@@ -1,25 +1,25 @@
 <% @f ||= @folder || @space.folders.new %>
 
 <div title="Create a new folder" id="new_folder_dialog">
-  <form method="POST" id="folder_form" action="<%= @space.url(true) %>/folders">
+  <form>
     <label>Title: <br />
-      <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= @f.title %>" />
+      <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= h @f.title %>" />
     </label>
     <br />
     <label>Parent folder:<br />
       <select name="parent_id">
         <% @space.traverse do |f, lvl| %>
           <option value="<%= f.id %>" <%= 'selected="selected"' if @f.folder && @f.folder.id == f.id %>>
-            <%= Array.new(lvl * 4, '&nbsp;').join('') %> <%= f.title %>
+            <%= Array.new(lvl * 4, '&nbsp;').join('') %> <%= h f.title %>
           </option>
         <% end %>
       </select>
     </label>
-    <br />
+<!--     <br />
     <br />
     <div class="actionbar">
       <button class="cancel">Cancel</button>
       <input type="submit" class="good" value="Create" />
-    </div>
+    </div> -->
   </form>
 </div>

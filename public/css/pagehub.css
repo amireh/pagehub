@@ -1275,4 +1275,7 @@ footer p {
   border: 1px solid #aaa;
   box-shadow: 0 0 1px 5px #BBB;
 }
+.ui-widget-overlay + .ui-dialog {
+  box-shadow: 0 0 1px 5px #999;  
+}
 .ui-dialog img { vertical-align: middle; }

@@ -68,6 +68,10 @@ configure do
   
   set :default_preferences, PageHub::Config.defaults
   set :jstemplates, File.join(settings.root, 'app', 'templates')
+  
+  Rabl.configure do |config|
+    config.escape_all_output = true
+  end
 end
 
 configure :production, :development do |app|

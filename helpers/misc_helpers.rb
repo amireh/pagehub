@@ -136,6 +136,10 @@ end
 helpers do
   include PageHub::Helpers
 
+  def h(*args)
+    ERB::Util.h(*args)
+  end
+  
   def name_available?(name)
     nn = name.to_s.sanitize
     !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ title: nn }).nil?

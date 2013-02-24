@@ -36,7 +36,9 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.space.folders.on('add', this.render_folder, this);
       this.space.folders.on('destroy', this.remove_folder, this);
       this.space.folders.on('change:title', this.update_title, this);
+      this.space.folders.on('change:title', this.update_folder_position, this);
       this.space.folders.on('change:parent.id', this.update_folder_position, this);
+      // this.space.folders.on('sync', this.update_folder_position, this);
       
       this.bootstrap();
     },
@@ -47,9 +49,18 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       console.log("Rendering " + this.space.folders.models.length + " folders");
       
       this.space.folders.every(function(f) {
-        return this.space.folders.trigger('add', f);
+        this.space.folders.trigger('add', f);
+        return true;
+      }, this);
+
+      this.space.folders.every(function(f) {
+        this.space.folders.trigger('change:parent.id', f);
+        return true;
       }, this);
       
+      
+      // this.space.folders.on('add', this.update_folder_position, this);
+
       return this;
     },
     
@@ -66,24 +77,24 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
     },    
     
     render_folder: function(f) {
-      console.log(f);
       var entry = this.templates.folder(f.toJSON());
           // target = f.has_parent() ? f.get_parent().ctx.browser.folder_listing : this.$el,
           // target = this.$el,
       
       var target = this.$el;
       
-      if (f.has_parent()) {
-        try { target = f.get_parent().ctx.browser.folder_listing }
-        catch (e) { target = this.$el; console.log("Unable to attach folder to parent: " + e) }
-      }
+      // if (f.has_parent()) {
+      //   try { target = f.get_parent().ctx.browser.folder_listing }
+      //   catch (e) { target = this.$el; console.log("Unable to attach folder to parent: " + e) }
+      // }
       
       var el = target.append( entry ).children().last();
       
       f.ctx.browser = {
         el:             el,
-        title:          el.find('span.folder_title'),
+        title:          el.find('.folder_title > span'),
         folder_listing: el.find('ol.folders'),
+        collapser:      el.find('button[data-collapse]'),
         page_listing:   el.find('ol.pages'),
         empty_label:    el.find('.empty_folder')
       };
@@ -91,11 +102,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       if (!f.has_parent()) {
         f.ctx.browser.el.addClass('general-folder');
       }
-      
-      // f.bind('change:parent.id', function(f) {
-      //   console.log("repositioned")
-      // });
-      
+            
       f.pages.on('add',     this.render_page, this);
       f.pages.on('destroy', this.remove_page, this);
       f.pages.on('change:title', this.update_title, this);
@@ -103,12 +110,11 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         return this.pages.trigger('add', p);
       }, f);
       
-      this.space.folders.every(function(folder) {
-        if (folder.has_parent() && folder.get_parent() == f && folder.ctx.browser) {
-          f.ctx.browser.folder_listing.append( folder.ctx.browser.el );
-        }
-        return true;
-      }, this);
+      f.trigger('change:parent.id', f);
+      
+      if (this.ctx.settings.runtime.collapsed.indexOf(parseInt( f.get('id') )) != -1) {
+        this.__collapse(f.ctx.browser.collapser);
+      }
       
       return this;
     },
@@ -128,10 +134,33 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
     },
     
     update_folder_position: function(f) {
+      
       if (f.ctx.browser && f.has_parent()) {
         var parent = f.get_parent();
+        
         if (parent.ctx.browser) {
-          parent.ctx.browser.folder_listing.append(f.ctx.browser.el)
+          
+          var length = f.get('title').length,
+              position =
+                _.sortedIndex(
+                  _.collect(parent.children(),
+                    (function(p) { return p.get('title').toUpperCase() })),
+                    f.get('title').toUpperCase()),
+              listing  = parent.ctx.browser.folder_listing,
+              el       = f.ctx.browser.el;
+          
+          console.log("positioning folder " + f.get('title') + ' -> ' + position + ' [' + listing.children().length + ']');
+          
+          if (position == 0) {
+            listing.prepend(el);
+          } else if (position >= listing.children().length) {
+            listing.append(el)
+          } else {
+            // console.log($(listing.children()[position-1]))
+            // console.log(listing.children())
+            $(listing.children()[position-1]).after(el);
+            // listing.append(el);
+          }
         }
       }
     },
@@ -145,6 +174,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       
       page.on('sync', this.on_page_loaded, this);
       page.on('change:folder_id', this.on_page_moved, this);
+      page.on('change:title', this.on_page_moved, this);
       
       page.ctx.browser = {
         el:     el,
@@ -212,7 +242,10 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
     },
     
     on_page_moved: function(page) {
-      var position = _.sortedIndex(page.folder.pages.collect(function(p) { return p.get('title') }), page.get('title')),
+      var length   = page.get('title').length,
+          position =  _.sortedIndex(page.folder.pages.collect(function(p) {
+                        return p.get('title').substr(0, length).toUpperCase()
+                      }), page.get('title').toUpperCase()),
           listing  = page.folder.ctx.browser.page_listing,
           el       = page.ctx.browser.el;
       
@@ -230,13 +263,11 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       if (last_folder && last_folder.pages.length <= 1) {
         last_folder.ctx.browser.empty_label.show();
       }
-      
-      console.log("page should be at " + position + " out of " + listing.children().length);
     },
     
     edit_folder: function(evt) {
       var el      = $(evt.toElement),
-          folder  = this.space.folders.get( parseInt( el.parent().attr("id").replace('folder_', ''))),
+          folder  = this.space.folders.get( parseInt( el.parents(".folder:first").attr("id").replace('folder_', ''))),
           space   = this.space;
       
       $.ajax({
@@ -245,31 +276,32 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         url:    folder.get('media').url + '/edit',
         success: function(dialog_html) {
           var dialog = $("<div>" + dialog_html + "</div>").dialog({
-            title: "Editing a folder"
-          });
-          
-          dialog.find('form').on('submit', function(e) {
-            var folder_data = $(this).serializeObject();
-            folder.save(folder_data, {
-              wait: true,
-              patch: true
-            });
-            
-            dialog.dialog("close");
-            e.preventDefault();
-          });
-          
-          dialog.find('button.cancel').on('click', function(e) {
-            e.preventDefault();
-            dialog.dialog("close");
+            title: "Folder properties",
+            buttons: {
+              Cancel: function() {
+                $(this).dialog("close");
+              },
+              Update: function(e) {
+                var folder_data = dialog.find('form').serializeObject();
+                folder.save(folder_data, {
+                  wait: true,
+                  patch: true,
+                  success: function() { dialog.dialog("close"); }
+                });                
+                e.preventDefault();
+              }
+            }
           });
         }
       });
+      
+      evt.preventDefault();
+      return false;
     }, // edit_folder
     
     delete_folder: function(evt) {
       var view    = this,
-          folder  = this.space.folders.get(parseInt($(evt.toElement).parent().attr("id").replace('folder_', ''))),
+          folder  = this.space.folders.get(parseInt($(evt.toElement).parents(".folder:first").attr("id").replace('folder_', ''))),
           data    = folder.toJSON();
       
       data.nr_pages     = folder.pages.length;
@@ -289,14 +321,22 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
           }
         }
       });
+      
+      evt.preventDefault();
+      return false;
     },
     
     collapse: function(evt) {
       var source = $(evt.toElement);
+            
+      if (source.attr("data-collapse") == null) {
+        source = source.parents(".folder:first").find('[data-collapse]:first');
+      }
       
-      if (source.attr("data-collapse") == null)
-        source = source.siblings("[data-collapse]:first");
-
+      this.__collapse(source);
+    },
+    
+    __collapse: function(source) {
       var folder_id = parseInt(source.attr("data-folder"));
       
       if (source.attr("data-collapsed")) {
@@ -326,5 +366,5 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.$el.find('.highlighted').removeClass("highlighted");
     }
     
-  })
-})
+  });
+});

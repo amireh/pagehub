@@ -67,7 +67,22 @@ requirejs.config({
   }
 });
 
-require([ 'underscore', 'handlebars', 'handlebars.helpers' ], function(_) { 
+require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui' ], function(_, $) { 
+  $.extend($.ui.dialog.prototype.options, {
+    modal: true,
+    resizable: false,
+    open: function() {
+      var dlg = $(this);
+      dlg.find('.ui-dialog-buttonpane button:last').focus();
+      dlg.find('form').submit(function(e) { e.preventDefault(); return false; });
+      dlg.keypress(function(e) {
+        if( e.keyCode == 13 ) {
+          dlg.parent().find('.ui-dialog-buttonpane button:last').click();
+          return false;
+        }
+      });      
+    }
+  }); 
   _.each(pagehub_hooks, function(cb) { cb(); });
 });
 

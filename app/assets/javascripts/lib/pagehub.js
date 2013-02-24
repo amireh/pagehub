@@ -201,10 +201,6 @@ define([ 'jquery', 'bootstrap' ], function($) {
       timers.autosave = setInterval("ui.pages.save(true)", pulses.autosave * 1000);
     },
 
-    collapse: function(source) {
-      
-    },
-
     status: {
       clear: function(cb) {
         if (!$("#status").is(":visible"))
@@ -217,8 +213,8 @@ define([ 'jquery', 'bootstrap' ], function($) {
           cb();
 
         if (status_queue.length > 0) {
-          var status = status_queue.pop();
-          return this.status.show(status[0], status[1], status[2]);
+          var __status = status_queue.pop();
+          return this.status.show(__status[0], __status[1], __status[2]);
         }
       },
 
@@ -229,9 +225,9 @@ define([ 'jquery', 'bootstrap' ], function($) {
           seconds_to_show = defaults.status;
 
         // queue the status if there's one already being displayed
-        if (status_shown && current_status != "pending") {
-          return status_queue.push([ text, status, seconds_to_show ]);
-        }
+        // if (status_shown && current_status != "pending") {
+        //   return status_queue.push([ text, status, seconds_to_show ]);
+        // }
 
         // clear the status resetter timer
         if (status_timer)

@@ -47,29 +47,39 @@ function(Backbone, Folder, UI, Shortcut) {
         url:    space.get('media').folders.url + '/new',
         success: function(dialog_html) {
           var dialog = $("<div>" + dialog_html + "</div>").dialog({
-            title: "Creating a folder"
-          });
-          
-          dialog.find('form').on('submit', function(e) {
-            var folder_data = $(this).serializeObject();
-            space.folders.add(folder_data, { silent: true });
-            // space.folders.add(folder_data);
-            var folder = _.last(space.folders.models);
-            console.log(folder)
-            folder.save({}, {
-              wait: true,
-              success: function(f) {
-                f.collection.trigger('add', f);
-                dialog.dialog("close");
+            title: "Creating a folder",
+            width: 'auto',
+            buttons: {
+              Cancel: function() {
+                $(this).dialog("close");
+              },
+              Create: function(e) {
+                var folder_data = dialog.find('form').serializeObject();
+                space.folders.add(folder_data, { silent: true });
+                // space.folders.add(folder_data);
+                var folder = _.last(space.folders.models);
+                console.log(folder)
+                folder.save({}, {
+                  wait: true,
+                  success: function(f) {
+                    f.collection.trigger('add', f);
+                    dialog.dialog("close");
+                  }
+                });
+                e.preventDefault();
+                // $(this).dialog("close");
               }
-            });
-            e.preventDefault();
+            }
           });
           
-          dialog.find('button.cancel').on('click', function(e) {
-            e.preventDefault();
-            dialog.dialog("close");
-          });
+          // dialog.find('form').on('submit', function(e) {
+            
+          // });
+          
+          // dialog.find('button.cancel').on('click', function(e) {
+          //   e.preventDefault();
+          //   dialog.dialog("close");
+          // });
         }
       });
       

@@ -70,7 +70,9 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       this.space.on('reset',       this.reset, this);
       
       this.anchors = {
-        preview: this.$el.find('#preview')
+        preview: this.$el.find('#preview'),
+        edit:    this.$el.find('#edit_page'),
+        destroy: this.$el.find('#destroy_page')
       };      
     
       
@@ -83,6 +85,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       Shortcut.add("ctrl+alt+s", function() { view.save_page(); });
       Shortcut.add("ctrl+alt+v", function() { view.preview_page(); });
       Shortcut.add("ctrl+alt+d", function() { view.destroy_page(); });
+      Shortcut.add("ctrl+alt+e", function() { view.anchors.edit.click(); });
       
       this.disable();
       this.movement_listing.render();
@@ -136,15 +139,16 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
           page  = this.ctx.current_page,
           el    = DestroyPageTmpl(page.toJSON());
 
-      $(el).dialog({
+      var dialog = $(el).dialog({
         title: "Page removal",
         buttons: {
           Cancel: function() {
-            $(this).dialog("close");
+            dialog.dialog("close");
           },
-          Remove: function() {
+          Remove: function(e) {
             page.destroy();
-            $(this).dialog("close");
+            dialog.dialog("close");
+            e.preventDefault();
           }
         }
       });
@@ -161,23 +165,22 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
         url:    page.get('media').url + '/edit',
         success: function(dialog_html) {
           var dialog = $("<div>" + dialog_html + "</div>").dialog({
-            title: "Editing a page"
-          });
-          
-          dialog.find('form').on('submit', function(e) {
-            var data = $(this).serializeObject();
-            page.save(data, {
-              wait: true,
-              patch: true
-            });
-            
-            dialog.dialog("close");
-            e.preventDefault();
-          });
-          
-          dialog.find('button.cancel').on('click', function(e) {
-            e.preventDefault();
-            dialog.dialog("close");
+            title: "Page properties",
+            buttons: {
+              Cancel: function() {
+                $(this).dialog("close");
+              },
+              Update: function(e) {
+                var data = dialog.find('form').serializeObject();
+                page.save(data, {
+                  wait: true,
+                  patch: true
+                });
+                
+                dialog.dialog("close");
+                e.preventDefault();
+              }
+            }            
           });
         }
       });
