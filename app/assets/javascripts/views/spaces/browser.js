@@ -2,12 +2,13 @@ define('views/spaces/browser',
 [ 
   'jquery',
   'backbone',
+  'views/spaces/browser/drag_manager',
   'hb!browser/folder.hbs',
   'hb!browser/page.hbs',
   'hb!dialogs/destroy_folder.hbs',
   'pagehub'
 ],
-function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
+function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
   return Backbone.View.extend({
     el: $("#browser"),
     templates: {
@@ -29,6 +30,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.space  = data.space,
       this.ctx    = data.ctx;
 
+      
       this.space.on('load_page',    this.on_load_page, this);
       this.space.on('page_loaded',  this.highlight, this);
       this.space.on('page_created', this.on_page_loaded, this);
@@ -39,6 +41,8 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.space.folders.on('change:title', this.reorder_folder, this);
       this.space.folders.on('change:parent.id', this.reorder_folder, this);
       // this.space.folders.on('sync', this.reorder_folder, this);
+      
+      this.drag_manager = new DragManager(data);
       
       this.bootstrap();
     },
@@ -58,7 +62,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         this.space.folders.trigger('change:parent.id', f);
         return true;
       }, this);
-      
+
       return this;
     },
     
@@ -83,11 +87,11 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         page_listing:   el.find('ol.pages'),
         empty_label:    el.find('.empty_folder')
       };
-            
+
       if (!f.has_parent()) {
         f.ctx.browser.el.addClass('general-folder');
       }
-            
+
       f.pages.on('add',           this.render_page, this);
       f.pages.on('remove',        this.remove_page, this);
       f.pages.on('change:title',  this.update_title, this);

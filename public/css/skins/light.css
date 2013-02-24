@@ -249,3 +249,6 @@ header h1 a.selected { text-decoration: none; }
   padding: 3px 10px;
   cursor: pointer;
 }
+#browser .folder {
+  border: 1px solid #eee;
+}
