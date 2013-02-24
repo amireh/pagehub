@@ -20,7 +20,9 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       'click .edit_folder': 'edit_folder',
       'click .delete_folder': 'delete_folder',
       'click button[data-collapse]': 'collapse',
-      'click .folder_title': 'collapse'
+      'click .folder_title': 'collapse',
+      'mouseenter .folder_title': 'highlight_hierarchy',
+      'mouseleave .folder_title': 'dehighlight_hierarchy'
     },
     
     initialize: function(data) {
@@ -79,13 +81,13 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       var el = target.append( entry ).children().last();
       
       f.ctx.browser = {
-        el:           el,
+        el:             el,
         title:          el.find('span.folder_title'),
         folder_listing: el.find('ol.folders'),
         page_listing:   el.find('ol.pages'),
         empty_label:    el.find('.empty_folder')
       };
-      
+            
       if (!f.has_parent()) {
         f.ctx.browser.el.addClass('general-folder');
       }
@@ -312,6 +314,17 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
         this.ctx.settings.runtime.collapsed.push(folder_id);
         this.ctx.settings_changed = true;
       }
+    },
+    
+    highlight_hierarchy: function(evt) {
+      $(evt.toElement).
+      addClass("highlighted").
+      parents(".folder").find("> span.folder_title").addClass("highlighted");
+    },
+    
+    dehighlight_hierarchy: function(evt) {
+      this.$el.find('.highlighted').removeClass("highlighted");
     }
+    
   })
 })

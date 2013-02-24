@@ -48,6 +48,24 @@
 .member .icon.settings.standalone { background: url("../icons/24x24/process.png") no-repeat 0 0; }
 .member .icon.settings64.standalone { background: url("../icons/48x48/process.png") no-repeat 0 0; }
 
+.member .icon.folder {
+  background: url("/assets/icons/16x16/glyphicons_144_folder_open_resized.png") no-repeat 0 2px;
+}
+.member .collapsed .icon.folder {
+  background: url("/assets/icons/16x16/glyphicons_145_folder_plus_resized.png") no-repeat;
+}
+
+button[data-collapse] { display: none; }
+
+.icon.folder {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  display: inline-block;
+  top: 2px;
+  z-index: -1;
+}
+
 a {
   /*color: #D4EE5E;*/
   color: #008cdd;
@@ -65,7 +83,8 @@ a.selected,
 a.listlike {
   border-bottom: 2px solid rgba(0,0,0,0.35);
 }
-.highlighted {
+.highlighted,
+#browser .selected.folder_title {
   color: #F0AD11;
 }
 
@@ -214,7 +233,9 @@ header h1 a.selected { text-decoration: none; }
 .hint {
   color: #888;
 }
-#browser .folder_title {
-  border: 1px solid #eee;
-  background: #fafafa;
+#browser .folder_title button {
+  display: none;
+}
+#browser .folder_title:hover button {
+  display: block;
 }
