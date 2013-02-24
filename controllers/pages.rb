@@ -138,6 +138,22 @@ get '/spaces/:space_id/pages/:page_id',
   end
 end
 
+get '/spaces/:space_id/pages/:page_id/edit',
+  auth:     [ :user ],
+  provides: [ :html ],
+  requires: [ :space, :page ] do
+    
+  authorize! :update, @page, :message => "You need to be an editor in this space to edit pages."
+  
+  respond_to do |f|
+    f.html {
+      options = {}
+      options[:layout] = false if request.xhr?
+      erb :"/pages/new", options
+    }
+  end
+end
+
 post '/spaces/:space_id/pages',
   auth:     [ :editor ],
   provides: [ :json ],

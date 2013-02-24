@@ -1,0 +1,15 @@
+<% @page ||= @space.pages.new %>
+
+<div title="Page properties" id="page_properties_dialog">
+  <form>
+    <label>Title: <br />
+      <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= @page.title %>" />
+    </label>
+    <br />
+    <br />
+    <div class="actionbar">
+      <button class="cancel">Cancel</button>
+      <input type="submit" class="good" value="Update" />
+    </div>
+  </form>
+</div>

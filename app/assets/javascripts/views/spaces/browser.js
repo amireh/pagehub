@@ -33,7 +33,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       this.space.on('reset', this.reset, this);
       this.space.folders.on('add', this.render_folder, this);
       this.space.folders.on('destroy', this.remove_folder, this);
-      this.space.folders.on('change:title', this.update_folder_title, this);
+      this.space.folders.on('change:title', this.update_title, this);
       this.space.folders.on('change:parent.id', this.update_folder_position, this);
       
       this.bootstrap();
@@ -92,6 +92,7 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       
       f.pages.on('add',     this.render_page, this);
       f.pages.on('destroy', this.remove_page, this);
+      f.pages.on('change:title', this.update_title, this);
       f.pages.every(function(p) {
         return this.pages.trigger('add', p);
       }, f);
@@ -116,8 +117,8 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       }
     },
 
-    update_folder_title: function(f) {
-      f.ctx.browser.title.html(f.get('title'))
+    update_title: function(r) {
+      r.ctx.browser.title.html(r.get('title'))
     },
     
     update_folder_position: function(f) {
@@ -141,7 +142,8 @@ function( $, Backbone, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
       
       page.ctx.browser = {
         el:     el,
-        anchor: el.find('a')
+        anchor: el.find('a'),
+        title:  el.find('a')
       }
       
       if (page.isNew()) {

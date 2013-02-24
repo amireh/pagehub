@@ -13,14 +13,6 @@
             <%= Array.new(lvl * 4, '&nbsp;').join('') %> <%= f.title %>
           </option>
         <% end %>
-        
-        <% if false %>
-        <% @space.folders.each do |f| %>
-          <option value="<%= f.id %>" <%= 'selected="selected"' if @f.folder && @f.folder.id == f.id %>>
-            <%= (f.ancestors.collect { |f| f.title }.reject { |t| t == 'None' }.reverse + [ f.title ]).join(' &gt;&gt; ') %>
-          </option>
-        <% end %>
-        <% end %>
       </select>
     </label>
     <br />

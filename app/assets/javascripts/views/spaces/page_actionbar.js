@@ -6,7 +6,8 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     
     events: {
       'click a.save_page': 'save_page',
-      'click a#destroy_page': 'destroy_page'
+      'click a#destroy_page': 'destroy_page',
+      'click a#edit_page': 'edit_page'
     },
     
     MovementListing: Backbone.View.extend({
@@ -147,6 +148,39 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
           }
         }
       });
-    }
+    }, //destroy_page
+    
+    edit_page: function(evt) {
+      var el      = $(evt.toElement),
+          page    = this.ctx.current_page,
+          space   = this.space;
+      
+      $.ajax({
+        type:   "GET",
+        accept: "text/html",
+        url:    page.get('media').url + '/edit',
+        success: function(dialog_html) {
+          var dialog = $("<div>" + dialog_html + "</div>").dialog({
+            title: "Editing a page"
+          });
+          
+          dialog.find('form').on('submit', function(e) {
+            var data = $(this).serializeObject();
+            page.save(data, {
+              wait: true,
+              patch: true
+            });
+            
+            dialog.dialog("close");
+            e.preventDefault();
+          });
+          
+          dialog.find('button.cancel').on('click', function(e) {
+            e.preventDefault();
+            dialog.dialog("close");
+          });
+        }
+      });
+    } // edit_page
   })
 })
