@@ -4,12 +4,14 @@
     id="folder_{{id}}"
     class="folder">
 
+  <button data-collapse data-folder="{{id}}">&minus;</button>
+
   <span class="folder_title" draggable="true">
     {{title}}
   </span>
 
-  <button class="edit_folder icon edit_folder"></button>
-  <button data-dyn-action="remove">&times;</button>
+  <button class="icon edit_folder"></button>
+  <button class="icon delete_folder"></button>
 
   <ol class="listing folders"></ol>
   <ol class="listing pages">

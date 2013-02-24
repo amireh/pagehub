@@ -14,47 +14,60 @@ requirejs.config({
   //   <script src="/js/pagehub.js"></script>
   //   <script src="/js/pagehub_ui.js"></script>  
   paths: {
-    // jquery:     'lib/require-jquery',
-    jquery:         'vendor/jquery-1.9.1.min',
-    'jquery.ui':    'vendor/jquery-ui-1.10.1.custom.min',
-    underscore:     'lib/underscore-min',
-    backbone:       'lib/backbone-min',
-    text:           'lib/text',
-    handlebars:     'lib/handlebars',
-    hb:             'lib/hbtemplate',
-    modernizr:      'vendor/modernizr',
-    shortcut:       'vendor/shortcut',
-    bootstrap:      'vendor/bootstrap.min',
-    pagehub:        'lib/pagehub'
+    // jquery:     '          lib/require-jquery',
+    'jquery':                 'vendor/jquery-1.9.1.min',
+    'jquery.ui':              'vendor/jquery-ui-1.10.1.custom.min',
+    'jquery.util':            'helpers/util',
+    'underscore':             'lib/underscore-min',
+    'underscore.inflection':  'lib/underscore/underscore.inflection',
+    'backbone':               'lib/backbone-min',
+    'backbone.nested':        'lib/backbone/deep-model.min',
+    'text':                   'lib/text',
+    'handlebars':             'lib/handlebars',
+    'handlebars.helpers':     'helpers/handlebars',
+    'hb':                     'lib/hbtemplate',
+    'modernizr':              'vendor/modernizr',
+    'shortcut':               'vendor/shortcut',
+    'bootstrap':              'vendor/bootstrap.min',
+    'pagehub':                'lib/pagehub',
   },
 
   shim: {
-    jquery: { exports: '$' },
+    'jquery': { exports: '$' },
     'jquery.ui': [ 'jquery' ],
+    'jquery.util': [ 'jquery' ],
     
-    pagehub: {
-      deps: [ 'jquery', 'jquery.ui', 'shortcut', 'modernizr' ],
+    'pagehub': {
+      deps: [ 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr' ],
       exports: 'ui'
     },
     
-    underscore: {
+    'underscore': {
       exports: '_'
     },
-    backbone: {
+    
+    'underscore.inflection': [ 'underscore' ],
+    
+    'backbone': {
       deps: [ "underscore", "jquery" ],
       exports: "Backbone"
     },
-    handlebars: {
+    
+    'backbone.nested': [ 'backbone' ],
+    
+    'handlebars': {
+      deps: [ 'underscore.inflection' ],
       exports: 'Handlebars'
     },
+    'handlebars.helpers': [ 'handlebars' ],
     
-    shortcut: {
+    'shortcut': {
       exports: 'shortcut'
     }
   }
 });
 
-require([ 'underscore' ], function(_) { 
+require([ 'underscore', 'handlebars', 'handlebars.helpers' ], function(_) { 
   _.each(pagehub_hooks, function(cb) { cb(); });
 });
 

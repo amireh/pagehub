@@ -45,11 +45,11 @@ define([ 'jquery', 'bootstrap' ], function($) {
           $("a[title]").tooltip({ placement: "bottom" });
         },
 
-        function() {
-          $("[data-collapsible]").each(function() {
-            $(this).append($("#collapser").clone().attr({ id: null, hidden: null }));
-          });
-        },
+        // function() {
+        //   $("[data-collapsible]").each(function() {
+        //     $(this).append($("#collapser").clone().attr({ id: null, hidden: null }));
+        //   });
+        // },
 
         // Togglable sections
         function() {
@@ -90,12 +90,12 @@ define([ 'jquery', 'bootstrap' ], function($) {
 
         // toggle autosaving
         function() {
-          if (pagehub !== undefined) {
+          // if (pagehub !== undefined) {
             // if (pagehub.settings.editing.autosave) {
               // timers.autosave = setInterval("ui.pages.save(true)", pulses.autosave * 1000);
               // timers.sync = setInterval("pagehub.sync()", pulses.sync * 1000);
             // }
-          }
+          // }
         },
 
         // disable all links attributed with data-disabled
@@ -162,30 +162,36 @@ define([ 'jquery', 'bootstrap' ], function($) {
     $(el).add($(window)).unbind('click', hide_list_callback);
     $(el).bind('click', show_list);
   }
-
-  function current_page_id() {
-    if (!ui.is_page_selected())
-      return null;
-
-    return ui.current_page().attr("id").replace(/\w+_/, "");
-  }
-
-  function current_folder_id() {
-    if (!ui.is_folder_selected()) {
-      return null;
+  $(function() {
+    // foreach(ui.hooks, function(hook) { hook(); });
+    for (var i = 0; i < hooks.length; ++i) {
+      hooks[i]();
     }
-
-    return ui.current_folder().parent().attr("id").replace("folder_", "");
-  }
-
-  // $(function() {
-  //   // foreach(ui.hooks, function(hook) { hook(); });
-  //   for (var i = 0; i < ui.hooks.length; ++i) {
-  //     ui.hooks[i]();
-  //   }
-  // })
+    
+  })
   
-  return {
+  var ui = {}
+  
+  $(document).ajaxStart(function(xhr) {
+    ui.status.mark_pending();
+  });
+  
+  $(document).ajaxComplete(function(xhr) {
+    ui.status.mark_ready();
+  });
+  
+  $(document).ajaxError(function(_, e) {
+    if (e.status != 200) {
+      try {
+        var err = JSON.parse(e.responseText);
+        ui.status.show(err.messages.join('<br />'), "bad");
+      } catch(err) {
+        
+      }
+    }
+  });
+  
+  ui = {
     hooks: hooks,
     theme: theme,
     action_hooks: action_hooks,
@@ -195,102 +201,8 @@ define([ 'jquery', 'bootstrap' ], function($) {
       timers.autosave = setInterval("ui.pages.save(true)", pulses.autosave * 1000);
     },
 
-    current_page: function() {
-      return $("#browser li.selected:not(.folder) a");
-    },
-
-    current_folder: function() {
-      return $("#browser .folder > .selected");
-    },
-
-    is_page_selected: function() {
-      return ui.current_page().length != 0;
-    },
-    is_folder_selected: function() {
-      return ui.current_folder().length != 0;
-    },
-
-    create_editor: function(textarea_id, opts) {
-      opts = opts || {};
-      for(var mode in CodeMirror_aliases) {
-        if (!CodeMirror.modes[mode])
-          continue;
-        
-        var aliases = CodeMirror_aliases[mode];
-        for (var alias_idx = 0; alias_idx < aliases.length; ++alias_idx) {
-          var alias = aliases[alias_idx];
-          if (!CodeMirror.modes[alias]) {
-            CodeMirror.defineMode(alias, CodeMirror.modes[mode]);
-          }
-        }
-      }
+    collapse: function(source) {
       
-      // mxvt.markdown.setup_bindings();
-      var editor = CodeMirror.fromTextArea(document.getElementById(textarea_id), $.extend({
-        mode: "gfm",
-        lineNumbers: false,
-        matchBrackets: true,
-        theme: "neat",
-        tabSize: 2,
-        gutter: false,
-        autoClearEmptyLines: false,
-        lineWrapping: true,
-        onKeyEvent: function(editor,e) {
-          if (editor_disabled) {
-            e.preventDefault();
-            e.stopPropagation();
-            return true;
-          } else {
-            return false;
-          }
-        }
-        // keyMap: "mxvt",
-      }, opts));
-
-      editor.on("change", function() {
-        pagehub.content_changed = true;
-      });
-      
-
-      return editor;
-    },
-
-    collapse: function() {
-      var source = $(this);
-      // log(!source.attr("data-collapse"))
-      if (source.attr("data-collapse") == null)
-        return source.siblings("[data-collapse]:first").click();
-
-      var folder_id = parseInt(source.attr("data-folder")).toString();
-      
-      if (source.attr("data-collapsed")) {
-        source.siblings(":not(span.folder_title)").show();
-        source.attr("data-collapsed", null).html("&minus;");
-        source.parent().removeClass("collapsed");
-
-        pagehub.settings.runtime.cf.pop_value(folder_id);
-        pagehub.settings_changed = true;
-      } else {
-        source.siblings(":not(span.folder_title)").hide();
-        source.attr("data-collapsed", true).html("&plus;");
-        source.parent().addClass("collapsed");
-
-        pagehub.settings.runtime.cf.pop_value(folder_id);
-        pagehub.settings.runtime.cf.push(folder_id);
-        pagehub.settings_changed = true;
-      }
-    },
-
-    modal: {
-      as_alert: function(resource, callback) {
-        if (typeof resource == "string") {
-
-        }
-        else if (typeof resource == "object") {
-          var resource = $(resource);
-          resource.show();
-        }
-      }
     },
 
     status: {
@@ -306,7 +218,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
 
         if (status_queue.length > 0) {
           var status = status_queue.pop();
-          return ui.status.show(status[0], status[1], status[2]);
+          return this.status.show(status[0], status[1], status[2]);
         }
       },
 
@@ -325,7 +237,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
         if (status_timer)
           clearTimeout(status_timer)
 
-        status_timer = setTimeout("ui.status.clear()", status == "bad" ? animation_dur * 2 : animation_dur);
+        status_timer = setTimeout(function() { ui.status.clear() }, status == "bad" ? animation_dur * 2 : animation_dur);
         $("#status").removeClass("pending good bad").addClass(status + " visible").html(text);
         status_shown = true;
         current_status = status;
@@ -339,42 +251,6 @@ define([ 'jquery', 'bootstrap' ], function($) {
         // $(".loader").hide(250);
         $(".loader").hide();
       }
-    },
-
-    is_editing: function() {
-      return ui.is_page_selected() && !$("#page_actions").hasClass("disabled");
-    },
-
-    on_action: function(action, handler, props) {
-
-      var defaults = {
-        is_editor_action: true
-      }
-
-      var props = $.extend(defaults, props || {});
-
-      if (!actions[action])
-        actions[action] = { props: props, handlers: [] };
-
-      actions[action].handlers.push( handler );
-      // log("Registered action: " + action);
-    },
-
-    action: function(action_id) {
-      var action = actions[action_id];
-
-      if (!action)
-        return true;
-
-      if (!ui.is_editing() && action.props.is_editor_action)
-        return false;
-
-      for (var i = 0; i < action.handlers.length; ++i) {
-        action.handlers[i]();
-      }
-      // foreach( action.handlers, function(h) { h() } );
-
-      return false;
     },
 
     resource_editor: {
@@ -486,40 +362,9 @@ define([ 'jquery', 'bootstrap' ], function($) {
 
     },
 
-    dialogs: {
-      destroy_group: function(a) {
-        window.location.href = $(a).attr("href");
-        return false;
-      },
-
-      destroy_page: function() {
-        if (!ui.is_page_selected())
-          return false;
-
-        $("a.confirm#destroy_page").click();
-      },
-    },
-
     report_error: function(err_msg) {
       ui.status.show("A script error has occured, please try to reproduce the bug and report it.", "bad");
       console.log(err_msg);
-    },
-
-    highlight: function(el) {
-      el = el || $(this);
-      ui.dehighlight(el.hasClass("folder_title") ? "folder" : "page");
-      el.addClass("selected");
-      if (!ui.is_folder_selected()) {
-        el.append( $("#indicator").show() );
-      }
-    },
-
-    dehighlight: function(type) {
-      if (type == "folder")
-        ui.current_folder().removeClass("selected");
-      else
-        ui.current_page().parent().removeClass("selected");
-      // $("#browser .selected").removeClass("selected");
     },
 
     resources: {
@@ -643,42 +488,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
     },
 
     folders: {
-      create: function() {
-        try {
-          // load the creation form
-          $.ajax({
-            url: pagehub.namespace + "/folders/new",
-            success: function(html) {
-              pagehub.confirm(html, "Create a new folder", function(foo) {
-                // console.log("creating a folder")
-                ui.status.show("Creating a new folder...", "pending");
-
-                // actually create the folder
-                pagehub.folders
-                  .create($("#confirm form#folder_form").serialize(), {
-                          success: function(data) {
-                            var folder = data.folder;
-                            console.log(folder)
-                            dynamism.inject({ folders: [ folder ] }, $("#browser"));
-                            ui.status.show("Folder " + folder.title + " has been created.", "good");
-                          },
-                          error: function(e) {
-                            ui.status.show(e.responseText, "bad");
-                          }});
-
-              }); // pagehub.confirm()
-            } // loading success
-          })
-        } catch(err) {
-          log(err);
-        }
-
-        // roll up the option list
-        $("a.listlike.selected,a[data-listlike].selected").click();
-
-        return false;
-      },
-
+      
       on_update: function(f) {
         ui.status.show("Folder updated!", "good");
 
@@ -1149,5 +959,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
         ui.hooks[i]();
       }
     }
-  }
+  };
+  
+  return ui;
 })

@@ -1,6 +1,8 @@
 class Folder
   include DataMapper::Resource
 
+  default_scope(:default).update(:order => [ :title.asc ])
+  
   # attr_writer :editor
   DefaultFolder = 'None'
 

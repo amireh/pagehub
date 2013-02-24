@@ -8,7 +8,13 @@ define('views/spaces/show',
 ], function(Space, Browser, ResourceActions, PageActionBar, Editor) {
   return Backbone.View.extend({
     initialize: function(data) {
-      this.ctx = {}
+      this.ctx = {
+        settings_changed: false,
+        settings: {
+          runtime: { collapsed: [] }
+        }
+      }
+      
       this.space = new Space(data.space);
       this.resource_actions = new ResourceActions({ space: this.space, ctx: this.ctx });
       this.browser = new Browser({ space: this.space, ctx: this.ctx });

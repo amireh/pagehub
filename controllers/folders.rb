@@ -23,7 +23,21 @@ get '/spaces/:space_id/folders/:folder_id',
     f.json { rabl :"/folders/show" }
   end
 end
+
+get '/spaces/:space_id/folders/:folder_id/edit',
+  auth:     [ :editor ],
+  provides: [ :html ],
+  requires: [ :space, :folder ] do
   
+  respond_to do |f|
+    f.html {
+      options = {}
+      options[:layout] = false if request.xhr?
+      erb :"/folders/new", options
+    }
+  end
+end
+
 post '/spaces/:space_id/folders',
   auth: [ :editor ],
   requires: [ :space ],

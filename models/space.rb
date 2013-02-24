@@ -109,6 +109,11 @@ class Space
     folders.all({ conditions: cnd.merge({ browsable: true }), order: order })
   end
   
+  def traverse(folder = root_folder, level = 0, &block)
+    yield(folder, level)
+    folder.folders.each { |cf| traverse(cf, level + 1, &block) }
+  end
+  
   def locate_resource(path)
     path = [ path ] if !path.is_a?(Array)
     path = path.collect { |r| r.to_s }

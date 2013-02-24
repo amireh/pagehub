@@ -17,7 +17,6 @@ function($, Backbone, Folder) {
     },
     
     initialize: function() {
-      console.log("folder collection created")
     }
     
     // add: function(models, options) {

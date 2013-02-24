@@ -11,8 +11,14 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     
     MovementListing: Backbone.View.extend({
       el: $("#movement_listing"),
+      
+      events: {
+        'click a': 'move_page'
+      },
+      
       initialize: function(data) {
         this.space = data.space;
+        this.ctx   = data.ctx;
         this.space.folders.on('add',    this.add_link, this);
         this.space.folders.on('remove', this.rm_link, this);
       },
@@ -30,6 +36,22 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
         _.each(this.space.folders.models, function(folder) {
           self.add_link(folder);
         })
+      },
+      
+      move_page: function(e) {
+        var el        = $(e.toElement),
+            folder_id = el.attr("data-folder"),
+            folder    = this.space.folders.get(parseInt(folder_id));
+        
+        if (!folder) {
+          UI.report_error("Attempting to move page into a non-existent folder with id" + folder_id);
+          return false;
+        }
+        
+        var page = this.ctx.current_page;
+        page.save({ folder_id: folder.get('id') }, { patch: true });
+        
+        e.preventDefault();
       }
     }),
     
@@ -101,9 +123,14 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     },
     
     preview_page: function() {
+      if (this._ctx.disabled) { return false; }
+      
       window.open(this.ctx.current_page.get('media').href, "_preview")
     },
+
     destroy_page: function() {
+      if (this._ctx.disabled) { return false; }
+
       var view  = this,
           page  = this.ctx.current_page,
           el    = DestroyPageTmpl(page.toJSON());

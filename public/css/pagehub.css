@@ -288,7 +288,7 @@ button {
   clear: both;
   width: 100%;
   padding: 0;
-  max-width: 210px;
+  /*max-width: 210px;*/
   line-height: 18px;
   vertical-align: top;
   margin-bottom: 5px;
@@ -648,7 +648,7 @@ a.button:hover {
 #pages .scroller {
   max-height: 480px;
   overflow-y: auto;
-  padding-left: 25px;
+  padding-left: 20px;
   margin-left: -25px;
 }
 #pages .wrapper {
@@ -838,7 +838,7 @@ a.button.good:not(:active) {
 #pages li.folder {
   position: relative;
 }
-#pages li.folder.collapsed,
+
 #pages li.folder.collapsed span {
   margin: 0;
 }
@@ -850,7 +850,7 @@ a.button.good:not(:active) {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  padding: 5px 0;
+  padding: 5px;
   /*padding-left: 10px;*/
   /*margin-left: -10px;*/
   /*border-top-left-radius:     8px;*/
@@ -861,29 +861,39 @@ a.button.good:not(:active) {
   /*box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);*/
   cursor: pointer;
 }
-#pages li.folder > button[data-dyn-action=remove] {
+/*#pages li.folder > button[data-dyn-action=remove] {
   position: absolute;
   padding: 0;
   right: -5px; top: 4px;
   background: none;
   color: #ddd;
   border: none;
-}
+}*/
 
-button.edit_folder {
-  right: 12px;
+button.edit_folder,
+button.delete_folder {
+  right: 21px;
   padding: 0;
   border: none;
   height: 12px;
-  width: 12px;
+  width:  12px;
   position: absolute;
-  top: 9px;
-  opacity: 0.2;
+  top: 8px;
+  opacity: 0.1;
+  box-shadow: none;
+}
+button.edit_folder {
+  background: #fff url(/assets/icons/12x12/edit.png) no-repeat center center;
+}
+button.delete_folder {
+  right: 5px;
+  background: #fff url(/assets/icons/12x12/delete.png) no-repeat center center;
 }
 #pages li.folder > button[data-dyn-action=remove]:hover {
   color: #333;
 }
-button.edit_folder:hover {
+button.edit_folder:hover,
+button.delete_folder:hover {
   opacity: 1;
 }
 
@@ -902,8 +912,11 @@ button.edit_folder:hover {
   border-left:    5px solid #ddd;
   content: '  ';
 }
+#browser .selected {
+  text-decoration: none;
+}
 #browser .selected.folder_title:before {
-  top: 10px;
+  display: none;
 }
 #drag_indicator {
   right: 0;
@@ -1258,4 +1271,8 @@ footer p {
   margin: 0 auto;
 }
 
+.ui-dialog {
+  border: 1px solid #aaa;
+  box-shadow: 0 0 1px 5px #BBB;
+}
 .ui-dialog img { vertical-align: middle; }

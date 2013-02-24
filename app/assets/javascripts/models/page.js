@@ -24,7 +24,16 @@ define(
         this.set('title', 'Untitled#' + this.cid.toString().replace('c', ''));
       }
       
+      this.on('change:folder_id', this.set_folder, this);
+      // this.collection.on('add', this.set_folder, this);
       this.ctx = {};
+    },
+    
+    set_folder: function() {
+      var space = this.collection.space,
+          folder = space.folders.get(this.get('folder_id'));
+      
+      this.folder = folder || space.root_folder();
     }
   });
   

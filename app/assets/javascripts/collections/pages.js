@@ -13,7 +13,6 @@ function($, Backbone, Page) {
     // },
     
     initialize: function(data) {
-      console.log("\tfolder page collection created")
     },
     
     // reset: function(data) {

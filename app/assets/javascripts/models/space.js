@@ -7,7 +7,6 @@ define('models/space',
       pretty_title: "",
       brief:        "",
       folders:      null,
-      pages:        null,
       media: {
         url:  '',
         href: ''
@@ -20,8 +19,8 @@ define('models/space',
       this.urlRoot = '/users/' + this.get('creator').id + '/spaces';
       
       this.folders = new Folders();
-      this.folders.on('add', this.attach_to_space, this);
       this.folders.space = this;
+      // this.folders.on('add', this.attach_to_space, this);
       
       _.each(data.folders, function(fdata) {
         self.folders.add(fdata);
