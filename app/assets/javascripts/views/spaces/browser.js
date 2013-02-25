@@ -331,18 +331,24 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
     
     __collapse: function(source) {
-      var folder_id = parseInt(source.attr("data-folder"));
+      var folder_id = parseInt(source.parent().attr("id").replace('folder_', ''));
       
       if (source.attr("data-collapsed")) {
+        // source.parent().siblings().show();
         source.siblings(":not(span.folder_title)").show();
-        source.attr("data-collapsed", null).html("&minus;");
+        var caption = source.attr("data-collapsed-caption");
+        source.attr("data-collapsed-caption", source.html());
+        source.attr("data-collapsed", null).html(caption);
         source.parent().removeClass("collapsed");
 
         this.ctx.settings.runtime.collapsed.pop_value(folder_id);
         this.ctx.settings_changed = true;
       } else {
         source.siblings(":not(span.folder_title)").hide();
-        source.attr("data-collapsed", true).html("&plus;");
+        // source.parent().siblings().hide();
+        var caption = source.attr("data-collapsed-caption");
+        source.attr("data-collapsed-caption", source.html());
+        source.attr("data-collapsed", true).html(caption);
         source.parent().addClass("collapsed");
 
         this.ctx.settings.runtime.collapsed.push(folder_id);

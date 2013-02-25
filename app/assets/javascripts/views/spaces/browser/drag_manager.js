@@ -51,14 +51,14 @@ function( $, Backbone, UI ) {
       _.each([ 'dragstart', 'dragenter', 'drop', 'dragend', 'dragleave', 'dragover' ],
              function(evt) { el.off(evt); });
       
-      console.log(el);
-      
       el.on('dragstart', this, this.start_dragging);
       el.on('dragenter', this, this.on_dragenter);
       el.on('drop',      this, this.on_drop);
       el.on('dragend',   this, this.on_drop);
       el.on('dragleave', this, this.consume_dragevent);
-      el.on('dragover',  this, this.consume_dragevent);  
+      el.on('dragover',  this, this.consume_dragevent);
+      
+      return this;
     },
     
     bind_folder_pages: function(folder) {
@@ -70,11 +70,12 @@ function( $, Backbone, UI ) {
       
       this.__bind(folder.ctx.browser.el.find('> .folder_title:first'));
       folder.pages.on('add', this.bind_page, this);
+      
+      return this;
     },
     
     bind_page: function(page) {
-      this.__bind(page.ctx.browser.el);
-      return this;
+      return this.__bind(page.ctx.browser.el);
     },
     
     consume_dragevent: function(e) {
@@ -105,20 +106,27 @@ function( $, Backbone, UI ) {
     },
     
     on_dragenter: function(e) {
-      var view = e.data;
+      var view = e.data,
+          target = null;
       
       view.$el.find(".drop-target").removeClass("drop-target");
 
       // dropping is only allowed on folder targets
-      if ($(this).is("span")) {
-        $(this).parent().addClass("drop-target");
+      // if ($(this).is("span")) {
+      //   $(this).parent().addClass("drop-target");
+      //   view._ctx.target = $(this).parent();
+      // }
+      // else 
+      if((target = $(this).parents(".folder:first")).length != 0) {
+        target.addClass('drop-target');
+        view._ctx.target = target;
       }
       else {
         return false;
       }
 
-      $(this).append($("#indicator").show());
-      $(this).append($("#drag_indicator").show());
+      // $(this).append($("#indicator").show());
+      // $(this).append($("#drag_indicator").show());
     },
     
     on_drop: function(e) {
@@ -133,11 +141,13 @@ function( $, Backbone, UI ) {
         return view.abort_dnd();
       }
 
+      console.log(view._ctx.target);
+      
       // var src_node = view.$el.find('.drag-src:first'),
       var src_node = view._ctx.source,
-          tgt_node = $(this);
+          tgt_node = view._ctx.target;
 
-      if (!tgt_node.is("span.folder_title")) {
+      if (!tgt_node.is(".folder")) {
         return view.abort_dnd();
       }
       
@@ -146,24 +156,28 @@ function( $, Backbone, UI ) {
       // dragging a folder?
       if (src_node.hasClass("folder_title")) {
         var src_folder_id = parseInt( src_node.parent().attr("id").replace("folder_", "") ),
-            tgt_folder_id = parseInt( tgt_node.parent().attr("id").replace("folder_", "") );
+            tgt_folder_id = parseInt( tgt_node.attr("id").replace("folder_", "") );
         
-        view.space.trigger('move_folder', {
-          folder: view.space.folders.get(src_folder_id),
-          parent: view.space.folders.get(tgt_folder_id)
-        });
+        if (src_folder_id != tgt_folder_id) {
+          view.space.trigger('move_folder', {
+            folder: view.space.folders.get(src_folder_id),
+            parent: view.space.folders.get(tgt_folder_id)
+          });
+        }
 
       } // folder drag
 
       // dragging a page?
       else {
         var page_id           = parseInt(src_node.children('a:first').attr("id").replace("page_", "")),
-            folder_id         = parseInt(tgt_node.parent().attr("id").replace("folder_", "")),
+            folder_id         = parseInt(tgt_node.attr("id").replace("folder_", "")),
             current_folder_id = parseInt(src_node.parents(".folder:first").attr("id").replace("folder_", "")),
             folder            = view.space.folders.get(current_folder_id),
             page              = folder.pages.get(page_id);
-        
-        view.space.trigger('move_page', page, view.space.folders.get(folder_id));
+
+        if (current_folder_id != folder_id) {
+          view.space.trigger('move_page', page, view.space.folders.get(folder_id));
+        }
       } // page drag
 
       // Unmark the nodes & cleanup

@@ -823,11 +823,11 @@ a.button.good:not(:active) {
   top: -24px;
 }
 
-
 #pages li.folder.general-folder > ol {
   padding: 0; margin: 0;
 }
-#pages li.folder.general-folder > span.folder_title {
+#pages li.folder.general-folder > span.folder_title,
+#pages li.folder.general-folder > button[data-collapse] {
   display: none;
 }
 
@@ -849,26 +849,26 @@ a.button.good:not(:active) {
 #pages li.folder > span {
   display: block;
   margin-bottom: 5px;
-  font-weight: bold;
-  padding: 5px;
-  /*padding-left: 10px;*/
-  /*margin-left: -10px;*/
-  /*border-top-left-radius:     8px;*/
-  /*border-bottom-left-radius:  8px;*/
+  /*font-weight: bold;*/
+  /*padding: 5px 0;*/
+  padding: 0;
 }
+
 #pages li.folder > span:hover {
-  /*background: rgba(0,0,0,0.05);*/
-  /*box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);*/
   cursor: pointer;
 }
-/*#pages li.folder > button[data-dyn-action=remove] {
+
+button[data-collapse] {
   position: absolute;
-  padding: 0;
-  right: -5px; top: 4px;
+  top: 0px;
+  left: -22px;
+  padding: 0 5px;
+  line-height: 18px;
   background: none;
-  color: #ddd;
   border: none;
-}*/
+  color: #bbb;
+  display: block;
+}
 
 button.edit_folder,
 button.delete_folder {
@@ -878,7 +878,7 @@ button.delete_folder {
   height: 12px;
   width:  12px;
   position: absolute;
-  top: 8px;
+  top: 3px;
   opacity: 0.1;
   box-shadow: none;
 }
@@ -930,17 +930,6 @@ button.delete_folder:hover {
 .left { float: left; }
 .right { float: right;}
 
-button[data-collapse] {
-  position: absolute;
-  top: 5px;
-  left: -22px;
-  padding: 0 5px;
-  line-height: 18px;
-  background: none;
-  border: none;
-  color: #bbb;
-}
-
 .drop-target {
   /*border-bottom: 1px solid #555;*/
   /*background: rgba(0,0,0,0.1);*/
@@ -949,9 +938,9 @@ button[data-collapse] {
 .drag-src {
   opacity: 0.5;
 }
-.drop-target button[data-collapse] { display: none; }
+/*.drop-target button[data-collapse] { display: none; }
 .drop-target button[data-dyn-action=remove] { display: none; }
-
+*/
 .drop-target #indicator,
 .drop-target #drag_indicator {
   top: 6px;
