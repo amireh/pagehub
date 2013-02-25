@@ -116,7 +116,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
             return true; // let the event propagate
           });
         },
-        
+
         function() {
           $("[data-nosubmit]").bind('click', function(e) {
             e.preventDefault();
@@ -167,34 +167,36 @@ define([ 'jquery', 'bootstrap' ], function($) {
     for (var i = 0; i < hooks.length; ++i) {
       hooks[i]();
     }
-    
+
   })
-  
+
   var ui = {}
-  
+
   $(document).ajaxStart(function(xhr) {
     ui.status.mark_pending();
   });
-  
+
   $(document).ajaxComplete(function(xhr) {
     ui.status.mark_ready();
   });
-  
+
   $(document).ajaxError(function(_, e) {
     if (e.status != 200) {
       try {
         var err = JSON.parse(e.responseText);
         ui.status.show(err.messages.join('<br />'), "bad");
       } catch(err) {
-        
+
       }
     }
   });
-  
+
   ui = {
     hooks: hooks,
     theme: theme,
     action_hooks: action_hooks,
+    pbar_tick: 0,
+    pbar_value: 0,
 
     reset_autosave_timer: function() {
       clearInterval(timers.autosave);
@@ -484,7 +486,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
     },
 
     folders: {
-      
+
       on_update: function(f) {
         ui.status.show("Folder updated!", "good");
 
@@ -568,7 +570,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
         }).
         each(function(idx, itm) { folder_listing.prepend($(itm).parent()); });
       },
-      
+
       arrange: function(ul) {
         ui.status.mark_pending();
 
@@ -590,7 +592,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
             // console.log($(this))
           }
         });
-        
+
         var parent_folders = _.uniq(
           _.collect(
             $(".folder[data-parent!='']"), function(e) {
@@ -724,7 +726,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
 
       load: function() {
         return false;
-        
+
         if ($(this).parent().hasClass("selected")) {
           ui.resource_editor.show();
           return false;
@@ -749,7 +751,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
             ui.editor.clearHistory();
             ui.editor.setValue(page.content);
             pagehub.content_changed = false;
-            
+
             $("#preview").attr("href", page.media.href);
             // $("#share_everybody").attr("href", pagehub.namespace + "/pages/" + title + "/share");
             $("#history").attr("href", page.media.revisions.href)
@@ -956,6 +958,6 @@ define([ 'jquery', 'bootstrap' ], function($) {
       }
     }
   };
-  
+
   return ui;
 })

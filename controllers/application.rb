@@ -1,10 +1,10 @@
 before do
-  if api_call?    
+  if api_call?
     puts "its an api call"
     request.body.rewind
     body = request.body.read.to_s || ''
     unless body.empty?
-      begin; 
+      begin;
         params.merge!(JSON.parse(body))
       rescue JSON::ParserError => e
         puts e.message
@@ -18,8 +18,8 @@ end
 
 get '/' do
   pass unless logged_in?
-  
-  erb :"spaces/index"
+
+  erb :"users/dashboard"
 end
 
 get '/' do
@@ -46,7 +46,7 @@ end
 get '/features' do erb :"static/features.md" end
 get '/about' do erb :"static/about.md" end
 get '/open-source' do erb :"static/open_source.md" end
-  
+
 user do
   current_user
 end

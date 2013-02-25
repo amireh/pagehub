@@ -10,25 +10,26 @@ end
 public
 
 before do
-  if current_user && current_user.auto_nickname && flash.empty?
+  if logged_in? && current_user.auto_nickname && flash.empty?
     flash[:notice] = "You have an auto-generated nickname, please go to your profile page and update it."
   end
+end
+
+get '/users/new', auth: :guest do
+  erb :"/users/new"
 end
 
 get '/users/:user_id',
   auth: [ :user ],
   provides: [ :html, :json ],
   requires: [ :user ] do
-  
+
   respond_with @user do |f|
     f.html { erb :"users/dashboard" }
     f.json { rabl :"users/show" }
   end
 end
 
-get '/users/new' do
-  erb :"/users/new"
-end
 
 get '/demo' do
   if logged_in?

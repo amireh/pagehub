@@ -5,23 +5,27 @@ define('views/spaces/show',
   'views/spaces/resource_actions',
   'views/spaces/browser',
   'views/spaces/page_actionbar',
-  'views/spaces/editor'
-], function(Backbone, Space, Browser, ResourceActions, PageActionBar, Editor) {
+  'views/spaces/editor',
+  'pagehub'
+], function(Backbone, Space, Browser, ResourceActions, PageActionBar, Editor, UI) {
   return Backbone.View.extend({
     initialize: function(data) {
-      console.log(data)
+      UI.status.mark_pending();
+
       this.space = new Space(data.space);
       this.ctx = {
         settings_changed: false,
         settings: {
-          runtime: { collapsed: [ 29 ] }
+          runtime: { collapsed: [ ] }
         }
       }
-      
+
       this.resource_actions = new ResourceActions({ space: this.space, ctx: this.ctx });
       this.browser = new Browser({ space: this.space, ctx: this.ctx });
       this.editor = new Editor({ space: this.space, ctx: this.ctx });
       this.page_actionbar = new PageActionBar({ space: this.space, editor: this.editor, ctx: this.ctx });
+
+      UI.status.mark_ready();
     }
   });
 })
