@@ -55,8 +55,6 @@
   background: url("/assets/icons/16x16/glyphicons_145_folder_plus_resized.png") no-repeat;
 }
 
-button[data-collapse] { box-shadow: none; }
-
 .icon.folder {
   width: 16px;
   height: 16px;
@@ -256,4 +254,33 @@ header h1 a.selected { text-decoration: none; }
 #browser .drop-target {
   background: #f6f6f6;
   /*box-shadow: 0 0 15px 5px white inset;*/
+}
+
+button[data-collapse] {
+  box-shadow: none;
+  font-size: 0;
+  width: 16px;
+  height: 20px;
+}
+
+button[data-collapse]:before {
+  z-index: -10;
+  width: 0px;
+  height: 0px;
+  position: relative;
+  top: 0;
+  border-style: solid;
+  border-width: 8px 4px 0 4px;
+  border-color: #ddd transparent transparent transparent;
+  display: block;
+  content: ' ';
+}
+
+button[data-collapsed]:before {
+  border-width: 4px 0 4px 8px;
+  border-color: transparent transparent transparent #ddd;
+}
+
+.folder_title button:hover {
+  background-color: transparent;
 }

@@ -7,9 +7,6 @@
 //       /* ------ -------- *
 //        * Action bindings *
 //        * ------ -------- */
-//       // ui.on_action("new_page", ui.pages.create, { is_editor_action: false }); // action[new_page]
-//       // ui.on_action("new_folder", ui.folders.create, { is_editor_action: false }); // action[new_page]
-//       // ui.on_action("save_content", ui.pages.save);
 //       ui.on_action("increase_height", function() {
 //         var step = parseInt($(".CodeMirror").css("line-height"));
 //         $(".CodeMirror-scroll").css("min-height",
@@ -26,32 +23,9 @@
 //         ui.editor.refresh();
 //       });
 
-//       ui.on_action("destroy_page", function() {
-//         var page = ui.current_page(),
-//             page_title = page.html();
-
-//         $("#destroy_page").attr("data-confirm",
-//           "Are you sure you want to delete the page '" + page_title + "'?");
-
-//         return true;
-//       });
-
-//       // because it won't be spawned dynamically via dynamism and
-//       // won't be injected and hooked by it
-//       $("a[data-action=move][data-folder=0]").click(ui.pages.move);
-
-//       $(".actions a[id], #page_actions a[id]").click(function() {
-//         return ui.action($(this).attr("id"));
-//       });
-
 //       /* ----------- *
 //        * Keybindings *
 //        * ----------- */
-//       // shortcut.add("ctrl+alt+s", function() { ui.pages.save(); })
-//       // shortcut.add("ctrl+alt+v", function() { ui.pages.preview(); })
-//       // shortcut.add("ctrl+alt+d", function() { $("a[id=destroy_page]").click(); })
-//       // shortcut.add("ctrl+alt+c", function() { $("#new_page").click(); })
-//       // shortcut.add("ctrl+alt+f", function() { $("#new_folder").click(); })
 //       shortcut.add("ctrl+alt+e", function() { ui.editor.focus(); })
 //       shortcut.add("ctrl+alt+r", function() { ui.editor.refresh(); })
 //     });
@@ -71,15 +45,6 @@
 
   <a href="#" id="edit_page" class="icon edit_page" title="Modify the page properties">Edit</a>
   <a href="#" id="destroy_page" class="confirm icon delete_page" title="Delete the page (Ctrl+Alt+D)">Delete</a>
-  <a href="#" class="listlike icon share_page" data-placement="top" title="Share this page with people">Share</a>
-  <ol class="listlike">
-    <li><a  target="PageHub"
-            title="Make a public version of this page that you can share with people"
-            href="/pages/x/share"
-            id="share_everybody">With Everybody
-        </a>
-    </li>
-  </ol>
 
   <a id="history" target="PageHub" class="icon history" title="View the history of this page">Revisions [0]</a>
 

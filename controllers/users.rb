@@ -158,7 +158,7 @@ end
 # post '/sessions', :provides => [ :json, :html ] do
 post '/sessions', auth: :guest, :provides => [ :json, :html ] do
 
-  if u = authenticate(params[:email], params[:password], params[:no_digest])
+  if u = authenticate(params[:email], params[:password])
     authorize(u)
   end
   

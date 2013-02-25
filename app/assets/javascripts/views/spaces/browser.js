@@ -198,7 +198,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
     
     load_page: function(e) {
-      var a         = $(e.toElement),
+      var a         = $(e.target),
           page_id   = parseInt(a.attr("id").replace('page_', '')),
           folder_id = parseInt(a.parents(".folder:first").attr("id").replace('folder_', '')),
           folder    = this.space.folders.get(folder_id),
@@ -260,7 +260,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
     
     edit_folder: function(evt) {
-      var el      = $(evt.toElement),
+      var el      = $(evt.target),
           folder  = this.space.folders.get( parseInt( el.parents(".folder:first").attr("id").replace('folder_', ''))),
           space   = this.space;
       
@@ -295,7 +295,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     
     delete_folder: function(evt) {
       var view    = this,
-          folder  = this.space.folders.get(parseInt($(evt.toElement).parents(".folder:first").attr("id").replace('folder_', ''))),
+          folder  = this.space.folders.get(parseInt($(evt.target).parents(".folder:first").attr("id").replace('folder_', ''))),
           data    = folder.toJSON();
       
       data.nr_pages     = folder.pages.length;
@@ -321,7 +321,8 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
     
     collapse: function(evt) {
-      var source = $(evt.toElement);
+      // var source = $(evt.target);
+      var source = $(evt.target);
             
       if (source.attr("data-collapse") == null) {
         source = source.parents(".folder:first").find('[data-collapse]:first');
@@ -357,7 +358,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
     
     highlight_hierarchy: function(evt) {
-      $(evt.toElement).
+      $(evt.target).
       addClass("highlighted").
       parents(".folder").find("> span.folder_title").addClass("highlighted");
     },

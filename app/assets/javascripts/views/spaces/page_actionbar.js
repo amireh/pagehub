@@ -57,7 +57,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       },
       
       move_page: function(e) {
-        var el        = $(e.toElement),
+        var el        = $(e.target),
             folder_id = el.attr("data-folder"),
             folder    = this.space.folders.get(parseInt(folder_id));
         
@@ -179,7 +179,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     }, //destroy_page
     
     edit_page: function(evt) {
-      var el      = $(evt.toElement),
+      var el      = $(evt.target),
           page    = this.ctx.current_page,
           space   = this.space;
       
