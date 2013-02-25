@@ -35,7 +35,7 @@
     <%# @group.browsable_folders.all({ folder_id: nil }).each { |tlf| dump_folder(tlf) } %>
 
   <% 1.times do
-    @space.on_resources({
+    traverse_space(@space, {
       on_page: lambda { |p| %>
         <% return if !show_homepages && p.is_homepage? %>
         <% selected = @page && @page.id == p.id ? 'class="selected"' : '' %>

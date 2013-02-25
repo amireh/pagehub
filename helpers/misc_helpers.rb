@@ -138,7 +138,8 @@ helpers do
 
   def name_available?(name)
     nn = name.to_s.sanitize
-    !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ title: nn }).nil?
+    puts "checking if #{nn} is available: #{!reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ pretty_title: nn }).nil?}"
+    !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ pretty_title: nn }).nil?
   end
 
   ReservedNames = [ 'name', 'spaces', 'pages', 'groups', 'spec' ]

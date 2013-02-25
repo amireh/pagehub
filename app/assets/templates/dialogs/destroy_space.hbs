@@ -1,0 +1,10 @@
+<div>
+  <p>
+    The space has
+    {{#pluralize 'page' meta.nr_pages}}{{/pluralize}},
+    {{#pluralize 'folder' meta.nr_folders}}{{/pluralize}},
+    and {{#pluralize 'member' meta.nr_members}}{{/pluralize}}.
+    Are you sure you want to destroy it?
+  </p>
+  <p><strong>WARNING<strong>: destroying this space will irreversibly remove every page and folder it contains!</p>
+</div>

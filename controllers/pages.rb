@@ -46,9 +46,9 @@ get '/spaces/:space_id/pages/:page_id',
   auth:     [ :user ],
   provides: [ :json ],
   requires: [ :space, :page ] do
-    
+
   authorize! :read, @page, :message => "You need to be a member of this space to browse its pages."
-  
+
   respond_with @page do |f|
     f.json { rabl :"pages/show" }
   end
@@ -58,9 +58,9 @@ get '/spaces/:space_id/pages/:page_id/edit',
   auth:     [ :user ],
   provides: [ :html ],
   requires: [ :space, :page ] do
-    
+
   authorize! :update, @page, :message => "You need to be an editor in this space to edit pages."
-  
+
   respond_to do |f|
     f.html {
       options = {}
@@ -74,31 +74,31 @@ post '/spaces/:space_id/pages',
   auth:     [ :editor ],
   provides: [ :json ],
   requires: [ :space ] do
-  
+
   authorize! :create, Page, :message => "You need to be an editor in this space to create pages."
-  
+
   puts params.inspect
-  
+
   api_required!({
     :folder_id  => lambda { |fid|
       "No such folder" unless @folder = @space.folders.get(fid)
     }
   })
-  
+
   api_optional!({
     :title   => nil,
     :content => nil
   })
-  
+
   @page = @space.pages.new api_params({
     creator: @user,
     folder: @folder
   })
-  
+
   unless @page.save
     halt 400, @page.errors
   end
-  
+
   respond_with @page do |f|
     f.json { rabl :"/pages/show" }
   end
@@ -110,9 +110,9 @@ put '/spaces/:space_id/pages/:page_id',
   requires: [ :space, :page ] do
 
   authorize! :update, @page, :message => "You need to be an editor in this space to edit pages."
-  
+
   puts params.inspect
-  
+
   api_optional!({
     :title      => nil,
     :content    => nil,
@@ -121,7 +121,7 @@ put '/spaces/:space_id/pages/:page_id',
     },
     :browsable  => nil
   })
-  
+
   if @api[:optional][:content]
     PageHub::Markdown::mutate! @api[:optional][:content]
 
@@ -132,7 +132,7 @@ put '/spaces/:space_id/pages/:page_id',
     rescue Page::Revision::NothingChangedError
       # it's ok
     end
-    
+
     @page = @page.refresh
   end
 
@@ -149,19 +149,19 @@ delete '/spaces/:space_id/pages/:page_id',
   auth:     [ :editor ],
   provides: [ :json, :html ],
   requires: [ :space, :page ] do
-  
+
   authorize! :delete, @page, :message => "You can not remove pages authored by someone else."
-  
+
   unless @page.destroy
     halt 500, @page.errors
   end
-  
+
   respond_to do |f|
     f.html {
       flash[:notice] = "Page has been removed."
       redirect back
     }
-    f.json { halt 200 }
+    f.json { halt 200, {}.to_json }
   end
 end
 
@@ -169,7 +169,7 @@ end
 get '/pages/:page_id/revisions',
   auth: [ :user ],
   provides: [ :html ],
-  requires: [ :page ] do 
+  requires: [ :page ] do
 
   respond_with @page do |f|
     f.html do
@@ -182,9 +182,9 @@ get '/pages/:page_id/revisions/:revision_id',
   auth: [ :user ],
   provides: [ :html ],
   requires: [ :page, :revision ] do
-  
+
   @rv = @revision
-  
+
   @prev_rv = @rv.prev
   @next_rv = @rv.next
 
@@ -197,13 +197,13 @@ post '/pages/:page_id/revisions/:revision_id',
   auth: [ :user ],
   provides: [ :html ],
   requires: [ :page, :revision ] do
-  
+
   @space = @page.space
-  
+
   authorize! :update, @page, message: "You can not perform this action."
-  
+
   @rv = @revision
-  
+
   if !params[:confirmed] || params[:confirmed] != "do it"
     flash[:error] = "Will not roll-back until you have confirmed your action."
     return redirect @rv.url
@@ -299,7 +299,7 @@ end
 
 # get '/:gname' do |gname|
 #   pass if reserved?(gname)
-  
+
 #   unless @scope = @group = Group.first({name: gname })
 #     pass # it isn't a group, nevermind
 #   end

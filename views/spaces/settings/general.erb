@@ -2,91 +2,69 @@
 
 <%= partial "spaces/settings/_nav" %>
 
-<% content_for :js do %>
-<script>
-  $(function() {
-    // Checks whether the typed in space name is available
-    $("#check_availability").click(function() {
-      var btn = $(this);
-      var name = $("input[name=name]").attr("value");
-
-      if (name.length == 0) {
-        btn.next("span").addClass("error").html("invalid name");
-        return false;
-      }
-
-      $.ajax({
-        url: "<%= "#{@user.url}/spaces/name" %>",
-        type: "POST",
-        data: { name: $("input[name=name]").attr("value") },
-
-        success: function(is_available) {
-          is_available = JSON.parse(is_available);
-          if (is_available) {
-            btn.next("span").addClass("success").removeClass("error").html("available");
-          } else {
-            btn.next("span").addClass("error").removeClass("success").html("not available");
-          }
-        }
-
-      });
-      return false;
-    });
-  });
-</script>
+<% content_for :deferred_js do %>
+  <script>
+    pagehub_hooks.push(
+      require([ 'models/space', 'views/spaces/settings/general' ], function(Space, SettingsView) {
+        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
+        s = new SettingsView({ space: space });
+      })
+    );
+  </script>
 <% end %>
-<% if !@space.is_creator?(current_user) %>
-  <p>Only the space creator can manage this section.</p>
-<% else %>
 
-  <form action="<%= request.path %>" method="POST">
-    <h2>Name</h2>
-    <label>The space name must be unique and it will be used for accessing pages and user management.
-      <br /><br />
-      <input type="text" name="name" class="very_fat" value="<%= @space.title %>" />
-      <button id="check_availability">check availability</button>
-      <span></span>
-    </label>
 
-    <p>
-      <em>
-        <strong>WARNING: </strong>
-        changing the space name will <strong>irreversibly</strong> invalidate
-        <strong>all public links</strong> of the space's pages that were shared
-        with members or people.
-      </em>
+<%# if !@space.is_creator?(current_user) %>
+  <!-- <p>Only the space creator can manage this section.</p> -->
+<%# else %>
+<form id="space_general_settings">
+  <h2>Name</h2>
+  <label>The space name must be unique and it will be used for accessing pages and user management.
+    <br /><br />
+    <input type="text" name="title" class="very_fat" value="<%= @space.title %>" />
+    <button id="check_availability">check availability</button>
+    <span id="name_availability_status"></span>
+  </label>
+
+  <p>
+    <em>
+      <strong>WARNING: </strong>
+      changing the space name will <strong>irreversibly</strong> invalidate
+      <strong>all public links</strong> of the space's pages that were shared
+      with members or people.
+    </em>
+  </p>
+  <p><label><input name="title_confirmation" type="checkbox" value="do it" />
+    I have read the warning and I understand the implications. Do it.</label>
+  </p>
+
+  <h2>Brief</h2>
+  <label>A 1-line description of what this space is for.
+    <br /><br />
+    <input type="text" name="brief" style="width: 600px" value="<%= @space.brief %>" placeholder="Building nuclear plants with style"></textarea>
+  </label>
+
+  <h2>Public access</h2>
+  <label>
+    <input type="checkbox" <%= 'checked="checked"' if @space.is_public %> value="true" name="is_public" />
+    Allow people to read and browse the space documents automatically
+  </label>
+
+  <br />
+  <br />
+
+  <button id="save">Save</button>
+
+  <button id="destroy_space" class="bad thin">Destroy this space</button>
+  </a>
+  <div hidden="hidden" data-confirm>
+    <p>Are you sure you want this space to be destroyed?</p>
+    <p>Please note that
+      this action is irreversible, and destroying the space will remove
+      <strong>all of its pages</strong> as well as invalidate all the links
+      to those pages that were shared with others.
     </p>
-    <p><label><input name="confirmed" type="checkbox" value="do it" />
-      I have read the warning and I understand the implications. Do it.</label>
-    </p>
+  </div>
 
-    <h2>Brief</h2>
-    <label>A 1-line description of what this space is for.
-      <br /><br />
-      <input type="text" name="brief" style="width: 600px" value="<%= @space.brief %>" placeholder="Building nuclear plants with style"></textarea>
-    </label>
-
-    <h2>Public access</h2>
-    <label>
-      <input type="checkbox" <%= 'checked="checked"' if @space.is_public %> value="true" name="is_public" />
-      Allow people to read and browse the space documents automatically
-    </label>
-
-    <br />
-    <br />
-
-    <input type="submit" value="Update" />
-
-      <a href="<%= @space.url %>/destroy" class="button bad confirm thin">Destroy this space
-      </a>
-      <div hidden="hidden" data-confirm>
-        <p>Are you sure you want this space to be destroyed?</p>
-        <p>Please note that
-          this action is irreversible, and destroying the space will remove
-          <strong>all of its pages</strong> as well as invalidate all the links
-          to those pages that were shared with others.
-        </p>
-      </div>
-
-  </form>
-<% end %>
+</form>
+<%# end %>

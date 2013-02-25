@@ -58,6 +58,7 @@
         <a href="<%= @user.url %>"><%= @user.nickname %></a>
         <% if @space %>
           / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
+          <small class="hint">[ <a href="<%= @space.url %>/edit/general">admin</a> ]</small>
         <% end %>
         <%#= yield_content :header %>
       </h1>
@@ -91,7 +92,9 @@
   <div class="stuff">
 
 
-    <div id="status"></div>
+    <div class="status-wrap">
+      <div id="status"></div>
+    </div>
 
     <%= partial "layouts/_flashes" %>
 

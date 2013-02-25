@@ -12,7 +12,7 @@ requirejs.config({
   //   <script type="text/javascript" src="/js/shortcut.js"></script>
   //   <script src="/js/dynamism.js"></script>
   //   <script src="/js/pagehub.js"></script>
-  //   <script src="/js/pagehub_ui.js"></script>  
+  //   <script src="/js/pagehub_ui.js"></script>
   paths: {
     // jquery:     '          lib/require-jquery',
     'jquery':                 'vendor/jquery-1.9.1.min',
@@ -39,38 +39,45 @@ requirejs.config({
     'jquery.ui': [ 'jquery' ],
     'jquery.util': [ 'jquery' ],
     'jquery.gridster': [ 'jquery' ],
-    
+
     'pagehub': {
       deps: [ 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr' ],
       exports: 'ui'
     },
-    
+
     'underscore': {
       exports: '_'
     },
-    
+
     'underscore.inflection': [ 'underscore' ],
-    
+
     'backbone': {
       deps: [ "underscore", "jquery" ],
       exports: "Backbone"
     },
-    
+
     'backbone.nested': [ 'backbone' ],
-    
+
     'handlebars': {
       deps: [ 'underscore.inflection' ],
       exports: 'Handlebars'
     },
     'handlebars.helpers': [ 'handlebars' ],
-    
+
     'shortcut': {
       exports: 'shortcut'
     }
   }
 });
 
-require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui' ], function(_, $) { 
+require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui' ], function(_, $) {
+  $.ajaxSetup({
+    headers: {
+      Accept : "application/json; charset=utf-8",
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+
   $.extend($.ui.dialog.prototype.options, {
     modal: true,
     resizable: false,
@@ -83,9 +90,9 @@ require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui
           dlg.parent().find('.ui-dialog-buttonpane button:last').click();
           return false;
         }
-      });      
+      });
     }
-  }); 
+  });
   _.each(pagehub_hooks, function(cb) { cb(); });
 });
 

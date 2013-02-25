@@ -298,31 +298,34 @@ button {
 #pages > *:first-child {
   margin-top: 0;
 }
-#status {
+
+.status-wrap {
   position: fixed;
-  /*top: -100px;*/
-  /*top: 65px;*/
-  bottom: 0;
-  background: #FFFFF7;
-  /*border-bottom: 1px solid #DDD;*/
   width: 100%;
+  margin: 0 auto;
   text-align: center;
-  padding: 0px;
-  margin-left: 0px;
-  /*line-height: 40px;*/
-  line-height: 29px;
-  left: -100%;
-  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 1000;
+}
 
-  -webkit-transition: left 0.5s ease 0s;
-  -moz-transition:    left 0.5s ease 0s;
-  -ms-transition:     left 0.5s ease 0s;
-  -o-transition:      left 0.5s ease 0s;
-  transition:         left 0.5s ease 0s;
+#status {
+  position: relative;
+  background: #FFFFF7;
+  text-align: center;
+  padding: 5px 20px;
+  border-radius: 5px 5px 0 0 ;
+  bottom: -240px;
 
-  box-shadow: 0 0px 3px 0px #615B4E;
+  -webkit-transition: bottom 0.5s ease 0s;
+  -moz-transition:    bottom 0.5s ease 0s;
+  -ms-transition:     bottom 0.5s ease 0s;
+  -o-transition:      bottom 0.5s ease 0s;
+  transition:         bottom 0.5s ease 0s;
+
+  box-shadow: 0 0px 1px 3px rgba(0,0,0,0.25);
   font-size: 14px;
+  display: inline-block;
 }
 #status.good {
   background: #CCFF00;
@@ -337,12 +340,12 @@ button {
 }
 
 #status.hidden {
-  left: 100%;
-  display: block;
+  /*display: none;*/
+  bottom: -240px;
 }
 #status.visible {
-  left: 0;
-  display: block;
+  /*display: inline-block;*/
+  bottom: 0;
 }
 
 a,

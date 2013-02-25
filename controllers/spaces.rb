@@ -49,9 +49,9 @@ end
   end
 }
 
-delete '/spaces/:space_id',
+delete '/users/:user_id/spaces/:space_id',
   auth: [ :creator ],
-  requires: [ :space ],
+  requires: [ :user, :space ],
   provides: [ :json  ] do
 
   authorize! :delete, @space, message: "Only the space creator can do that."
@@ -60,13 +60,18 @@ delete '/spaces/:space_id',
     halt 400, @space.all_errors
   end
 
-  halt 200
+  respond_to do |f|
+    f.json do
+      halt 200, {}.to_json
+    end
+  end
 end
 
 # Returns whether space name is available or not
-post '/users/:user_id/spaces/name', provides: [ :json ], :auth => :user do
+post '/users/:user_id/spaces/name', :auth => :user, provides: [ :json ], requires: [ :user ] do
+  puts params[:name]
   respond_to do |f|
-    f.json { name_available?(params[:name]) }
+    f.json { { available: name_available?(params[:name]) }.to_json }
   end
 end
 
