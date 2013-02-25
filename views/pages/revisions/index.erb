@@ -2,7 +2,7 @@
 
 <ol>
   <% @page.revisions.all(:order => [ :created_at.desc ]).each do |rv| %>
-    <li><a href="<%= rv.url(@scope.namespace) %>"><%= rv.pretty_version %></a>
+    <li><a href="<%= rv.url %>"><%= rv.pretty_version %></a>
       on <%= pretty_time rv.created_at %>
       : <%= rv.info %></li>
   <% end %>

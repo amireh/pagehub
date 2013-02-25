@@ -127,9 +127,9 @@ class String
     DataMapper::Inflector.pluralize(self)
   end
 
-  def pluralize(n = nil)
+  def pluralize(n = nil, with_adverb = false)
     plural = to_plural
-    n && n != 1 ? "#{n} #{plural}" : "1 #{self}"
+    n && n != 1 ? "#{with_adverb ? 'are ' : ''}#{n} #{plural}" : "#{with_adverb ? 'is ' : ''}1 #{self}"
   end
 end
 

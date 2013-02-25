@@ -260,7 +260,7 @@ button[data-collapse] {
   box-shadow: none;
   font-size: 0;
   width: 16px;
-  height: 20px;
+  height: 18px;
 }
 
 button[data-collapse]:before {

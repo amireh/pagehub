@@ -150,7 +150,10 @@ class Page
   def editable_by?(user)
     folder.space.editor?(user)
   end
-
+  
+  def is_homepage?
+    [ 'README', 'Home' ].include?(self.title)
+  end
 
   def self.random_suffix
     Base64.urlsafe_encode64(Random.rand(12345 * 100).to_s)

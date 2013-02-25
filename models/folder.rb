@@ -1,7 +1,7 @@
 class Folder
   include DataMapper::Resource
 
-  default_scope(:default).update(:order => [ :title.asc ])
+  default_scope(:default).update(:order => [ :pretty_title.asc ])
   
   # attr_writer :editor
   DefaultFolder = 'None'
@@ -71,6 +71,10 @@ class Folder
   
   def homepage
     pages.first({ title: [ "Home", "README" ] }) || pages.first
+  end
+  
+  def is_root_folder?
+    DefaultFolder == self.title && !self.folder
   end
 
   def to_json

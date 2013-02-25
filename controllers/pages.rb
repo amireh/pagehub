@@ -42,90 +42,6 @@ def unshare_page(pid)
   redirect back
 end
 
-
-def locate_folder(path, scope = nil, args = {})
-  scope ||= @scope
-  fidx = 0
-  f = nil
-  while fidx < path.length - 1
-    unless f = scope.folders.first({ pretty_title: path[fidx] }.merge(args))
-      break
-    end
-
-    fidx += 1
-  end
-  f
-end
-
-def locate_group_page(crammed_path)
-  path = crammed_path.split('/')
-
-  if path.length > 1
-    unless f = locate_folder(path, @group, {})
-      halt 404
-    end
-
-    puts f.inspect
-
-    unless @page = f.pages.first({ pretty_title: path.last })
-      halt 404
-    end
-  else
-    title = crammed_path.sanitize
-
-    # locate the page
-    @page = @group.pages.first({ pretty_title: title })
-  end
-
-  @page
-end
-
-def load_revisions(pid)
-  unless @page = @scope.pages.first({ id: pid })
-    halt 404, "No such page."
-  end
-
-  erb "/pages/revisions/index".to_sym
-end
-
-def load_revision(pid, rid)
-  unless @page = @scope.pages.first({ id: pid })
-    halt 404, "No such page."
-  end
-
-  unless @rv = @page.revisions.first({ id: rid })
-    halt 404, "No such revision."
-  end
-
-  @prev_rv = @rv.prev
-  @next_rv = @rv.next
-
-  erb "/pages/revisions/show".to_sym
-end
-
-def rollback_page(pid, rid)
-  unless @page = @scope.pages.first({ id: pid })
-    halt 404, "No such page."
-  end
-  unless @rv = @page.revisions.first({ id: rid })
-    halt 404, "No such revision."
-  end
-
-  if !params[:confirmed] || params[:confirmed] != "do it"
-    flash[:error] = "Will not roll-back until you have confirmed your action."
-    return redirect @rv.url(@scope.namespace)
-  end
-
-  unless @page.rollback(@rv)
-    flash[:error] = "Page failed to rollback: #{@page.collect_errors}"
-    return redirect @rv.url(@scope.namespace)
-  end
-
-  flash[:notice] = "Page #{@page.title} has been restored to revision #{@rv.version}"
-
-  redirect @rv.url(@scope.namespace)
-end
-
 get '/spaces/:space_id/pages/:page_id',
   auth:     [ :user ],
   provides: [ :json ],
@@ -249,17 +165,59 @@ delete '/spaces/:space_id/pages/:page_id',
   end
 end
 
-# delete '/groups/:gid/pages/:id', auth: :group_editor do |gid, id| delete_page(id) end
-
 # Version control
-get '/pages/:id/revisions', auth: :user do |pid| load_revisions(pid) end
-get '/groups/:gid/pages/:id/revisions', auth: :group_editor do |gid, pid| load_revisions(pid) end
+get '/pages/:page_id/revisions',
+  auth: [ :user ],
+  provides: [ :html ],
+  requires: [ :page ] do 
 
-get '/pages/:id/revisions/:rid', auth: :user do |pid, rid| load_revision(pid, rid) end
-get '/groups/:gid/pages/:id/revisions/:rid', auth: :group_editor do |gid, pid, rid| load_revision(pid, rid) end
+  respond_with @page do |f|
+    f.html do
+      erb :"pages/revisions/index"
+    end
+  end
+end
 
-post '/pages/:id/revisions/:rid', auth: :user do |pid, rid| rollback_page(pid, rid) end
-post '/groups/:gid/pages/:id/revisions/:rid', auth: :group_editor do |gid, pid, rid| rollback_page(pid, rid) end
+get '/pages/:page_id/revisions/:revision_id',
+  auth: [ :user ],
+  provides: [ :html ],
+  requires: [ :page, :revision ] do
+  
+  @rv = @revision
+  
+  @prev_rv = @rv.prev
+  @next_rv = @rv.next
+
+  respond_with @revision do |f|
+    f.html { erb :"pages/revisions/show" }
+  end
+end
+
+post '/pages/:page_id/revisions/:revision_id',
+  auth: [ :user ],
+  provides: [ :html ],
+  requires: [ :page, :revision ] do
+  
+  @space = @page.space
+  
+  authorize! :update, @page, message: "You can not perform this action."
+  
+  @rv = @revision
+  
+  if !params[:confirmed] || params[:confirmed] != "do it"
+    flash[:error] = "Will not roll-back until you have confirmed your action."
+    return redirect @rv.url
+  end
+
+  unless @page.rollback(@rv)
+    flash[:error] = "Page failed to rollback: #{@page.collect_errors}"
+    return redirect @rv.url
+  end
+
+  flash[:notice] = "Page #{@page.title} has been restored to revision #{@rv.version}"
+
+  redirect @rv.url
+end
 
 # get '/pages/public', auth: :user do
 #   nr_invalidated_links = 0

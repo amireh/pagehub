@@ -1,7 +1,6 @@
-get '/:user_nickname/:space_pretty_title/*' do |user_nn, space_pt, path|
+get '/:user_nickname/:space_pretty_title*', :provides => [ :html ] do |user_nn, space_pt, path|
   unless u = User.first(nickname: user_nn)
     # halt 404, "No such user #{user_nn}."
-    puts "doesnt look like a browser hit"
     pass
   end
   
@@ -22,6 +21,7 @@ get '/:user_nickname/:space_pretty_title/*' do |user_nn, space_pt, path|
   unless can? :browse, p
     halt 401, "You are not allowed to view that page."
   end
+  
   @space = s
   @page = p
   

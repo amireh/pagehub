@@ -1,4 +1,4 @@
 <h1>
-  <%= page.title %>
+  <%= page.is_homepage? ? page.folder.is_root_folder? ? page.space.title : page.folder.title : page.title %>
   <em class="small"><%= (page.updated_at || page.created_at).strftime("Last updated on %D") %></em>
 </h1>

@@ -2,14 +2,7 @@
 <% content_for :section do %><%= @space.p('publishing.layout.name') %><% end %>
 
 <% content_for :header do %>
-  <% if @space %>
-    <%= partial "spaces/public/_heading", locals: { page: @page } %>
-  <% elsif @public then %>
-    <!-- <h1><a href="<%= @page.public_url true %>"><%= @page.title %></a></h1> -->
-    <%= partial "spaces/public/_heading", locals: { page: @page } %>
-  <% else %>
   <%= partial "spaces/public/_heading", locals: { page: @page } %>
-  <% end %>
 <% end %>
 
 <% if @space %>

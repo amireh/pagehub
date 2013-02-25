@@ -37,7 +37,7 @@
   <% 1.times do
     @space.on_resources({
       on_page: lambda { |p| %>
-        <% return if !show_homepages && p.title == "Home" %>
+        <% return if !show_homepages && p.is_homepage? %>
         <% selected = @page && @page.id == p.id ? 'class="selected"' : '' %>
         <% url = selected.empty? ? "href=\"#{p.href}\"" : '' %>
         <li>
@@ -50,7 +50,7 @@
       on_folder: lambda { |f| %>
         <% selected = @folder && @folder.id == f.id ? 'class="selected"' : '' %>
         <% is_empty = f.empty?(:public) %>
-        <li>
+        <li <%= 'class="root-folder"' if f.is_root_folder? %>>
           <label>
             <% if f.pages.all({ browsable:true }).empty? || !f.has_homepage? %>
               <strong><%= f.title %></strong>

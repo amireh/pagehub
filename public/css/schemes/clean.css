@@ -3,7 +3,11 @@ body {
   color: #615B4E;
 }
 
-h2,h3, .nav_links a {
+h1,h2 {
+  font-weight: normal;
+}
+
+h2, .nav_links a {
   color: #008CDD;
 }
 

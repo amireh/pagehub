@@ -59,13 +59,17 @@ function($, Backbone) {
     initialize: function(data) {
       this.space  = data.space;
       this.ctx    = data.ctx;
-      this.space.on('page_loaded', this.populate_editor, this);
-      this.space.on('reset', this.reset, this);
+      this.config = data.config || {};
+      
+      if (this.space) {
+        this.space.on('page_loaded', this.populate_editor, this);
+        this.space.on('reset', this.reset, this);
+      }
       this.bootstrap();
     },
     
     bootstrap: function() {
-      this.editor = create_editor("page_editor");
+      this.editor = create_editor("page_editor", this.config);
       this.resize_editor();
     },
     
@@ -75,8 +79,9 @@ function($, Backbone) {
     },
     
     // Resize it to fill up the remainder of the screen's height
-    resize_editor: function() {
-      var editor_h = $(window).height() - 135;
+    resize_editor: function(offset) {
+      if (!offset) { offset = 135; }
+      var editor_h = $(window).height() - offset;
       $(".CodeMirror").css("height", editor_h + "px");
     },
     

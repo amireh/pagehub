@@ -29,7 +29,8 @@ requirejs.config({
     'modernizr':              'vendor/modernizr',
     'shortcut':               'vendor/shortcut',
     'bootstrap':              'vendor/bootstrap.min',
-    'pagehub':                'lib/pagehub',
+    'pagehub':                'lib/pagehub'
+    // 'codemirror',             'vendor/'
   },
 
   shim: {

@@ -116,15 +116,32 @@ class Space
   
   def locate_resource(path)
     path = [ path ] if !path.is_a?(Array)
-    path = path.collect { |r| r.to_s }
+    path = path.collect { |r| r.to_s }.reject { |s| s.empty? }
     folder = root_folder
+        
+    if path.empty?
+      if self.root_folder && self.root_folder.has_homepage?
+        return self.root_folder.homepage
+      end 
+    end
     
     path[0..-2].each do |pt|
       folder = folder.folders.first({ pretty_title: pt })
       return nil if !folder
     end
     
-    folder.pages.first({ pretty_title: path.last.to_s.sanitize })
+    resource_title = path.last.to_s.sanitize
+    page = folder.pages.first({ pretty_title: resource_title })
+    
+    if !page
+      if cf = folder.folders.first({ pretty_title: resource_title })
+        if cf.has_homepage?
+          page = cf.homepage
+        end
+      end
+    end
+    
+    page
   end
 
   # TODO: helperize this, seriously

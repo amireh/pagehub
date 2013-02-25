@@ -94,9 +94,10 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       this.space.on('reset',       this.reset, this);
       
       this.anchors = {
-        preview: this.$el.find('#preview'),
-        edit:    this.$el.find('#edit_page'),
-        destroy: this.$el.find('#destroy_page')
+        preview:    this.$el.find('#preview'),
+        edit:       this.$el.find('#edit_page'),
+        destroy:    this.$el.find('#destroy_page'),
+        revisions:  this.$el.find('#revisions')
       };      
     
       
@@ -134,6 +135,14 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     on_page_loaded: function(page) {
       this.enable();
       this.anchors.preview.attr("href", page.get('media').href);
+      this.anchors.revisions.attr("href", page.get('media').revisions.url);
+
+      if (page.get('nr_revisions') == 1) {
+        this.anchors.revisions.addClass('disabled').attr("href", null);
+      } else {
+        this.anchors.revisions.removeClass('disabled');
+      }
+        
     },
     
     save_page: function() {
