@@ -1,4 +1,4 @@
-<form action="<%= @group.url('/edit/publishing') %>/<%= request.path.split('/').last %>" method="POST">
+<form action="<%= @space.url %>/edit/publishing/<%= request.path.split('/').last %>" method="POST">
   <%= yield_content :publishing_setting_form %>
   <input type="submit" value="Save" />
 </form>

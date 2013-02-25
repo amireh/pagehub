@@ -1,8 +1,8 @@
-<% content_for(:title) { "Publishing Settings | #{@group.title} | PageHub" } %>
+<% content_for(:title) { "Publishing Settings | #{@space.title} | PageHub" } %>
 
-<%= partial "groups/settings/publishing/_nav" %>
+<%= partial "spaces/settings/publishing/_nav" %>
 
 
 <h2>Publishing settings</h2>
-<p>These settings control the the looks of your <a href="<%= @group.public_url%>">public group space</a>.
+<p>These settings control the the looks of your <a href="<%= @space.href%>">public space space</a>.
   These settings override any personal scheme or settings.</p>

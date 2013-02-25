@@ -1,4 +1,4 @@
-<%= partial "groups/settings/publishing/_nav" %>
+<%= partial "spaces/settings/publishing/_nav" %>
 
 <% content_for :deferred_js do %>
   <script>
@@ -15,7 +15,7 @@
 <% content_for :publishing_setting_form do %>
   <section>
     <h1>Navigation links</h1>
-    <p>Additional links to show in the navigation bar of your <a href="<%= @group.public_url %>">public group space</a>.</p>
+    <p>Additional links to show in the navigation bar of your <a href="<%= @space.href %>">public space space</a>.</p>
     <div id="links">
       <div data-dyn-entity="link" data-dyn-spawn-on="links">
         <label><input placeholder="http://www.website.com" data-dyn-inject="@value, links.uri" type="text"
@@ -27,9 +27,9 @@
       <br />
       <a data-nosubmit data-dyn-target="link" href="#">Add a link</a>
     </div>
-    
+
     <br />
   </section>
 <% end %>
 
-<%= partial "groups/settings/publishing/_form" %>
+<%= partial "spaces/settings/publishing/_form" %>

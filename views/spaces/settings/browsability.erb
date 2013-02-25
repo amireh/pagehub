@@ -1,19 +1,19 @@
-<% content_for(:title) { "Browsability Settings | #{@group.title} | PageHub" } %>
+<% content_for(:title) { "Browsability Settings | #{h @space.title} | PageHub" } %>
 
-<%= partial "groups/settings/_nav" %>
+<%= partial "spaces/settings/_nav" %>
 
 <form action="<%= request.path %>" method="POST">
   <h2>Browsable Pages</h2>
-  <p>Below is a listing of all the pages and folders within your group.
+  <p>Below is a listing of all the pages and folders within your space.
     Unchecking a resource will prevent it from being publicly browsable
-    when people are browsing your <a href="<%= @group.public_url%>">group space</a>.
+    when people are browsing your <a href="<%= @space.href%>">space space</a>.
   </p>
-  <p><em>Note that this only takes effect if the group is publicly browsable,
-    <% if @group.is_browsable? %>which it is. <% else %> which it isn't.<% end %>
+  <p><em>Note that this only takes effect if the space is publicly browsable,
+    <% if @space.is_browsable? %>which it is. <% else %> which it isn't.<% end %>
   </em></p>
   <ul class="browsability">
     <%
-      @group.on_resources({
+      traverse_space(@space, {
         on_page: lambda { |p| %>
           <li>
             <label>
@@ -40,8 +40,8 @@
     %>
   </ul>
 
-  <% if @group.pages.empty? && @group.folders.empty? %>
-    <p class="notice">Oops! The group has no folders or pages yet, nothing to show here.</p>
+  <% if @space.pages.empty? && @space.folders.empty? %>
+    <p class="notice">Oops! The space has no folders or pages yet, nothing to show here.</p>
   <% end %>
   <input type="submit" value="Update" />
 </form>

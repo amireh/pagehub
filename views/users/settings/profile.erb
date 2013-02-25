@@ -1,17 +1,11 @@
 <% content_for :title do %> Profile - Settings | <%= current_user.nickname %> | PageHub <% end %>
 
 <%= partial "users/settings/_nav" %>
-<% content_for :js do %>
-<script>
-  $(function() {
-  });
-</script>
-<% end %>
 
 <form action="/settings/profile" method="POST">
   <section>
     <h2>Profile</h2>
-    <p>When people visit your <a href="<%= current_user.profile_url %>">public profile</a>
+    <p>When people visit your <a href="<%= current_user.href %>">public profile</a>
       they will get to see your name, avatar, and your publicly shared pages.</p>
 
     <label>Full name<br />

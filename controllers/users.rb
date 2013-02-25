@@ -110,7 +110,7 @@ end
    publishing
    profile
    notifications
-   groups).each { |domain|
+   spaces).each { |domain|
   get "/settings/#{domain}", auth: :user do
     erb :"/users/settings/#{domain}"
   end

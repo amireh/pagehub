@@ -718,7 +718,7 @@ ol.listlike {
   border-top-left-radius:     2px;
   border-bottom-left-radius:  2px;
   border-bottom-right-radius: 2px;
-  
+
   max-height: 320px;
   overflow-y: auto;
 }
@@ -1093,7 +1093,7 @@ button.delete_folder:hover {
     position: relative;
     min-height: 1em;
   }
-  
+
   .ui-dialog .actionbar :first-child {
     position: absolute;
     bottom: 0;
@@ -1265,6 +1265,10 @@ footer p {
   box-shadow: 0 0 1px 5px #BBB;
 }
 .ui-widget-overlay + .ui-dialog {
-  box-shadow: 0 0 1px 5px #999;  
+  box-shadow: 0 0 1px 5px #999;
 }
 .ui-dialog img { vertical-align: middle; }
+
+.inline {
+  display: inline-block;
+}

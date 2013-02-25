@@ -2,38 +2,15 @@
   <link type="text/css" rel="stylesheet" href="/css/settings.css" />
 <% end %>
 
-<% content_for :section do %> settings <% end %>
+<% content_for :section do %> spaces settings <% end %>
 <% content_for :header do %>
-  <h3><a href="/groups/<%=@group.name%>"><%= @group.title %></a>
+  <h3><a href="<%= @space.url %>"><%= @space.title %></a>
   </h3>
 <% end %>
 
 <% content_for :deferred_js do %>
   <script>
-    console.log(<%= request.path.split('/').last.to_json %>)
-    $(function() {
-      
-      if ($(".subnav").children().length > 1) {
-        $(".settings .subnav a[href='" + <%= request.path.to_json %> + "']")
-          .addClass("selected")
-          .parent()
-          .addClass("selected");
-          
-        $(".settings").addClass("with_subnav");
-      }
-      
-      var selection_path = <%= request.path.to_json %>;
-      
-      if ($(".settings .subnav .selected").length > 0) {
-        selection_path = selection_path.split('/').slice(0,-1).join('/');
-      }
-      
-      $(".settings nav a[href='" + selection_path + "']")
-        .addClass("selected")
-        .parent()
-        .addClass("selected")
-        .append($(".settings > nav .subnav"));
-    })
+    pagehub_hooks.push(require(['views/shared/settings/nav'], function() {}));
   </script>
 <% end %>
 
@@ -41,28 +18,28 @@
   <ul>
     <li class="icon settings64 standalone">Settings</li>
     <li><a  data-placement="top"
-            <%= 'class="disabled"' unless @group.is_creator?(current_user) %>
-            title="The group name and other basic stuff"
-            href="<%= @group.url("/edit/general") %>">General</a>
+            <%= 'class="disabled"' unless @space.is_creator?(current_user) %>
+            title="The space name and other basic stuff"
+            href="<%= @space.url %>/edit/general">General</a>
     </li>
     <li><a  data-placement="top"
-            <%= 'class="disabled"' unless @group.is_admin?(current_user) %>
-            title="Manage group members, their roles, etc."
-            href="<%= @group.url("/edit/memberships") %>">Memberships</a>
+            <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
+            title="Manage space members, their roles, etc."
+            href="<%= @space.url %>/edit/memberships">Memberships</a>
     </li>
     <li><a
-            <%= 'class="disabled"' unless @group.is_admin?(current_user) %>
+            <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
             data-placement="top"
-            title="Customize the public group space settings"
-            href="<%= @group.url("/edit/publishing") %>">Publishing</a>
+            title="Customize the public space space settings"
+            href="<%= @space.url %>/edit/publishing">Publishing</a>
     </li>
     <li><a  data-placement="top"
-            <%= 'class="disabled"' unless @group.is_admin?(current_user) %>
+            <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
             title="Specify which pages or folders are publicly browsable"
-            href="<%= @group.url("/edit/browsability") %>">Browsability</a>
+            href="<%= @space.url %>/edit/browsability">Browsability</a>
     </li>
   </ul>
-  
+
   <ul class="subnav">
     <li></li>
     <%= yield_content :subnav %>

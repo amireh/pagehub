@@ -23,8 +23,8 @@
   <script src="/assets/vendor/modernizr.js"></script>
   <script src="/assets/vendor/shortcut.js"></script>
   <script src="/assets/vendor/bootstrap.min.js"></script>
-  
-  
+
+
   <script type="text/javascript" src="/js/modernizr.js"></script>
   <script type="text/javascript" src="/assets/lib/json2.min.js"></script>
   <script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
@@ -39,9 +39,10 @@
     pagehub_hooks = [];
     last_error = null; // used for debugging
   </script>
-  
+
+  <script src="/assets/vendor/jquery-1.9.1.min.js"></script>
   <script data-main="/assets/main" src="/assets/lib/require.js"></script>
-  
+
   <%= yield_content :js %>
   <%= yield_content :scripts %>
 </head>
@@ -49,7 +50,7 @@
 <body class="member">
 
   <%= yield_content :wraps %>
-  
+
   <header>
     <div class="stuff">
       <!-- <h1><a href="/">Page<em>Hub</em></a></h1> -->
@@ -57,7 +58,7 @@
         <a href="<%= @user.url %>"><%= @user.nickname %></a>
         <% if @space %>
           / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
-        <% end %>          
+        <% end %>
         <%#= yield_content :header %>
       </h1>
 
@@ -119,6 +120,11 @@
 
   </div>
   <%= partial "layouts/_footer" %>
+
+  <script>
+    request = { path: <%= request.path.to_json %> };
+    pagehub_hooks.push(require([ 'views/nav' ], function() { }));
+  </script>
 
   <%= yield_content :deferred_js %>
   <%= partial "layouts/_google_analytics" %>

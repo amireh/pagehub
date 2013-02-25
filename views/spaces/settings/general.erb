@@ -1,11 +1,11 @@
-<% content_for(:title) { "General Settings | #{@group.title} | PageHub" } %>
+<% content_for(:title) do %> General Settings | #{h @space.title} | PageHub <% end %>
 
-<%= partial "groups/settings/_nav" %>
+<%= partial "spaces/settings/_nav" %>
 
 <% content_for :js do %>
 <script>
   $(function() {
-    // Checks whether the typed in group name is available
+    // Checks whether the typed in space name is available
     $("#check_availability").click(function() {
       var btn = $(this);
       var name = $("input[name=name]").attr("value");
@@ -16,13 +16,12 @@
       }
 
       $.ajax({
-        url: "/groups/name",
+        url: "<%= "#{@user.url}/spaces/name" %>",
         type: "POST",
         data: { name: $("input[name=name]").attr("value") },
 
         success: function(is_available) {
           is_available = JSON.parse(is_available);
-          console.log(is_available)
           if (is_available) {
             btn.next("span").addClass("success").removeClass("error").html("available");
           } else {
@@ -36,15 +35,15 @@
   });
 </script>
 <% end %>
-<% if !@group.is_creator?(current_user) %>
-  <p>Only the group creator can manage this section.</p>
+<% if !@space.is_creator?(current_user) %>
+  <p>Only the space creator can manage this section.</p>
 <% else %>
 
   <form action="<%= request.path %>" method="POST">
     <h2>Name</h2>
-    <label>The group name must be unique and it will be used for accessing pages and user management.
+    <label>The space name must be unique and it will be used for accessing pages and user management.
       <br /><br />
-      <input type="text" name="name" class="very_fat" value="<%= @group.title %>" />
+      <input type="text" name="name" class="very_fat" value="<%= @space.title %>" />
       <button id="check_availability">check availability</button>
       <span></span>
     </label>
@@ -52,8 +51,8 @@
     <p>
       <em>
         <strong>WARNING: </strong>
-        changing the group name will <strong>irreversibly</strong> invalidate
-        <strong>all public links</strong> of the group's pages that were shared
+        changing the space name will <strong>irreversibly</strong> invalidate
+        <strong>all public links</strong> of the space's pages that were shared
         with members or people.
       </em>
     </p>
@@ -62,15 +61,15 @@
     </p>
 
     <h2>Brief</h2>
-    <label>A 1-line description of what this group is for.
+    <label>A 1-line description of what this space is for.
       <br /><br />
-      <input type="text" name="brief" style="width: 600px" value="<%= @group.brief %>" placeholder="Building nuclear plants with style"></textarea>
+      <input type="text" name="brief" style="width: 600px" value="<%= @space.brief %>" placeholder="Building nuclear plants with style"></textarea>
     </label>
-    
+
     <h2>Public access</h2>
     <label>
-      <input type="checkbox" <%= 'checked="checked"' if @group.is_public %> value="true" name="is_public" />
-      Allow people to read and browse the group documents automatically
+      <input type="checkbox" <%= 'checked="checked"' if @space.is_public %> value="true" name="is_public" />
+      Allow people to read and browse the space documents automatically
     </label>
 
     <br />
@@ -78,22 +77,16 @@
 
     <input type="submit" value="Update" />
 
-      <a href="/groups/<%= @group.name %>/destroy"
-         class="button bad confirm thin"
-         data-confirm-cb="ui.dialogs.destroy_group"
-         data-confirm-accept="Accept"
-         >Destroy this group
+      <a href="<%= @space.url %>/destroy" class="button bad confirm thin">Destroy this space
       </a>
       <div hidden="hidden" data-confirm>
-        <p>Are you sure you want this group to be destroyed?</p>
+        <p>Are you sure you want this space to be destroyed?</p>
         <p>Please note that
-          this action is irreversible, and destroying the group will remove
+          this action is irreversible, and destroying the space will remove
           <strong>all of its pages</strong> as well as invalidate all the links
           to those pages that were shared with others.
         </p>
       </div>
-
-    <%= partial "/shared/_confirmation_dlg" %>
 
   </form>
 <% end %>

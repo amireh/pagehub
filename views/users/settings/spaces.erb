@@ -1,0 +1,29 @@
+<% content_for :title do %> Spaces - Settings | <%= current_user.nickname %> | PageHub <% end %>
+
+<%= partial "users/settings/_nav" %>
+
+<form class="spaces" method="POST" action="/settings/spaces">
+  <section>
+    <h2>Space memberships</h2>
+
+    <p>You are currently a member of <%= pluralize(current_user.spaces.count, "space") %>.</p>
+
+    <ol>
+      <% current_user.spaces.each do |g| %>
+        <li>
+          <% unless g.is_creator?(current_user) %>
+            <button class="inline thin bad">Leave</button>
+            <p hidden="hidden" data-confirm>Leaving the space will remove all the pages you've written in it
+              from that space space and will return them to you. Are you sure you want to do this?
+            </p>
+          <% end %>
+          <p>
+            <a href="<%= g.url %>"> <%= g.title %></a> as <%= vowelize g.role_of(current_user) %>.<br />
+            <span>Authored <%= pluralize(g.pages({ creator: current_user }).count, "page" ) %>.</span>
+          </p>
+        </li>
+      <% end %>
+    </ol>
+
+  </section>
+</form>

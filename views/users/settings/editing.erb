@@ -4,22 +4,22 @@
 <%= partial "/shared/_editor" %>
 
 <% content_for :css do %>
-<style>
-  .settings .CodeMirror {
-    font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
-    font-size: <%= preferences["editing"]["font_size"] %>px;
-    line-height: <%= preferences["editing"]["line_height"] %>px;
-    letter-spacing: <%= preferences["editing"]["letter_spacing"] %>px;
-  }
-</style>
+  <style>
+    .settings .CodeMirror {
+      font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
+      font-size: <%= preferences["editing"]["font_size"] %>px;
+      line-height: <%= preferences["editing"]["line_height"] %>px;
+      letter-spacing: <%= preferences["editing"]["letter_spacing"] %>px;
+    }
+  </style>
 <% end %>
 
 <% content_for :js do %>
 <script>
   $(function() {
-    ui.editor = editor = ui.create_editor("preview_editor", {
-      readOnly: true
-    });
+    // ui.editor = editor = ui.create_editor("preview_editor", {
+    //   readOnly: true
+    // });
 
     $("input[type=radio][name*=editing]").change(function() {
       var ff = $(this).parent().css("font-family");

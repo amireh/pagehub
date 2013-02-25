@@ -31,46 +31,42 @@ module PageHub
       pepper = pepper + Random.rand(1234).to_s
       sane_salt(pepper)
     end
-  
+
     def p(*args)
-      scope = @group || @user || current_user
-      if scope && scope.respond_to?(:preferences)
-        scope.preferences(*args)
+      scope = @space || @user || current_user
+      if scope && scope.respond_to?(:p)
+        scope.p(*args)
       end
     end
-    
+
+    def is_on?(*args)
+      scope = @space || @user || current_user
+      if scope && scope.respond_to?(:is_on?)
+        scope.is_on?(*args)
+      end
+    end
+
     def is_on(*setting)
       value = p(*setting)
-      
+
       if block_given?
         return yield(value)
       end
-      
-      case value
-      when String
-        !value.empty? && !%w(off false).include?(value)
-      when Hash
-        !value.empty?
-      when TrueClass
-        true
-      when FalseClass
-        false
-      when NilClass
-        false
-      end
+
+      return is_on?(*setting)
     end
     def checkify(setting, &condition)
       is_on(setting, &condition) ? 'checked="checked"' : ''
     end
-    
+
     def selectify(setting, &condition)
       is_on(setting, &condition) ? 'selected="selected"' : ''
     end
-    
+
     def disabilify(setting)
       is_on(setting, &condition) ? 'disabled="disabled"' : ''
     end
-    
+
     def md(content)
       content.to_s.to_markdown
     end
@@ -110,7 +106,7 @@ module PageHub
     def pluralize(number, word)
       number == 1 ? "#{number} #{word}" : "#{number} #{word}s"
     end
-    
+
     def vowelize(word)
       word.to_s.vowelize
     end
@@ -122,7 +118,7 @@ class String
   def vowelize
     Vowels.include?(self[0]) ? "an #{self}" : "a #{self}"
   end
-  
+
   def to_plural
     DataMapper::Inflector.pluralize(self)
   end
@@ -139,7 +135,7 @@ helpers do
   def h(*args)
     ERB::Util.h(*args)
   end
-  
+
   def name_available?(name)
     nn = name.to_s.sanitize
     !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ title: nn }).nil?
@@ -149,5 +145,5 @@ helpers do
   def reserved?(name)
     ReservedNames.include?(name)
   end
-  
+
 end

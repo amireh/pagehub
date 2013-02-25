@@ -1,4 +1,4 @@
-<%= partial "groups/settings/publishing/_nav" %>
+<%= partial "spaces/settings/publishing/_nav" %>
 
 <% content_for :publishing_setting_form do %>
 
@@ -14,15 +14,15 @@
 
     <%= partial "/shared/_editor" %>
 
-    <% 
+    <%
       css = p('publishing.custom_css')
-      css = css.empty? ?
-      "/* you can write your own CSS here that will be applied to all the group public pages */" :
+      css = css.nil? ?
+      "/* you can write your own CSS here that will be applied to all the space public pages */" :
       css
     %>
     <textarea data-untogglable name="custom_css" id="css_editor" class="blocky_editor"><%= css %></textarea>
   </section>
-  
+
 <% end %>
 
 <% content_for :deferred_js do %>
@@ -40,4 +40,4 @@
   </script>
 <% end %>
 
-<%= partial "groups/settings/publishing/_form" %>
+<%= partial "spaces/settings/publishing/_form" %>

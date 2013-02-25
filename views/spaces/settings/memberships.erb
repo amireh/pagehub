@@ -1,15 +1,15 @@
-<% content_for(:title) { "Membership Settings | #{@group.title} | PageHub" } %>
+<% content_for(:title) { "Membership Settings | #{@space.title} | PageHub" } %>
 <% content_for(:section) { %> memberships <% } %>
 
-<%= partial "groups/settings/_nav" %>
+<%= partial "spaces/settings/_nav" %>
 
 <% content_for :js do %>
 <script>
   $(function() {
 
     var lookup_timer = null;
-    var lookup_pulse = <%= preferences["groups"]["lookup_pulse"] %>;
-    var gid = <%= @group.id %>;
+    var lookup_pulse = <%= preferences["spaces"]["lookup_pulse"] %>;
+    var gid = <%= @space.id %>;
 
     $("form").submit(function() {
       $(this).find("[data-dyn-entity]:hidden").remove();
@@ -19,7 +19,7 @@
 
     // List of registered users (their nicknames)
     var users = [];
-    var admins = <%= @group.admin_nicknames.to_json %>;
+    var admins = <%= @space.admins.collect { |a| a.nickname }.to_json %>;
 
     // Appends a <li> containing the nickname and a remove button
     // to the registered user listing - #users
@@ -92,9 +92,9 @@
 
     var kicked = {};
     var kick_member = function(id, nn) {
-      pagehub.groups.kick(id, gid, {
+      pagehub.spaces.kick(id, gid, {
         success: function() {
-          ui.status.show(nn + " is no longer a member of this group.", "good");
+          ui.status.show(nn + " is no longer a member of this space.", "good");
           kicked[id] = true;
 
           // re-initiate the UI removal event
@@ -124,20 +124,20 @@
 
     dynamism.on_removal(on_kick_member);
 
-    dynamism.inject(<%= @group.all_users.to_json %>, $("table"))
+    dynamism.inject(<%= @space.all_users.to_json %>, $("table"))
   });
 </script>
 <% end %>
 
 <% conditionals = {
   heading: @editing ?
-    "Group Management - <a href='/groups/#{@group.name}/info'>#{@group.title}</a>"
+    "Group Management - <a href='/spaces/#{@space.name}/info'>#{@space.title}</a>"
   : "Group Registration",
-  form_action: @editing ? "/groups/#{@group.name}" : "/groups",
+  form_action: @editing ? "/spaces/#{@space.name}" : "/spaces",
   submit_label: @editing ? "Update Group" : "Register Group",
   members_label: @editing ?
     'Look up users using the text box below.'
-    : 'You can assign the initial members of this group. Of course, you can always add and remove members later.'
+    : 'You can assign the initial members of this space. Of course, you can always add and remove members later.'
 }
 %>
 
@@ -184,11 +184,11 @@
 </form>
 
 
-<div class="group_role_description">
+<div class="space_role_description">
   <h3>Group Roles</h3>
   <h4>Members</h4>
   <p>Members are limited to reading the pages
-    written by the group editors.</p>
+    written by the space editors.</p>
   <h4>Editors</h4>
     <p>Editors can
     write new pages and folders, edit existing ones, and rename them.</p>
@@ -199,6 +199,6 @@
     Admins get all the perks editors and members do.
   </p>
   <h4>Group creator</h4>
-  <p>The group creator can change the group name, promote
+  <p>The space creator can change the space name, promote
     and demote others to/from the admin role, and kick admins.</p>
 </div>

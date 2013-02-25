@@ -1,12 +1,8 @@
 <% content_for :subnav do %>
-  <li><a href="<%= @group.url('') %>/edit/publishing/layout">Layout</a></li>
-  <li><a href="<%= @group.url('') %>/edit/publishing/theme">Theme</a></li>
-  <li><a href="<%= @group.url('') %>/edit/publishing/navigation_links">Navigation Links</a></li>
-  <li><a href="<%= @group.url('') %>/edit/publishing/custom_css">Custom CSS</a></li>
-  <li>
-        <a class="listlike" href="/help" title="Help">Help</a>
-        <%= partial "/shared/_nav_help_links" %>
-  </li>
+  <li><a href="<%= @space.url %>/edit/publishing/layout">Layout</a></li>
+  <li><a href="<%= @space.url %>/edit/publishing/theme">Theme</a></li>
+  <li><a href="<%= @space.url %>/edit/publishing/navigation_links">Navigation Links</a></li>
+  <li><a href="<%= @space.url %>/edit/publishing/custom_css">Custom CSS</a></li>
 <% end %>
 
-<%= partial "groups/settings/_nav" %>
+<%= partial "spaces/settings/_nav" %>
