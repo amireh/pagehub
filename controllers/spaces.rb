@@ -1,5 +1,12 @@
-get '/users/:user_id/spaces', :auth => :user do
-  erb :"/spaces/index"
+get '/users/:user_id/spaces',
+  auth: [ :user ],
+  requires: [ :user ],
+  provides: [ :json, :html ] do
+  
+  respond_with @user do |f|
+    f.html { erb :"spaces/index" }
+    f.json { rabl :"spaces/index", collection: @user.spaces }
+  end
 end
 
 get '/users/:user_id/spaces/new', :auth => :user do

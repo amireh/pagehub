@@ -55,6 +55,7 @@ configure do
     Dir.glob("#{d}/**/*.rb").reject { |f| f =~ /\.exclude/ }.each { |f| require f }
   }
   
+  require 'controllers/sessions'
   require 'controllers/users'
   require 'controllers/folders'
   require 'controllers/spaces'

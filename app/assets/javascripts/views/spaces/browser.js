@@ -300,6 +300,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       
       data.nr_pages     = folder.pages.length;
       data.nr_folders   = folder.children().length;
+      data.nr_resources = data.nr_pages + data.nr_folders;
       
       var el      = DestroyFolderTmpl(data);
 

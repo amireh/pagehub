@@ -13,10 +13,12 @@ define('models/space',
       }
     },
     
+    urlRoot: function() {
+      return '/users/' + this.get('creator').id + '/spaces';
+    },
+    
     initialize: function(data) {
       var self = this;
-      
-      this.urlRoot = '/users/' + this.get('creator').id + '/spaces';
       
       this.folders = new Folders();
       this.folders.space = this;

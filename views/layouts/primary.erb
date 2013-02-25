@@ -42,30 +42,24 @@
   
   <script data-main="/assets/main" src="/assets/lib/require.js"></script>
   
-
-  <% if false %>
-    <% unless settings.production? %>
-      <script src="/js/dynamism.js"></script>
-      <script src="/js/pagehub.js"></script>
-      <script src="/js/pagehub_ui.js"></script>
-    <% else %>
-      <script src="/js/ugly/all.js"></script>
-    <% end %>
-  <% end %>
-  
   <%= yield_content :js %>
   <%= yield_content :scripts %>
 </head>
 
 <body class="member">
 
-  <!-- <div class="header_wrap"></div> -->
-
   <%= yield_content :wraps %>
+  
   <header>
     <div class="stuff">
-      <h1><a href="/">Page<em>Hub</em></a></h1>
-      <div class="subheader"><%= yield_content :header %></div>
+      <!-- <h1><a href="/">Page<em>Hub</em></a></h1> -->
+      <h1>
+        <a href="<%= @user.url %>"><%= @user.nickname %></a>
+        <% if @space %>
+          / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
+        <% end %>          
+        <%#= yield_content :header %>
+      </h1>
 
       <nav>
         <span>

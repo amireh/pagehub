@@ -1,0 +1,15 @@
+<% content_for :section do %>dashboard<% end %>
+<% content_for :deferred_js do %>
+<script>
+  pagehub_hooks.push(require([ 'views/users/dashboard' ], function(Dashboard) {
+    d = new Dashboard(<%= rabl :"/users/show", object: @user %>);
+  }));
+</script>
+<% end %>
+
+<h2>Your spaces</h2>
+
+<div class="gridster">
+  <ul>
+  </ul>
+</div>

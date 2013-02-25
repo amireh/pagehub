@@ -29,7 +29,8 @@ requirejs.config({
     'modernizr':              'vendor/modernizr',
     'shortcut':               'vendor/shortcut',
     'bootstrap':              'vendor/bootstrap.min',
-    'pagehub':                'lib/pagehub'
+    'pagehub':                'lib/pagehub',
+    'jquery.gridster':        'lib/jquery.gridster.min'
     // 'codemirror',             'vendor/'
   },
 
@@ -37,6 +38,7 @@ requirejs.config({
     'jquery': { exports: '$' },
     'jquery.ui': [ 'jquery' ],
     'jquery.util': [ 'jquery' ],
+    'jquery.gridster': [ 'jquery' ],
     
     'pagehub': {
       deps: [ 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr' ],
