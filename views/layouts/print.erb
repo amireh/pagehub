@@ -20,10 +20,14 @@
 
   <%= yield_content :scripts %>
   <%= yield_content :js %>
-  
-  <% scheme = @space.p('publishing.theme.name') %>
+
+  <% scheme = params[:theme] || @space.p('publishing.theme.name') %>
   <% unless scheme == "None" %>
     <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
+  <% end %>
+
+  <% if params[:embedded] %>
+    <style>html { padding: 0 20px; overflow-x: hidden; }</style>
   <% end %>
 
   <% unless @space %>
@@ -43,7 +47,7 @@
   <% if @space %>
     <% layout = @space.p('publishing.layout.name') %>
     <link href="/css/layouts/<%= layout %>.css" rel="stylesheet" type="text/css" />
-    
+
     <% if @space.p('publishing.custom_css') %>
       <style>
         <%= @space.p('publishing.custom_css').minify(:css) %>
@@ -53,7 +57,7 @@
     <% layout = 'focused' %>
     <link href="/css/layouts/focused.css" rel="stylesheet" type="text/css" />
   <% end %>
-  
+
 
 </head>
 <% klasses = [ ] %>
@@ -63,7 +67,7 @@
     klasses << @resource.pretty_title
     klasses << @page.folder.pretty_title if @page && @page.folder
   end
-  
+
   klasses << 'with_sidebar' if content_for? :sidebar
 %>
 
@@ -76,7 +80,7 @@
   </div>
 
   <div class="wrap">
-    
+
     <header class="scope_title">
       <% if @space %>
         <h1><a href="<%= @space.href %>"><%= @space.title %></a></h1>
@@ -88,25 +92,25 @@
         </div>
       <% end %>
     </header>
-    
+
     <article class="content">
       <header class="page_title">
         <%= yield_content(:header).force_encoding('UTF-8') %>
       </header>
-      
+
       <%= yield_content :breadcrumbs %>
       <%= yield %>
     </article>
-    
+
 
     <% if content_for?(:sidebar) %>
       <div class="sidebar">
         <%= yield_content :sidebar %>
       </div>
     <% end %>
-  
+
   </div>
-  
+
   <div id="bottom"></div>
   <%= partial "layouts/_google_analytics" %>
 </body>

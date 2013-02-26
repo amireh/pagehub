@@ -26,11 +26,13 @@ get '/' do
   erb :"static/greeting.md"
 end
 
-%w(/tutorial /testdrive).each { |uri|
-  send("get", uri, auth: :user) do
-    erb :"static/tutorial.md", layout: :"layouts/print"
-  end
-}
+get "/users/:user_id/spaces/:space_id/testdrive",
+  auth: [ :user ],
+  provides: [ :html ],
+  requires: [ :user, :space ] do
+
+  erb :"static/tutorial.md", layout: :"layouts/print"
+end
 
 # Legacy support
 get '/account' do

@@ -323,6 +323,15 @@
       } /* memberships .space_role_description */
 
     } /* memberships */
+    section {
+      position: relative;
+    }
+
+    iframe#theme_browser {
+      height: 480px;
+      border: none;
+      margin-bottom: 20px;
+    }
 
     ul.browsability {
       padding: 0;

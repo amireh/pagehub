@@ -1,4 +1,16 @@
-<form action="<%= @space.url %>/edit/publishing/<%= request.path.split('/').last %>" method="POST">
+<% content_for :deferred_js do %>
+  <script>
+    pagehub_hooks.push(
+      require([ 'models/space', 'views/spaces/settings/publishing' ], function(Space, SettingsView) {
+        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
+        s = new SettingsView({ space: space });
+        s.render(_.last(request.path.split('/')));
+      })
+    );
+  </script>
+<% end %>
+
+<form id="space_publishing_settings">
   <%= yield_content :publishing_setting_form %>
-  <input type="submit" value="Save" />
+  <!-- <input type="submit" value="Save" /> -->
 </form>

@@ -1,8 +1,9 @@
 <%= partial "spaces/settings/publishing/_nav" %>
 
 <% content_for :publishing_setting_form do %>
-  <section>
+  <section id="layout_settings">
     <h1>Publishing Layout</h1>
+
     <% layouts = {
       "Fluid" => "fluid",
       "Easy read" => "easy"
