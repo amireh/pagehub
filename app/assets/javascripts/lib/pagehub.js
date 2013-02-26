@@ -42,7 +42,12 @@ define([ 'jquery', 'bootstrap' ], function($) {
         // initialize dynamism
         function() {
           // element tooltips
-          $("a[title]").tooltip({ placement: "bottom" });
+          // $("[title]").tooltip({ placement: "bottom" });
+          // $('body').tooltip({
+          //   selector: '[title!=""]',
+          //   placement: "bottom"
+          // });
+          $(document.body).tooltip({selector: '[title], [data-original-title]', placement: "bottom" });
         },
 
         // function() {

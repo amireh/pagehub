@@ -138,9 +138,11 @@ put "/users/:user_id/spaces/:space_id",
     memberships.each { |m|
       # the space creator can not be modified
 
+      m[:role], m[:user_id] = m['role'], m['user_id']
+
       # validate the user's existence
-      unless u = User.first(nickname: m[:nickname]) then
-        halt 400, "Membership error: no such user '#{m[:nickname]}'"
+      unless u = User.get(m[:user_id]) then
+        halt 400, "Membership error: no such user '#{m[:user_id]}'"
       end
 
       if u == @space.creator

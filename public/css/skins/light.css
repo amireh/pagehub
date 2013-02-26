@@ -31,6 +31,11 @@
 .member nav > a {
   height: 49px;
 }
+.member .icon {
+  font-size: 0;
+  box-shadow: none;
+  border: none;
+}
 .member .icon.spaces          { background-position: -88px  -32px;}
 .member .icon.help            { background-position: -56px  16px; }
 .member .icon.settings        { background-position: -88px  16px; }
@@ -47,13 +52,14 @@
 .member #page_actions > .icon.delete_page { background-image: url("/assets/icons/16x16/trash.png"); background-position: center center; }
 .member .icon.settings.standalone { background: url("../icons/24x24/process.png") no-repeat 0 0; }
 .member .icon.settings64.standalone { background: url("../icons/48x48/process.png") no-repeat 0 0; }
-
 .member .icon.folder {
   background: url("/assets/icons/16x16/glyphicons_144_folder_open_resized.png") no-repeat 0 2px;
 }
 .member .collapsed .icon.folder {
   background: url("/assets/icons/16x16/glyphicons_145_folder_plus_resized.png") no-repeat;
 }
+.member .icon.kick_member { background: url("/assets/icons/16x16/remove.png") no-repeat; }
+.member .icon.search { background: url("/assets/icons/24x24/search.png") no-repeat center center; }
 
 .icon.folder {
   width: 16px;

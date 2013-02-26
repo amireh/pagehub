@@ -3,7 +3,7 @@
 
 <%= partial "spaces/settings/_nav" %>
 
-<% content_for :js do %>
+<% content_for :jasdfs do %>
 <script>
   $(function() {
 
@@ -80,7 +80,6 @@
         lookup_timer = null;
       }
 
-
       lookup_timer = setTimeout("lookup_user('" + nn + "')", lookup_pulse);
     });
 
@@ -129,58 +128,38 @@
 </script>
 <% end %>
 
-<% conditionals = {
-  heading: @editing ?
-    "Group Management - <a href='/spaces/#{@space.name}/info'>#{@space.title}</a>"
-  : "Group Registration",
-  form_action: @editing ? "/spaces/#{@space.name}" : "/spaces",
-  submit_label: @editing ? "Update Group" : "Register Group",
-  members_label: @editing ?
-    'Look up users using the text box below.'
-    : 'You can assign the initial members of this space. Of course, you can always add and remove members later.'
-}
-%>
+<% content_for :deferred_js do %>
+  <script>
+    pagehub_hooks.push(
+      require([ 'models/space', 'views/spaces/settings/memberships' ], function(Space, SettingsView) {
+        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
+        s = new SettingsView({ space: space });
+      })
+    );
+  </script>
+<% end %>
 
-<form action="<%= request.path %>" method="POST">
+<form id="space_membership_settings">
   <h2>Add Members</h2>
-  <label>
-    <%= conditionals[:members_label] %>
+  <label>You can look up users by their nicknames using the text box below.
     <br /><br />
-    <input type="text" id="user_search" autocomplete="off" class="very_fat" /> <small><em>(search by nickname)</em></small>
+    <input type="text" id="user_search" autocomplete="off" class="very_fat search-box" />
   </label>
-  <ul class="user_listing" id="user_listing"></ul>
+  <div class="user-listing" id="user_listing"></div>
   <h2>Registered Members</h2>
+
   <table>
     <thead>
       <tr>
         <th>Nickname</th>
+        <th>Contributions</th>
         <th>Role<br /><small>(Member/Editor/Admin)</small></th>
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-      <tr id="user_%id" data-dyn-inject="@id, users.id" data-dyn-entity="users" data-dyn-hook="post-injection, assign_role"  data-dyn-spawn-on="users">
-        <input type="hidden" name="users[-1][nickname]" data-dyn-inject="@value, users.nickname" />
-        <td data-dyn-inject="@text, users.nickname">
-          %nickname
-        </td>
-        <td>
-          <label><input type="radio" name="users[-1][role]" value="member" checked="checked" /> M</label>
-          <label><input type="radio" name="users[-1][role]" value="editor" /> E</label>
-          <label><input type="radio" name="users[-1][role]" value="admin" /> A</label>
-        </td>
-        <td>
-          <button class="very thin bad" data-dyn-action="remove">Remove</button>
-        </td>
-      </tr>
+    <tbody id="membership_records">
     </tbody>
   </table>
-  <br />
-  <br />
-  <input type="submit" value="Update" />
-
-  <%= partial "/shared/_confirmation_dlg" %>
-
 </form>
 
 

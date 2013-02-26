@@ -19,6 +19,23 @@ get '/users/new', auth: :guest do
   erb :"/users/new"
 end
 
+get '/users/lookup/by_nickname',
+  auth: [ :admin ],
+  provides: [ :json ] do
+
+  nn = params[:nickname]
+
+  halt 200, [].to_json if nn.empty?
+
+  respond_with User.all(:nickname.like => "#{nn}%", limit: 10).collect { |u|
+    out = { id: u.id, nickname: u.nickname }
+    if respond_to?(:gravatar_url)
+      out[:gravatar] = gravatar_url(u.gravatar_email, :size => 24)
+    end
+    out
+  }
+end
+
 get '/users/:user_id',
   auth: [ :user ],
   provides: [ :html, :json ],
@@ -330,19 +347,6 @@ get '/settings/verify/:type', auth: :user do |type|
   end
 
   erb :"/emails/dispatched"
-end
-
-get '/users/nickname' do
-  restricted!
-  nn = params[:nickname]
-
-  return [].to_json if nn.empty?
-
-  nicknames = []
-  User.all(:nickname.like => "#{nn}%", limit: 10).each { |u|
-    nicknames << u.nickname
-  }
-  nicknames.to_json
 end
 
 # Returns whether params[:nickname] is available or not
