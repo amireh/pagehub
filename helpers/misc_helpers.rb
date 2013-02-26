@@ -142,6 +142,14 @@ helpers do
     !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ pretty_title: nn }).nil?
   end
 
+  def title(*args)
+    # content_for(:title) do
+    args << (h @space.title) if @space
+    args << (h @user.nickname) if @user
+    args.reject { |s| !s || s.empty? }.join(' | ')
+    # end
+  end
+
   ReservedNames = [ 'name', 'spaces', 'pages', 'groups', 'spec' ]
   def reserved?(name)
     ReservedNames.include?(name)

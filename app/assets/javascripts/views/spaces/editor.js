@@ -12,7 +12,7 @@ function($, Backbone) {
     for(var mode in CodeMirror_aliases) {
       if (!CodeMirror.modes[mode])
         continue;
-      
+
       var aliases = CodeMirror_aliases[mode];
       for (var alias_idx = 0; alias_idx < aliases.length; ++alias_idx) {
         var alias = aliases[alias_idx];
@@ -21,7 +21,7 @@ function($, Backbone) {
         }
       }
     }
-    
+
     // mxvt.markdown.setup_bindings();
     var editor = CodeMirror.fromTextArea(document.getElementById(textarea_id), $.extend({
       mode: "gfm",
@@ -47,56 +47,70 @@ function($, Backbone) {
     editor.on("change", function() {
       content_changed = true;
     });
-    
+
     return editor;
   }
-  
+
   var EditorView = Backbone.View.extend({
-    el: $("#page_editor"),
-    
+    // el: $("#page_editor"),
+
     ctx: { },
-    
+
     initialize: function(data) {
       this.space  = data.space;
-      this.ctx    = data.ctx;
-      this.config = data.config || {};
-      
+      this.ctx    = data.ctx || {};
+      this.config = $.extend({
+        el: "#page_editor"
+      }, data.config);
+
+      this.$el = $(this.config.el);
+
       if (this.space) {
         this.space.on('page_loaded', this.populate_editor, this);
         this.space.on('reset', this.reset, this);
       }
+
       this.bootstrap();
     },
-    
+
     bootstrap: function() {
-      this.editor = create_editor("page_editor", this.config);
+      this.editor = create_editor(this.$el.attr("id"), this.config);
       this.resize_editor();
+
+      return this;
     },
-    
+
     reset: function() {
       this.editor.clearHistory();
       this.editor.setValue('Load or create a new page to begin.');
+
+      return this;
     },
-    
+
     // Resize it to fill up the remainder of the screen's height
     resize_editor: function(offset) {
-      if (!offset) { offset = 135; }
-      var editor_h = $(window).height() - offset;
+      var editor_h = $(window).height() - (offset || 135);
       $(".CodeMirror").css("height", editor_h + "px");
+
+      return this;
     },
-    
+
     populate_editor: function(page) {
       this.reset();
       this.editor.setValue(_.unescape( page.get('content') ));
     },
-    
+
     serialize: function() {
       this.editor.save();
-      this.ctx.current_page.set('content', this.editor.getValue());
+      if (this.ctx.current_page) {
+        this.ctx.current_page.set('content', this.editor.getValue());
+      }
+
+      return this.editor.getValue();
     },
-    
+
     content_changed: content_changed
   });
-  
+
   return EditorView;
 });

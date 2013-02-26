@@ -138,16 +138,18 @@
   #editor_settings {
     position: relative;
   }
-  :not(.spaces) .CodeMirror {
-    width: 320px;
-    margin: 0;
-    max-height: 320px;
-    height: 320px;
-    overflow: inherit;
-    font-family: inherit;
-  }
-  :not(.spaces) .CodeMirror pre {
-    font-family: inherit;
+  :not(&.spaces) {
+    .CodeMirror {
+      width: 320px;
+      margin: 0;
+      max-height: 320px;
+      height: 320px;
+      overflow: inherit;
+      font-family: inherit;
+    }
+    .CodeMirror pre {
+      font-family: inherit;
+    }
   }
 
   .scheme_colour_space {
@@ -323,6 +325,7 @@
       } /* memberships .space_role_description */
 
     } /* memberships */
+
     section {
       position: relative;
     }
@@ -339,6 +342,17 @@
     ul.browsability,
     ul.browsability ol {
       list-style-type: none;
+    }
+
+    .blocky_editor {
+      &+ .CodeMirror {
+        width: 100%;
+        background: white;
+        border: 1px solid #DDD;
+        margin-top: 0;
+        padding-top: 0;
+        font-family: monospace,Monospace,courier;
+      }
     }
   } /* .settings.spaces */
 

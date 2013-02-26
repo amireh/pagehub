@@ -1,17 +1,18 @@
-<%= partial "spaces/settings/publishing/_nav" %>
+<%#= partial "spaces/settings/publishing/_nav" %>
 
 <% content_for :publishing_setting_form do %>
-  <section id="navigation_links">
+  <form id="navigation_links_settings">
     <h1>Navigation links</h1>
-    <p>Additional links to show in the navigation bar of your <a target="_blank" href="<%= @space.href %>">public space space</a>.</p>
+    <p>Additional links to show in the navigation bar of your
+      <a target="_blank" href="<%= @space.href %>">public space space</a>.
+    </p>
 
-    <div id="links">
-    </div>
+    <div id="navigation_links"></div>
     <br />
     <button id="add_navigation_link">+ Add a link</button>
     <button id="save_navigation_links">Save</button>
 
-  </section>
+  </form>
 <% end %>
 
-<%= partial "spaces/settings/publishing/_form" %>
+<%#= partial "spaces/settings/publishing/_form" %>

@@ -87,6 +87,7 @@
         <em><%= @space.brief %></em>
         <div class="nav_links">
           <% (@space.p('publishing.navigation_links') || []).each do |e| %>
+            <% puts e.inspect %>
             <a href="<%= e["uri"] %>"><%= e["title"] %></a>
           <% end %>
         </div>

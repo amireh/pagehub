@@ -1,8 +1,8 @@
-<%= partial "spaces/settings/publishing/_nav" %>
+<%#= partial "spaces/settings/publishing/_nav" %>
 
 <% content_for :publishing_setting_form do %>
 
-  <section>
+  <form id="custom_css_settings">
     <h1>Custom CSS</h1>
     <p>You can also customize how your space look like by writing your own CSS code below.
       <a href="http://www.pagehub.org/pagehub/css-skinning">The skinning guide</a>
@@ -21,8 +21,11 @@
       css
     %>
     <textarea data-untogglable name="custom_css" id="css_editor" class="blocky_editor"><%= css %></textarea>
-  </section>
+
+    <br />
+    <button id="save_custom_css">Save</button> <span class="hint small">(Ctrl+Alt+S)</span>
+  </form>
 
 <% end %>
 
-<%= partial "spaces/settings/publishing/_form" %>
+<%#= partial "spaces/settings/publishing/_form" %>

@@ -1,8 +1,14 @@
 <% content_for(:title) { "Publishing Settings | #{@space.title} | PageHub" } %>
 
 <%= partial "spaces/settings/publishing/_nav" %>
-
+<%= partial "shared/_editor" %>
 
 <h2>Publishing settings</h2>
 <p>These settings control the the looks of your <a href="<%= @space.href%>">public space space</a>.
   These settings override any personal scheme or settings.</p>
+
+<% [ 'layout', 'theme', 'navigation_links', 'custom_css' ].each do |section| %>
+  <%= partial "spaces/settings/publishing/#{section}" %>
+<% end %>
+
+<%= partial "spaces/settings/publishing/_form" %>

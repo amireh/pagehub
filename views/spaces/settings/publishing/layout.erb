@@ -1,7 +1,7 @@
-<%= partial "spaces/settings/publishing/_nav" %>
+<%#= partial "spaces/settings/publishing/_nav" %>
 
 <% content_for :publishing_setting_form do %>
-  <section id="layout_settings">
+  <form id="layout_settings">
     <h1>Publishing Layout</h1>
 
     <% layouts = {
@@ -11,28 +11,28 @@
 
     <% layouts.each_pair do |layout, css| %>
       <label>
-        <input type="radio" name="layout[name]" value="<%= css %>" <%= checkify('publishing.layout.name') %> />
+        <input type="radio" name="name" value="<%= css %>" <%= checkify('publishing.layout.name') %> />
         <%= layout %>
       </label>
     <% end %>
 
     <p>
       <label>
-        <input type="checkbox" name="layout[show_homepages_in_sidebar]" value="true"
+        <input type="checkbox" name="show_homepages_in_sidebar" value="true"
           <%= checkify('publishing.layout.show_homepages_in_sidebar') %> />
-          Hide 'Home' pages from sidebar
+          Show 'README' pages in sidebar
       </label>
     </p>
 
     <p>
       <label>
-        <input type="checkbox" name="layout[show_breadcrumbs]" value="true"
+        <input type="checkbox" name="show_breadcrumbs" value="true"
         <%= checkify('publishing.layout.show_breadcrumbs') %> />
           Show breadcrumbs
       </label>
     </p>
 
-  </section>
+  </form>
 <% end %>
 
-<%= partial "spaces/settings/publishing/_form" %>
+<%#= partial "spaces/settings/publishing/_form" %>

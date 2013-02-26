@@ -670,6 +670,9 @@ a.button:hover {
   margin-top: 10px;
   text-transform: lowercase;
 }
+.small {
+  font-size: 0.8em;
+}
 #pages .useful_links small {
   display: block;
   clear: both;

@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title><%= yield_with_default(:title) { AppTitle } %></title>
+  <% this_title = yield_with_default(:title) do %><%= AppTitle %><% end %>
+  <title><%= title(this_title) %></title>
 
   <% unless settings.production? %>
     <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />

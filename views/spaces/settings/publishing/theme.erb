@@ -1,8 +1,8 @@
-<%= partial "spaces/settings/publishing/_nav" %>
+<%#= partial "spaces/settings/publishing/_nav" %>
 <% content_for :section do %>publishing theme<% end %>
 
 <% content_for :publishing_setting_form do %>
-  <section id="theme_settings">
+  <form id="theme_settings">
     <h1>Colour Scheme</h1>
 
     <% themes = {
@@ -19,7 +19,7 @@
         </div>
         <input  type="radio"
                 style="vertical-align: middle;"
-                name="theme[name]"
+                name="name"
                 value="<%= theme %>"
                 <%= checkify('publishing.theme.name') { |v| v == theme } %>
         />
@@ -33,7 +33,7 @@
     <h1>Preview</h1>
     <iframe id="theme_browser">
     </iframe>
-  </section>
+  </form>
 <% end %>
 
-<%= partial "spaces/settings/publishing/_form" %>
+<%#= partial "spaces/settings/publishing/_form" %>

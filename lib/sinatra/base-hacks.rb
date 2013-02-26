@@ -18,7 +18,7 @@ module Sinatra
         route 'GET'   , "#{path}/destroy",  opts, &bk
         route 'DELETE', path,               opts, &bk
       end
-      
+
       # for every DELETE route defined, a "legacy" GET equivalent route is defined
       # at @{path}/destroy for compatibility with browsers that do  not support
       # XMLHttpRequest and thus the DELETE HTTP method
@@ -37,6 +37,8 @@ module Sinatra
       MDBTag = '<markdown>'
       MDETag = '</markdown>'
     public
+
+    alias_method :plain_erb, :erb
 
     def erb(template, options={}, locals={})
       mixed = render :erb, template.to_sym, { layout: @layout }.merge(options), locals
@@ -72,6 +74,6 @@ module Sinatra
     def partial(template, options={}, locals={})
       erb template.to_sym, options.merge({ layout: false }), locals
     end
-    
+
   end # Base
 end # Sinatra
