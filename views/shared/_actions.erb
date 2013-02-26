@@ -3,9 +3,9 @@
 <% end %>
 
 <div class="actions">
-  <a class="listlike icon new_page" tabindex="1" title="Create a new page or folder">New</a>
+  <a class="listlike icon new_page" tabindex="1" rel="tooltip" data-placement="right" title="Create a new page or folder">New</a>
   <ol class="listlike">
-    <li><a href="<%= @space.url(true) + '/pages/new' %>" id="new_page" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
-    <li><a href="<%= @space.url(true) + '/folders/new' %>" role="button" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">New folder</a></li>
+    <li><a href="<%= @space.url(true) + '/pages/new' %>" id="new_page" rel="tooltip" data-placement="right" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
+    <li><a href="<%= @space.url(true) + '/folders/new' %>" role="button" rel="tooltip" data-placement="right" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">New folder</a></li>
   </ol>
 </div>

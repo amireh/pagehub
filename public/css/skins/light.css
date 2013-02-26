@@ -58,7 +58,8 @@
 .member .collapsed .icon.folder {
   background: url("/assets/icons/16x16/glyphicons_145_folder_plus_resized.png") no-repeat;
 }
-.member .icon.kick_member { background: url("/assets/icons/16x16/remove.png") no-repeat; }
+.member .icon.kick_member,
+.icon.remove { background: url("/assets/icons/16x16/remove.png") no-repeat; width: 16px; height: 16px; }
 .member .icon.search { background: url("/assets/icons/24x24/search.png") no-repeat center center; }
 
 .icon.folder {

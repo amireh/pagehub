@@ -1,7 +1,3 @@
-<% content_for :css do %>
-  <link type="text/css" rel="stylesheet" href="/css/settings.css" />
-<% end %>
-
 <% content_for :section do %> spaces settings <% end %>
 <% content_for :header do %>
   <h3><a href="<%= @space.url %>"><%= @space.title %></a>
@@ -19,22 +15,26 @@
     <li class="icon settings64 standalone">Settings</li>
     <li><a  data-placement="top"
             <%= 'class="disabled"' unless @space.is_creator?(current_user) %>
+            rel="tooltip"
             title="The space name and other basic stuff"
             href="<%= @space.url %>/edit/general">General</a>
     </li>
     <li><a  data-placement="top"
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
+            rel="tooltip"
             title="Manage space members, their roles, etc."
             href="<%= @space.url %>/edit/memberships">Memberships</a>
     </li>
     <li><a
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
             data-placement="top"
+            rel="tooltip"
             title="Customize the public space space settings"
             href="<%= @space.url %>/edit/publishing">Publishing</a>
     </li>
     <li><a  data-placement="top"
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
+            rel="tooltip"
             title="Specify which pages or folders are publicly browsable"
             href="<%= @space.url %>/edit/browsability">Browsability</a>
     </li>

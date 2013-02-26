@@ -23,3 +23,7 @@ node(:memberships) do |s|
     }
   }
 end
+
+node(:preferences) do |s|
+  s.preferences
+end

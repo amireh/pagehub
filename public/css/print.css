@@ -1,7 +1,7 @@
 body {
   /*font-family: Arial, Helvetica;*/
   font-family: "Trebuchet MS", Helvetica, Verdana, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;  
+  -webkit-font-smoothing: antialiased;
   font-size: 14px;
   line-height: 18px;
   margin: 0;
@@ -22,7 +22,7 @@ body > header h3 {
 }
 
 h1,h2,h3,h4,h5,h6 {
-  font-family: normal;
+  font-family: inherit;
   line-height: normal;
 }
 
@@ -93,7 +93,7 @@ blockquote {
   height: 0px;
   border-top:     5px solid transparent;
   border-bottom:  5px solid transparent;
-  border-left:   5px solid orange;  
+  border-left:   5px solid orange;
   content: '>';
   font-size: 0;
   position: absolute;

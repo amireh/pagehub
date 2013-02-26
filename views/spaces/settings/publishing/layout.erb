@@ -11,8 +11,7 @@
 
     <% layouts.each_pair do |layout, css| %>
       <label>
-        <input type="radio" name="layout[name]" value="<%= css %>"
-          <%= @space.p('publishing.layout.name') == css ? "checked='checked'" : "" %> />
+        <input type="radio" name="layout[name]" value="<%= css %>" <%= checkify('publishing.layout.name') %> />
         <%= layout %>
       </label>
     <% end %>

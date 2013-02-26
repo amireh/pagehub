@@ -25,19 +25,4 @@
 
 <% end %>
 
-<% content_for :deferred_js do %>
-  <script>
-    $(function() {
-      ui.editor = editor = ui.create_editor("css_editor", {
-        mode: "css"
-      });
-
-      $("form").submit(function() {
-        ui.editor.save();
-        return true;
-      })
-    });
-  </script>
-<% end %>
-
 <%= partial "spaces/settings/publishing/_form" %>

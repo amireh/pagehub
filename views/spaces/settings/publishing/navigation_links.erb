@@ -1,34 +1,16 @@
 <%= partial "spaces/settings/publishing/_nav" %>
 
-<% content_for :deferred_js do %>
-  <script>
-    $(function() {
-      dynamism.bind($(".settings form section"));
-      var links = <%= p('publishing.navigation_links').to_json %>;
-      // links.push({ uri: "test", title: "MOO"})
-      console.log({ links: links })
-      dynamism.inject({ links: links }, $("#links"));
-    });
-  </script>
-<% end %>
-
 <% content_for :publishing_setting_form do %>
-  <section>
+  <section id="navigation_links">
     <h1>Navigation links</h1>
-    <p>Additional links to show in the navigation bar of your <a href="<%= @space.href %>">public space space</a>.</p>
-    <div id="links">
-      <div data-dyn-entity="link" data-dyn-spawn-on="links">
-        <label><input placeholder="http://www.website.com" data-dyn-inject="@value, links.uri" type="text"
-          name="navigation_links[][uri]" /></label>
-        <label><input placeholder="Main Website" data-dyn-inject="@value, links.title" type="text"
-          name="navigation_links[][title]" /></label>
-        <a href="#" data-dyn-action="remove" class="button thin bad">X</a>
-      </div>
-      <br />
-      <a data-nosubmit data-dyn-target="link" href="#">Add a link</a>
-    </div>
+    <p>Additional links to show in the navigation bar of your <a target="_blank" href="<%= @space.href %>">public space space</a>.</p>
 
+    <div id="links">
+    </div>
     <br />
+    <button id="add_navigation_link">+ Add a link</button>
+    <button id="save_navigation_links">Save</button>
+
   </section>
 <% end %>
 

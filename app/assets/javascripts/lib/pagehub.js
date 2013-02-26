@@ -47,7 +47,7 @@ define([ 'jquery', 'bootstrap' ], function($) {
           //   selector: '[title!=""]',
           //   placement: "bottom"
           // });
-          $(document.body).tooltip({selector: '[title], [data-original-title]', placement: "bottom" });
+          $(document.body).tooltip({selector: '[rel=tooltip]', placement: "bottom" });
         },
 
         // function() {
