@@ -3,7 +3,7 @@
 <% content_for :publishing_setting_form do %>
 
   <form id="custom_css_settings">
-    <h1>Custom CSS</h1>
+    <h3>Custom CSS</h3>
     <p>You can also customize how your space look like by writing your own CSS code below.
       <a href="http://www.pagehub.org/pagehub/css-skinning">The skinning guide</a>
       contains a reference of the page structure, DOM, and everything you need
@@ -23,7 +23,7 @@
     <textarea data-untogglable name="custom_css" id="css_editor" class="blocky_editor"><%= css %></textarea>
 
     <br />
-    <button id="save_custom_css">Save</button> <span class="hint small">(Ctrl+Alt+S)</span>
+    <button id="save_custom_css" class="btn btn-primary">Save</button> <span class="small">(Ctrl+Alt+S)</span>
   </form>
 
 <% end %>

@@ -116,10 +116,11 @@ function(Backbone, $, UI, MembershipRecordTmpl) {
     },
 
     add_user: function(e, ui) {
-      var el      = $(e.target),
-          user_nn = ui.item.value,
-          view    = e.data,
-          m       = view.membership_from_id(user_nn);
+      var el            = $(e.target),
+          user_nn       = ui.item.value,
+          user_avatar   = ui.item.icon;
+          view          = e.data,
+          m             = view.membership_from_id(user_nn);
 
       view.elements.user_search.val(ui.item.label);
 

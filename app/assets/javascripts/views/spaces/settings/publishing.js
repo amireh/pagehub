@@ -16,7 +16,7 @@ function(Backbone, $, UI, Shortcut, Router, ThemeSettings, LayoutSettings, Navig
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router.  If the link has a data-bypass
   // attribute, bypass the delegation completely.
-  $(document).on("click", ".subnav a:not([data-bypass])", function(evt) {
+  $(document).on("click", ".subnav a:not([data-bypass]), a[data-routeme]", function(evt) {
     // Get the absolute anchor href.
     var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
     // Get the absolute root.

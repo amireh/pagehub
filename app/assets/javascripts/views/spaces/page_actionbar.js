@@ -174,6 +174,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
 
       var dialog = $(el).dialog({
         title: "Page removal",
+        dialogClass: "warning",
         buttons: {
           Cancel: function() {
             dialog.dialog("close");

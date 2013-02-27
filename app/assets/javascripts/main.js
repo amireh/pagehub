@@ -28,7 +28,7 @@ requirejs.config({
     'hb':                     'lib/hbtemplate',
     'modernizr':              'vendor/modernizr',
     'shortcut':               'vendor/shortcut',
-    'bootstrap':              'vendor/bootstrap.min',
+    'bootstrap':              'vendor/bootstrap/bootstrap',
     'pagehub':                'lib/pagehub',
     'jquery.gridster':        'lib/jquery.gridster.min'
     // 'codemirror',             'vendor/'
@@ -81,8 +81,12 @@ require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui
   $.extend($.ui.dialog.prototype.options, {
     modal: true,
     resizable: false,
+    create: function(e, ui) {
+      $(this).dialog("widget").find('button').addClass('btn');
+    },
     open: function() {
       var dlg = $(this);
+
       dlg.find('.ui-dialog-buttonpane button:last').focus();
       dlg.find('form').submit(function(e) { e.preventDefault(); return false; });
       dlg.keypress(function(e) {
@@ -93,6 +97,7 @@ require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui
       });
     }
   });
+
   _.each(pagehub_hooks, function(cb) { cb(); });
 });
 

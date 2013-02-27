@@ -14,14 +14,14 @@
 <% end %>
 
 <form id="space_browsability_settings">
-  <h2>Browsable Pages</h2>
+  <h3>Browsable Pages</h3>
   <p>Below is a listing of all the pages and folders within your space.
     Unchecking a resource will prevent it from being publicly browsable
     when people are browsing your <a href="<%= @space.href%>">space</a>.
   </p>
 
   <% unless @space.is_browsable? %>
-    <p><em>These settings only make sense when your space is publicly browsable, and it currently isn't.</em></p>
+    <p><span class="label label-info">Heads up!</span> These settings only make sense when your space is publicly browsable, and it currently isn't.</p>
   <% end %>
 
   <ul class="browsability">

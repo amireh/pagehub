@@ -8,6 +8,7 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
 
     events: {
       'click #check_availability': 'check_availability',
+      'keyup input[type=text][name=title]': 'queue_availability_check',
       'click #destroy_space': 'confirm_total_destruction',
       'click #save': 'save',
       'click button': 'consume'
@@ -17,12 +18,15 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
       this.space  = data.space;
       this.ctx    = data.ctx;
 
+      this.check_timer = null;
+      this.check_pulse = 250;
       this.elements = {
-        title:              this.$el.find('input[type=text][name=title]'),
-        title_availability: this.$el.find('#name_availability_status'),
-        title_confirmation: this.$el.find('input[type=checkbox][name=title_confirmation]'),
-        brief:              this.$el.find('input[type=text][name=brief]'),
-        is_public:          this.$el.find('input[type=checkbox][name=is_public]')
+        title:                this.$el.find('input[type=text][name=title]'),
+        availability_checker: this.$el.find('#check_availability'),
+        title_availability:   this.$el.find('#check_availability i'),
+        title_confirmation:   this.$el.find('input[type=checkbox][name=title_confirmation]'),
+        brief:                this.$el.find('input[type=text][name=brief]'),
+        is_public:            this.$el.find('input[type=checkbox][name=is_public]')
       }
     },
 
@@ -31,15 +35,30 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
       return false;
     },
 
-    check_availability: function(e) {
-      var btn   = $(e.target),
+    queue_availability_check: function() {
+      if (this.check_timer) {
+        clearTimeout(this.check_timer);
+        this.check_timer = null;
+      }
+
+      var view = this;
+      this.check_timer = setTimeout(function() { return view.check_availability(); }, this.check_pulse)
+
+      return false;
+    },
+
+    check_availability: function() {
+      var btn   = this.elements.availability_checker,
           name  = this.elements.title.val(),
           view  = this;
 
-      e.preventDefault();
+      // e.preventDefault();
 
       if (name.length == 0) {
-        view.elements.title_availability.addClass("error").html("invalid name");
+        btn.addClass('btn-danger').removeClass('btn-success').find('i').addClass('icon-remove');
+        return false;
+      }
+      else if (name.trim() == this.space.get('title')) {
         return false;
       }
 
@@ -50,9 +69,11 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
 
         success: function(status) {
           if (status.available) {
-            view.elements.title_availability.addClass("success").removeClass("error").html("available");
+            // view.elements.title_availability.removeClass('icon-ok').addClass('icon-remove');
+            btn.removeClass('btn-danger').addClass('btn-success').find('i').removeClass('icon-remove');
           } else {
-            view.elements.title_availability.addClass("error").removeClass("success").html("not available");
+            btn.removeClass('btn-success').addClass('btn-danger').find('i').addClass('icon-remove');
+            // view.elements.title_availability.removeClass('icon-remove').addClass('icon-ok');
           }
         }
       });
@@ -70,7 +91,7 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
       $(DestroySpaceDlgTmpl(this.space.toJSON())).dialog({
         title: "Space removal",
         open: function() {
-          $(this).parents('.ui-dialog:first').find('button:last').addClass('bad');
+          $(this).parents('.ui-dialog:first').find('button:last').addClass('btn-danger');
         },
         buttons: {
           Cancel: function() {

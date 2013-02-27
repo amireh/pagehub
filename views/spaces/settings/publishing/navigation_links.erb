@@ -2,14 +2,14 @@
 
 <% content_for :publishing_setting_form do %>
   <form id="navigation_links_settings">
-    <h1>Navigation links</h1>
+    <h3>Navigation links</h3>
     <p>Additional links to show in the navigation bar of your
       <a target="_blank" href="<%= @space.href %>">public space space</a>.
     </p>
 
     <div id="navigation_links" class="navigation_links"></div>
-    <button id="add_navigation_link">+ Add a link</button>
-    <button id="save_navigation_links">Save</button>
+    <button id="add_navigation_link" class="btn btn-primary"><i class="icon-white icon-plus"></i> Add a link</button>
+    <button id="save_navigation_links" class="btn">Save</button>
 
   </form>
 <% end %>

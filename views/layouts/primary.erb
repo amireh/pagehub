@@ -57,7 +57,7 @@
         <a href="<%= @user.url %>"><%= @user.nickname %></a>
         <% if @space %>
           / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
-          <small class="hint">[ <a href="<%= @space.url %>/edit/general">admin</a> ]</small>
+          <a class="small hint btn btn-mini" href="<%= @space.url %>/edit/general">admin</a>
         <% end %>
         <%#= yield_content :header %>
       </h1>
@@ -65,13 +65,13 @@
       <nav>
         <span>
           <%= current_user.nickname %>
-          <% unless settings.test? %>
+          <% if settings.production? %>
             <%= gravatar_tag @user, :icon %>
           <% end %>
         </span>
         <a class="listlike icon spaces" rel="tooltip" title="Your spaces" href="/spaces">Spaces</a>
         <ol class="listlike">
-          <li><a href="<%= Space.url(@user) %>">Start a new space</a></li>
+          <li><a href="<%= Space.url(@user) %>"><i class="icon-plus"></i> Create a new space</a></li>
           <% current_user.spaces.each do |s| %>
             <li>
               <a href="<%= s.url %>"><%= s.title %></a>

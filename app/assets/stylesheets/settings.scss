@@ -153,14 +153,28 @@
     }
   }
 
-  .scheme_colour_space {
-    display: inline-block;
+  .theme {
+    display: block;
     border: 1px solid #555;
   }
-  .scheme_colours {
-    vertical-align: middle; height: 36px; width: 36px; display: inline-block;
-    /*border: 1px solid #111;*/
+
+  #theme_settings {
+    a.btn {
+      margin-top: -22px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    .theme_colours {
+      vertical-align: middle;
+      height: 20px;
+      /*width: 36px;*/
+      width: 100%;
+      display: block;
+      /*border: 1px solid #111;*/
+    }
   }
+
 
   .gravatar {
     box-shadow: 0 0 3px 1px #555;
@@ -250,17 +264,17 @@
       }
 
       form {
-        width: 720px;
+        width: 100%;
         display: inline-block;
 
         table {
           width: 100%;
-          margin-left: -2px;
+          margin-left: -7px;
           th {
             text-align: left;
             vertical-align: top;
             &:nth-of-type(1) { width: 40%; }
-            &:nth-of-type(3) { width: 30%; }
+            /*&:nth-of-type(3) { width: 30%; }*/
           }
 
           td,th {
@@ -272,6 +286,14 @@
           tbody tr:hover { background: rgba(0,0,0,0.05); }
         }
 
+        .user-listing li img,
+        .avatar {
+          vertical-align: middle;
+          box-shadow: 0 0 1px 1px black;
+          margin-right: 5px;
+          width: 24px;
+          height: 24px;
+        }
         .user-listing {
           position: absolute;
           background: white;
@@ -288,7 +310,7 @@
 
           margin-top: -3px;
           border-top: none;
-          width: 318px;
+          /*width: 318px;*/
 
           li {
             background: none;
@@ -296,14 +318,6 @@
               display: block;
               padding: 10px;
               cursor: pointer;
-
-              img {
-                vertical-align: middle;
-                box-shadow: 0 0 1px 1px black;
-                margin-right: 5px;
-                width: 24px;
-                height: 24px;
-              }
 
               &.ui-state-focus {
                 padding: 9px;
@@ -326,6 +340,10 @@
         font-size: 0.9em;
         opacity: 0.8;
 
+        &.well :first-child {
+          margin-top: 0;
+        }
+
         .column {
           width: 20%;
           display: inline-block;
@@ -336,6 +354,25 @@
 
     } /* memberships */
 
+    &.publishing {
+      #layout_settings {
+        .thumbnails {
+          margin-bottom: 0;
+          li {
+            /*display: inline-block;*/
+            /*max-width: 280px;*/
+            margin-bottom: 0;
+            * {
+              cursor: pointer;
+            }
+          }
+        }
+
+        a.btn {
+
+        }
+      }
+    }
     section {
       position: relative;
     }

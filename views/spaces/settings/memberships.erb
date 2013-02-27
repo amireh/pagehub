@@ -16,12 +16,12 @@
 
 <div>
   <form id="space_membership_settings">
-    <h2>Members</h2>
+    <h3>Members</h3>
 
-    <table>
+    <table class="table table-striped">
       <thead>
         <tr>
-          <th>Nickname</th>
+          <th>Member</th>
           <th>Contributions</th>
           <th>Role<br /><small>(Member/Editor/Admin)</small></th>
           <th>Actions</th>
@@ -32,28 +32,34 @@
     </table>
 
     <!-- <h2>Add Members</h2> -->
-    <p><label>You can look up users by their nicknames using the text box below.
-      <br /><br />
-      <input type="text" id="user_search" autocomplete="off" class="very_fat search-box" />
-    </label>
-    <div class="user-listing" id="user_listing"></div>
-  </p>
-  </form>
-  <section class="space_role_description">
-    <h3>Group Roles</h3>
+    <fieldset>
+      <legend>Add a member</legend>
+      <p><label>You can look up users by their nicknames using the text box below.
+        <br />
+        <div class="input-append">
+          <input type="search" id="user_search" autocomplete="off" class="span4" />
+          <button class="btn btn-small"><i class="icon-search"></i></button>
+        </div>
+      </label>
+      <div class="user-listing" id="user_listing"></div>
+    </fieldset>
 
+  </form>
+  <section class="well space_role_description">
+    <h4>Space Member Roles</h4>
+    <hr />
     <div class="column">
-      <h4>Members</h4>
+      <h6>Members</h6>
       <p>Members are limited to reading the pages written by the space editors.</p>
     </div>
 
     <div class="column">
-    <h4>Editors</h4>
+    <h6>Editors</h6>
       <p>Editors can write new pages and folders, edit existing ones, and rename them.</p>
     </div>
 
     <div class="column">
-      <h4>Admins</h4>
+      <h6>Admins</h6>
       <p>Administrators can invite new members,
         promote and demote them to and from
         the editorial role, and can kick non-admins.</p>
@@ -63,7 +69,7 @@
     </div>
 
     <div class="column">
-      <h4>Group creator</h4>
+      <h6>Space creator</h6>
       <p>The space creator can change the space name, promote
         and demote others to/from the admin role, and kick admins.
       </p>

@@ -18,15 +18,17 @@
   <!-- <p>Only the space creator can manage this section.</p> -->
 <%# else %>
 <form id="space_general_settings">
-  <h2>Name</h2>
+  <h3>Name</h3>
   <label>The space name must be unique and it will be used for accessing pages and user management.
     <br /><br />
-    <input type="text" name="title" class="very_fat" value="<%= @space.title %>" />
-    <button id="check_availability">check availability</button>
+    <div class="input-append">
+      <input type="text" autocomplete="off" class="span4" name="title" value="<%= @space.title %>" />
+      <button class="btn btn-success" id="check_availability"><i class="icon-ok"></i></button>
+    </div>
     <span id="name_availability_status"></span>
   </label>
 
-  <p>
+  <p class="text-warning">
     <strong>WARNING: </strong>
     changing the space name will irreversibly invalidate
     all public links of the space's pages that were shared
@@ -36,13 +38,13 @@
     I have read the warning and I understand the implications. Do it.</label>
   </p>
 
-  <h2>Brief</h2>
+  <h3>Brief</h3>
   <label>A 1-line description of what this space is for.
     <br /><br />
-    <input type="text" name="brief" style="width: 600px" value="<%= @space.brief %>" placeholder="Building nuclear plants with style"></textarea>
+    <input type="text" name="brief" value="<%= @space.brief %>" class="span6" placeholder="Building nuclear plants with style"></textarea>
   </label>
 
-  <h2>Public access</h2>
+  <h3>Public access</h3>
   <label>
     <input type="checkbox" <%= 'checked="checked"' if @space.is_public %> value="true" name="is_public" />
     Allow people to read and browse the space documents automatically
@@ -51,10 +53,9 @@
   <br />
   <br />
 
-  <button id="save">Save</button>
+  <button id="save" class="btn btn-primary">Save</button>
+  <button id="destroy_space" class="btn btn-danger"><i class="icon-remove"></i> Destroy this space</button>
 
-  <button id="destroy_space" class="bad thin">Destroy this space</button>
-  </a>
   <div hidden="hidden" data-confirm>
     <p>Are you sure you want this space to be destroyed?</p>
     <p>Please note that

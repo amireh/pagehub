@@ -5,6 +5,7 @@ config/credentials.yml
 glyphicons*
 *.zip
 *.xcf
+app/assets/bootstrap
 
 [transients]
 dumps

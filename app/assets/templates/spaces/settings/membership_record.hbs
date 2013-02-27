@@ -1,5 +1,5 @@
 <tr id="user_{{id}}">
-  <td>{{nickname}}</td>
+  <td><img class="avatar" src="{{gravatar}}" /> {{nickname}}</td>
   <td>
     <span>{{#pluralize 'page'   contributions.nr_pages}}{{/pluralize}}</span> and
     <span>{{#pluralize 'folder' contributions.nr_folders}}{{/pluralize}}</span>
@@ -10,6 +10,6 @@
     <label><input type="radio" name="users[{{id}}][role]" value="admin"  {{#checkify role 'admin creator'}}{{/checkify}} /> A</label>
   </td>
   <td>
-    <button rel="tooltip" title="Remove this {{role}} from the space" data-action="kick" class="icon kick_member">Remove</button>
+    <button rel="tooltip" title="Remove this {{role}} from the space" class="btn btn-mini btn-danger" data-action="kick"><i class="icon-remove"></i> Uninvite</button>
   </td>
 </tr>

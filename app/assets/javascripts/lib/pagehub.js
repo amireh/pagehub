@@ -27,10 +27,13 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
       return false;
 
     hide_list($("a.listlike.selected"));
-    var list = $(this).next("ol");
-    $(this).next("ol").show();
 
-    if (list_offset_threshold + list.width() + list.parent().position().left + $(this).position().left >= $(window).width()) {
+    var list = $(this).nextAll("ol.listlike:first");
+    list.show();
+
+    if (list_offset_threshold + list.width() + list.parent().position().left
+        +
+        $(this).position().left >= $(window).width()) {
       list.css({ right: 0, left: 0 });
     } else {
       list.css({ left: $(this).position().left, right: 0 });
@@ -52,7 +55,7 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
 
   function hide_list(el) {
     $(el).removeClass("selected");
-    $(el).next("ol").hide();
+    $(el).nextAll("ol.listlike:first").hide();
     $(el).add($(window)).unbind('click', hide_list_callback);
     $(el).bind('click', show_list);
   }
@@ -91,20 +94,37 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
       ui.modal.as_alert($("#html5_compatibility_notice"))
     }
 
-    $(document.body).tooltip({selector: '[rel=tooltip]', placement: "bottom" });
+    $(document.body).tooltip({
+      selector: '[rel=tooltip]',
+      container: 'body',
+      animation: false,
+      placement: function(_, el) {
+        return $(el).attr('data-placement') || 'bottom'
+      }
+    });
+
+    $(document.body).popover({
+      selector: '[rel=popover]',
+      animation: false,
+      trigger: 'hover',
+      container: 'body',
+      placement: function(_, el) {
+        return $(el).attr('data-placement') || 'bottom'
+      }
+    });
 
     loader = $(".loader");
     loader_overlay = $(".loader-overlay");
 
     // Togglable sections
-    $("section:not([data-untogglable])").
-      find("> h1:first-child, > h2:first-child, > h3:first-child").
-      addClass("togglable");
+    // $("section:not([data-untogglable])").
+    //   find("> h1:first-child, > h2:first-child, > h3:first-child").
+    //   addClass("togglable");
 
-    $("section > .togglable").click(function() {
-      $(this).siblings(":not([data-untogglable])").toggle();
-      $(this).toggleClass("toggled")
-    })
+    // $("section > .togglable").click(function() {
+    //   $(this).siblings(":not([data-untogglable])").toggle();
+    //   $(this).toggleClass("toggled")
+    // })
 
     // disable all links attributed with data-disabled
     $("a[data-disabled], a.disabled").click(function(e) { e.preventDefault(); return false; });
