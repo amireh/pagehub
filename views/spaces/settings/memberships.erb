@@ -14,45 +14,59 @@
   </script>
 <% end %>
 
-<form id="space_membership_settings">
-  <h2>Add Members</h2>
-  <label>You can look up users by their nicknames using the text box below.
-    <br /><br />
-    <input type="text" id="user_search" autocomplete="off" class="very_fat search-box" />
-  </label>
-  <div class="user-listing" id="user_listing"></div>
-  <h2>Registered Members</h2>
+<div>
+  <form id="space_membership_settings">
+    <h2>Members</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nickname</th>
-        <th>Contributions</th>
-        <th>Role<br /><small>(Member/Editor/Admin)</small></th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="membership_records">
-    </tbody>
-  </table>
-</form>
+    <table>
+      <thead>
+        <tr>
+          <th>Nickname</th>
+          <th>Contributions</th>
+          <th>Role<br /><small>(Member/Editor/Admin)</small></th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="membership_records">
+      </tbody>
+    </table>
 
-
-<div class="space_role_description">
-  <h3>Group Roles</h3>
-  <h4>Members</h4>
-  <p>Members are limited to reading the pages
-    written by the space editors.</p>
-  <h4>Editors</h4>
-    <p>Editors can
-    write new pages and folders, edit existing ones, and rename them.</p>
-  <h4>Admins</h4>
-  <p>Administrators can invite new members,
-    promote and demote them to and from
-    the editorial role, and can kick non-admins.
-    Admins get all the perks editors and members do.
+    <!-- <h2>Add Members</h2> -->
+    <p><label>You can look up users by their nicknames using the text box below.
+      <br /><br />
+      <input type="text" id="user_search" autocomplete="off" class="very_fat search-box" />
+    </label>
+    <div class="user-listing" id="user_listing"></div>
   </p>
-  <h4>Group creator</h4>
-  <p>The space creator can change the space name, promote
-    and demote others to/from the admin role, and kick admins.</p>
+  </form>
+  <section class="space_role_description">
+    <h3>Group Roles</h3>
+
+    <div class="column">
+      <h4>Members</h4>
+      <p>Members are limited to reading the pages written by the space editors.</p>
+    </div>
+
+    <div class="column">
+    <h4>Editors</h4>
+      <p>Editors can write new pages and folders, edit existing ones, and rename them.</p>
+    </div>
+
+    <div class="column">
+      <h4>Admins</h4>
+      <p>Administrators can invite new members,
+        promote and demote them to and from
+        the editorial role, and can kick non-admins.</p>
+      <p>
+        Admins get all the perks editors and members do.
+      </p>
+    </div>
+
+    <div class="column">
+      <h4>Group creator</h4>
+      <p>The space creator can change the space name, promote
+        and demote others to/from the admin role, and kick admins.
+      </p>
+    </div>
+  </section>
 </div>

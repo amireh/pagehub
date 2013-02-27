@@ -15,7 +15,7 @@ function($, SettingView, Editor) {
 
     initialize: function(ctx) {
       SettingView.prototype.initialize.apply(this, arguments);
-
+      this.path = 'custom_css';
       this.editor = new Editor({
         space:  this.space,
         config: {
@@ -23,13 +23,11 @@ function($, SettingView, Editor) {
           mode: "css"
         }
       });
-
-      // this._ctx.editor.resize_editor(355);
+      this.editor.resize_editor(300);
     },
 
     render: function() {
       this.editor.reset().editor.setValue(this.space.get('preferences.publishing.custom_css') || '');
-
       return this;
     },
 

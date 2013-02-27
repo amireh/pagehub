@@ -51,11 +51,15 @@
 }
 
 body {
-  font-family: "UbuntuLight", "ProximaNova-Light", Arial, Verdana;
+  /*font-family: "UbuntuLight", "ProximaNova-Light", Arial, Verdana;*/
   /*font-family: "ProximaNova-Light", "UbuntuRegular", Arial, Verdana;*/
-  font-size: 14px;
+  /*font-size: 14px;*/
   /*font-size: 15px;*/
-  line-height: 22px;
+  /*line-height: 22px;*/
+  /*font: 13px Helvetica, arial, freesans, clean, sans-serif;*/
+  font: 13px "Trebuchet MS", Helvetica, Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.4;
   /*position: relative;*/
   margin: 0;
   padding: 0;
@@ -65,9 +69,6 @@ body {
 html {
   background-color: transparent;
   /*height: 100%;*/
-}
-.funky {
-  font-family: "UbuntuMonoRegular";
 }
 
 small {
@@ -149,7 +150,7 @@ h3 {
 }
 
 h1,h2,h3,h4,h5,h6 {
-  font-family: "ProximaNova-Light";
+  /*font-family: "ProximaNova-Light";*/
   -webkit-font-smoothing: antialiased;
   font-weight: bold;
   cursor: text;
@@ -419,10 +420,21 @@ footer p {
 }
 
 img.loader {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  display: none;
+  display:  none;
+  position: fixed;
+  right:    10px;
+  bottom:   30px;
+}
+
+div.loader-overlay {
+  display:    none;
+  position:   fixed;
+  width:      100%;
+  height:     100%;
+  background: rgba(255,255,255,0.75);
+  top:        0;
+  left:       0;
+  z-index:    100;
 }
 
 #flashes {
@@ -488,7 +500,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .stuff ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
   height: 10px;
 }
 .stuff ::-webkit-scrollbar-button:start:decrement,

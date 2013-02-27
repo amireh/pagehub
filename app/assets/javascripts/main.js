@@ -16,7 +16,7 @@ requirejs.config({
   paths: {
     // jquery:     '          lib/require-jquery',
     'jquery':                 'vendor/jquery-1.9.1.min',
-    'jquery.ui':              'vendor/jquery-ui-1.10.1.custom.min',
+    'jquery.ui':              'vendor/jquery-ui/jquery-ui-1.10.1.custom.min',
     'jquery.util':            'helpers/util',
     'underscore':             'lib/underscore-min',
     'underscore.inflection':  'lib/underscore/underscore.inflection',

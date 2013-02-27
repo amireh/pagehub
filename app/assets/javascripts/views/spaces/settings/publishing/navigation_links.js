@@ -20,6 +20,7 @@ function(Backbone, $, UI, SettingView, NavigationLinkTmpl) {
     initialize: function(ctx) {
       SettingView.prototype.initialize.apply(this, arguments);
       this.links = this.$el.find('#navigation_links');
+      this.path = 'navigation_links';
     },
 
     render: function() {

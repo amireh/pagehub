@@ -26,8 +26,8 @@ h1,h2,h3,h4,h5,h6 {
   line-height: normal;
 }
 
-#content.print img,
-#content.print iframe {
+img,
+iframe {
   max-width: 100%;
 }
 

@@ -8,6 +8,10 @@ function(Backbone, $) {
       this.space      = this.main_view.space;
     },
 
+    load: function() {
+
+    },
+
     render: function() {
       return this;
     },

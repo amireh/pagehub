@@ -6,33 +6,37 @@
 
 <% content_for :deferred_js do %>
   <script>
+    current_section = "<%= @current_section %>";
     pagehub_hooks.push(require(['views/shared/settings/nav'], function() {}));
   </script>
 <% end %>
 
 <nav>
   <ul>
-    <li class="icon settings64 standalone">Settings</li>
+    <!-- <li class="icon settings64 standalone">Settings</li> -->
     <li><a  data-placement="top"
             <%= 'class="disabled"' unless @space.is_creator?(current_user) %>
             rel="tooltip"
             title="The space name and other basic stuff"
             href="<%= @space.url %>/edit/general">General</a>
     </li>
-    <li><a  data-placement="top"
+    <li><a  data-placement="right"
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
             rel="tooltip"
             title="Manage space members, their roles, etc."
             href="<%= @space.url %>/edit/memberships">Memberships</a>
     </li>
-    <li><a
-            <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
-            data-placement="top"
-            rel="tooltip"
-            title="Customize the public space space settings"
-            href="<%= @space.url %>/edit/publishing">Publishing</a>
+    <li><a <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
+           data-placement="right"
+           rel="tooltip"
+           title="Customize the public space space settings"
+           href="<%= @space.url %>/edit/publishing">Publishing</a>
+      <ul class="subnav">
+        <li></li>
+        <%= yield_content :subnav %>
+      </ul>
     </li>
-    <li><a  data-placement="top"
+    <li><a  data-placement="bottom"
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
             rel="tooltip"
             title="Specify which pages or folders are publicly browsable"
@@ -40,8 +44,4 @@
     </li>
   </ul>
 
-  <ul class="subnav">
-    <li></li>
-    <%= yield_content :subnav %>
-  </ul>
 </nav>

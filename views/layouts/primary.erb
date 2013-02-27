@@ -36,9 +36,7 @@
   <script type="text/javascript" src="/js/shortcut.js"></script>
   -->
   <script>
-    pagehub_settings = <%= preferences.to_json %>;
     pagehub_hooks = [];
-    last_error = null; // used for debugging
   </script>
 
   <script src="/assets/vendor/jquery-1.9.1.min.js"></script>
@@ -108,7 +106,8 @@
 
     <%# partial "shared/_skin_switcher" %>
 
-    <img class="loader" src="/css/ajax-loader-615B4E.gif" />
+    <img class="loader" src="/assets/loading_sun.gif" />
+    <div class="loader-overlay"></div>
 
     <aside class="modal alert" id="html5_compatibility_notice">
       <h2>Unsupported Browser</h2>

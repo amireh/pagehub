@@ -97,7 +97,7 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
 
       if ((data.title || "").length > 0 && data.title != this.space.get('title')) {
         if (!this.elements.title_confirmation.is(":checked")) {
-          $("<p>You must confirm changing the space name!</p>").dialog({
+          $("<p>You must confirm changing the space title!</p>").dialog({
             title: "Confirmation required",
             buttons: {
               Ok: function() {

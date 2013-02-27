@@ -31,10 +31,6 @@ end
 %w(
   general
   publishing
-  publishing/layout
-  publishing/theme
-  publishing/navigation_links
-  publishing/custom_css
   memberships
   browsability
 ).each { |domain|
@@ -43,8 +39,31 @@ end
     requires: [ :user, :space ],
     provides: [ :html  ] do
 
+    @current_section = domain
+
     respond_with @space do |f|
-      f.html { erb :"/spaces/settings/#{domain}" }
+      f.html {
+        layout = request.xhr? ? false : @layout
+        erb :"/spaces/settings/#{domain}", layout: layout
+      }
+    end
+  end
+}
+%w(
+  publishing/layout
+  publishing/theme
+  publishing/navigation_links
+  publishing/custom_css
+).each { |domain|
+  get "/users/:user_id/spaces/:space_id/edit/#{domain}",
+    auth: [ :admin ],
+    requires: [ :user, :space ],
+    provides: [ :html  ] do
+
+    @current_section = 'publishing'
+
+    respond_with @space do |f|
+      f.html { erb :"/spaces/settings/publishing" }
     end
   end
 }

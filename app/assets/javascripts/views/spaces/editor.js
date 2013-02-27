@@ -95,9 +95,25 @@ function($, Backbone) {
       return this;
     },
 
+    disable_editor: function() {
+      editor_disabled = true;
+      $(this.editor.getWrapperElement()).addClass("disabled");
+
+      return this;
+    },
+    enable_editor: function() {
+      $(this.editor.getWrapperElement()).removeClass("disabled");
+      editor_disabled = false;
+
+      return this;
+    },
+
+    // TODO: move this out of here
     populate_editor: function(page) {
       this.reset();
       this.editor.setValue(_.unescape( page.get('content') ));
+
+      return this;
     },
 
     serialize: function() {

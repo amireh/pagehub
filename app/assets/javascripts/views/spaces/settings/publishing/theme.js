@@ -18,6 +18,7 @@ function(Backbone, $, UI, SettingView) {
       SettingView.prototype.initialize.apply(this, arguments);
 
       this.browser  = this.$el.find('#theme_browser');
+      this.path = 'theme';
     },
 
     render: function() {

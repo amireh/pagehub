@@ -1,6 +1,6 @@
 <%#= partial "spaces/settings/publishing/_nav" %>
 
-<% content_for :publishing_setting_form do %>
+<%# content_for :publishing_setting_form do %>
   <form id="layout_settings">
     <h1>Publishing Layout</h1>
 
@@ -9,10 +9,10 @@
       "Easy read" => "easy"
     } %>
 
-    <% layouts.each_pair do |layout, css| %>
+    <% layouts.each_pair do |name, css| %>
       <label>
-        <input type="radio" name="name" value="<%= css %>" <%= checkify('publishing.layout.name') %> />
-        <%= layout %>
+        <input type="radio" name="name" value="<%= css %>" <%= checkify('publishing.layout.name') { |s| s == css} %> />
+        <%= name %>
       </label>
     <% end %>
 
@@ -33,6 +33,6 @@
     </p>
 
   </form>
-<% end %>
+<%# end %>
 
 <%#= partial "spaces/settings/publishing/_form" %>
