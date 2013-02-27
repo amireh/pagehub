@@ -116,10 +116,10 @@ put '/spaces/:space_id/pages/:page_id',
   api_optional!({
     :title      => nil,
     :content    => nil,
+    :browsable  => nil,
     :folder_id  => lambda { |fid|
       "No such folder" unless @folder = @space.folders.get(fid)
-    },
-    :browsable  => nil
+    }
   })
 
   if @api[:optional][:content]

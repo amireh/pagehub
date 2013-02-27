@@ -1,6 +1,6 @@
 object @folder
 
-attributes :id, :title
+attributes :id, :title, :browsable
 
 node :media do |f|
   {

@@ -1,5 +1,5 @@
 // status = ui.status;
-define([ 'jquery', 'bootstrap' ], function($) {
+define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function($, undefined, ConnectivityIssueDlg) {
   var __init = false,
       timers = {
         flash: null,
@@ -62,12 +62,21 @@ define([ 'jquery', 'bootstrap' ], function($) {
   $(document).ajaxStart(function(xhr)     { ui.status.mark_pending(); });
   $(document).ajaxComplete(function(xhr)  { ui.status.mark_ready();   });
   $(document).ajaxError(function(_, e) {
+    console.log(e);
     if (e.status != 200) {
       try {
         var err = JSON.parse(e.responseText);
         ui.status.show(err.messages.join('<br />'), "bad");
       } catch(err) {
         // TODO: show some alert and report the error
+        $(ConnectivityIssueDlg(e)).dialog({
+          dialogClass: "alert",
+          buttons: {
+            Dismiss: function() {
+              $(this).dialog('close');
+            }
+          }
+        })
       }
     }
   });

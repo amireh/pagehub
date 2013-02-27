@@ -145,13 +145,13 @@ put "/users/:user_id/spaces/:space_id",
     authorize! :update_meta, @space, message: "Only the space creator can do that."
   end
 
-  api_consume!(:browsability) do |browsability_map|
-    pages    = browsability_map[:pages]
-    folders  = browsability_map[:folders]
+  # api_consume!(:browsability) do |browsability_map|
+  #   pages    = browsability_map[:pages]
+  #   folders  = browsability_map[:folders]
 
-    @space.folders.all.each  { |r| r.update!({ browsable: folders.include?(r.id.to_s) })}
-    @space.pages.all.each    { |r| r.update!({ browsable: pages.include?(r.id.to_s) })}
-  end
+  #   @space.folders.all.each  { |r| r.update!({ browsable: folders.include?(r.id.to_s) })}
+  #   @space.pages.all.each    { |r| r.update!({ browsable: pages.include?(r.id.to_s) })}
+  # end
 
   api_consume!(:memberships) do |memberships|
     memberships.each { |m|

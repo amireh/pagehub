@@ -2,22 +2,35 @@
 
 <%= partial "spaces/settings/_nav" %>
 
-<form action="<%= request.path %>" method="POST">
+<% content_for :deferred_js do %>
+  <script>
+    pagehub_hooks.push(
+      require([ 'models/space', 'views/spaces/settings/browsability' ], function(Space, SettingsView) {
+        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
+        s = new SettingsView({ space: space });
+      })
+    );
+  </script>
+<% end %>
+
+<form id="space_browsability_settings">
   <h2>Browsable Pages</h2>
   <p>Below is a listing of all the pages and folders within your space.
     Unchecking a resource will prevent it from being publicly browsable
-    when people are browsing your <a href="<%= @space.href%>">space space</a>.
+    when people are browsing your <a href="<%= @space.href%>">space</a>.
   </p>
-  <p><em>Note that this only takes effect if the space is publicly browsable,
-    <% if @space.is_browsable? %>which it is. <% else %> which it isn't.<% end %>
-  </em></p>
+
+  <% unless @space.is_browsable? %>
+    <p><em>These settings only make sense when your space is publicly browsable, and it currently isn't.</em></p>
+  <% end %>
+
   <ul class="browsability">
     <%
       traverse_space(@space, {
         on_page: lambda { |p| %>
-          <li>
+          <li data-folder="<%= p.folder.id %>">
             <label>
-              <input type="checkbox" name="browsable[pages][]" value="<%= p.id %>" <%= 'checked="CHECKED"' if p.browsable %> />
+              <input type="checkbox" name="pages[]" value="<%= p.id %>" <%= 'checked="CHECKED"' if p.browsable %> />
               <%= p.title %>
             </label>
           </li>
@@ -27,7 +40,7 @@
 
           <li>
             <label>
-              <input type="checkbox" name="browsable[folders][]" value="<%= f.id %>" <%= 'checked="CHECKED"' if f.browsable %> />
+              <input type="checkbox" name="folders[]" value="<%= f.id %>" <%= 'checked="CHECKED"' if f.browsable %> />
               <strong><%= f.title %></strong>
             </label>
           <ol>
@@ -43,5 +56,5 @@
   <% if @space.pages.empty? && @space.folders.empty? %>
     <p class="notice">Oops! The space has no folders or pages yet, nothing to show here.</p>
   <% end %>
-  <input type="submit" value="Update" />
+  <!-- <input type="submit" value="Update" /> -->
 </form>

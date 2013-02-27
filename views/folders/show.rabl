@@ -2,8 +2,6 @@ object @folder
 
 extends "folders/_show"
 
-attributes :browsable
-
 child(:space) do |space|
   partial "spaces/_show", object: space
 end

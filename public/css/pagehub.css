@@ -488,6 +488,17 @@ form#password input[type=password] {
   line-height: 22px;
 }
 
+.ui-dialog.alert .ui-widget-header {
+  color: white;
+  text-shadow: 0px -1px 0 rgba(0, 0, 0, 0.3);
+  background-color: #B33630;
+  background-image: -moz-linear-gradient(#DC5F59, #B33630);
+  background-image: -webkit-linear-gradient(#DC5F59, #B33630);
+  background-image: linear-gradient(#DC5F59, #B33630);
+  background-repeat: repeat-x;
+  border-color: #CD504A;
+}
+
 .flash.error, span.error, .bad { color: #E94E77; }
 .flash.notice, .success { color: #7ea800; }
 

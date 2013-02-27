@@ -2,7 +2,7 @@ class Folder
   include DataMapper::Resource
 
   default_scope(:default).update(:order => [ :pretty_title.asc ])
-  
+
   # attr_writer :editor
   DefaultFolder = 'None'
 
@@ -15,7 +15,7 @@ class Folder
   belongs_to :space
   belongs_to :folder, required: false, default: lambda { |f, *_| f.space && f.space.root_folder }
   belongs_to :creator, 'User'
-  
+
   has n, :pages,    :constraint => :destroy
   has n, :folders,  :constraint => :destroy
 
@@ -30,7 +30,7 @@ class Folder
   # doesn't contain folders created by others
   # before :destroy, :deletable_by?
   # before :destroy, :nullify_references
-  
+
   [ :save, :update ].each { |advice|
     before advice.to_sym do |*args|
       validate_hierarchy!
@@ -39,15 +39,15 @@ class Folder
       throw :halt unless errors.empty?
     end
   }
-  
+
   # def editor
   #   @editor || User.editor
   # end
-    
+
   def create_homepage
     pages.create({ title: "README", creator: creator })
   end
-    
+
   def serialize
     serialized_pages = pages.collect { |p| p.serialize }
     out = { id: id, title: title, pages: serialized_pages }
@@ -56,23 +56,23 @@ class Folder
     end
     out
   end
-  
+
   def browsable_by?(user)
     browsable && (folder ? folder.browsable_by?(user) : true) || space.member?(user)
   end
-  
+
   def empty?(scope = :public)
     self.folders.empty? && self.pages.all({ browsable: true }).empty?
   end
-  
+
   def has_homepage?()
     pages({ title: [ "Home", "README" ] }).first
   end
-  
+
   def homepage
     pages.first({ title: [ "Home", "README" ] }) || pages.first
   end
-  
+
   def is_root_folder?
     DefaultFolder == self.title && !self.folder
   end
@@ -88,16 +88,16 @@ class Folder
 
     false
   end
-  
+
   def siblings
     if !folder
       return []
     end
-    
+
     folder.folders.all({ :id.not => self.id })
     # space.folders({ folder: self.folder, :id.not => self.id })
   end
-  
+
   def ancestors
     parents = []
     p = self
@@ -112,11 +112,11 @@ class Folder
   def url(root = false)
     root ? "/folders#{id}" : "#{space.url(true)}/folders/#{id}"
   end
-      
+
   def href
     folder ? folder.href + "/#{pretty_title}" : space.href
   end
-  
+
   def deletable_by?(editor)
     if !space.is_member?(editor)
       [ false, "You are not authorized to delete folders in this space." ]
@@ -126,7 +126,7 @@ class Folder
       [ false, "The folder contains others created by someone else, they must be removed first." ]
     else
       true
-    end    
+    end
   end
   # pre-destroy hook:
   #
@@ -141,10 +141,10 @@ class Folder
       self.pages.update!(folder: new_parent)
       self.folders.update!(folder: new_parent)
     end
-    
+
     refresh
   end
-  
+
   private
 
   # pre-destroy validation hook:
@@ -167,28 +167,28 @@ class Folder
   #   throw :halt unless errors.empty?
   # end
 
- 
+
 
   # Checks for placement of a folder
   def validate_hierarchy!
     if folder
       # prevent the folder from being its own parent
       if folder.id == self.id then
-        errors.add :folder_id, "You cannot add a folder to itself!"        
+        errors.add :folder_id, "You cannot add a folder to itself!"
 
       # or a parent being a child of one of its children
       elsif folder.is_child_of?(self) then
-        errors.add :folder_id, "Folder '#{title}' currently contains '#{folder.title}', it cannot become its child." 
+        errors.add :folder_id, "Folder '#{title}' currently contains '#{folder.title}', it cannot become its child."
       elsif folder.space != self.space then
         errors.add :folder_id, "Parent folder is not in the same space!"
       end
     else
       # no folder?
-      if space.folders.count > 0
+      if space.folders.count > 1 && title != DefaultFolder
         errors.add :folder_id, "A folder must be set inside another."
       end
     end
-    
+
     errors.empty?
   end
 
