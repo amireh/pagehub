@@ -114,12 +114,11 @@ h1,h2,h3,h4,h5,h6 {
   cursor: text;
   line-height: normal;
 }
+
 .stuff {
   width: 960px;
   margin: 0 auto;
   position: relative;
-  display: block;
-  border-top: none;
   padding: 0;
 }
 
@@ -133,8 +132,6 @@ h1,h2,h3,h4,h5,h6 {
   background: rgba(0,0,0,0.025);
   border-bottom: 1px solid #eee;
 }
-
-
 
 /*.stuff > nav > a,
 #page_actions > a,
@@ -163,15 +160,33 @@ button {
 #pages {
   margin: 0;
   /*margin-top: 5px;*/
-  display: inline-block;
   vertical-align: top;
   padding: 10px;
+}
 
+.resizable-content {
+  width: 100%;
+  display: table;
+  > * { display: table-cell; }
 }
 
 #pages {
-  width: 240px;
+  width: 180px;
   padding: 0 10px 0 0;
+  .actions {
+    display: inline-block;
+  }
+  .scroller {
+    display: block;
+    clear: both;
+
+    .browser li {
+      display: block;
+      width: auto;
+    }
+  }
+
+  * { clear: none; width: auto;}
 }
 
 #pages hr {
@@ -193,11 +208,12 @@ button {
 }
 
 #page_editor {
-  width: 720px;
+  /*width: 720px;*/
   /*border-bottom-right-radius: 10px;*/
   background: transparent;
   margin-top: 50px;
   max-height: 620px;
+
 }
 
 /*#pages li a:hover,
@@ -207,10 +223,14 @@ button {
   color: #E94E77;
   cursor: pointer;
 }*/
+.scroller {
+  resize: horizontal;
+}
 .browser {
   position: relative;
   padding: 0;
   margin: 5px 5px 0 0;
+  min-width: 180px;
 }
 
 .browser ul,
@@ -315,7 +335,7 @@ footer p {
   font-size: 13px;
   letter-spacing: 2px;
   z-index: 100;
-  /*padding-left: 5px;*/
+  white-space: nowrap;
   display: block;
 }
 .disabled,
@@ -390,7 +410,8 @@ div.loader-overlay {
 
 #editor_container {
   position: relative;
-  display: inline-block;
+  min-width: 240px;
+  width: 100%
 }
 
 /*form section { padding-left: 10px; }*/
@@ -642,7 +663,7 @@ ol.listlike li a { display: block; width: 100%; line-height: inherit; height: au
 
 button[data-collapse] {
   position: absolute;
-  top: 0px;
+  top: -3px;
   left: -22px;
   padding: 0 5px;
   line-height: 18px;
@@ -650,8 +671,22 @@ button[data-collapse] {
   border: none;
   color: #bbb;
   display: block;
+  cursor: pointer;
+}
+button[data-collapse]:before {
+/*  border-style: solid;
+  border-width: 8px 4px 0 4px;
+  border-color: #ddd transparent transparent transparent;*/
+  content: '\002D';
 }
 
+button[data-collapsed]:before {
+/*
+  border-width: 4px 0 4px 8px;
+  border-color: transparent transparent transparent #ddd;
+*/
+  content: '\002B';
+}
 button.edit_folder,
 button.delete_folder {
   right: 21px;
@@ -733,78 +768,6 @@ button.delete_folder:hover {
   top: 0;
 }
 
-/* a hack for drag and drop in Safari */
-[draggable=true] {
-  -khtml-user-drag: element;
-}
-
-
-  /* Default theme */
-  .cm-s-default span.cm-keyword {color: #708;}
-  .cm-s-default span.cm-atom {color: #219;}
-  .cm-s-default span.cm-number {color: #164;}
-  .cm-s-default span.cm-def {color: #00f;}
-  .cm-s-default span.cm-variable {color: black;}
-  .cm-s-default span.cm-variable-2 {color: #05a;}
-  .cm-s-default span.cm-variable-3 {color: #085;}
-  .cm-s-default span.cm-property {color: black;}
-  .cm-s-default span.cm-operator {color: black;}
-  .cm-s-default span.cm-comment {color: #a50;}
-  .cm-s-default span.cm-string {color: #a11;}
-  .cm-s-default span.cm-string-2 {color: #f50;}
-  .cm-s-default span.cm-meta {color: #555;}
-  .cm-s-default span.cm-error {color: #f00;}
-  .cm-s-default span.cm-qualifier {color: #555;}
-  .cm-s-default span.cm-builtin {color: #30a;}
-  .cm-s-default span.cm-bracket {color: #cc7;}
-  .cm-s-default span.cm-tag {color: #170;}
-  .cm-s-default span.cm-attribute {color: #00c;}
-  .cm-s-default span.cm-header {color: blue;}
-  .cm-s-default span.cm-quote {color: #090;}
-  .cm-s-default span.cm-hr {color: #999;}
-  .cm-s-default span.cm-link {color: #00c;}
-  span.cm-header, span.cm-strong {font-weight: bold;}
-  span.cm-em {font-style: italic;}
-  span.cm-emstrong {font-style: italic; font-weight: bold;}
-  span.cm-link {text-decoration: underline;}
-  span.cm-invalidchar {color: #f00;}
-  div.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}
-  div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
-  .cm-s-neat span.cm-comment { color: #a86; }
-  .cm-s-neat span.cm-keyword { line-height: 1em; font-weight: bold; color: blue; }
-  .cm-s-neat span.cm-string { color: #E2403D; }
-  .cm-s-neat span.cm-builtin { line-height: 1em; font-weight: bold; color: #077; }
-  .cm-s-neat span.cm-special { line-height: 1em; font-weight: bold; color: #0aa; }
-  .cm-s-neat span.cm-variable { color: black; }
-  .cm-s-neat span.cm-number, .cm-s-neat span.cm-atom { color: #3a3; }
-  .cm-s-neat span.cm-meta {color: #555;}
-  .cm-s-neat span.cm-link { color: #3a3; }
-
-  .ui-dialog .actionbar {
-    position: relative;
-    min-height: 1em;
-  }
-
-  .ui-dialog .actionbar :first-child {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-  .ui-dialog .actionbar :last-child {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-  }
-
-.group_form { vertical-align: top; width: 690px; display: inline-block; margin: 0; }
-.group_form > :first-child { margin-top: 0; }
-.group_form table { width: 100%; }
-.group_form table th { text-align: left; }
-.group_form table th:nth-of-type(1) { width: 46%; }
-.group_form table th:nth-of-type(2) { width: 40%; }
-/*.group_form table th:nth-of-type(3) { width: 10%; max-width: 10%; }*/
-.group_form table tbody tr:hover { background: rgba(0,0,0,0.05); }
-
 #content.profiles .gravatar {
   box-shadow: 0 0 3px 1px #555;
   padding: 2px;
@@ -825,16 +788,13 @@ button.delete_folder:hover {
   top: -6px;
 }
 
-
-.ui-dialog {
-  border: 1px solid #aaa;
-  box-shadow: 0 0 1px 5px #BBB;
-}
-.ui-widget-overlay + .ui-dialog {
-  box-shadow: 0 0 1px 5px #999;
-}
-.ui-dialog img { vertical-align: middle; }
-
 .inline {
   display: inline-block;
+}
+
+body.fluid {
+  .stuff {
+    max-width: 100%;
+    margin: 0 40px 0 60px;
+  }
 }

@@ -4,7 +4,9 @@
 //= require revisions
 //= require settings
 //= require icons
-
+//= require pagehub
+//= require code_highlighting
+//= require dashboard
 
 
 body.member header {
@@ -66,161 +68,69 @@ header nav > a {
   }
 }
 
+.ui-widget-overlay + .ui-dialog {
+  box-shadow: 0 0 1px 5px #999;
+}
 .ui-dialog {
+  border: 1px solid #aaa;
+  box-shadow: 0 0 1px 5px #BBB;
+
   form:last-child {
     margin-bottom: 0;
   }
-}
-.ui-dialog .ui-widget-content a {
-  color: #008CDD;
-}
 
-.ui-dialog .ui-dialog-buttonpane {
-  padding: 0.3em 0;
-}
+  img { vertical-align: middle; }
 
-.ui-dialog .ui-dialog-titlebar-close {
-  right: 0.4em;
-}
-.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
-  float: none;
-}
-.ui-dialog .ui-dialog-buttonpane button {
-  margin: .5em .4em 0em 0.4em;
-}
-.ui-dialog .ui-dialog-buttonpane button:last-of-type {
-  float: right;
-}
+  .actionbar {
+    position: relative;
+    min-height: 1em;
 
-.ui-dialog.alert .ui-widget-header {
-  color: white;
-  text-shadow: 0px -1px 0 rgba(0, 0, 0, 0.3);
-  background-color: #B33630;
-  background-image: -moz-linear-gradient(#DC5F59, #B33630);
-  background-image: -webkit-linear-gradient(#DC5F59, #B33630);
-  background-image: linear-gradient(#DC5F59, #B33630);
-  background-repeat: repeat-x;
-  border-color: #CD504A;
-}
-
-/* buttons */
-input[type=submit],
-button,
-a.button,
-.btn {
-  text-transform: capitalize;
-}
-
-/* sizers */
-input,
-button,
-a.button {
-  &.fat {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  &.very_fat {
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-  &.thin {
-    /*padding: 5px;*/
-    font-size: 12px;
-    /*line-height: 14px;*/
-    font-weight: 100;
-    /*vertical-align: middle;*/
-  }
-}
-
-.dashboard {
-  .gridster {
-    margin-left: -20px;
-    margin-right: 0;
-
-    li:not([data-sizex="1"]) {
-      .stats {
-        line-height: 26px;
-        min-height: inherit;
-        max-height: inherit;
-      }
+    :first-child {
+      position: absolute;
+      bottom: 0;
+      left: 0;
     }
-
-    li {
-      background: #fafafa;
-      border: 1px solid #eee;
-
-      text-align: center;
-
-      .emblems {
-        position: absolute;
-        z-index: 1;
-
-        left: 0;
-        bottom: 36px;
-        padding: 2px;
-        background: rgba(0,0,0,0.0325);
-        /*height: 100%;*/
-        width: 100%;
-        /*border: 1px solid #eee;*/
-        border-radius: 2px 0 0 2px;
-        border-right: none;
-        display: block;
-
-        .emblem {
-          width:  24px;
-          height: 24px;
-          display: inline-block;
-          opacity: 0.5;
-          position: relative;
-          z-index: 10;
-        }
-        .owned {  background: url(/assets/icons/24x24/star.png)   no-repeat center center; }
-        .public { background: url(/assets/icons/24x24/unlock.png) no-repeat center center; }
-        .private { background: url(/assets/icons/24x24/lock.png)  no-repeat center center; }
-
-      }
-
-      .meta {
-        &, a {
-          display: block;
-          height: 100%;
-          width: 100%;
-        }
-
-        a {
-          text-shadow: 0 1px 0 white;
-          padding: 10px;
-
-          &:hover {
-            background: orange;
-            color: white;
-            text-shadow: none;
-          }
-        }
-      }
-
-      .stats {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        text-align: center;
-        font-size: 0.75em;
-        line-height: 1.25em;
-        border-top: 1px solid #eee;
-        background: white;
-        width: 100%;
-        padding: 5px;
-        z-index: 10;
-        min-height: 36px;
-        max-height: 36px;
-        span {
-          display: inline-block;
-          margin: 0 5px 0 0;
-        }
-      }
+    :last-child {
+      position: absolute;
+      bottom: 0;
+      right: 0;
     }
   }
+
+  .ui-widget-content a {
+    color: #008CDD;
+  }
+
+  .ui-dialog-buttonpane {
+    padding: 0.3em 0;
+  }
+
+  .ui-dialog-titlebar-close {
+    right: 0.4em;
+  }
+  .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none;
+  }
+  .ui-dialog-buttonpane button {
+    margin: .5em .4em 0em 0.4em;
+  }
+  .ui-dialog-buttonpane button:last-of-type {
+    float: right;
+  }
+
+  &.alert .ui-widget-header {
+    color: white;
+    text-shadow: 0px -1px 0 rgba(0, 0, 0, 0.3);
+    background-color: #B33630;
+    background-image: -moz-linear-gradient(#DC5F59, #B33630);
+    background-image: -webkit-linear-gradient(#DC5F59, #B33630);
+    background-image: linear-gradient(#DC5F59, #B33630);
+    background-repeat: repeat-x;
+    border-color: #CD504A;
+  }
 }
 
-
-
+/* a hack for drag and drop in Safari */
+[draggable=true] {
+  -khtml-user-drag: element;
+}

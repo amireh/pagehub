@@ -26,7 +26,7 @@
   padding: 0;
   vertical-align: middle;
   height: 40px;
-  background-image: url("../sheet.png");
+  background-image: url("/assets/icons/pagehub.png");
 }
 .member nav > a {
   /*height: 49px;*/
@@ -214,7 +214,10 @@ header h1 a.selected { text-decoration: none; }
   box-shadow: 0 0 1px 3px #ddd;
 }
 */
-#editor_container { width: 720px; padding-top: 41px;}
+#editor_container {
+ /*width: 720px; */
+  padding-top: 41px;
+}
 
 .member .settings nav a:hover,
 .member .settings nav li.selected,
@@ -241,8 +244,27 @@ header h1 a.selected { text-decoration: none; }
   padding: 3px 10px;
   cursor: pointer;
 }
-#browser .folder {
-  /*border: 1px solid #eee;*/
+#browser {
+
+  .folder {
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+
+    &.general-folder {
+    }
+
+    &:not(.general-folder) {
+      ol.listing.pages {
+        li {
+          &:not(:last-of-type) {
+          }
+        }
+      }
+    }
+
+    span.folder_title {
+      font-weight: bold;
+    }
+  }
 }
 
 #browser .drop-target {
@@ -251,29 +273,10 @@ header h1 a.selected { text-decoration: none; }
 }
 
 button[data-collapse] {
-  box-shadow: none;
-  font-size: 0;
-  width: 16px;
-  height: 18px;
+
 }
 
-button[data-collapse]:before {
-  z-index: -10;
-  width: 0px;
-  height: 0px;
-  position: relative;
-  top: 0;
-  border-style: solid;
-  border-width: 8px 4px 0 4px;
-  border-color: #ddd transparent transparent transparent;
-  display: block;
-  content: ' ';
-}
 
-button[data-collapsed]:before {
-  border-width: 4px 0 4px 8px;
-  border-color: transparent transparent transparent #ddd;
-}
 
 .folder_title button:hover {
   background-color: transparent;

@@ -5,15 +5,13 @@
   <% this_title = yield_with_default(:title) do %><%= AppTitle %><% end %>
   <title><%= title(this_title) %></title>
 
+  <link href="/assets/app.css" rel="stylesheet" type="text/css" />
   <% unless settings.production? %>
-    <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
-    <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
     <!-- <link href="/js/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
   <% else %>
-    <link href="/css/pagehub.min.css" rel="stylesheet" type="text/css" />
-    <link href="/css/skins/<%= preferences["pagehub"]["skin"] %>.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/skins/<%= preferences["pagehub"]["skin"] %>.min.css" rel="stylesheet" type="text/css" />
   <% end %>
-  <link href="/assets/app.css" rel="stylesheet" type="text/css" />
 
   <%= yield_content :css %>
 

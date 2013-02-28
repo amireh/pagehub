@@ -12,12 +12,6 @@
 </script>
 <% end %>
 
-<% content_for :header do %>
-  <h3><a href="<%= @space.url %>"><%= @space.title %></a>
-    <small><a style="padding: 0; margin: 0" href="<%= @space.url %>/settings"><em>settings</em></a></small>
-  </h3>
-<% end %>
-
 <%= partial "/shared/_resource_listing", locals: { editor_content: "Load or create a new page to begin." } %>
 
 <%#= partial "/shared/_confirmation_dlg" %>

@@ -148,6 +148,9 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     save_page: function() {
       if (this._ctx.disabled) { return false; }
 
+      if (!this.editor.content_changed())
+        return this;
+
       this.editor.serialize();
       var p = this.ctx.current_page;
       // console.log("saving page + " + JSON.stringify(this.ctx.current_page.toJSON()))
@@ -157,6 +160,8 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
           UI.status.show("Page updated!", "good");
         }
       });
+
+      return this;
     },
 
     preview_page: function() {

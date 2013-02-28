@@ -29,7 +29,10 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     initialize: function(data) {
       this.space  = data.space,
       this.ctx    = data.ctx;
+      this.offset = 135;
 
+      var view = this;
+      $(window).on('resize', function() { return view.resize(); });
 
       this.space.on('load_page',    this.on_load_page, this);
       this.space.on('page_loaded',  this.highlight, this);
