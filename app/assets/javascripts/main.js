@@ -82,7 +82,11 @@ require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui
     modal: true,
     resizable: false,
     create: function(e, ui) {
+      // $(this).dialog("widget").siblings('.ui-dialog').remove();
       $(this).dialog("widget").find('button').addClass('btn');
+    },
+    close: function() {
+      $(this).remove();
     },
     open: function() {
       var dlg = $(this);

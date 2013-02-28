@@ -1,0 +1,52 @@
+<% content_for :wraps do %>
+  <div class="action_bar_wrap"></div>
+<% end %>
+
+<div class="resizable-content">
+  <div id="pages">
+
+    <div id="resource_actions" class="actions">
+      <a class="listlike new_resource icon new" tabindex="1" rel="tooltip" data-placement="right" title="Create a new page or folder">New</a>
+      <ol class="listlike">
+        <li><a href="<%= @space.url(true) + '/pages/new' %>" id="new_page" rel="tooltip" data-placement="right" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
+        <li><a href="<%= @space.url(true) + '/folders/new' %>" role="button" rel="tooltip" data-placement="right" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">New folder</a></li>
+      </ol>
+    </div>
+
+    <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
+    <div id="browser_scroller" class="scroller">
+      <ul id="browser" class="browser">
+      </ul>
+    </div>
+  </div><!--
+
+  --><div id="editor_container"><!--
+
+    --><div id="page_actions" class="page-actions">
+    <a href="#" class="icon save_page" rel="tooltip" title="Saves the content of this page (Ctrl+Alt+S)" id="save_content">Save</a>
+
+    <a target="PageHub - Preview"
+       class="icon pretty_page"
+       rel="tooltip"
+       title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)"
+       href=""
+       id="preview">Pretty Version</a>
+
+    <a href="#" id="edit_page" class="icon edit_page" rel="tooltip" title="Modify the page properties">Edit</a>
+    <a href="#" id="destroy_page" class="confirm icon delete_page" title="Delete the page (Ctrl+Alt+D)">Delete</a>
+
+    <a id="revisions" target="PageHub" class="icon history" rel="tooltip" title="View the history of this page">Revisions</a>
+
+    <a class="listlike icon move_page" data-placement="top" rel="tooltip" title="Move this page to a different folder">Move</a>
+    <ol class="listlike" id="movement_listing">
+    </ol>
+
+    <a class="listlike icon editor_settings" data-placement="top" rel="tooltip" title="A few editor actions">Editor Actions</a>
+    <ol class="listlike">
+      <li class="sticky"><a href="#" data-placement="right" rel="tooltip" title="Increase the height of the editor" id="increase_height">Grow</a></li>
+      <li class="sticky"><a href="#" data-placement="right" rel="tooltip" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
+      <li class="sticky"><a href="#" data-placement="right" rel="tooltip" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
+    </ol>
+  </div>
+<textarea id="page_editor"><%= editor_content %></textarea></div>
+</div>

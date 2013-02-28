@@ -11,6 +11,7 @@ define('views/spaces/browser',
 function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
   return Backbone.View.extend({
     el: $("#browser"),
+
     templates: {
       folder: FolderTemplate,
       page:   PageTemplate
@@ -34,8 +35,9 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       var view = this;
       $(window).on('resize', function() { return view.resize(); });
 
-      this.space.on('load_page',    this.on_load_page, this);
+      this.space.on('load_page',    this.fetch_page, this);
       this.space.on('page_loaded',  this.highlight, this);
+      this.space.on('page_loaded',  this.focus, this);
       this.space.on('page_created', this.on_page_loaded, this);
       this.space.on('reset', this.reset, this);
       this.space.folders.on('add', this.render_folder, this);
@@ -46,6 +48,10 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       // this.space.folders.on('sync', this.reorder_folder, this);
 
       this.drag_manager = new DragManager(data);
+
+      this.elements = {
+        scroller: $("#browser_scroller")
+      }
 
       this.bootstrap();
     },
@@ -200,6 +206,12 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       page.folder.ctx.browser.title.addClass('selected');
     },
 
+    focus: function(page) {
+      this.elements.scroller.scrollTop(page.ctx.browser.el.position().top);
+
+      return this;
+    },
+
     load_page: function(e) {
       var a         = $(e.target),
           page_id   = parseInt(a.attr("id").replace('page_', '')),
@@ -219,17 +231,8 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       return false;
     },
 
-    on_load_page: function(page) {
-      try {
-        if (page.isNew()) {
-          page.save();
-        } else {
-          page.fetch();
-        }
-      } catch(err) {
-        UI.status.show(err, "bad");
-        // console.log(err)
-      }
+    fetch_page: function(page) {
+      page.fetch();
     },
 
     on_page_loaded: function(page) {

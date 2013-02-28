@@ -1,0 +1,16 @@
+.scroller {
+  resize: horizontal;
+}
+.browser {
+  position: relative;
+  padding: 0;
+  margin: 5px 5px 0 0;
+  min-width: 180px;
+}
+
+.browser ul,
+.browser ol {
+  /*list-style-type: none;*/
+  padding: 0 0 0 15px;
+  margin:  0;
+}

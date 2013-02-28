@@ -1,5 +1,3 @@
-<% content_for :title do %> <%= @space.title %> | PageHub <% end %>
-
 <%= partial "/shared/_editor" %>
 
 <% content_for :deferred_js do %>
@@ -12,6 +10,4 @@
 </script>
 <% end %>
 
-<%= partial "/shared/_resource_listing", locals: { editor_content: "Load or create a new page to begin." } %>
-
-<%#= partial "/shared/_confirmation_dlg" %>
+<%= partial "spaces/_browser", locals: { editor_content: "Load or create a new page to begin." } %>

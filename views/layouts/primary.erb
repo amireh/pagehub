@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <% this_title = yield_with_default(:title) do %><%= AppTitle %><% end %>
+  <% if false then this_title = yield_with_default(:title) do %><%= AppTitle %><% end end %>
+  <% this_title = yield_content(:title) %>
   <title><%= title(this_title) %></title>
 
   <link href="/assets/app.css" rel="stylesheet" type="text/css" />
