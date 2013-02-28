@@ -27,51 +27,50 @@
 </script>
 <% end %>
 
-<form action="/settings/nickname" method="POST">
-  <section>
-  <h2>Nickname</h2>
-    <label>
-      Your nickname is used in the links when sharing documents with people.
-      <br />
-      <br />
-      <input type="text" name="nickname" class="very_fat" value="<%= current_user.nickname %>" />
-      <button id="check_availability">check availability</button>
-      <span></span>
-    </label>
-    <p>Links to your public pages will look something like this:
-      <br />
-      &rarr; <a><code>http://<%= request.host %>/<strong>your-nickname</strong>/<strong>page-title</strong></code></a>
-    </p>
-    <p><em><strong>Note: </strong> changing your nickname will irreversibly invalidate all the links
-      you've shared with people. Change it only if you know what you're doing.</em></p>
-      
-    <input type="submit" class="kinda_bad" value="Change Nickname" />
-  </section>
+<section>
 
-</form>
+  <form action="/settings/nickname" method="POST">
+    <section>
+    <h3>Nickname</h3>
+      <label>
+        Your nickname is used in the links when sharing documents with people.
+        <br />
+        <br />
+        <div class="input-append">
+          <input type="text" name="nickname" class="span3" value="<%= current_user.nickname %>" />
+          <button class="btn" id="check_availability">check availability</button>
+        </div>
+        <span></span>
+      </label>
+      <p>Links to your pages will look something like this:
+        <br />
+        &rarr; <a><code>http://<%= request.host %>/<strong>your-nickname</strong>/<strong>space-title</strong>/<strong>page-title</strong></code></a>
+      </p>
+      <p class="text-warning"><em><strong>WARNING: </strong> changing your nickname will break all the links
+        you've shared with people. Change it only if you know what you're doing!</em></p>
 
-<!-- <hr /> -->
+      <input type="submit" class="btn btn-danger" value="Change Nickname" />
+    </section>
 
-<form method="POST" action="/settings/password">
-  <section>
-    <h2>Changing your password</h2>
+  </form>
 
-    <label>
-      Your current password:<br />
-      <input type="password" class="fat" name="password[current]" />
-    </label>
-    <br />
-    
-    <span>
-      And a new one (type it twice to confirm it):<br />
-    </span>
-    <label>#1 &rarr; <input type="password" class="fat" name="password[new]" style="margin-bottom: 5px;" /></label>
-    <br />
-    <label>#2 &rarr; <input type="password" class="fat" name="password[confirmation]" /></label>
+  <form method="POST" action="/settings/password">
+    <fieldset>
+      <legend>Changing your password</legend>
 
-    <br />
-    <br />
-    <input type="submit" value="Update password" />
-  </section>
+      <label>
+        Your current password:<br />
+        <input type="password" name="password[current]" />
+      </label>
 
-</form>
+      <span>
+        And a new one (type it twice to confirm it):<br />
+      </span>
+      <label>#1 &rarr; <input type="password" name="password[new]" style="margin-bottom: 5px;" /></label>
+      <label>#2 &rarr; <input type="password" name="password[confirmation]" /></label>
+
+      <input type="submit" class="btn" value="Update password" />
+    </fieldset>
+
+  </form>
+</section>

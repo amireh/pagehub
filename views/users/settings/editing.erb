@@ -47,19 +47,19 @@
 
 <form action="/settings/editing" method="POST">
   <section class="editor_settings" id="editor_settings">
-    <h2>Editing settings</h2>
+    <h3>Editing settings</h3>
 
     <p>These settings will apply only to PageHub's editor and <em>not</em>
-      to the pretty versions of your pages.</p>
+      to the browsable versions of your pages.</p>
 
-    <h3>Autosaving</h3>
+    <h4>Autosaving</h4>
     <label>
       <input type="checkbox" name="settings[editing][autosave]"
               <%= preferences["editing"]["autosave"] ? "checked='checked'" : "" %> />
       Automatically save while editing (every 30 seconds)
     </label>
 
-    <h3>Font face</h3>
+    <h4>Font face</h4>
 
       <% Preferences::FontMap.each_pair do |name, font| %>
         <label style="font-family: <%= font %>; font-size: 14px">
@@ -67,11 +67,11 @@
           type="radio" name="settings[editing][font_face]"
           value="<%=name%>"
           <%= preferences["editing"]["font_face"] == name ? "checked='checked'" : "" %>
-          ><%= name %></input>
+          > <%= name %></input>
         </label>
         <br />
       <% end %>
-    <h3>Font size &times; Line height &times; Letter spacing</h3>
+    <h4>Font size &times; Line height &times; Letter spacing</h4>
       <input
         type="text" name="settings[editing][font_size]"
         autocomplete="off"
@@ -111,6 +111,5 @@ I'm **bold** and I'm *not*.
     </section>
   </section>
 
-  <br />
-  <input type="submit" value="Update preferences" />
+  <input type="submit" class="btn btn-primary" value="Save" />
 </form>

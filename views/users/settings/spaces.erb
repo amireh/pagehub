@@ -4,26 +4,44 @@
 
 <form class="spaces" method="POST" action="/settings/spaces">
   <section>
-    <h2>Space memberships</h2>
+    <h3>Space memberships</h3>
 
     <p>You are currently a member of <%= pluralize(current_user.spaces.count, "space") %>.</p>
 
-    <ol>
-      <% current_user.spaces.each do |g| %>
-        <li>
-          <% unless g.is_creator?(current_user) %>
-            <button class="inline thin bad">Leave</button>
-            <p hidden="hidden" data-confirm>Leaving the space will remove all the pages you've written in it
-              from that space space and will return them to you. Are you sure you want to do this?
-            </p>
-          <% end %>
-          <p>
-            <a href="<%= g.url %>"> <%= g.title %></a> as <%= vowelize g.role_of(current_user) %>.<br />
-            <span>Authored <%= pluralize(g.pages({ creator: current_user }).count, "page" ) %>.</span>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Space</th>
+          <th>Contributions</th>
+          <th>Membership Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <% labels = { 'member' => '', 'editor' => '', 'admin' => 'label-inverse', 'creator' => 'label-important' } %>
+      <% @__space = @space %>
+      <% @user.spaces.each do |s| %>
+        <% @space = s %>
+        <tr>
+          <td><a href="<%= s.url %>"><%= fq_space_title s %></a></td>
+          <td><%= pluralize(s.pages({ creator: @user }).count, "page" ) %></td>
+          <td><span class="label span1 text-center <%= labels[s.role_of(@user)] %>"><%= s.role_of(@user).capitalize %></span></td>
+          <td>
+            <div class="btn-group">
+            <% if can? :update, s %>
+              <a href="<%= s.url %>/edit/general" class="btn btn-small">Manage</a>
+            <% end %>
+            <% unless s.is_creator?(@user) %>
+              <button class="btn btn-danger btn-small">Leave</button>
+            <% end %>
+          </div>
+          <p hidden="hidden" data-confirm>Leaving the space will remove all the pages you've written in it
+            from that space space and will return them to you. Are you sure you want to do this?
           </p>
-        </li>
+          </td>
+        </tr>
       <% end %>
-    </ol>
+      <% @space = @__space %>
+    </table>
 
   </section>
 </form>

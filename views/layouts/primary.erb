@@ -69,19 +69,21 @@
             <%= gravatar_tag @user, :icon %>
           <% end %>
         </span>
-        <a class="listlike icon spaces" rel="tooltip" title="Your spaces" href="/spaces">Spaces</a>
-        <ol class="listlike">
-          <li><a href="<%= Space.url(@user) %>"><i class="icon-plus"></i> Create a new space</a></li>
-          <% current_user.spaces.each do |s| %>
-            <li>
-              <a href="<%= s.url %>"><%= s.title %></a>
-            </li>
-          <% end %>
-        </ol>
-        <a class="listlike icon help" href="/help" rel="tooltip" title="Help">Help</a>
-        <%= partial "/shared/_nav_help_links" %>
-        <a class="listlike icon settings" href="/settings" rel="tooltip" title="Your account">Account</a>
-        <%= partial "/shared/_nav_account_links" %>
+        <a class="icon dashboard" rel="tooltip" title="Your dashboard" href="/">Spaces</a>
+        <% if false %>
+          <ol class="listlike">
+            <li><a href="<%= Space.url(@user) %>"><i class="icon-plus"></i> Create a new space</a></li>
+            <% current_user.spaces.each do |s| %>
+              <li>
+                <a href="<%= s.url %>"><%= s.title %></a>
+              </li>
+            <% end %>
+          </ol>
+        <% end %>
+        <!-- <a class="listlike icon help" href="/help" rel="tooltip" title="Help">Help</a> -->
+        <%#= partial "/shared/_nav_help_links" %>
+        <a href="/settings" class="icon settings" rel="tooltip" title="Your account settings">Settings</a>
+        <a href="/sessions/destroy" class="icon signout" rel="tooltip" title="Sign out">Sign out</a>
       </nav>
     </div>
 
@@ -93,9 +95,9 @@
 
     <div class="status-wrap">
       <div id="status"></div>
+      <%= partial "layouts/_flashes" %>
     </div>
 
-    <%= partial "layouts/_flashes" %>
 
     <% klasses = [ request.path.gsub('/', ' ').strip.sanitize.split('-').first ] %>
     <% klasses << (yield_content :section if content_for?(:section)) %>
@@ -109,7 +111,7 @@
     <img class="loader" src="/assets/loading_sun.gif" />
     <div class="loader-overlay"></div>
 
-    <aside class="modal alert" id="html5_compatibility_notice">
+    <aside class="hidden modal alert" id="html5_compatibility_notice">
       <h2>Unsupported Browser</h2>
 
       <p>The brower you are currently using does not appear to support

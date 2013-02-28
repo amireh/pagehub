@@ -67,6 +67,11 @@ module PageHub
       is_on(setting, &condition) ? 'disabled="disabled"' : ''
     end
 
+    # fully qualified space title
+    def fq_space_title(s)
+      s.creator.nickname + '/' + '<strong>' + s.title + '</strong>'
+    end
+
     def md(content)
       content.to_s.to_markdown
     end

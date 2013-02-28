@@ -35,9 +35,9 @@
   </script>
 <% end %>
 
-<h1>Space Registration</h1>
+<h2>Space Registration</h2>
 
-<p>Spaces in PageHub are useful for a space of people to write, share, and present pages
+<p>Spaces in PageHub are a place for people to write, share, and present pages
   to each other, or to the public, in a customized way.
 </p>
 
@@ -47,30 +47,32 @@
 </p>
 
 <form method="POST" action="/spaces">
-  <h2>Name</h2>
-  <label>The space name must be unique, and cool too.
-    <br /><br />
-    <input type="text" name="title" class="very_fat" placeholder="The Screwdrivers" />
-    <button id="check_availability">check availability</button>
-    <span></span>
-  </label>
-  
-  <h2>Brief</h2>
-  <label>A 1-line description of what this space is for.
-    <br /><br />
-    <input type="text" name="brief" style="width: 600px" placeholder="Building nuclear plants with style"></textarea>
-  </label>
+  <h3>Name</h3>
+  <p>
+    <label for="space_title">The space name must be unique (and cool too.)</label>
+    <div class="input-append">
+      <input id="space_title" type="text" name="title" class="input-xlarge" placeholder="The Screwdrivers" />
+      <button class="btn btn-success" id="check_availability"><i class="icon-ok"></i> </button>
+    </div>
+  </p>
 
-  <h2>Public access</h2>
-  <label>
-    <input type="checkbox" value="true" name="is_public" />
-    Allow non-members to read and browse the space documents
-    <small>(don't worry, you can always change this later)</small>
-  </label>
+  <h3>Brief</h3>
+  <p>
+    <label for="space_brief">A 1-line description of what this space is for.</label>
+    <div>
+      <input type="text" id="space_brief" name="brief" class="input-xxlarge" placeholder="Building nuclear plants with style">
+    </div>
+  </p>
 
-  <hr />
-  <p class="sidetip"><em>Note:</em>
-    you will get to manage the space settings and members once you register it.</p>
-  <input type="submit" value="Register Space" />
+  <h3>Public access</h3>
+  <p>
+    <label>
+      <input type="checkbox" value="true" name="is_public" checked="checked" />
+      Allow non-members to read and browse the space documents
+      <small>(you can always change this later)</small>
+    </label>
+  </p>
+  <!-- <br /> -->
+  <input type="submit" class="btn btn-primary" value="Register Space" />
 
 </form>

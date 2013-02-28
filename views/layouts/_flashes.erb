@@ -12,12 +12,12 @@
         <% messages = messages.first if messages.is_a?(Array) %>
         <span class="flash <%= ctx %>"><%= messages %></span>
       <% end %>
-      <button>&times;</button>
+      <button class="close">&times;</button>
     </div>
 
   <% end %>
   <% content_for :deferred_js do %>
-    <script type="text/javascript">
+    <script>
       var flash = {
         timer: null,
         hide: function() {

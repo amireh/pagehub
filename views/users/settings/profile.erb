@@ -2,40 +2,42 @@
 
 <%= partial "users/settings/_nav" %>
 
-<form action="/settings/profile" method="POST">
+<form class="form-horizontal" action="/settings/profile" method="POST">
   <section>
-    <h2>Profile</h2>
-    <p>When people visit your <a href="<%= current_user.href %>">public profile</a>
-      they will get to see your name, avatar, and your publicly shared pages.</p>
+    <h3>Profile</h3>
+    <p>When people visit your <a href="<%= current_user.href %>">profile</a>
+      they will get to see your name, avatar, and your public spaces.</p>
 
-    <label>Full name<br />
-      <input type="text" name="name" class="fat" value="<%= current_user.name %>" />
+    <label>Name <br />
+      <input type="text" name="name" value="<%= @user.name %>" />
     </label>
 
     <br />
     <br />
 
-    <label>Gravatar email<br />
-      <input type="text" name="gravatar_email" class="fat" value="<%= current_user.gravatar_email || current_user.email %>" />
-      <br />
-      <br />
-      <%= gravatar_tag current_user, :default, html: { style: "vertical-align: middle;" } %>
-      <span>Change your avatar at <a href="http://www.gravatar.com">gravatar.com</a></span>
+    <label>Gravatar email <br />
+      <input type="text" name="gravatar_email" value="<%= @user.gravatar_email || @user.email %>" />
     </label>
+
+    <br />
+    <br />
+    <%= gravatar_tag current_user, :default, html: { style: "vertical-align: middle;" } %>
+    <span>Change your avatar at <a href="http://www.gravatar.com">gravatar.com</a></span>
   </section>
   <section>
-    <h2>Email address</h2>
+    <h3>Email address</h3>
     <label>Your primary email address where we can reach you: <small><em>(not visible to people)</em></small>
       <br />
-      <input type="text" name="email" class="very_fat" value="<%= current_user.email %>" />
+      <br />
+      <input type="text" name="email" value="<%= current_user.email %>" />
       <% unless current_user.verified? current_user.email %>
-        <a href="/settings/verify/primary" class="button thin bad">Verify</a>
+        <a href="/settings/verify/primary" class="btn btn-primary">Verify</a>
       <% else %>
-        <span>Verified</span>
+        <span class="badge badge-success"><i class="icon-ok icon-white"></i> Verified</span>
       <% end %>
     </label>
   </section>
 
   <br />
-  <input type="submit" value="Update Profile" />
+  <input type="submit" class="btn btn-primary" value="Save" />
 </form>
