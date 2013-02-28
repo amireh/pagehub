@@ -63,12 +63,20 @@ function($, Backbone) {
         el: "#page_editor"
       }, data.config);
 
+      this.offset = 135;
+
       this.$el = $(this.config.el);
 
       if (this.space) {
         this.space.on('page_loaded', this.populate_editor, this);
         this.space.on('reset', this.reset, this);
       }
+
+      var view = this;
+
+      $(window).on('resize', function() {
+        return view.resize_editor();
+      });
 
       this.bootstrap();
     },
@@ -89,8 +97,7 @@ function($, Backbone) {
 
     // Resize it to fill up the remainder of the screen's height
     resize_editor: function(offset) {
-      var editor_h = $(window).height() - (offset || 135);
-      $(".CodeMirror").css("height", editor_h + "px");
+      this.editor.setSize(null, $(window).height() - (offset || this.offset));
 
       return this;
     },
@@ -110,10 +117,20 @@ function($, Backbone) {
 
     // TODO: move this out of here
     populate_editor: function(page) {
+      var cursor = this.editor.getCursor(),
+          scroll = this.editor.getScrollInfo();
+
       this.reset();
       this.editor.setValue(_.unescape( page.get('content') ));
+      this.editor.markClean();
+      this.editor.setCursor(cursor);
+      this.editor.scrollTo(scroll.left, scroll.top);
 
       return this;
+    },
+
+    content_changed: function() {
+      return !this.editor.isClean();
     },
 
     serialize: function() {
@@ -123,9 +140,7 @@ function($, Backbone) {
       }
 
       return this.editor.getValue();
-    },
-
-    content_changed: content_changed
+    }
   });
 
   return EditorView;
