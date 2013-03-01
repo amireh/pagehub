@@ -5,8 +5,8 @@ function(Backbone, Folder, UI, Shortcut) {
     el: $("#pages .actions"),
 
     events: {
-      'click #new_page':   'create_page',
-      'click #new_folder': 'create_folder'
+      'click #new_page':    'create_page',
+      'click #new_folder':  'create_folder'
     },
 
     initialize: function(data) {
@@ -18,6 +18,11 @@ function(Backbone, Folder, UI, Shortcut) {
 
       Shortcut.add("ctrl+alt+c", function() { view.create_page(); })
       Shortcut.add("ctrl+alt+f", function() { view.create_folder(); })
+    },
+
+    consume: function(e) {
+      e.preventDefault();
+      return false;
     },
 
     create_page: function(e) {
@@ -46,24 +51,24 @@ function(Backbone, Folder, UI, Shortcut) {
       // ui.status.show("Creating a new folder...", "pending");
 
       var parent  = this.ctx.current_folder || this.space.root_folder(),
-          space   = parent.collection.space;
-
+          space   = parent.collection.space,
+          view    = this;
 
       $.ajax({
         type:   "GET",
         headers: { Accept: "text/html" },
         url:    space.get('media').folders.url + '/new',
         success: function(dialog_html) {
-          var dialog = $("<div>" + dialog_html + "</div>").dialog({
+          var dialog = $('<div>' + dialog_html + '</div>').dialog({
             title: "Creating a folder",
             width: 'auto',
 
             // select the current folder from the parent folder list for convenience
             open: function() {
               $(this)
-              .find('select :selected').attr("selected", false)
-              .end()
-              .find("select option[value=" + parent.get('id') + "]").attr("selected", true);
+              .find('select :selected').attr("selected", false).end()
+              .find("select option[value=" + parent.get('id') + "]").attr("selected", true).end()
+              .find('form').on('submit', view.consume);
             },
 
             buttons: {
