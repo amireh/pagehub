@@ -1,5 +1,4 @@
 helpers do
-  # TODO: helperize this, seriously
   def traverse_space(space, handlers, cnd = {}, coll = nil)
     raise InvalidArgumentError unless handlers[:on_page] && handlers[:on_page].respond_to?(:call)
     raise InvalidArgumentError unless handlers[:on_folder] && handlers[:on_folder].respond_to?(:call)
@@ -22,5 +21,10 @@ helpers do
     }
 
     (coll || @space.folders.all({ conditions: cnd.merge({ folder_id: nil }), order: [ :title.asc ] })).each { |f| dump_folder.call(f) }
+  end
+
+  # fully qualified space title
+  def fq_space_title(s)
+    s.creator.nickname + '/' + '<strong>' + s.title + '</strong>'
   end
 end

@@ -1,6 +1,18 @@
+
+ReservedNames = [ 'name', 'spaces', 'pages', 'groups', 'spec' ]
+
+def reserved?(name)
+  ReservedNames.include?(name)
+end
+
+def name_available?(name)
+  nn = name.to_s.sanitize
+  !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ pretty_title: nn }).nil?
+end
+
 before do
   if api_call?
-    puts "its an api call"
+    # puts "its an api call"
     request.body.rewind
     body = request.body.read.to_s || ''
     unless body.empty?
@@ -19,7 +31,7 @@ end
 get '/' do
   pass unless logged_in?
 
-  erb :"users/dashboard"
+  redirect current_user.url
 end
 
 get '/' do
