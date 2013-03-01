@@ -198,6 +198,8 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     }, //destroy_page
 
     edit_page: function(evt) {
+      if (this._ctx.disabled) { return false; }
+
       var el      = $(evt.target),
           page    = this.ctx.current_page,
           space   = this.space;
