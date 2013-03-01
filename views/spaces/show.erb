@@ -1,5 +1,5 @@
 <%= partial "/shared/_editor" %>
-
+<% content_for :section do %>space_editor<% end %>
 <% content_for :deferred_js do %>
 <script>
   pagehub_hooks.push(
