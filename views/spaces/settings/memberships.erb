@@ -1,21 +1,23 @@
-<% content_for :title do %>Membership Settings<% end %>
 <% content_for(:section) { %> memberships <% } %>
 
-<%= partial "spaces/settings/_nav" %>
+<% if false %>
+  <% content_for :title do %>Membership Settings<% end %>
+  <%= partial "spaces/settings/_nav" %>
 
-<% content_for :deferred_js do %>
-  <script>
-    pagehub_hooks.push(
-      require([ 'models/space', 'views/spaces/settings/memberships' ], function(Space, SettingsView) {
-        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
-        s = new SettingsView({ space: space });
-      })
-    );
-  </script>
+  <% content_for :deferred_js do %>
+    <script>
+      pagehub_hooks.push(
+        require([ 'models/space', 'views/spaces/settings/memberships' ], function(Space, SettingsView) {
+          var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
+          s = new SettingsView({ space: space });
+        })
+      );
+    </script>
+  <% end %>
 <% end %>
 
-<div>
-  <form id="space_membership_settings">
+<div id="space_membership_settings">
+  <form>
     <h3>Members</h3>
 
     <table class="table table-striped">

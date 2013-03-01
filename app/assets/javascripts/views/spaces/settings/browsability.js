@@ -17,6 +17,7 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
 
       this.space.folders.on('change:browsable', this.adjust_folder_contents_browsability, this);
       this.space.folders.on('change:pages.browsable', this.adjust_page_browsability, this);
+
       this.bootstrap();
     },
 
@@ -39,6 +40,10 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
       .find('input').attr("disabled", !on)
 
       return true;
+    },
+
+    serialize: function() {
+      return {};
     },
 
     update_resource_browsability: function(r, value) {

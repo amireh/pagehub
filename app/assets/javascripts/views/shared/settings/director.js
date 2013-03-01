@@ -17,10 +17,10 @@ function(Backbone, $, Shortcut) {
       var view      = this;
 
       this.space    = data.space;
+      this.model    = this.space;
       this.ctx      = data.ctx || {};
       this.views    = [];
 
-      this.on('settings_changed', this.save)
       this.on('section_changed',  this.sections.show, this);
       this.on('section_changed',  this.sections.highlight, this);
 
@@ -40,7 +40,10 @@ function(Backbone, $, Shortcut) {
         throw "Missing view#serialize() implementation in view '" + view.label + "'";
       }
 
+      view.on('sync', this.partial_sync, this);
+
       this.views.push(view);
+
       return this;
     },
 
@@ -134,6 +137,11 @@ function(Backbone, $, Shortcut) {
     // sync: function(serialized_data) {
     //   return this;
     // },
+
+    partial_sync: function(data, options) {
+      this.model.save(data, $.extend(true, options, { patch: true, wait: true }));
+      return this;
+    },
 
     sections: {
       show: function(view_label) {

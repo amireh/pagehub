@@ -88,16 +88,14 @@ function(Backbone, $, UI, MembershipRecordTmpl) {
           role        = el.val(),
           view        = this;
 
-      this.space.save({
+      view.trigger('sync', {
         memberships: [{
           user_id: membership.id,
           role:    role
         }]
       }, {
-        patch: true,
-        wait: true,
         success: function() {
-          UI.status.show("Member role updated.", "good");
+          UI.status.show(membership.nickname + " is now a " + role.vowelize() + " of this space.", "good");
         },
         error: function() {
           el.parents("tr:first").replaceWith(MembershipRecordTmpl(membership))
@@ -115,12 +113,17 @@ function(Backbone, $, UI, MembershipRecordTmpl) {
       return false;
     },
 
+    serialize: function() {
+      return {}
+    },
+
     add_user: function(e, ui) {
       var el            = $(e.target),
-          user_nn       = ui.item.value,
+          user_id       = ui.item.value,
+          user_nn       = ui.item.label,
           user_avatar   = ui.item.icon;
           view          = e.data,
-          m             = view.membership_from_id(user_nn);
+          m             = view.membership_from_id(user_id);
 
       view.elements.user_search.val(ui.item.label);
 
@@ -131,22 +134,17 @@ function(Backbone, $, UI, MembershipRecordTmpl) {
         return true;
       }
 
-      // var user_id = _.where(view._ctx.users, { nickname: user_nn })[0].id;
-      var user_id = user_nn;
-
-      view.space.save({
-        memberships: [{
+      view.trigger('sync', {
+         memberships: [{
           user_id: user_id,
           role:    'member'
         }]
       }, {
-        patch: true,
-        wait: true,
         success: function() {
-          UI.status.show("Member added.", "good");
+          UI.status.show(user_nn + " is now a member of this space.", "good");
           view.add_record(view.membership_from_id(user_id));
         }
-      });
+      })
 
       return true;
     },
@@ -156,14 +154,12 @@ function(Backbone, $, UI, MembershipRecordTmpl) {
           m     = this.membership_from_record(el),
           view  = this;
 
-      this.space.save({
+      view.trigger('sync', {
         memberships: [{
           user_id: m.id,
           role:    null
         }]
       }, {
-        patch: true,
-        wait: true,
         success: function() {
           view.elements.membership_records.find('#user_' + m.id).remove();
           UI.status.show( m.nickname + " is no longer a member of this space.", "good");

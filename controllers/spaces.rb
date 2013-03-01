@@ -38,27 +38,27 @@ get "/users/:user_id/spaces/:space_id/edit",
   end
 end
 
-%w(
-  general
-  publishing
-  memberships
-  browsability
-).each { |domain|
-  get "/users/:user_id/spaces/:space_id/edit/#{domain}",
-    auth: [ :admin ],
-    requires: [ :user, :space ],
-    provides: [ :html  ] do
+# %w(
+#   general
+#   publishing
+#   memberships
+#   browsability
+# ).each { |domain|
+#   get "/users/:user_id/spaces/:space_id/edit/#{domain}",
+#     auth: [ :admin ],
+#     requires: [ :user, :space ],
+#     provides: [ :html  ] do
 
-    @current_section = domain
+#     @current_section = domain
 
-    respond_with @space do |f|
-      f.html {
-        layout = request.xhr? ? false : @layout
-        erb :"/spaces/settings/#{domain}", layout: layout
-      }
-    end
-  end
-}
+#     respond_with @space do |f|
+#       f.html {
+#         layout = request.xhr? ? false : @layout
+#         erb :"/spaces/settings/#{domain}", layout: layout
+#       }
+#     end
+#   end
+# }
 %w(
   publishing/layout
   publishing/theme

@@ -1,16 +1,18 @@
-<% content_for :title do %>Browsability settings<% end %>
+<% if false %>
+  <% content_for :title do %>Browsability settings<% end %>
 
-<%= partial "spaces/settings/_nav" %>
+  <%= partial "spaces/settings/_nav" %>
 
-<% content_for :deferred_js do %>
-  <script>
-    pagehub_hooks.push(
-      require([ 'models/space', 'views/spaces/settings/browsability' ], function(Space, SettingsView) {
-        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
-        s = new SettingsView({ space: space });
-      })
-    );
-  </script>
+  <% content_for :deferred_js do %>
+    <script>
+      pagehub_hooks.push(
+        require([ 'models/space', 'views/spaces/settings/browsability' ], function(Space, SettingsView) {
+          var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
+          s = new SettingsView({ space: space });
+        })
+      );
+    </script>
+  <% end %>
 <% end %>
 
 <form id="space_browsability_settings">

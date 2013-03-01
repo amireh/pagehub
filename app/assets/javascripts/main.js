@@ -30,7 +30,8 @@ requirejs.config({
     'shortcut':               'vendor/shortcut',
     'bootstrap':              'vendor/bootstrap/bootstrap',
     'pagehub':                'lib/pagehub',
-    'jquery.gridster':        'lib/jquery.gridster.min'
+    'jquery.gridster':        'lib/jquery.gridster.min',
+    'inflection': 'vendor/inflection'
     // 'codemirror',             'vendor/'
   },
 
@@ -51,6 +52,8 @@ requirejs.config({
 
     'underscore.inflection': [ 'underscore' ],
 
+    'inflection': [],
+
     'backbone': {
       deps: [ "underscore", "jquery" ],
       exports: "Backbone"
@@ -70,7 +73,7 @@ requirejs.config({
   }
 });
 
-require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui' ], function(_, $) {
+require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui', 'inflection' ], function(_, $) {
   $.ajaxSetup({
     headers: {
       Accept : "application/json; charset=utf-8",

@@ -24,13 +24,13 @@
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
             rel="tooltip"
             title="Manage space members, their roles, etc."
-            href="<%= @space.url %>/edit/memberships">Memberships</a>
+            href="memberships">Memberships</a>
     </li>
     <li><a <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
            data-placement="right"
            rel="tooltip"
            title="Customize the public space space settings"
-           href="<%= @space.url %>/edit/publishing">Publishing</a>
+           href="publishing">Publishing</a>
       <ul class="subnav">
         <li></li>
         <%= yield_content :subnav %>
@@ -40,7 +40,7 @@
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
             rel="tooltip"
             title="Specify which pages or folders are publicly browsable"
-            href="<%= @space.url %>/edit/browsability">Browsability</a>
+            href="browsability">Browsability</a>
     </li>
   </ul>
 

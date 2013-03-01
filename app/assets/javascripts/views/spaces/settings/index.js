@@ -6,9 +6,11 @@ define(
   'pagehub',
   'shortcut',
   'views/spaces/settings/router',
-  'views/spaces/settings/general'
+  'views/spaces/settings/general',
+  'views/spaces/settings/memberships',
+  'views/spaces/settings/browsability'
 ],
-function(Director, $, UI, Shortcut, Router, GeneralSettings) {
+function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, BrowsabilityView) {
 
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router.  If the link has a data-bypass
@@ -48,7 +50,9 @@ function(Director, $, UI, Shortcut, Router, GeneralSettings) {
       this.nav    = $('.settings nav');
       this.subnav = this.nav.find('.subnav');
 
-      this.register(GeneralSettings, 'general');
+      this.register(GeneralView, 'general');
+      this.register(MembershipsView, 'memberships');
+      this.register(BrowsabilityView, 'browsability');
 
       this.bootstrap();
     },
@@ -62,7 +66,7 @@ function(Director, $, UI, Shortcut, Router, GeneralSettings) {
       this.router = new Router(this, 'general');
 
       Backbone.history.start({
-        pushState: true,
+        pushState: false,
         root: '/' + this.space.get('media.url') + '/edit/'
       });
 
