@@ -28,16 +28,108 @@
   top: -10px;
 }
 
+.hidden, [hidden=hidden] {
+  display: none;
+}
+
 .browser {
   position: relative;
   padding: 0;
   margin: 5px 5px 0 0;
   min-width: 180px;
-}
 
-.browser ul,
-.browser ol {
-  /*list-style-type: none;*/
-  padding: 0 0 0 15px;
-  margin:  0;
-}
+  ul, ol {
+    /*list-style-type: none;*/
+    padding: 0 0 0 15px;
+    margin:  0;
+  }
+
+  li.folder {
+    position: relative;
+
+    &.general-folder {
+      > ol {
+        padding: 0;
+        margin: 0;
+      }
+
+      > span.folder_title,
+      > button[data-collapse] {
+        display: none;
+      }
+
+      &.collapsed span {
+        margin: 0;
+      }
+      &.collapsed + li.general-folder {
+        margin-top: 4px; /* sorry but those 4 pixels were really bugging me */
+      }
+
+      > span {
+        display: block;
+        margin-bottom: 5px;
+        /*font-weight: bold;*/
+        /*padding: 5px 0;*/
+        padding: 0;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  } /* li.folder */
+
+
+  button[data-collapse] {
+    position: absolute;
+    top: -3px;
+    left: -22px;
+    padding: 0 5px;
+    line-height: 18px;
+    background: none;
+    border: none;
+    color: #bbb;
+    display: block;
+    cursor: pointer;
+  }
+  button[data-collapse]:before {
+  /*  border-style: solid;
+    border-width: 8px 4px 0 4px;
+    border-color: #ddd transparent transparent transparent;*/
+    content: '\002D';
+  }
+
+  button[data-collapsed]:before {
+  /*
+    border-width: 4px 0 4px 8px;
+    border-color: transparent transparent transparent #ddd;
+  */
+    content: '\002B';
+  }
+  button.edit_folder,
+  button.delete_folder {
+    right: 21px;
+    padding: 0;
+    border: none;
+    height: 12px;
+    width:  12px;
+    position: absolute;
+    top: 3px;
+    opacity: 0.1;
+    box-shadow: none;
+  }
+  button.edit_folder {
+    background: #fff url(/assets/icons/12x12/edit.png) no-repeat center center;
+  }
+  button.delete_folder {
+    right: 5px;
+    background: #fff url(/assets/icons/12x12/delete.png) no-repeat center center;
+  }
+
+  button.edit_folder:hover,
+  button.delete_folder:hover {
+    opacity: 1;
+  }
+
+} /* browser */
+

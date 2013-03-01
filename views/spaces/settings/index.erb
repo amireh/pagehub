@@ -1,5 +1,6 @@
 <%= partial "spaces/settings/_nav" %>
 
+<% content_for :nav_section do %>space_settings<% end %>
 <% content_for :deferred_js do %>
   <script>
     pagehub_hooks.push(
