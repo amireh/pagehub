@@ -36,7 +36,6 @@ class User
 
   validates_presence_of :name, :provider, :uid, :nickname
   validates_uniqueness_of :nickname
-
   # class << self
   #   attr_accessor :editor
   # end
@@ -60,8 +59,13 @@ class User
     before advice do |_|
       self.nickname = self.name.to_s.sanitize if (self.nickname || '').empty?
 
-      # validate_email!(self.email, "primary")
-      # validate_email!(self.gravatar_email, "gravatar")
+      if attribute_dirty?(:email)
+        validate_email!(self.email, "primary")
+      end
+
+      if attribute_dirty?(:gravatar_email)
+        validate_email!(self.gravatar_email, "gravatar")
+      end
 
       errors.empty?
     end

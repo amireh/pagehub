@@ -1,20 +1,12 @@
-<% content_for :scripts do %>
-  <script>
-    $(function() {
-      $(".settings > nav a[href='<%= request.path %>']")
-        .addClass("selected").parent().addClass("selected");
-    })
-  </script>
-<% end %>
-
+<% content_for :section do %> users settings <% end %>
 <nav>
   <ul>
-    <li><a data-placement="top" rel="tooltip" title="Your public profile" href="/settings/profile">Profile</a></li>
-    <li><a data-placement="top" rel="tooltip" title="Nickname, password, etc." href="/settings/account">Account</a></li>
-    <li><a href="/settings/editing">Editing</a></li>
+    <li><a data-placement="top" rel="tooltip" title="Your public profile" href="profile">Profile</a></li>
+    <li><a data-placement="top" rel="tooltip" title="Nickname, password, etc." href="account">Account</a></li>
+    <li><a href="editing">Editing</a></li>
     <!-- <li><a href="/settings/publishing">Publishing</a></li> -->
-    <li><a data-placement="top" rel="tooltip" title="Not available yet" class="disabled" href="/settings/notifications">Notifications</a></li>
-    <li><a data-placement="top" rel="tooltip" title="Your space memberships" href="/settings/spaces">Spaces</a></li>
+    <li><a data-placement="top" rel="tooltip" title="Not available yet" class="disabled" href="notifications">Notifications</a></li>
+    <li><a data-placement="top" rel="tooltip" title="Your space memberships" href="spaces">Spaces</a></li>
     <!-- <li><a data-placement="top" title="Pages you've shared with people" href="/settings/public_pages">Shares</a></li> -->
   </ul>
 </nav>

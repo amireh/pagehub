@@ -1,9 +1,6 @@
-<% content_for :title do %> Profile - Settings | <%= current_user.nickname %> | PageHub <% end %>
-<% content_for :nav_section do %>settings<% end %>
+<%#= partial "users/settings/_nav" %>
 
-<%= partial "users/settings/_nav" %>
-
-<form class="form-horizontal" action="/settings/profile" method="POST">
+<form id="user_profile_settings">
   <section>
     <h3>Profile</h3>
     <p>When people visit your <a href="<%= current_user.href %>">profile</a>
@@ -14,7 +11,6 @@
     </label>
 
     <br />
-    <br />
 
     <label>Gravatar email <br />
       <input type="text" name="gravatar_email" value="<%= @user.gravatar_email || @user.email %>" />
@@ -22,9 +18,10 @@
 
     <br />
     <br />
-    <%= gravatar_tag current_user, :default, html: { style: "vertical-align: middle;" } %>
+    <div id="avatar" class="inline-avatar"></div>
     <span>Change your avatar at <a href="http://www.gravatar.com">gravatar.com</a></span>
   </section>
+  <hr />
   <section>
     <h3>Email address</h3>
     <label>Your primary email address where we can reach you: <small><em>(not visible to people)</em></small>
@@ -34,11 +31,11 @@
       <% unless current_user.verified? current_user.email %>
         <a href="/settings/verify/primary" class="btn btn-primary">Verify</a>
       <% else %>
-        <span class="badge badge-success"><i class="icon-ok icon-white"></i> Verified</span>
+        <span class="badge badge-success">Verified</span>
       <% end %>
     </label>
   </section>
 
   <br />
-  <input type="submit" class="btn btn-primary" value="Save" />
+  <button class="btn btn-primary" data-role="save">Save</button>
 </form>

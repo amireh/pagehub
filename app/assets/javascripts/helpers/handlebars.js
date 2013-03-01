@@ -14,3 +14,7 @@ Handlebars.registerHelper('checkify', function(attribute, values) {
   if (_.indexOf(values.split(' '), attribute) != -1) return 'checked="checked"';
   else return '';
 });
+
+Handlebars.registerHelper('gravatar_hash', function(email) {
+  return md5(email.trim().toLowerCase());
+});

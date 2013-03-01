@@ -1,0 +1,20 @@
+<%= partial "users/settings/_nav" %>
+
+<% content_for :nav_section do %>settings<% end %>
+<% content_for :deferred_js do %>
+  <script>
+    pagehub_hooks.push(
+      require([ 'models/user', 'views/users/settings/index' ], function(User, SettingsView) {
+        var user = new User(<%= rabl :"/users/show", object: current_user %>.user);
+        u = new SettingsView({ model: user });
+      })
+    );
+  </script>
+<% end %>
+
+<div id="settings" style="display: none;">
+  <%= partial :"users/settings/profile" %>
+  <%#= partial :"spaces/settings/memberships" %>
+  <%#= partial :"spaces/settings/publishing" %>
+  <%#= partial :"spaces/settings/browsability" %>
+</div>

@@ -4,7 +4,7 @@ define(
   'backbone',
   'jquery',
   'pagehub',
-  'views/spaces/settings/setting_view'
+  'views/shared/settings/setting_view'
 ],
 function(Backbone, $, UI, SettingView) {
   return SettingView.extend({

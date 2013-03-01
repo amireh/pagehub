@@ -1,6 +1,6 @@
 define(
 'views/spaces/settings/general',
-[ 'views/spaces/settings/setting_view', 'jquery', 'pagehub', 'hb!dialogs/destroy_space.hbs' ],
+[ 'views/shared/settings/setting_view', 'jquery', 'pagehub', 'hb!dialogs/destroy_space.hbs' ],
 function(SettingView, $, UI, DestroySpaceDlgTmpl) {
 
   var SpaceGeneralSettingsView = SettingView.extend({

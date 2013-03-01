@@ -98,10 +98,14 @@ nav > a.icon,
 
 a.icon:hover,
 a.listlike:hover,
-a.selected,
 a.icon.selected {
   background-color: rgba(0,0,0,0.1);
   border-color: #008cdd;
+}
+nav {
+  a.selected {
+    background-color: rgba(0,0,0,0.00725);
+  }
 }
 /*
 nav > a:hover:after {

@@ -59,24 +59,24 @@ end
 #     end
 #   end
 # }
-%w(
-  publishing/layout
-  publishing/theme
-  publishing/navigation_links
-  publishing/custom_css
-).each { |domain|
-  get "/users/:user_id/spaces/:space_id/edit/#{domain}",
-    auth: [ :admin ],
-    requires: [ :user, :space ],
-    provides: [ :html  ] do
+# %w(
+#   publishing/layout
+#   publishing/theme
+#   publishing/navigation_links
+#   publishing/custom_css
+# ).each { |domain|
+#   get "/users/:user_id/spaces/:space_id/edit/#{domain}",
+#     auth: [ :admin ],
+#     requires: [ :user, :space ],
+#     provides: [ :html  ] do
 
-    @current_section = 'publishing'
+#     @current_section = 'publishing'
 
-    respond_with @space do |f|
-      f.html { erb :"/spaces/settings/publishing" }
-    end
-  end
-}
+#     respond_with @space do |f|
+#       f.html { erb :"/spaces/settings/publishing" }
+#     end
+#   end
+# }
 
 delete '/users/:user_id/spaces/:space_id',
   auth: [ :creator ],

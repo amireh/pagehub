@@ -12,6 +12,10 @@ ability do |user, space|
     r.browsable_by?(user)
   end
 
+  can :manage, User do |u|
+    u.id == user.id
+  end
+
   # spaces
   can :create, Space
 

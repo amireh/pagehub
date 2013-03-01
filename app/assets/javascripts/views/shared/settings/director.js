@@ -15,10 +15,10 @@ function(Backbone, $, Shortcut, UI) {
     initialize: function(data) {
       var director      = this;
 
-      this.space    = data.space;
-      this.model    = this.space;
+      this.model    = data.model;
       this.ctx      = data.ctx || {};
       this.views    = [];
+      this.aliases  = [];
 
       this.on('section_changed',  this.sections.show, this);
       this.on('section_changed',  this.sections.highlight, this);
@@ -54,8 +54,16 @@ function(Backbone, $, Shortcut, UI) {
       });
     },
 
+    register_alias: function(alias) {
+      this.aliases.push(alias);
+      return this;
+    },
+
     register: function(view_factory, label) {
-      var view = new view_factory({ space: this.space, ctx: this.ctx });
+      var data = { model: this.model, ctx: this.ctx };
+      _.each(this.aliases, function(alias) { data[alias] = data.model; return true; }, this);
+
+      var view = new view_factory(data);
           view.label = label;
           view.director = this;
 
@@ -181,7 +189,7 @@ function(Backbone, $, Shortcut, UI) {
 
       UI.status.mark_pending();
 
-      this.space.save(d, {
+      this.model.save(d, {
         wait: true,
         patch: true,
         success: function() {
@@ -189,7 +197,7 @@ function(Backbone, $, Shortcut, UI) {
         }
       });
 
-      this.space.fetch({
+      this.model.fetch({
         success: function() {
           view.render();
           UI.status.mark_ready();

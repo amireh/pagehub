@@ -117,8 +117,45 @@ post '/users' do
   redirect '/'
 end
 
-get '/settings' do
-  redirect "/settings/profile"
+put '/users/:user_id',
+  auth: [ :user ],
+  provides: [ :json ],
+  requires: [ :user ] do
+
+  authorize! :manage, @user, message: "You can not do that."
+
+  api_optional!({
+    name: nil,
+    gravatar_email: nil,
+    email: nil,
+    preferences: nil
+  })
+
+  api_consume! :preferences do |prefs|
+    @user.save_preferences(@user.preferences.deep_merge(prefs))
+  end
+
+  unless @user.update(api_params)
+    halt 400, @user.all_errors
+  end
+
+  respond_to do |f|
+    f.json {
+      rabl :"users/show", object: @user
+    }
+  end
+end
+
+get "/users/:user_id/edit",
+  auth: [ :user ],
+  requires: [ :user],
+  provides: [ :html  ] do
+
+  authorize! :manage, @user, message: "You can not do that."
+
+  respond_with @space do |f|
+    f.html { erb :"/users/settings/index" }
+  end
 end
 
 %w(

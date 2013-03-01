@@ -84,7 +84,7 @@
 
         <!-- <a class="listlike icon help" href="/help" rel="tooltip" title="Help">Help</a> -->
         <%#= partial "/shared/_nav_help_links" %>
-        <a href="/settings" class="icon tools <%= nav_highlight 'settings' %>" rel="tooltip" title="Your account settings">Settings</a>
+        <a href="<%= current_user.url %>/edit" class="icon tools <%= nav_highlight 'settings' %>" rel="tooltip" title="Your account settings">Settings</a>
         <a href="/sessions/destroy" class="icon signout" rel="tooltip" title="Sign out">Sign out</a>
       </nav>
     </div>

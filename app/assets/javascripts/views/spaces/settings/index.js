@@ -19,15 +19,18 @@ function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, Publis
     initialize: function(data) {
       Director.prototype.initialize.apply(this, arguments);
 
+      this.register_alias('space');
+
       var view    = this;
       this.nav    = $('.settings nav');
       this.label  = 'settings';
+      this.space  = this.model;
 
       this.set_router(Router, 'general');
 
-      this.register(GeneralView, 'general');
-      this.register(MembershipsView, 'memberships');
-      this.register(PublishingView, 'publishing');
+      this.register(GeneralView,      'general');
+      this.register(MembershipsView,  'memberships');
+      this.register(PublishingView,   'publishing');
       this.register(BrowsabilityView, 'browsability');
 
       Shortcut.add("ctrl+alt+v", function() { window.open(view.space.get('media.href'), '_preview'); });

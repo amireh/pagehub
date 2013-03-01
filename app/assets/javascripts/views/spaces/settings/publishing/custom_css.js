@@ -2,7 +2,7 @@ define(
 'views/spaces/settings/publishing/custom_css',
 [
   'jquery',
-  'views/spaces/settings/setting_view',
+  'views/shared/settings/setting_view',
   'views/spaces/editor'
 ],
 function($, SettingView, Editor) {

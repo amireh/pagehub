@@ -103,6 +103,14 @@
     width: 100%;
   }*/
 
+  &.users {
+    .inline-avatar {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  }
+
   section.editor_preview {
     position: absolute;
     left: 360px;

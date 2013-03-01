@@ -4,7 +4,7 @@ define(
   'backbone',
   'jquery',
   'pagehub',
-  'views/spaces/settings/setting_view',
+  'views/shared/settings/setting_view',
   'hb!spaces/settings/navigation_link.hbs'
 ],
 function(Backbone, $, UI, SettingView, NavigationLinkTmpl) {

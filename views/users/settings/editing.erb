@@ -1,18 +1,7 @@
-<% content_for :title do %> Editing - Settings | <%= current_user.nickname %> | PageHub <% end %>
+<% content_for :title do %>Editing Settings<% end %>
 
 <%= partial "users/settings/_nav" %>
 <%= partial "/shared/_editor" %>
-
-<% content_for :css do %>
-  <style>
-    .settings .CodeMirror {
-      font-family: "<%= Preferences::FontMap[preferences["editing"]["font_face"]] %>";
-      font-size: <%= preferences["editing"]["font_size"] %>px;
-      line-height: <%= preferences["editing"]["line_height"] %>px;
-      letter-spacing: <%= preferences["editing"]["letter_spacing"] %>px;
-    }
-  </style>
-<% end %>
 
 <% content_for :js do %>
 <script>
@@ -54,8 +43,7 @@
 
     <h4>Autosaving</h4>
     <label>
-      <input type="checkbox" name="settings[editing][autosave]"
-              <%= preferences["editing"]["autosave"] ? "checked='checked'" : "" %> />
+      <input type="checkbox" name="settings[editing][autosave]" <%= checkify @user.p("editing.autosave") %> />
       Automatically save while editing (every 30 seconds)
     </label>
 
@@ -65,8 +53,7 @@
         <label style="font-family: <%= font %>; font-size: 14px">
           <input
           type="radio" name="settings[editing][font_face]"
-          value="<%=name%>"
-          <%= preferences["editing"]["font_face"] == name ? "checked='checked'" : "" %>
+          value="<%=name%>" <%= checkify("editing.font_face") { |v| v == name } %>
           > <%= name %></input>
         </label>
         <br />
@@ -77,21 +64,21 @@
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= preferences["editing"]["font_size"] %>" />
+        value="<%= @user.p "editing.font_size" %>" />
       <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
       <input
         type="text" name="settings[editing][line_height]"
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= preferences["editing"]["line_height"] %>" />
+        value="<%= @user.p "editing.line_height" %>" />
       <span style="font-size: 18px;">&nbsp;x&nbsp;</span>
       <input
         type="text" name="settings[editing][letter_spacing]"
         autocomplete="off"
         class="very_fat"
         style="text-align: center; width: 70px; font-size: 20px; vertical-align: middle;"
-        value="<%= preferences["editing"]["letter_spacing"] %>" />
+        value="<%= @user.p "editing.letter_spacing" %>" />
       <span style="font-size: 18px;">px</span>
     <section class="editor_preview">
       <span class="curly">&rarr;</span>

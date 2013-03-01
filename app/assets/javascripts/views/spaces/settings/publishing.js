@@ -18,6 +18,8 @@ function(Backbone, $, UI, Director, ThemeSettings, LayoutSettings, NavigationLin
     initialize: function(data) {
       Director.prototype.initialize.apply(this, arguments);
 
+      this.register_alias('space');
+
       this.register(LayoutSettings,           'publishing/layout');
       this.register(ThemeSettings,            'publishing/theme');
       this.register(NavigationLinksSettings,  'publishing/navigation_links');
