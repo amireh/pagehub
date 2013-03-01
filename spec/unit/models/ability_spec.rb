@@ -1,6 +1,6 @@
 describe "Access control" do
   describe "Pages" do
-    before(:all) do      
+    before(:all) do
       fixture(:user)
       fixture(:another_user)
       @page = valid! fixture(:page, { creator: @u, folder: @f })
@@ -14,7 +14,7 @@ describe "Access control" do
       sign_in(@u2)
       cleanup_routes
     end
-    
+
     it "as a member" do
       @s.add_member(@u2)
       app.get('/spec/:space_id/:page_id', auth: :user, :requires => [ :space, :page ]) {
@@ -27,7 +27,7 @@ describe "Access control" do
       }
       api { get "/spec/#{@s.id}/#{@page.id}" }.body.should == [ true, false, false, false ]
     end
-    
+
     it "as an editor" do
       @s.add_editor(@u2)
       app.get('/spec/:space_id/:page_id', auth: :user , :requires => [ :space, :page ]) {
@@ -65,11 +65,11 @@ describe "Access control" do
       }
       api { get "/spec/#{@s.id}/#{@page.id}" }.body.should == [ true, true, true, true ]
     end
-    
+
   end
-  
+
   describe "Folders" do
-    before(:all) do      
+    before(:all) do
       fixture(:user)
       fixture(:another_user)
       @f = valid! fixture(:folder, { creator: @u, space: @s })
@@ -83,7 +83,7 @@ describe "Access control" do
       sign_in(@u2)
       cleanup_routes
     end
-    
+
     it "as a member" do
       @s.add_member(@u2)
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
@@ -96,7 +96,7 @@ describe "Access control" do
       }
       api { get "/spec/#{@s.id}/#{@f.id}" }.body.should == [ true, false, false, false ]
     end
-    
+
     it "as an editor" do
       @s.add_editor(@u2)
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
@@ -122,7 +122,7 @@ describe "Access control" do
       }
       api { get "/spec/#{@s.id}/#{@f.id}" }.body.should == [ true, true, true, true ]
     end
-    
+
     it "as a creator" do
       sign_in(@u)
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
@@ -133,12 +133,12 @@ describe "Access control" do
           (can? :delete,  @folder)
         ].to_json
       }
-      api { get "/spec/#{@s.id}/#{@f.id}" }.body.should == [ true, true, true, true ]      
+      api { get "/spec/#{@s.id}/#{@f.id}" }.body.should == [ true, true, true, true ]
     end
   end
-  
+
   describe "Spaces" do
-    before(:all) do      
+    before(:all) do
       fixture(:user)
       fixture(:another_user)
       @space = valid! fixture(:space, { creator: @u })
@@ -152,7 +152,7 @@ describe "Access control" do
       sign_in(@u2)
       cleanup_routes
     end
-    
+
     it "as a member" do
       @space.add_member(@u2)
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
@@ -165,7 +165,7 @@ describe "Access control" do
       }
       api { get "/spec/#{@space.id}" }.body.should == [ true, true, false, false ]
     end
-    
+
     it "as an editor" do
       @space.add_editor(@u2)
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
@@ -188,15 +188,15 @@ describe "Access control" do
       @space.add_member(u3)
       @space.add_editor(u4)
       @space.add_admin(u5)
-      
+
       sign_in(@u2)
-      
+
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         member  = @space.users.get(params[:member_id])
         editor  = @space.users.get(params[:editor_id])
         admin   = @space.users.get(params[:admin_id])
         guest   = User.get(params[:guest_id])
-        
+
         [
           (can? :read,    @space),
           (can? :create,  Space),
@@ -237,11 +237,11 @@ describe "Access control" do
           true,   # promote member to editor
           false,  # promote editor to admin
           true,   # demote editor to member
-          false,  # demote admin        
+          false,  # demote admin
           false,  # delete
         ]
     end
-    
+
     it "as a creator" do
       sign_in(@u)
       u3 = valid! fixture(:some_user)
@@ -251,13 +251,13 @@ describe "Access control" do
       @space.add_member(u3)
       @space.add_editor(u4)
       @space.add_admin(u5)
-            
+
       app.get('/spec/:space_id', auth: :user, :requires => [ :space ]) {
         member  = @space.users.get(params[:member_id])
         editor  = @space.users.get(params[:editor_id])
         admin   = @space.users.get(params[:admin_id])
         guest   = User.get(params[:guest_id])
-        
+
         [
           (can? :read,    @space),
           (can? :create,  Space),
@@ -298,14 +298,16 @@ describe "Access control" do
           true,   # promote member to editor
           true,  # promote editor to admin
           true,   # demote editor to member
-          true,  # demote admin        
+          true,  # demote admin
           true,  # delete
         ]
     end # as a creator context
-    
+
     it "as a guest" do
+      sign_out
+
       some_space = valid! fixture(:space, { is_public: true })
-      app.get('/spec/:space_id', :requires => [ :space ]) {
+      app.get('/spec/:space_id', auth: :guest, :requires => [ :space ]) {
         [
           (can? :read,    @space),
           (can? :browse,  @space),
@@ -315,8 +317,7 @@ describe "Access control" do
         ].to_json
       }
       api { get "/spec/#{some_space.id}" }.body.should == [ false, true, false, false, false ]
-      
     end
-    
+
   end # Spaces context
 end

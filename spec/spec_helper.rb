@@ -26,38 +26,38 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
-  
+
   # include Rack::Test::Methods
   config.include Rack::Test::Methods
   Capybara.app = Sinatra::Application
   # Capybara.automatic_reload = false
   Capybara.default_driver    = :webkit
   Capybara.javascript_driver = :webkit
-  
+
   def app
     Sinatra::Application
   end
-  
+
   # use this for stubbing methods to be used in the instance scope
   # @example usage
   #   app_instance.stub(:puts)
   #   app_instance.should_receive(:puts).with('hello world')
-  #   
+  #
   #   # somewhere in a route
   #   app.get('/') { puts "hello world" }
   #   get '/' # => true
   def app_instance
     Sinatra::Application.any_instance
   end
-  
+
   config.append_before(:each) do
     header "Accept", "application/json"
     # header "Content-Type", "application/json"
   end
-  
+
   app.set :dump_errors, true
-  app.set :raise_errors, true  
-  app.set :show_exceptions , false  
+  app.set :raise_errors, true
+  app.set :show_exceptions , false
 end
 
 Dir["./spec/helpers/**/*.rb"].sort.each { |f| require f }
@@ -65,13 +65,4 @@ Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
 
 def some_salt
   PageHub::Helpers.tiny_salt
-end
-
-def sign_out
-end
-
-def sign_in(u = @u)
-  raise 'Must create a mockup user before signing in' unless u
- 
-  authorize u.email, Fixtures::UserFixture.password
 end
