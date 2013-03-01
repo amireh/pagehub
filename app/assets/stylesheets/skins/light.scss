@@ -1,13 +1,74 @@
-.header_wrap,
-.guest .nav_wrap,
-.member header {
+/*.header_wrap,*/
+.guest .nav_wrap {
   background: rgb(255,255,255);
   box-shadow: 0 -1px 6px 0px black;
-  z-index: 101;
 }
 
 .guest .nav_wrap {
   box-shadow: 0 -1px 4px 0px black;
+}
+
+.member header {
+  /*box-shadow: 0 0 0 1px #aaa;*/
+  .icon.dashboard { background-image: url(/assets/icons/16x16/home-inverse.png); }
+  .icon.signout { background-image: url(/assets/icons/16x16/shut_down-inverse.png); }
+  .icon.settings { background-image: url(/assets/icons/16x16/process-inverse.png); }
+  .icon.tools { background-image: url(/assets/icons/16x16/tools-inverse.png); }
+
+  max-height:     inherit;
+  border-bottom:  3px solid #ccc;
+
+  a.icon:hover:after,
+  a.icon.selected:after {
+    content: '';
+    display: block;
+    width: 32px;
+    position: absolute;
+    z-index: -1;
+    /*background-color: rgba(255,255,255, 0.25);*/
+    border-bottom: 3px solid #008cdd;
+    height: 37px;
+    top: 0;
+    z-index:0;
+  }
+
+  *zoom: 1;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #363636;
+  background-image: -moz-linear-gradient(top, #444444, #222222);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
+  background-image: -webkit-linear-gradient(top, #444444, #222222);
+  background-image: -o-linear-gradient(top, #444444, #222222);
+  background-image: linear-gradient(to bottom, #444444, #222222);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
+  border-color: #222222 #222222 #000000;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #222222;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  border-bottom-color: #b3b3b3;
+  *margin-left: .3em;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+
+  cursor: default;
+  padding: 0;
+  border-radius: 0;
+  text-align: left;
+
+  a, & {
+    color: #eee;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  a:hover {
+    color: inherit;
+  }
 }
 
 .CodeMirror pre.CodeMirror-cursor {
@@ -15,10 +76,11 @@
 }
 
 /* -- icons -- */
-.member nav > a.icon,
-.member #page_actions > a,
-.member .actions > a.new_resource,
-.member .icon_container {
+header a.icon,
+nav > a.icon,
+#page_actions > a,
+.actions > a.new_resource,
+.icon_container {
   background-repeat: no-repeat;
   /*background-position: center center;*/
   font-size: 0;
@@ -27,6 +89,7 @@
   vertical-align: middle;
   height: 40px;
   background-image: url("/assets/icons/pagehub.png");
+  display: inline-block;
 }
 .member nav > a {
   /*height: 49px;*/
@@ -36,6 +99,7 @@
 .icon:hover,
 a.listlike:hover {
   background-color: rgba(0,0,0,0.05);
+  border-color: #008cdd;
 }
 
 nav > a:hover:after {
@@ -47,10 +111,12 @@ nav > a:hover:after {
   background-color: rgba(0,0,0,0.05);
   height: 40px;
   top: 0;
+  z-index:1;
+  text-decoration: none;
 }
 
 
-.member .icon {
+.icon {
   font-size: 0;
   box-shadow: none;
   /*border: none;*/
@@ -60,9 +126,10 @@ nav > a:hover:after {
 .member .icon.settings        { background-position: -88px  16px; }
 .member .icon.save_page       { background-position: -152px 12px; }
 .member .icon.pretty_page     { background-position: -120px -36px;}
-.member .icon.signout   { background: url(/assets/icons/16x16/shut_down.png) no-repeat center center; }
-.member .icon.settings  { background: url(/assets/icons/16x16/process.png) no-repeat center center; }
-.member .icon.dashboard { background: url(/assets/icons/16x16/home.png) no-repeat center center; }
+.member .icon.signout         { background: url(/assets/icons/16x16/shut_down.png) no-repeat center center; }
+.member .icon.settings        { background: url(/assets/icons/16x16/process.png) no-repeat center center; }
+.member .icon.dashboard       { background: url(/assets/icons/16x16/home.png) no-repeat center center; }
+.member .icon.tools           { background: url(/assets/icons/16x16/tools.png) no-repeat center center; }
 /*.member .icon.delete_page     { background-position: -24px  12px; }*/
 .member .icon.share_page      { background-position: -24px  -36px;}
 .member .icon.history         { background-position: -56px  -36px;}
@@ -151,10 +218,6 @@ header h1 a em {
 }
 header h1 a:hover em {
   /*color: #E94E77;*/
-}
-header h1 a:visited:hover,
-header h1 a:hover {
-  color: #333;
 }
 
 h2,
@@ -280,4 +343,9 @@ button[data-collapse] {
 
 .folder_title button:hover {
   background-color: transparent;
+}
+
+.gravatar {
+  box-shadow: 0 0 3px 1px #555;
+  border-color: #555;
 }

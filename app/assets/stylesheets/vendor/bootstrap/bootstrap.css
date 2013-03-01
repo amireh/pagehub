@@ -1091,7 +1091,7 @@ input[type="color"]:focus,
 .uneditable-input:focus {
   border-color: rgba(82, 168, 236, 0.8);
   outline: 0;
-  outline: thin dotted \9;
+  outline: thin dotted;
   /* IE6-9 */
 
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
@@ -1104,7 +1104,7 @@ input[type="checkbox"] {
   *margin-top: 0;
   /* IE7 */
 
-  margin-top: 1px \9;
+  margin-top: 1px;
   /* IE8-9 */
 
   line-height: normal;
@@ -1670,9 +1670,9 @@ select:focus:invalid:focus {
 }
 input.search-query {
   padding-right: 14px;
-  padding-right: 4px \9;
+  padding-right: 4px;
   padding-left: 14px;
-  padding-left: 4px \9;
+  padding-left: 4px;
   /* IE7-8 doesn't have border-radius, so don't indent the padding */
 
   margin-bottom: 0;
@@ -1872,7 +1872,7 @@ legend + .control-group {
 }
 .btn:active,
 .btn.active {
-  background-color: #cccccc \9;
+  background-color: #cccccc;
 }
 .btn:first-child {
   *margin-left: 0;
@@ -1998,7 +1998,7 @@ input[type="button"].btn-block {
 }
 .btn-primary:active,
 .btn-primary.active {
-  background-color: #003399 \9;
+  background-color: #003399;
 }
 .btn-warning,
 .ui-dialog.warning .ui-dialog-titlebar {
@@ -2036,7 +2036,7 @@ input[type="button"].btn-block {
 .btn-danger,
 #status.bad,
 #flashes.error,
-.ui-dialog.warning button:last-of-type {
+.ui-dialog.warning .ui-dialog-buttonset button:last-of-type {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #da4f49;
@@ -2066,7 +2066,7 @@ input[type="button"].btn-block {
 }
 .btn-danger:active,
 .btn-danger.active {
-  background-color: #942a25 \9;
+  background-color: #942a25;
 }
 .btn-success,
 #status.good,
@@ -2100,7 +2100,7 @@ input[type="button"].btn-block {
 }
 .btn-success:active,
 .btn-success.active {
-  background-color: #408140 \9;
+  background-color: #408140;
 }
 .btn-info,
 .ui-widget-header {
@@ -2133,7 +2133,7 @@ input[type="button"].btn-block {
 }
 .btn-info:active,
 .btn-info.active {
-  background-color: #24748c \9;
+  background-color: #24748c;
 }
 .btn-inverse {
   color: #ffffff;
@@ -2165,7 +2165,7 @@ input[type="button"].btn-block {
 }
 .btn-inverse:active,
 .btn-inverse.active {
-  background-color: #080808 \9;
+  background-color: #080808;
 }
 button.btn,
 input[type="submit"].btn {
@@ -2948,7 +2948,7 @@ a.thumbnail:focus {
   padding: 9px;
   color: #555555;
 }
-.alert {
+.alert:not(.ui-dialog) {
   padding: 8px 35px 8px 14px;
   margin-bottom: 20px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -2958,14 +2958,14 @@ a.thumbnail:focus {
   -moz-border-radius: 4px;
   border-radius: 4px;
 }
-.alert,
-.alert h4 {
+.alert:not(.ui-dialog),
+.alert:not(.ui-dialog) h4 {
   color: #c09853;
 }
-.alert h4 {
+.alert:not(.ui-dialog) h4 {
   margin: 0;
 }
-.alert .close {
+.alert:not(.ui-dialog) .close {
   position: relative;
   top: -2px;
   right: -21px;

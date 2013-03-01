@@ -1,6 +1,33 @@
+.resources {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-touch-action: none;
+}
 .scroller {
   resize: horizontal;
+  overflow-x: hidden;
+  min-width: 180px;
 }
+
+.action_bar_wrap {
+  width: 100%;
+  height: 40px;
+  position: absolute;
+  z-index: -100;
+  top: 44px;
+  height: 41px;
+  background: rgba(0,0,0,0.025);
+  border-bottom: 1px solid #eee;
+}
+
+.space_editor {
+  top: -10px;
+}
+
 .browser {
   position: relative;
   padding: 0;

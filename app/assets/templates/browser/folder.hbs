@@ -5,7 +5,7 @@
     class="folder">
 
   <button data-collapse data-collapsed-caption=""></button>
-  <span class="folder_title" draggable="true">
+  <span class="folder_title" {{#unless is_general}}draggable="true"{{/unless}}>
     <!-- <span>{{#escape title}}{{/escape}}</span> -->
     <span>{{{title}}}</span>
     <button class="icon edit_folder"></button>
