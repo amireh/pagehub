@@ -9,9 +9,7 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
     events: {
       'click #check_availability': 'check_availability',
       'keyup input[type=text][name=title]': 'queue_availability_check',
-      'click #destroy_space': 'confirm_total_destruction',
-      'click #save': 'save',
-      'click button': 'consume'
+      'click #destroy_space': 'confirm_total_destruction'
     },
 
     initialize: function(data) {
@@ -111,9 +109,7 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
       return false;
     },
 
-    save: function(e) {
-      e.preventDefault();
-
+    serialize: function() {
       var data = this.$el.serializeObject();
 
       if ((data.title || "").length > 0 && data.title != this.space.get('title')) {
@@ -133,16 +129,9 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
 
       data.is_public = data.is_public == 'true' ? true : false;
 
-      this.space.save(data, {
-        patch: true,
-        wait: true,
-        success: function() {
-          UI.status.show("Saved.", "good");
-        }
-      })
+      return data;
+    }
 
-      return false;
-    } // save
   });
 
   return SpaceGeneralSettingsView;

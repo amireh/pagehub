@@ -28,6 +28,16 @@ get "/users/:user_id/spaces/:space_id/dashboard", auth: :member, requires: [ :sp
   erb :"/spaces/dashboard"
 end
 
+get "/users/:user_id/spaces/:space_id/edit",
+  auth: [ :admin ],
+  requires: [ :user, :space ],
+  provides: [ :html  ] do
+
+  respond_with @space do |f|
+    f.html { erb :"/spaces/settings/index", layout: request.xhr? ? false : @layout }
+  end
+end
+
 %w(
   general
   publishing

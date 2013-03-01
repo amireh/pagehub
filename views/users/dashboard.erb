@@ -1,4 +1,5 @@
-<% content_for :section do %>dashboard<% end %>
+<% content_for :section     do %>dashboard<% end %>
+<% content_for :nav_section do %>dashboard<% end %>
 <% content_for :deferred_js do %>
 <script>
   pagehub_hooks.push(require([ 'views/users/dashboard' ], function(Dashboard) {

@@ -43,7 +43,7 @@ get '/users/:user_id',
 
   respond_with @user do |f|
     f.html { erb :"users/dashboard" }
-    f.json { rabl :"users/show" }
+    f.json { rabl :"users/show"     }
   end
 end
 
@@ -124,7 +124,6 @@ end
 %w(
    account
    editing
-   publishing
    profile
    notifications
    spaces).each { |domain|

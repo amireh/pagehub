@@ -18,7 +18,7 @@
             <%= 'class="disabled"' unless @space.is_creator?(current_user) %>
             rel="tooltip"
             title="The space name and other basic stuff"
-            href="<%= @space.url %>/edit/general">General</a>
+            href="general">General</a>
     </li>
     <li><a  data-placement="right"
             <%= 'class="disabled"' unless @space.is_admin?(current_user) %>
