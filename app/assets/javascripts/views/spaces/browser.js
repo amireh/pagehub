@@ -84,7 +84,8 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
 
     render_folder: function(f) {
-      var entry   = this.templates.folder(f.toJSON()),
+      var folder_data = $.extend(f.toJSON(), { is_general: !f.has_parent() }),
+          entry   = this.templates.folder(folder_data),
           target  = this.$el,
           el      = target.append( entry ).children().last();
 
