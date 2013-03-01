@@ -133,8 +133,8 @@ h1,h2,h3,h4,h5,h6 {
   text-align: center;
   top:  0;
   left: 0;
-  z-index: 0;
-  height: 0;
+  z-index: 101; /* to overlap .ui-dialog-overlay */
+  height:  0;
 }
 
 #status,
