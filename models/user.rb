@@ -22,7 +22,7 @@ class User
   property :auto_nickname,  Boolean, default: false
   property :created_at,     DateTime, default: lambda { |*_| DateTime.now }
 
-  is :preferencable
+  is :preferencable, {}, PageHub::Config.defaults['user']
 
   has n, :owned_spaces, 'Space', :child_key => [ :creator_id ], :constraint => :destroy
   has n, :spaces, :through => Resource, :constraint => :skip
@@ -40,22 +40,22 @@ class User
   # class << self
   #   attr_accessor :editor
   # end
-  
+
   # def editor
   #   @editor || self.class.editor
   # end
-  
+
   def create_default_space
     owned_spaces.create({ title: Space::DefaultSpace }) if owned_spaces.empty?
   end
-  
+
   def default_space
     owned_spaces.first({ title: Space::DefaultSpace })
   end
-  
+
   after :create,  :create_default_space
   # after :save,    :create_default_space
-  
+
   [ :create, :save ].each { |advice|
     before advice do |_|
       self.nickname = self.name.to_s.sanitize if (self.nickname || '').empty?
@@ -95,11 +95,11 @@ class User
   def url(root = nil)
     "/users/#{id}"
   end
-  
+
   def href
     "/#{self.nickname}"
   end
-    
+
   def verified?(address)
     if address == self.email
       unless ev = self.email_verifications.first({ primary: true })
@@ -128,7 +128,7 @@ class User
       return ev.pending?
     end
   end
-  
+
   private
 
   # Validates an email domain using Ruby's DNS resolver.
@@ -155,6 +155,6 @@ class User
       end
     end
   end
-  
+
 
 end

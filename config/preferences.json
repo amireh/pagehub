@@ -1,12 +1,22 @@
 {
-  "editing": {
-    "font_face":      "Monospace",
-    "font_size":      14,
-    "line_height":    18,
-    "letter_spacing": 0,
-    "autosave":       true
+  "user": {
+    "skin": "light",
+
+    "editing": {
+      "font_face":      "Monospace",
+      "font_size":      14,
+      "line_height":    18,
+      "letter_spacing": 0,
+      "autosave":       true
+    },
+
+    "runtime": {
+      "spaces": {
+        "collapsed": []
+      }
+    }
   },
-  
+
   "spaces": {
     "publishing": {
       "scheme": "Clean",
@@ -15,7 +25,7 @@
       "theme": {
         "name": "Clean"
       },
-      
+
       "layout": {
         "name": "fluid",
         "show_homepages_in_sidebar": null,
@@ -23,15 +33,10 @@
       }
     }
   },
-  
-  "settings": {
-    "lookup_pulse": 250
-  },
-  
-  "pagehub": {
-    "skin": "light"
-  },
 
-
-  "runtime": { "cf": [] }
+  "app": {
+    "settings": {
+      "lookup_pulse": 250
+    }
+  }
 }

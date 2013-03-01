@@ -47,7 +47,7 @@ helpers do
   #   @preferences[scope.to_s]
   # end
 
-  alias_method :preferences, :p
+  # alias_method :preferences, :p
 
 
   def is_on?(*args)

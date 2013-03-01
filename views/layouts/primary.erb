@@ -8,10 +8,10 @@
 
   <link href="/assets/app.css" rel="stylesheet" type="text/css" />
   <% unless settings.production? %>
-    <link href="/assets/skins/<%= preferences["pagehub"]["skin"] %>.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/skins/<%= @user.p('skin') %>.css" rel="stylesheet" type="text/css" />
     <!-- <link href="/js/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
   <% else %>
-    <link href="/assets/skins/<%= preferences["pagehub"]["skin"] %>.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/skins/<%= @user.p('skin') %>.min.css" rel="stylesheet" type="text/css" />
   <% end %>
 
   <%= yield_content :css %>
@@ -56,19 +56,21 @@
         <a href="<%= @user.url %>"><%= @user.nickname %></a>
         <% if @space %>
           / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
-          <a class="small hint btn btn-mini" href="<%= @space.url %>/edit/general">admin</a>
+        <% end %>
+        <% if can? :update, @space %>
+          <a rel="tooltip" title="Space settings" class="icon tools" href="<%= @space.url %>/edit/general"></a>
         <% end %>
         <%#= yield_content :header %>
       </h1>
 
       <nav>
         <span>
-          <%= current_user.nickname %>
-          <% if settings.production? %>
+          <a href="/settings" %><%= current_user.nickname %></a>
+          <% if !settings.production? %>
             <%= gravatar_tag @user, :icon %>
           <% end %>
         </span>
-        <a class="icon dashboard" rel="tooltip" title="Your dashboard" href="/">Spaces</a>
+        <a class="icon dashboard <%= nav_highlight 'dashboard' %>" rel="tooltip" title="Your dashboard" href="/">Spaces</a>
         <% if false %>
           <ol class="listlike">
             <li><a href="<%= Space.url(@user) %>"><i class="icon-plus"></i> Create a new space</a></li>
@@ -79,25 +81,21 @@
             <% end %>
           </ol>
         <% end %>
+
         <!-- <a class="listlike icon help" href="/help" rel="tooltip" title="Help">Help</a> -->
         <%#= partial "/shared/_nav_help_links" %>
-        <a href="/settings" class="icon settings" rel="tooltip" title="Your account settings">Settings</a>
+        <a href="/settings" class="icon tools <%= nav_highlight 'settings' %>" rel="tooltip" title="Your account settings">Settings</a>
         <a href="/sessions/destroy" class="icon signout" rel="tooltip" title="Sign out">Sign out</a>
       </nav>
     </div>
-
-
   </header>
 
+  <div class="status-wrap">
+    <div id="status"></div>
+    <%= partial "layouts/_flashes" %>
+  </div>
+
   <div class="stuff">
-
-
-    <div class="status-wrap">
-      <div id="status"></div>
-      <%= partial "layouts/_flashes" %>
-    </div>
-
-
     <% klasses = [ request.path.gsub('/', ' ').strip.sanitize.split('-').first ] %>
     <% klasses << (yield_content :section if content_for?(:section)) %>
 
