@@ -1,25 +1,20 @@
 <% @f ||= @folder || @space.folders.new %>
 
 <div id="new_folder_dialog">
-  <form class="form-horizontal">
-    <div class="control-group">
-      <label class="control-label">Title</label>
-      <div class="controls">
-        <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= h @f.title %>" />
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label">Parent folder</label>
-      <div class="controls">
-        <select name="parent_id">
-          <% @space.traverse do |f, lvl| %>
-            <option value="<%= f.id %>" <%= 'selected="selected"' if @f.folder && @f.folder.id == f.id %>>
-              <%= Array.new(lvl * 4, '&nbsp;').join('') %> <%= h f.title %>
-            </option>
-          <% end %>
-        </select>
-      </div>
-    </div>
+  <form>
+    <label>Title: <br />
+      <input style="width: 100%" type="text" name="title" value="<%= h @f.title %>" />
+    </label>
+    <br />
+    <label>Parent folder:<br />
+      <select name="parent_id">
+        <% @space.traverse do |f, lvl| %>
+          <option value="<%= f.id %>" <%= 'selected="selected"' if @f.folder && @f.folder.id == f.id %>>
+            <%= Array.new(lvl * 4, '&nbsp;').join('') %> <%= h f.title %>
+          </option>
+        <% end %>
+      </select>
+    </label>
 
   </form>
 </div>
