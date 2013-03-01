@@ -14,16 +14,17 @@ function(Backbone, $, UI, SettingView, NavigationLinkTmpl) {
     events: {
       'click #add_navigation_link':     'add_navigation_link',
       'click #navigation_links button': 'remove_navigation_link',
-      'click #save_navigation_links':   'request_update'
+      'click #save_navigation_links':   'propagate_sync'
     },
 
     initialize: function(ctx) {
       SettingView.prototype.initialize.apply(this, arguments);
       this.links = this.$el.find('#navigation_links');
-      this.path = 'navigation_links';
     },
 
     render: function() {
+      SettingView.prototype.render.apply(this, arguments);
+
       this.links.empty();
       _.each(this.space.get('preferences.publishing.navigation_links'), function(nl) {
         return this.links.append(NavigationLinkTmpl(nl)) || true;
@@ -58,7 +59,7 @@ function(Backbone, $, UI, SettingView, NavigationLinkTmpl) {
       // this is leaking for some reason
       $("body > .tooltip:last").remove();
 
-      return this.request_update();
+      return this.propagate_sync();
     }
   });
 });

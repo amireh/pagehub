@@ -3,18 +3,17 @@ define(
 [
   'backbone',
   'jquery',
-  'shortcut'
+  'shortcut',
+  'pagehub'
 ],
-function(Backbone, $, Shortcut) {
+function(Backbone, $, Shortcut, UI) {
   return Backbone.View.extend({
     el: $("#settings"),
 
-    events: {
-      'click [data-role=save]': 'save'
-    },
+    type: 'director',
 
     initialize: function(data) {
-      var view      = this;
+      var director      = this;
 
       this.space    = data.space;
       this.model    = this.space;
@@ -24,17 +23,41 @@ function(Backbone, $, Shortcut) {
       this.on('section_changed',  this.sections.show, this);
       this.on('section_changed',  this.sections.highlight, this);
 
-      Shortcut.add("ctrl+alt+s", function() { view.save(); });
-      Shortcut.add("ctrl+alt+v", function() { window.open(view.space.get('media.href'), '_preview'); });
-
       $(document).on('submit', function(e) {
-        view.consume(e);
+        return director.consume(e);
+      });
+
+      this.render();
+    },
+
+    log: function(msg, blank) {
+
+      if (blank) {
+        console.log('[' + this.label + ']');
+        console.log(msg);
+      } else {
+        console.log('[' + this.label + '] ' + msg);
+      }
+
+      return this;
+    },
+
+    set_router: function(router_factory, entry_point) {
+      this.router = new router_factory(this, entry_point);
+      return this;
+    },
+
+    go: function(root) {
+      Backbone.history.start({
+        pushState: false,
+        root: root
       });
     },
 
     register: function(view_factory, label) {
       var view = new view_factory({ space: this.space, ctx: this.ctx });
           view.label = label;
+          view.director = this;
 
       if (!view.serialize) {
         throw "Missing view#serialize() implementation in view '" + view.label + "'";
@@ -68,6 +91,12 @@ function(Backbone, $, Shortcut) {
         this.reset();
       }
 
+      this.$el.show();
+
+      return this;
+    },
+
+    hide: function() {
       return this;
     },
 
@@ -75,6 +104,8 @@ function(Backbone, $, Shortcut) {
      * Restore the view to its original state (as in #bootstrap -> #render).
      */
     reset: function() {
+      this.$el.hide();
+
       return this;
     },
 
@@ -88,17 +119,25 @@ function(Backbone, $, Shortcut) {
     serialize: function() {
       var data = {};
 
-      _.each(this.views, function(view) {
-        var view_data = view.serialize();
+      this.log("serializing...");
 
-        if (!view_data) {
-          console.log("Aborting settings sync; view '" + view.label + "' failed to serialize.");
+      if (this.current_view) {
+        data = this.current_view.serialize();
+        if (!data) {
+          console.log("Aborting settings sync; view '" + this.current_view.label + "' failed to serialize.");
           data = null;
           return false;
         }
+      } else {
+        return false;
+      }
 
-        return data = $.extend(true, view_data, data);
-      }, this);
+      // _.each(this.views, function(view) {
+      //   var view_data = view.serialize();
+
+
+      //   return data = $.extend(true, view_data, data);
+      // }, this);
 
       return data;
     },
@@ -120,10 +159,13 @@ function(Backbone, $, Shortcut) {
         throw "Missing director#serialize() implementation!";
       }
 
+      if (!this.current_view)
+        return null;
+
       var data = this.serialize();
 
       if (!data) {
-        return this;
+        return null;
       }
 
       return this.sync(data);
@@ -134,37 +176,70 @@ function(Backbone, $, Shortcut) {
       return false;
     },
 
-    // sync: function(serialized_data) {
-    //   return this;
-    // },
+    sync: function(d) {
+      var view = this;
+
+      UI.status.mark_pending();
+
+      this.space.save(d, {
+        wait: true,
+        patch: true,
+        success: function() {
+          UI.status.show("Saved", "good");
+        }
+      });
+
+      this.space.fetch({
+        success: function() {
+          view.render();
+          UI.status.mark_ready();
+        }
+      });
+
+      return this;
+    },
 
     partial_sync: function(data, options) {
       this.model.save(data, $.extend(true, options, { patch: true, wait: true }));
       return this;
     },
 
+    get_view: function(label) {
+      return _.select(this.views, function(v) {
+        if (v.type == 'director' && v.get_view(label)) {
+          return [ v.get_view(label) ];
+        }
+
+        return v.label == label;
+      })[0];
+    },
+
     sections: {
       show: function(view_label) {
-        var view = _.select(this.views, function(v) { return v.label == view_label })[0];
+        var view = this.get_view(view_label);
+
+        this.log("showing view: " + view_label);
 
         if (!view) {
           throw "Undefined view with label '" + view_label + "'";
         }
 
-        _.each(this.views, function(view) { view.$el.hide("blind"); });
+        _.each(this.views, function(view) { view.hide(); return true; });
 
-        view.$el.show("blind");
         view.render();
+        this.current_view = view;
+        this.ctx.current_director = this;
 
         return true;
       },
 
-      highlight: function(view_label) {
-        var target = (view_label.indexOf('/') != -1) ? this.subnav : this.nav;
+      highlight: function(label) {
+        if (!this.nav)
+          return true;
 
-        target.
+        this.nav.
         find('.selected').removeClass('selected').end().
-        find('a[href=' + view_label + ']').parent().addClass('selected');
+        find('a[href="' + label + '"]').parent().addClass('selected');
 
         return true;
       },

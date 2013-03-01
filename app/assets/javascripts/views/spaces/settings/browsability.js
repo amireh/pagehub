@@ -1,9 +1,9 @@
 define(
 'views/spaces/settings/browsability',
-[ 'backbone', 'jquery', 'pagehub' ],
-function(Backbone, $, UI, DestroySpaceDlgTmpl) {
+[ 'views/spaces/settings/setting_view', 'jquery', 'pagehub' ],
+function(SettingView, $, UI, DestroySpaceDlgTmpl) {
 
-  var SpaceGeneralSettingsView = Backbone.View.extend({
+  var SpaceGeneralSettingsView = SettingView.extend({
     el: $("#space_browsability_settings"),
 
     events: {
@@ -12,8 +12,7 @@ function(Backbone, $, UI, DestroySpaceDlgTmpl) {
     },
 
     initialize: function(data) {
-      this.space  = data.space;
-      this.ctx    = data.ctx;
+      SettingView.prototype.initialize.apply(this, arguments);
 
       this.space.folders.on('change:browsable', this.adjust_folder_contents_browsability, this);
       this.space.folders.on('change:pages.browsable', this.adjust_page_browsability, this);

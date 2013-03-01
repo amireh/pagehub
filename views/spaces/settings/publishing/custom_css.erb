@@ -1,31 +1,24 @@
-<%#= partial "spaces/settings/publishing/_nav" %>
 
-<% content_for :publishing_setting_form do %>
+<form id="custom_css_settings">
+  <h3>Custom CSS</h3>
+  <p>You can also customize how your space look like by writing your own CSS code below.
+    <a href="http://www.pagehub.org/pagehub/css-skinning">The skinning guide</a>
+    contains a reference of the page structure, DOM, and everything you need
+    for skinning.
+  </p>
 
-  <form id="custom_css_settings">
-    <h3>Custom CSS</h3>
-    <p>You can also customize how your space look like by writing your own CSS code below.
-      <a href="http://www.pagehub.org/pagehub/css-skinning">The skinning guide</a>
-      contains a reference of the page structure, DOM, and everything you need
-      for skinning.
-    </p>
+  <p>The custom CSS code is applied <em>after</em> the selected scheme is included, effectively overriding it.</p>
 
-    <p>The custom CSS code is applied <em>after</em> the selected scheme is included, effectively overriding it.</p>
+  <%= partial "/shared/_editor" %>
 
-    <%= partial "/shared/_editor" %>
+  <%
+    css = p('publishing.custom_css')
+    css = css.nil? ?
+    "/* you can write your own CSS here that will be applied to all the space public pages */" :
+    css
+  %>
+  <textarea data-untogglable name="custom_css" id="css_editor" class="blocky_editor"><%= css %></textarea>
 
-    <%
-      css = p('publishing.custom_css')
-      css = css.nil? ?
-      "/* you can write your own CSS here that will be applied to all the space public pages */" :
-      css
-    %>
-    <textarea data-untogglable name="custom_css" id="css_editor" class="blocky_editor"><%= css %></textarea>
-
-    <br />
-    <button id="save_custom_css" class="btn btn-primary">Save</button> <span class="small">(Ctrl+Alt+S)</span>
-  </form>
-
-<% end %>
-
-<%#= partial "spaces/settings/publishing/_form" %>
+  <br />
+  <button id="save_custom_css" class="btn btn-primary">Save</button> <span class="small">(Ctrl+Alt+S)</span>
+</form>

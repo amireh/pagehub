@@ -1,33 +1,9 @@
-<% content_for(:title) { "Publishing Settings | #{@space.title} | PageHub" } %>
 
-<%= partial "spaces/settings/publishing/_nav" %>
+<% content_for :section do %>publishing<% end %>
 <%= partial "shared/_editor" %>
 
-<% content_for :deferred_js do %>
-  <script>
-    pagehub_hooks.push(
-      require([ 'models/space', 'views/spaces/settings/publishing' ], function(Space, SettingsView) {
-        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
-        s = new SettingsView({ space: space });
-        // s.render(_.last(request.path.split('/')));
-      })
-    );
-  </script>
-<% end %>
-
 <section id="space_publishing_settings" style="display: none;">
-
-<!--   <h2>Publishing settings</h2>
-  <p>These settings control the the looks of your <a href="<%= @space.href%>">browsable space</a>.
-    These settings override any personal scheme or settings.</p>
- -->
   <% [ 'layout', 'theme', 'navigation_links', 'custom_css' ].each do |section| %>
     <%= partial "spaces/settings/publishing/#{section}" %>
   <% end %>
-
-  <%#= partial "spaces/settings/publishing/_form" %>
-
-  <%= yield_content :publishing_setting_form %>
-  <!-- <input type="submit" value="Save" /> -->
-
 </section>

@@ -11,7 +11,7 @@ function(Backbone, $, UI, SettingView) {
     el: $("form#theme_settings"),
 
     events: {
-      'change input': 'request_update'
+      'change input': 'propagate_sync'
     },
 
     initialize: function(ctx) {
@@ -19,10 +19,6 @@ function(Backbone, $, UI, SettingView) {
 
       this.browser  = this.$el.find('#theme_browser');
       this.path = 'theme';
-    },
-
-    render: function() {
-      // return this.preview_theme(this.$el.find('input:checked').val());
     },
 
     serialize: function() {
@@ -33,11 +29,11 @@ function(Backbone, $, UI, SettingView) {
       };
     },
 
-    preview_theme: function(theme) {
-      UI.status.mark_pending();
-      this.browser.attr("src", this.space.get('media.url') + "/testdrive?theme=" + theme + '&embedded=true');
-      UI.status.mark_ready();
-      return this;
-    }
+    // preview_theme: function(theme) {
+    //   UI.status.mark_pending();
+    //   this.browser.attr("src", this.space.get('media.url') + "/testdrive?theme=" + theme + '&embedded=true');
+    //   UI.status.mark_ready();
+    //   return this;
+    // }
   });
 });

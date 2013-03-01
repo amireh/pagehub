@@ -58,7 +58,7 @@
           / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
         <% end %>
         <% if can? :update, @space %>
-          <a rel="tooltip" title="Space settings" class="icon tools" href="<%= @space.url %>/edit/general"></a>
+          <a rel="tooltip" title="Space settings" class="icon tools" href="<%= @space.url %>/edit"></a>
         <% end %>
         <%#= yield_content :header %>
       </h1>

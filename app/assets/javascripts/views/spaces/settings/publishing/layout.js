@@ -11,12 +11,12 @@ function(Backbone, $, UI, SettingView) {
     el: $("form#layout_settings"),
 
     events: {
-      'change input': 'request_update'
+      'change input': 'propagate_sync'
     },
 
     initialize: function(ctx) {
       SettingView.prototype.initialize.apply(this, arguments);
-      this.path = 'layout';
+      // this.path = 'layout';
     },
 
     // load: function(el) {
@@ -35,12 +35,15 @@ function(Backbone, $, UI, SettingView) {
     //   })
     // },
 
-    render: function() {
-      this.$el.show();
-      return this;
-    },
+    // render: function() {
+    //   this.director.$el.show();
+    //   this.$el.show("blind");
+    //   return this;
+    // },
 
     serialize: function() {
+      console.log("serializing publishing layout settings");
+
       return {
         layout: $.extend(true, {
           name: 'fluid',

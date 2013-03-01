@@ -1,48 +1,41 @@
-<%#= partial "spaces/settings/publishing/_nav" %>
-<% content_for :section do %>publishing theme<% end %>
+<form id="theme_settings" class="theme">
+  <h3>Publishing Theme</h3>
 
-<% content_for :publishing_setting_form do %>
-  <form id="theme_settings">
-    <h3>Publishing Theme</h3>
+  <p>Choose one of a few pre-defined themes for your space,
+    or roll your own by choosing the 'None' theme and <a data-routeme href="custom_css">writing
+    custom CSS</a>.</p>
 
-    <p>Choose one of a few pre-defined themes for your space,
-      or roll your own by choosing the 'None' theme and <a data-routeme href="custom_css">writing
-      custom CSS</a>.</p>
+  <% themes = {
+    "Clean"         => { colors: [ "FFF", "615B4E", "008CDD", "008CDD", "008CDD" ], text: 'Elegant, easy.' },
+    "Hazzle Dazzle" => { colors: [ "443a34", "F4FAD2", "E94E77", "D4EE5E", "F0AD11" ], text: 'Brown and wild.' },
+    "Dusty"         => { colors: [ "F0F2EB", "1C140D", "FF4242", "99173C", "5E8C6A" ], text: 'Cozy.' },
+    "Antimatter"    => { colors: [ "111", "fff", "7B97A4", "869BA4", "293338" ], text: 'Uber hax.' },
+    "None"          => { colors: [ "fff", "fff", "fff", "fff", "000" ], text: 'Roll your own.' }
+  }
+  %>
+  <ul class="thumbnails">
+    <% themes.each_pair do |theme, info| %>
+      <li class="span2">
+          <div class="well text-center">
+            <h5><%= theme %></h5>
 
-    <% themes = {
-      "Clean"         => { colors: [ "FFF", "615B4E", "008CDD", "008CDD", "008CDD" ], text: 'Elegant, easy.' },
-      "Hazzle Dazzle" => { colors: [ "443a34", "F4FAD2", "E94E77", "D4EE5E", "F0AD11" ], text: 'Brown and wild.' },
-      "Dusty"         => { colors: [ "F0F2EB", "1C140D", "FF4242", "99173C", "5E8C6A" ], text: 'Cozy.' },
-      "Antimatter"    => { colors: [ "111", "fff", "7B97A4", "869BA4", "293338" ], text: 'Uber hax.' },
-      "None"          => { colors: [ "fff", "fff", "fff", "fff", "000" ], text: 'Roll your own.' }
-    }
-    %>
-    <ul class="thumbnails">
-      <% themes.each_pair do |theme, info| %>
-        <li class="span2">
-            <div class="well text-center">
-              <h5><%= theme %></h5>
+            <div class="thumbnail">
+            <% info[:colors].each_with_index do |hex, idx| %>
+              <span class="theme_colours colour_<%=idx%>" style="background: #<%= hex %>;"></span>
+            <% end %>
+          </div>
+            <label>
+              <input type="radio" name="name" value="<%= theme %>" <%= checkify('publishing.theme.name') { |v| v == theme } %> />
+            </label>
+            <p><%= info[:text] %></p>
+          </div>
+          <!-- <br /> -->
+          <a class="btn-block btn btn-mini" href="<%= @space.href %>?theme=<%=theme%>" target="_blank">preview</a>
+      </li>
+    <% end %>
+  </ul>
+  <!-- <span id="colour_explanation">Colour: &minus;</span> -->
 
-              <div class="thumbnail">
-              <% info[:colors].each_with_index do |hex, idx| %>
-                <span class="theme_colours colour_<%=idx%>" style="background: #<%= hex %>;"></span>
-              <% end %>
-            </div>
-              <label>
-                <input type="radio" name="name" value="<%= theme %>" <%= checkify('publishing.theme.name') { |v| v == theme } %> />
-              </label>
-              <p><%= info[:text] %></p>
-            </div>
-            <!-- <br /> -->
-            <a class="btn-block btn btn-mini" href="<%= @space.href %>?theme=<%=theme%>" target="_blank">preview</a>
-        </li>
-      <% end %>
-    </ul>
-    <!-- <span id="colour_explanation">Colour: &minus;</span> -->
-
-    <!-- <h1>Preview</h1> -->
-    <!-- <iframe id="theme_browser"></iframe> -->
-  </form>
-<% end %>
-
-<%#= partial "spaces/settings/publishing/_form" %>
+  <!-- <h1>Preview</h1> -->
+  <!-- <iframe id="theme_browser"></iframe> -->
+</form>

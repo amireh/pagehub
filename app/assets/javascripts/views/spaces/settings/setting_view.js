@@ -3,25 +3,30 @@ define(
 [ 'backbone', 'jquery' ],
 function(Backbone, $) {
   return Backbone.View.extend({
-    initialize: function(ctx) {
-      this.main_view  = ctx.main_view;
-      this.space      = this.main_view.space;
-    },
-
-    load: function() {
-
+    initialize: function(data) {
+      this.space  = data.space;
+      this.ctx    = data.ctx;
     },
 
     render: function() {
+      // if (this.director)
+        // this.director.$el.show();
+
+      this.$el.show("blind");
       return this;
+    },
+
+    hide: function() {
+      this.$el.hide("blind");
     },
 
     serialize: function() {
       return {};
     },
 
-    request_update: function() {
-      return this.main_view.update();
+    propagate_sync: function() {
+      return this.director.save();
+      // return this.main_view.update();
     }
   });
 });

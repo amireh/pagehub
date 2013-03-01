@@ -151,27 +151,25 @@
     }
   }
 
-  .theme {
-    display: block;
-    border: 1px solid #555;
-  }
+  &.publishing {
+    .theme {
+      a.btn {
+        margin-top: -22px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
 
-  #theme_settings {
-    a.btn {
-      margin-top: -22px;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-    }
-
-    .theme_colours {
-      vertical-align: middle;
-      height: 20px;
-      /*width: 36px;*/
-      width: 100%;
-      display: block;
-      /*border: 1px solid #111;*/
+      .theme_colours {
+        vertical-align: middle;
+        height: 20px;
+        /*width: 36px;*/
+        width: 100%;
+        display: block;
+        /*border: 1px solid #111;*/
+      }
     }
   }
+
 
 
   .gravatar {

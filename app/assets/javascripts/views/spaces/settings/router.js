@@ -3,12 +3,35 @@ define('views/spaces/settings/router',
   'backbone'
 ], function(Backbone) {
 
+  // All navigation that is relative should be passed through the navigate
+  // method, to be processed by the router.  If the link has a data-bypass
+  // attribute, bypass the delegation completely.
+  $(document).on("click", ".settings nav a:not([data-bypass]), a[data-routeme]", function(evt) {
+    // Get the absolute anchor href.
+    var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
+    // Get the absolute root.
+    // var root = location.protocol + "//" + location.host + app.root;
+
+    // Ensure the root is part of the anchor href, meaning it's relative.
+    // if (href.prop.slice(0, root.length) === root) {
+      // Stop the default event to ensure the link will not cause a page
+      // refresh.
+      evt.preventDefault();
+
+      // `Backbone.history.navigate` is sufficient for all Routers and will
+      // trigger the correct events. The Router's internal `navigate` method
+      // calls this anyways.  The fragment is sliced from the root.
+      Backbone.history.navigate(href.attr, true);
+    // }
+  });
+
   var SpaceSettingsRouter = Backbone.Router.extend({
 
     routes: {
-      "": "initial_section",
-      ":section": "load_section",
-      ":section/:subsection": "load_subsection"
+      "":                     "initial_section",
+      "publishing":           "initial_publishing_section",
+      "publishing/:section":  "publishing_section",
+      ":section":             "section"
     },
 
     initialize: function(view, initial_section) {
@@ -17,16 +40,25 @@ define('views/spaces/settings/router',
     },
 
     initial_section: function() {
-      return this.view.trigger('section_changed', this.initial_section);
+      return this.navigate(this.initial_section, { trigger: true, replace: true });
     },
 
-    load_section: function(section) {
+    initial_publishing_section: function(section) {
+      return this.navigate('publishing/layout', { trigger: true, replace: true });
+    },
+
+    section: function(section) {
       return this.view.trigger('section_changed', section);
     },
 
-    load_subsection: function(section, subsection) {
-      return this.view.trigger('section_changed', section + '/' + subsection);
+    publishing_section: function(section) {
+      // this.view.trigger('section_changed', 'publishing');
+      this.section('publishing');
+      this.view.get_view('publishing').trigger('section_changed', 'publishing/' + section);
+
+      return this;
     }
+
   });
 
   return SpaceSettingsRouter;

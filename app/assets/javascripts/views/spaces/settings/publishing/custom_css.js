@@ -10,12 +10,12 @@ function($, SettingView, Editor) {
     el: $("form#custom_css_settings"),
 
     events: {
-      'change input': 'request_update'
+      'change input': 'propagate_sync'
     },
 
     initialize: function(ctx) {
       SettingView.prototype.initialize.apply(this, arguments);
-      this.path = 'custom_css';
+
       this.editor = new Editor({
         space:  this.space,
         config: {
@@ -27,6 +27,8 @@ function($, SettingView, Editor) {
     },
 
     render: function() {
+      SettingView.prototype.render.apply(this, arguments);
+
       this.editor.reset().editor.setValue(this.space.get('preferences.publishing.custom_css') || '');
       return this;
     },

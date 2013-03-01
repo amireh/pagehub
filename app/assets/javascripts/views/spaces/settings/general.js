@@ -1,20 +1,20 @@
 define(
 'views/spaces/settings/general',
-[ 'backbone', 'jquery', 'pagehub', 'hb!dialogs/destroy_space.hbs' ],
-function(Backbone, $, UI, DestroySpaceDlgTmpl) {
+[ 'views/spaces/settings/setting_view', 'jquery', 'pagehub', 'hb!dialogs/destroy_space.hbs' ],
+function(SettingView, $, UI, DestroySpaceDlgTmpl) {
 
-  var SpaceGeneralSettingsView = Backbone.View.extend({
+  var SpaceGeneralSettingsView = SettingView.extend({
     el: $("#space_general_settings"),
 
     events: {
+      'click [data-role=save]': 'propagate_sync',
       'click #check_availability': 'check_availability',
       'keyup input[type=text][name=title]': 'queue_availability_check',
       'click #destroy_space': 'confirm_total_destruction'
     },
 
     initialize: function(data) {
-      this.space  = data.space;
-      this.ctx    = data.ctx;
+      SettingView.prototype.initialize.apply(this, arguments);
 
       this.check_timer = null;
       this.check_pulse = 250;

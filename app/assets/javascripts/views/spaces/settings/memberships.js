@@ -1,9 +1,9 @@
 define(
 'views/spaces/settings/memberships',
-[ 'backbone', 'jquery', 'pagehub', 'hb!spaces/settings/membership_record.hbs' ],
-function(Backbone, $, UI, MembershipRecordTmpl) {
+[ 'views/spaces/settings/setting_view', 'jquery', 'pagehub', 'hb!spaces/settings/membership_record.hbs' ],
+function(SettingView, $, UI, MembershipRecordTmpl) {
 
-  var SpaceMembershipsSettingsView = Backbone.View.extend({
+  var SpaceMembershipsSettingsView = SettingView.extend({
     el: $("#space_membership_settings"),
 
     events: {
@@ -15,8 +15,7 @@ function(Backbone, $, UI, MembershipRecordTmpl) {
     },
 
     initialize: function(data) {
-      this.space  = data.space;
-      this.ctx    = data.ctx;
+      SettingView.prototype.initialize.apply(this, arguments);
       this._ctx   = {};
 
       this.lookup_timer = null;

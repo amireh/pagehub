@@ -61,7 +61,7 @@ helpers do
   def is_on(*setting)
     value = p(*setting)
 
-    case nil
+    case
     when block_given?; yield(value)
     else;              is_on?(*setting)
     end

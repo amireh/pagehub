@@ -1,65 +1,59 @@
-<%#= partial "spaces/settings/publishing/_nav" %>
+<form id="layout_settings">
+  <h3>Publishing Layout</h3>
 
-<%# content_for :publishing_setting_form do %>
-  <form id="layout_settings">
-    <h3>Publishing Layout</h3>
+  <ul class="thumbnails">
+    <li class="span4">
+      <div class="well">
+        <label>
+          <img src="/assets/fluid_space_publishing_layout.png" />
+          <h4>
+            <input type="radio" name="name" value="fluid" <%= checkify('publishing.layout.name') { |s| s == 'fluid' } %> />
+            Fluid Layout
+          </h4>
+          <p>The Fluid layout spans the reader's entire screen and contains
+            a static navigation side-bar.</p>
+          <p>This layout is optimal for spaces with
+            a large number of pages.
+          </p>
+        </label>
+      </div>
+    </li>
 
-    <ul class="thumbnails">
-      <li class="span4">
-        <div class="well">
-          <label>
-            <img src="/assets/fluid_space_publishing_layout.png" />
-            <h4>
-              <input type="radio" name="name" value="fluid" <%= checkify('publishing.layout.name') { |s| s == 'fluid' } %> />
-              Fluid Layout
-            </h4>
-            <p>The Fluid layout spans the reader's entire screen and contains
-              a static navigation side-bar.</p>
-            <p>This layout is optimal for spaces with
-              a large number of pages.
-            </p>
-          </label>
-        </div>
-      </li>
+    <li class="span4">
+      <div class="well">
+        <label>
+          <img src="/assets/easy_space_publishing_layout.png" />
+          <h4>
+            <input type="radio" name="name" value="easy" <%= checkify('publishing.layout.name') { |s| s == 'easy' } %> />
+            Easy Reading Layout
+          </h4>
+            <p>A blog-style layout with 720 pixels set for content and a side-bar for navigation.</p>
+            <p>This layout is optimal for very long documents.</p>
+        </label>
+      </div>
+    </li>
+    <li class="span8">
+      <a class="btn btn-info btn-block" target="_blank" href="<%= @space.href %>"><i class="icon-film icon-white"></i> Preview <span class="help small">(Ctrl+Alt+V)</span></a>
 
-      <li class="span4">
-        <div class="well">
-          <label>
-            <img src="/assets/easy_space_publishing_layout.png" />
-            <h4>
-              <input type="radio" name="name" value="easy" <%= checkify('publishing.layout.name') { |s| s == 'easy' } %> />
-              Easy Reading Layout
-            </h4>
-              <p>A blog-style layout with 720 pixels set for content and a side-bar for navigation.</p>
-              <p>This layout is optimal for very long documents.</p>
-          </label>
-        </div>
-      </li>
-      <li class="span8">
-        <a class="btn btn-info btn-block" target="_blank" href="<%= @space.href %>"><i class="icon-film icon-white"></i> Preview <span class="help small">(Ctrl+Alt+V)</span></a>
+    </li>
+  </ul>
 
-      </li>
-    </ul>
-
-    <fieldset>
-      <legend>Misc options</legend>
-      <label>
-        <input type="checkbox" name="show_homepages_in_sidebar" value="true" <%= checkify('publishing.layout.show_homepages_in_sidebar') %> />
-          Show 'README' pages in sidebar
-          <span class="text-info" rel="popover" title="README Pages" data-placement="top" data-trigger="hover" data-nosubmit data-content="By default, pages titled 'README' are treated specially and are not listed in navigation sidebar. Instead, they are displayed when the folder is clicked.
+  <fieldset>
+    <legend>Options</legend>
+    <label>
+      <input type="checkbox" name="show_homepages_in_sidebar" value="true" <%= checkify('publishing.layout.show_homepages_in_sidebar') %> />
+        Show 'README' pages in sidebar
+        <span class="text-info" rel="popover" title="README Pages" data-placement="top" data-trigger="hover" data-nosubmit data-content="By default, pages titled 'README' are treated specially and are not listed in navigation sidebar. Instead, they are displayed when the folder is clicked.
 
 
-          Turning this setting on will disable this behavior.">[ ? ]</span>
-      </label>
+        Turning this setting on will disable this behavior.">[ ? ]</span>
+    </label>
 
 
-      <label>
-        <input type="checkbox" name="show_breadcrumbs" value="true" <%= checkify('publishing.layout.show_breadcrumbs') %> />
-          Show breadcrumbs
-      </label>
-    </fieldset>
+    <label>
+      <input type="checkbox" name="show_breadcrumbs" value="true" <%= checkify('publishing.layout.show_breadcrumbs') %> />
+        Show breadcrumbs
+    </label>
+  </fieldset>
 
-  </form>
-<%# end %>
-
-<%#= partial "spaces/settings/publishing/_form" %>
+</form>
