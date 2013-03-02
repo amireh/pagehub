@@ -1,5 +1,5 @@
 // status = ui.status;
-define([ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(_, $, undefined, ConnectivityIssueDlg) {
+define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(_, $, undefined, ConnectivityIssueDlg) {
   var __init = false,
       timers = {
         flash: null,
@@ -85,6 +85,30 @@ define([ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs
           }
         })
       }
+    }
+  });
+
+  $.extend($.ui.dialog.prototype.options, {
+    modal: true,
+    resizable: false,
+    create: function(e, ui) {
+      // $(this).dialog("widget").siblings('.ui-dialog').remove();
+      $(this).dialog("widget").find('button').addClass('btn');
+    },
+    close: function() {
+      $(this).remove();
+    },
+    open: function() {
+      var dlg = $(this);
+
+      dlg.find('.ui-dialog-buttonpane button:last').focus();
+      dlg.find('form').submit(function(e) { e.preventDefault(); return false; });
+      dlg.keypress(function(e) {
+        if( e.keyCode == 13 ) {
+          dlg.parent().find('.ui-dialog-buttonpane button:last').click();
+          return false;
+        }
+      });
     }
   });
 

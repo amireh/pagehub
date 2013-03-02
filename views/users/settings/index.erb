@@ -2,22 +2,11 @@
 
 <% content_for :nav_section do %>settings<% end %>
 <% content_for :deferred_js do %>
-  <script>
-    pagehub_hooks.push(
-      require([ 'models/user', 'views/users/settings/index' ], function(User, SettingsView) {
-        try {
-          var data = <%= h(rabl :"/users/show", object: current_user).to_json %>;
-          data = JSON.parse(_.unescape(data));
-          console.log(data)
-          var user = new User(data.user);
-          u = new SettingsView({ model: user });
-        } catch(e) {
-          console.log(e)
-          // UI.report_error('crap')
-        }
-      })
-    );
-  </script>
+<script>
+  require([ 'views/users/settings/index' ], function(SettingsView) {
+    application.view = new SettingsView(application);
+  })
+</script>
 <% end %>
 
 <div id="settings" style="display: none;">

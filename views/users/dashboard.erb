@@ -2,9 +2,9 @@
 <% content_for :nav_section do %>dashboard<% end %>
 <% content_for :deferred_js do %>
 <script>
-  pagehub_hooks.push(require([ 'views/users/dashboard' ], function(Dashboard) {
-    d = new Dashboard(<%= rabl :"/users/show", object: @user %>);
-  }));
+  require([ 'views/users/dashboard' ], function(Dashboard) {
+    application.view = new Dashboard(application);
+  });
 </script>
 <% end %>
 

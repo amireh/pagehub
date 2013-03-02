@@ -17,8 +17,8 @@ function(Director, $, UI, Shortcut, Router, ProfileView, AccountView, EditingVie
   var UserSettingsView = Director.extend({
     // el: $("#space_settings"),
 
-    initialize: function(data) {
-      Director.prototype.initialize.apply(this, arguments);
+    initialize: function(state) {
+      Director.prototype.initialize.call(this, state.current_user, state);
 
       var director      = this;
       this.label        = 'settings';
@@ -35,11 +35,11 @@ function(Director, $, UI, Shortcut, Router, ProfileView, AccountView, EditingVie
 
       Shortcut.add("ctrl+alt+s", function() {
         // in case we use multiple directors in the future
-        director.ctx.current_director.save();
+        state.current_director.save();
       });
 
       this.save_button.on('click', function(e) {
-        return director.ctx.current_director.save();
+        return state.current_director.save();
       });
 
       this.ctx.save_button = this.save_button;

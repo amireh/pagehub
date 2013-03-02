@@ -1,6 +1,6 @@
 define('models/user',
-  [ 'jquery', 'underscore', 'backbone', 'collections/spaces', 'backbone.nested' ],
-  function($, _, Backbone, Spaces) {
+  [ 'backbone', 'collections/spaces' ],
+  function(Backbone, Spaces) {
 
   var User = Backbone.DeepModel.extend({
     defaults: {

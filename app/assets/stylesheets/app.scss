@@ -13,7 +13,7 @@ header {
   position: relative;
   max-height: 40px;
 
-  h1 {
+  .path {
     margin: 0;
 
     &, a {
@@ -24,8 +24,8 @@ header {
     font-size: 14px;
     vertical-align: middle;
 
-    a {
-      text-decoration: none;
+    a:hover {
+      text-decoration: underline;
       /*color: #FFFEDF !important;*/
     }
   }

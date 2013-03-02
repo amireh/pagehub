@@ -20,6 +20,7 @@ requirejs.config({
     'jquery.util':            'helpers/util',
     'underscore':             'lib/underscore-min',
     'underscore.inflection':  'lib/underscore/underscore.inflection',
+    'underscore.helpers':     'helpers/underscore',
     'backbone':               'lib/backbone-min',
     'backbone.nested':        'lib/backbone/deep-model.min',
     'text':                   'lib/text',
@@ -42,9 +43,13 @@ requirejs.config({
     'jquery.util': [ 'jquery' ],
     'jquery.gridster': [ 'jquery' ],
 
+    'shortcut': {
+      exports: 'shortcut'
+    },
+
     'pagehub': {
-      deps: [ 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr' ],
-      exports: 'ui'
+      deps: [ 'shortcut', 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr' ],
+      exports: 'UI'
     },
 
     'underscore': {
@@ -64,18 +69,24 @@ requirejs.config({
     'backbone.nested': [ 'backbone' ],
 
     'handlebars': {
-      deps: [ 'underscore.inflection' ],
       exports: 'Handlebars'
-    },
-    'handlebars.helpers': [ 'handlebars' ],
-
-    'shortcut': {
-      exports: 'shortcut'
     }
   }
 });
 
-require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui', 'inflection', 'md5' ], function(_, $) {
+require([
+  'underscore',
+  'jquery',
+  'pagehub',
+  'models/state',
+  'underscore.helpers',
+  'handlebars',
+  'handlebars.helpers',
+  'jquery.ui',
+  'inflection',
+  'md5',
+  'shortcut'
+], function(_, $, PageHub, State) {
   $.ajaxSetup({
     headers: {
       Accept : "application/json; charset=utf-8",
@@ -83,30 +94,12 @@ require([ 'underscore', 'jquery', 'handlebars', 'handlebars.helpers', 'jquery.ui
     }
   });
 
-  $.extend($.ui.dialog.prototype.options, {
-    modal: true,
-    resizable: false,
-    create: function(e, ui) {
-      // $(this).dialog("widget").siblings('.ui-dialog').remove();
-      $(this).dialog("widget").find('button').addClass('btn');
-    },
-    close: function() {
-      $(this).remove();
-    },
-    open: function() {
-      var dlg = $(this);
+  var application = new State({});
 
-      dlg.find('.ui-dialog-buttonpane button:last').focus();
-      dlg.find('form').submit(function(e) { e.preventDefault(); return false; });
-      dlg.keypress(function(e) {
-        if( e.keyCode == 13 ) {
-          dlg.parent().find('.ui-dialog-buttonpane button:last').click();
-          return false;
-        }
-      });
-    }
-  });
+  if (!pagehub_hooks)
+    pagehub_hooks = [];
 
-  _.each(pagehub_hooks, function(cb) { cb(); });
+  console.log("PageHub dependencies loaded. Running " + pagehub_hooks.length + " hooks.")
+  _.each(pagehub_hooks, function(cb) { cb(application); });
 });
 

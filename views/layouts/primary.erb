@@ -49,10 +49,10 @@
 
   <%= yield_content :wraps %>
 
-  <header>
+  <header id="header">
     <div class="stuff">
       <!-- <h1><a href="/">Page<em>Hub</em></a></h1> -->
-      <h1>
+      <div id="path" class="path">
         <a href="<%= current_user.url %>"><%= current_user.nickname %></a>
         <% if @space %>
           / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
@@ -61,11 +61,11 @@
           <a rel="tooltip" title="Space settings" class="icon tools <%= nav_highlight 'space_settings' %>" href="<%= @space.url %>/edit"></a>
         <% end %>
         <%#= yield_content :header %>
-      </h1>
+      </div>
 
       <nav>
         <span>
-          <a href="<%= current_user.url %>/edit" %><%= current_user.nickname %></a>
+          <a id="cuser_settings_link" href="<%= current_user.url %>/edit" %><%= current_user.nickname %></a>
           <% if !settings.production? %>
             <%= gravatar_tag (current_user.gravatar_email || current_user.email), :icon %>
           <% end %>
@@ -124,11 +124,37 @@
   <%= partial "layouts/_footer" %>
 
   <script>
+    <% if settings.development? %>app = null;<% end %>
+
     request = { path: <%= request.path.to_json %> };
-    pagehub_hooks.push(require([ 'views/nav' ], function() { }));
+    pagehub_hooks.push(function(application) {
+      <% if settings.development? %>app = application;<% end %>
+
+      require([ 'views/header', 'models/user', 'models/space' ], function(Header, User, Space) {
+
+        try {
+          application.current_user =
+            new User(JSON.parse(_.unescape(<%= h(rabl :"/users/show", object: current_user).to_json %>)).user);
+        } catch(e) {
+          console.log(e)
+        }
+
+        <% if @space %>
+        try {
+          application.space =
+            new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
+        } catch(e) {
+          console.log(e)
+        }
+        <% end %>
+
+        application.header = new Header(application);
+
+        <%= (yield_content :deferred_js).gsub(/\<\/?script\>/, '').strip %>
+      });
+    });
   </script>
 
-  <%= yield_content :deferred_js %>
   <%= partial "layouts/_google_analytics" %>
 </body>
 

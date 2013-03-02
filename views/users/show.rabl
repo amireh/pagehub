@@ -1,6 +1,6 @@
 object @user
 
-attributes :id, :nickname, :email, :gravatar_email
+attributes :id, :name, :nickname, :email, :gravatar_email
 
 node(:media) do |u|
   {

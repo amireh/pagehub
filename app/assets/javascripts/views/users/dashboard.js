@@ -10,14 +10,12 @@ define('views/users/dashboard',
   return Backbone.View.extend({
     el: $(".gridster"),
 
-    initialize: function(data) {
-      this.user = new User(data.user);
-      this.ctx = data.ctx || {};
-      this._ctx = {}
+    initialize: function(application) {
+      this.user = application.current_user;
 
       var nr_pages = 0;
       this.user.spaces.every(function(s) { nr_pages += parseInt(s.get('nr_pages')); return true; });
-      this._ctx.nr_pages = nr_pages;
+      this.nr_pages = nr_pages;
 
       this.render();
     },
@@ -59,9 +57,9 @@ define('views/users/dashboard',
 
     weigh: function(space) {
       var nr_pages = parseInt(space.get('nr_pages')),
-          ratio = (nr_pages / this._ctx.nr_pages * 100.0),
+          ratio = (nr_pages / this.nr_pages * 100.0),
           size = Math.ceil(ratio / this.user.spaces.length / 2);
-      // console.log("Space " + space.get('title') + " has " + ratio + "% of the total user pages (" + Math.ceil(ratio / this.user.spaces.length) + ")");
+
       return { x: size, y: Math.ceil(size / 2) };
     }
   });

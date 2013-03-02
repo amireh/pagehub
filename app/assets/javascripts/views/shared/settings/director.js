@@ -13,14 +13,13 @@ function(Backbone, $, Shortcut, UI, State) {
 
     type: 'director',
 
-    initialize: function(data) {
+    initialize: function(model, state) {
       var director  = this;
-      console.log(data)
-      _.implode(this, data);
+      // _.implode(this, data);
 
-      // this.model    = data.model;
-      this.ctx      = this.ctx || {};
-      this.state    = new State({}); this.state.owner = this;
+      this.model    = model;
+      this.state    = state;
+      this.ctx      = {};
       this.views    = [];
       this.aliases  = [];
       this.presync_map = {};
@@ -336,7 +335,7 @@ function(Backbone, $, Shortcut, UI, State) {
 
         view.render();
         this.current_view = view;
-        this.ctx.current_director = this;
+        this.state.current_director = this;
 
         return true;
       },
