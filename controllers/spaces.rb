@@ -1,7 +1,10 @@
 get '/users/:user_id/spaces',
   auth: [ :user ],
   requires: [ :user ],
-  provides: [ :json, :html ] do
+  provides: [ :json, :html ],
+  exclusive: true do
+
+  authorize! :read, @space, message: "You do not have access to that user's spaces."
 
   respond_with @user do |f|
     f.html { erb :"spaces/index" }
@@ -9,14 +12,27 @@ get '/users/:user_id/spaces',
   end
 end
 
-get '/users/:user_id/spaces/new', :auth => :user do
-  erb :'/spaces/new'
+get '/users/:user_id/spaces/new',
+  auth: [ :user ],
+  requires: [ :user ],
+  provides: [ :html ],
+  exclusive: true do
+
+  authorize! :create, Space, message: "You can not create new spaces."
+
+  @space = current_user.spaces.new
+
+  respond_with @space do |f|
+    f.html { erb :'/spaces/new' }
+  end
 end
 
 get "/users/:user_id/spaces/:space_id",
   auth: [ :member ],
   provides: [ :json, :html ],
-  requires: [ :space ] do
+  requires: [ :user, :space ] do
+
+  authorize! :access, @space, message: "You do not have access to that space."
 
   respond_with @space do |f|
     f.json { rabl :"/spaces/show", object: @space }
@@ -24,7 +40,7 @@ get "/users/:user_id/spaces/:space_id",
   end
 end
 
-get "/users/:user_id/spaces/:space_id/dashboard", auth: :member, requires: [ :space ] do
+get "/users/:user_id/spaces/:space_id/dashboard", auth: :member, requires: [ :user, :space ] do
   erb :"/spaces/dashboard"
 end
 
@@ -33,50 +49,12 @@ get "/users/:user_id/spaces/:space_id/edit",
   requires: [ :user, :space ],
   provides: [ :html  ] do
 
+  authorize! :update, @space, message: "You must be an admin of this space to manage it."
+
   respond_with @space do |f|
-    f.html { erb :"/spaces/settings/index", layout: request.xhr? ? false : @layout }
+    f.html { erb :"/spaces/settings/index" }
   end
 end
-
-# %w(
-#   general
-#   publishing
-#   memberships
-#   browsability
-# ).each { |domain|
-#   get "/users/:user_id/spaces/:space_id/edit/#{domain}",
-#     auth: [ :admin ],
-#     requires: [ :user, :space ],
-#     provides: [ :html  ] do
-
-#     @current_section = domain
-
-#     respond_with @space do |f|
-#       f.html {
-#         layout = request.xhr? ? false : @layout
-#         erb :"/spaces/settings/#{domain}", layout: layout
-#       }
-#     end
-#   end
-# }
-# %w(
-#   publishing/layout
-#   publishing/theme
-#   publishing/navigation_links
-#   publishing/custom_css
-# ).each { |domain|
-#   get "/users/:user_id/spaces/:space_id/edit/#{domain}",
-#     auth: [ :admin ],
-#     requires: [ :user, :space ],
-#     provides: [ :html  ] do
-
-#     @current_section = 'publishing'
-
-#     respond_with @space do |f|
-#       f.html { erb :"/spaces/settings/publishing" }
-#     end
-#   end
-# }
 
 delete '/users/:user_id/spaces/:space_id',
   auth: [ :creator ],
@@ -97,38 +75,46 @@ delete '/users/:user_id/spaces/:space_id',
 end
 
 # Returns whether space name is available or not
-post '/users/:user_id/spaces/name', :auth => :user, provides: [ :json ], requires: [ :user ] do
-  puts params[:name]
+post '/users/:user_id/spaces/name',
+  auth: [ :user ],
+  provides: [ :json ],
+  requires: [ :user ],
+  exclusive: true do
+
   respond_to do |f|
     f.json { { available: name_available?(params[:name]) }.to_json }
   end
 end
 
-post '/users/:user_id/spaces', :auth => :user do
+post '/users/:user_id/spaces',
+  auth: [ :user ],
+  requires: [ :user ],
+  provides: [ :html, :json ],
+  exclusive: true  do
 
   api_required!({ title: nil })
   api_optional!({ brief: nil, is_public: nil })
 
-  s = @user.owned_spaces.create(api_params)
+  @space = @user.owned_spaces.create(api_params)
 
-  unless s.saved?
+  unless @space.saved?
     halt 400, s.all_errors
   end
 
   respond_to do |f|
     f.html do
       flash[:notice] = "Space created successfully."
-      redirect s.url
+      redirect @space.url
     end
 
     f.json do
-      rabl :"spaces/show", object: s
+      rabl :"spaces/show", object: @space
     end
   end
 end
 
 put "/users/:user_id/spaces/:space_id",
-  auth:     :creator,
+  auth:     :admin,
   provides: [ :json, :html ],
   requires: [ :user, :space ] do
 
@@ -181,7 +167,7 @@ put "/users/:user_id/spaces/:space_id",
       end
 
       if !m[:role]
-        authorize! :kick, u, message: "You can not kick #{@space.role_of(u).to_s.to_plural} in this space."
+        authorize! :kick, [ @space, u ], message: "You can not kick #{@space.role_of(u).to_s.to_plural} in this space."
 
         @space.kick(u)
         next
@@ -189,12 +175,12 @@ put "/users/:user_id/spaces/:space_id",
 
       if @space.member?(u)
         if SpaceUser.weight_of(m[:role]) <= SpaceUser.weight_of(@space.role_of(u))
-          authorize! :demote, [ u, m[:role] ], message: 'You can not demote that member.'
+          authorize! :demote, [ @space, u, m[:role] ], message: 'You can not demote that member.'
         else
-          authorize! :promote, [ u, m[:role] ], message: 'You can not promote that member.'
+          authorize! :promote, [ @space, u, m[:role] ], message: 'You can not promote that member.'
         end
       else
-        authorize! :invite, [ u, m[:role] ], message: "You can not add #{m[:role].to_s.to_plural} to this space."
+        authorize! :invite, [ @space, u, m[:role] ], message: "You can not add #{m[:role].to_s.to_plural} to this space."
       end
 
       # puts "adding a #{m[:role]} to #{@space.id}: #{u.nickname}"

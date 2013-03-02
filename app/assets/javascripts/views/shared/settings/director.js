@@ -157,10 +157,16 @@ function(Backbone, $, Shortcut, UI, State) {
     serialize: function() {
       var data = {};
 
-      this.log("serializing...");
 
       if (this.current_view) {
+
+        if (!this.current_view.is_serializable())
+          return false;
+
+        this.log("serializing...");
+
         data = this.current_view.serialize();
+
         if (!data) {
           console.log("Aborting settings sync; view '" + this.current_view.label + "' failed to serialize.");
           data = null;
@@ -241,7 +247,6 @@ function(Backbone, $, Shortcut, UI, State) {
       }
 
       UI.status.mark_pending();
-      this.state.set('syncing', true);
       director.trigger('presync', director);
 
       try { // need to make sure not to invalidate our context by leaving 'syncing' on
@@ -249,6 +254,8 @@ function(Backbone, $, Shortcut, UI, State) {
         if (this.current_view.reset) {
           this.current_view.reset();
         }
+
+        this.state.set('syncing', true);
 
         this.model.save(d, {
           wait: true,

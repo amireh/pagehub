@@ -8,10 +8,15 @@ function(SettingView, $, UI, MembershipRecordTmpl) {
 
     events: {
       // 'keyup #user_search':       'queue_user_lookup',
+      'click #force_user_search': 'force_user_search',
       'click button':             'consume',
       // 'click #user_listing li':   'add_user',
       'click [data-action=kick]': 'kick_user',
       'change #membership_records input[type=radio][name^=users]': 'rankify'
+    },
+
+    templates: {
+      record: MembershipRecordTmpl
     },
 
     initialize: function(data) {
@@ -27,7 +32,14 @@ function(SettingView, $, UI, MembershipRecordTmpl) {
         membership_records: this.$el.find('#membership_records')
       }
 
+      this.unserializable = true;
+
       this.bootstrap();
+    },
+
+    force_user_search: function() {
+      this.elements.user_search.autocomplete("search");
+      return this;
     },
 
     bootstrap: function() {
@@ -76,8 +88,17 @@ function(SettingView, $, UI, MembershipRecordTmpl) {
       return this.membership_from_id(user_id);
     },
 
-    add_record: function(user) {
-      this.elements.membership_records.append(MembershipRecordTmpl(user));
+    add_record: function(membership, selector) {
+      var data = membership;
+          data.can_kick = parseInt(membership.id) != parseInt(this.space.get('creator.id'));
+      var tmpl = MembershipRecordTmpl(data);
+
+      if (selector) {
+        selector.replaceWith(tmpl);
+      } else {
+        this.elements.membership_records.append(tmpl);
+      }
+
       return this;
     },
 
@@ -97,7 +118,8 @@ function(SettingView, $, UI, MembershipRecordTmpl) {
           UI.status.show(membership.nickname + " is now a " + role.vowelize() + " of this space.", "good");
         },
         error: function() {
-          el.parents("tr:first").replaceWith(MembershipRecordTmpl(membership))
+          view.add_record(membership, el.parents("tr:first"));
+          // el.parents("tr:first").replaceWith(MembershipRecordTmpl(membership))
           // el.attr("checked", null);
           // el.parents("td:first").find("[value=" + membership.role + "]").attr("checked", true);
         }

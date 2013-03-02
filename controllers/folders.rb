@@ -3,6 +3,8 @@ get '/spaces/:space_id/folders/new',
   provides: [ :html ],
   requires: [ :space ] do
 
+  authorize! :author, @space, :message => "You need to be an editor of this space to manage folders."
+
   respond_to do |f|
     f.html {
       options = {}
@@ -29,6 +31,8 @@ get '/spaces/:space_id/folders/:folder_id/edit',
   provides: [ :html ],
   requires: [ :space, :folder ] do
 
+  authorize! :author, @space, :message => "You need to be an editor of this space to manage folders."
+
   respond_to do |f|
     f.html {
       options = {}
@@ -43,7 +47,7 @@ post '/spaces/:space_id/folders',
   requires: [ :space ],
   provides: [ :json ] do
 
-  authorize! :create, Folder, :message => "You need to be an editor in this space to create folders."
+  authorize! :author, @space, :message => "You need to be an editor of this space to create folders."
 
   api_required!({
     :title => nil
@@ -57,7 +61,7 @@ post '/spaces/:space_id/folders',
   api_consume! :parent_id
 
   @folder = @space.folders.new api_params({
-    creator:  @user,
+    creator:  current_user,
     folder:   @parent || @space.root_folder
   })
 
@@ -76,7 +80,7 @@ put '/spaces/:space_id/folders/:folder_id',
   provides: [ :json ],
   requires: [ :space, :folder ] do
 
-  authorize! :update, @folder, :message => "You need to be an editor in this space to edit folders."
+  authorize! :author, @space, :message => "You need to be an editor in this space to edit folders."
 
   api_optional!({
     :title => nil,
@@ -111,10 +115,6 @@ delete '/spaces/:space_id/folders/:folder_id',
   end
 
   respond_to do |f|
-    f.html {
-      flash[:notice] = "Folder has been removed."
-      redirect back
-    }
     f.json { halt 200, {}.to_json }
   end
 end

@@ -30,6 +30,10 @@ function(Backbone, $) {
       return false;
     },
 
+    is_serializable: function() {
+      return !this.unserializable;
+    },
+
     reset: function() {
       this.$el.find('.control-group').removeClass('error');
       this.$el.find('.help-inline').html('');

@@ -1,10 +1,9 @@
-
-get '/auth/failure' do
+get '/auth/failure', provides: [ :html ] do
   flash[:error] = params[:message]
   redirect '/'
 end
 
-get '/sessions/new' do
+get '/sessions/new', auth: [ :guest ], provides: [ :html ] do
   erb :"/sessions/new"
 end
 
@@ -14,31 +13,29 @@ post '/sessions', auth: :guest, :provides => [ :json, :html ] do
   if u = authenticate(params[:email], params[:password])
     authorize(u)
   end
-  
+
   respond_to do |f|
     f.html {
       unless u
         flash[:error] = "Incorrect email or password, please try again."
         return redirect back
       end
-      
+
       redirect '/'
     }
-    
+
     f.json { halt 401 if !u }
   end
 end
 
-delete '/sessions', auth: :user, provides: [ :json, :html ] do
+delete '/sessions', auth: [ :user ], provides: [ :json, :html ] do
 
-  demo = current_user.demo?
-  
-  if current_user.demo?
+  if demo = current_user.demo?
     current_user.destroy
   end
-  
+
   session[:id] = nil
-  
+
   respond_to do |f|
     f.html {
       if demo
@@ -46,11 +43,11 @@ delete '/sessions', auth: :user, provides: [ :json, :html ] do
       else
         flash[:notice] = "Successfully logged out."
       end
-      
+
       redirect '/'
     }
-    
-    f.json { halt 200 }
+
+    f.json { halt 200, {}.to_json }
   end
 end
 
@@ -86,7 +83,7 @@ end
       end
 
       if fix_nickname
-        uparams[:nickname] = "#{nickname}_#{nickname_salt}"
+        uparams[:nickname] = "#{nickname}_#{tiny_salt}"
         uparams[:auto_nickname] = true
       end
 

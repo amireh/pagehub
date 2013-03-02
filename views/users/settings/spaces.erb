@@ -23,7 +23,7 @@
           <td><span class="label span1 text-center <%= labels[s.role_of(@user)] %>"><%= s.role_of(@user).capitalize %></span></td>
           <td>
             <div class="btn-group">
-            <% if can? :update, s %>
+            <% if can? :update, @space %>
               <a href="<%= s.url %>/edit/general" class="btn btn-small">Manage</a>
             <% end %>
             <% unless s.is_creator?(@user) %>

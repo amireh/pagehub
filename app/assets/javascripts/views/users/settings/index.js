@@ -57,8 +57,10 @@ function(Director, $, UI, Shortcut, Router, ProfileView, AccountView, EditingVie
     },
 
     control_save_button: function() {
-      this.save_button.attr('disabled', this.state.get('syncing'));
-      this.save_button.html(saving_captions[this.state.get('syncing')]);
+      this.save_button
+      .html(saving_captions[this.state.get('syncing')])
+      .prop('disabled', this.state.get('syncing'));
+
       return this;
     }
 

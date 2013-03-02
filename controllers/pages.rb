@@ -1,11 +1,3 @@
-def pretty_view(pid)
-  unless @page = @scope.pages.first({ id: pid })
-    halt 500, "This link seems to point to a non-existent page."
-  end
-
-  erb :"pages/pretty", layout: :"layouts/print"
-end
-
 # Creates a publicly accessible version of the given page.
 # The public version will be accessible at:
 # => /user-nickname/pretty-article-title
@@ -59,7 +51,7 @@ get '/spaces/:space_id/pages/:page_id/edit',
   provides: [ :html ],
   requires: [ :space, :page ] do
 
-  authorize! :update, @page, :message => "You need to be an editor in this space to edit pages."
+  authorize! :author, @space, :message => "You need to be an editor of this space to edit pages."
 
   respond_to do |f|
     f.html {
@@ -75,7 +67,7 @@ post '/spaces/:space_id/pages',
   provides: [ :json ],
   requires: [ :space ] do
 
-  authorize! :create, Page, :message => "You need to be an editor in this space to create pages."
+  authorize! :author, @space, :message => "You need to be an editor of this space to create pages."
 
   puts params.inspect
 
@@ -91,8 +83,8 @@ post '/spaces/:space_id/pages',
   })
 
   @page = @space.pages.new api_params({
-    creator: @user,
-    folder: @folder
+    creator: current_user,
+    folder:  @folder
   })
 
   unless @page.save
@@ -109,7 +101,7 @@ put '/spaces/:space_id/pages/:page_id',
   provides: [ :json ],
   requires: [ :space, :page ] do
 
-  authorize! :update, @page, :message => "You need to be an editor in this space to edit pages."
+  authorize! :author, @space, :message => "You need to be an editor of this space to edit pages."
 
   puts params.inspect
 
@@ -157,10 +149,6 @@ delete '/spaces/:space_id/pages/:page_id',
   end
 
   respond_to do |f|
-    f.html {
-      flash[:notice] = "Page has been removed."
-      redirect back
-    }
     f.json { halt 200, {}.to_json }
   end
 end
@@ -170,6 +158,8 @@ get '/pages/:page_id/revisions',
   auth: [ :user ],
   provides: [ :html ],
   requires: [ :page ] do
+
+  authorize! :read, @page, message: "You need to be a member of this space to browse its page revisions."
 
   respond_with @page do |f|
     f.html do
@@ -182,6 +172,8 @@ get '/pages/:page_id/revisions/:revision_id',
   auth: [ :user ],
   provides: [ :html ],
   requires: [ :page, :revision ] do
+
+  authorize! :read, @page, message: "You need to be a member of this space to browse its page revisions."
 
   @rv = @revision
 
@@ -198,9 +190,9 @@ post '/pages/:page_id/revisions/:revision_id',
   provides: [ :html ],
   requires: [ :page, :revision ] do
 
-  @space = @page.space
+  authorize! :author, @page.space, message: "You can not perform this action."
 
-  authorize! :update, @page, message: "You can not perform this action."
+  @space = @page.space
 
   @rv = @revision
 

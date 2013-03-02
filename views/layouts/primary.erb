@@ -8,10 +8,10 @@
 
   <link href="/assets/app.css" rel="stylesheet" type="text/css" />
   <% unless settings.production? %>
-    <link href="/assets/skins/<%= @user.p('skin') %>.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/skins/<%= current_user.p('skin') %>.css" rel="stylesheet" type="text/css" />
     <!-- <link href="/js/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
   <% else %>
-    <link href="/assets/skins/<%= @user.p('skin') %>.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/skins/<%= current_user.p('skin') %>.min.css" rel="stylesheet" type="text/css" />
   <% end %>
 
   <%= yield_content :css %>
@@ -53,7 +53,7 @@
     <div class="stuff">
       <!-- <h1><a href="/">Page<em>Hub</em></a></h1> -->
       <h1>
-        <a href="<%= @user.url %>"><%= @user.nickname %></a>
+        <a href="<%= current_user.url %>"><%= current_user.nickname %></a>
         <% if @space %>
           / <a href="<%= @space.url %>"><strong><%= @space.title %></strong></a>
         <% end %>
@@ -65,15 +65,15 @@
 
       <nav>
         <span>
-          <a href="/settings" %><%= current_user.nickname %></a>
+          <a href="<%= current_user.url %>/edit" %><%= current_user.nickname %></a>
           <% if !settings.production? %>
-            <%= gravatar_tag @user, :icon %>
+            <%= gravatar_tag (current_user.gravatar_email || current_user.email), :icon %>
           <% end %>
         </span>
         <a class="icon dashboard <%= nav_highlight 'dashboard' %>" rel="tooltip" title="Your dashboard" href="/">Spaces</a>
         <% if false %>
           <ol class="listlike">
-            <li><a href="<%= Space.url(@user) %>"><i class="icon-plus"></i> Create a new space</a></li>
+            <li><a href="<%= Space.url(current_user) %>"><i class="icon-plus"></i> Create a new space</a></li>
             <% current_user.spaces.each do |s| %>
               <li>
                 <a href="<%= s.url %>"><%= s.title %></a>

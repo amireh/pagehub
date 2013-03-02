@@ -10,6 +10,8 @@
     <label><input type="radio" name="users[{{id}}][role]" value="admin"  {{#checkify role 'admin creator'}}{{/checkify}} /> A</label>
   </td>
   <td>
-    <button rel="tooltip" title="Remove this {{role}} from the space" class="btn btn-mini btn-danger" data-action="kick"><i class="icon-remove"></i> Uninvite</button>
+    {{#if can_kick}}
+      <button rel="tooltip" title="Remove this {{role}} from the space" class="btn btn-mini btn-danger" data-action="kick"><i class="icon-remove"></i> Uninvite</button>
+    {{/if}}
   </td>
 </tr>

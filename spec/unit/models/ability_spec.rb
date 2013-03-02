@@ -20,7 +20,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user, :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  Page),
+          (can? :author,  @space),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -33,7 +33,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user , :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  Page),
+          (can? :author,  @space),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -46,7 +46,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user , :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  Page),
+          (can? :author,  @space),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -58,7 +58,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:page_id', auth: :user, :requires => [ :space, :page ]) {
         [
           (can? :read,    @page),
-          (can? :create,  Page),
+          (can? :author,  @space),
           (can? :update,  @page),
           (can? :delete,  @page)
         ].to_json
@@ -89,7 +89,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  Folder),
+          (can? :author,  @space),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -102,7 +102,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  Folder),
+          (can? :author,  @space),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -115,7 +115,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  Folder),
+          (can? :author,  @space),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -128,7 +128,7 @@ describe "Access control" do
       app.get('/spec/:space_id/:folder_id', auth: :user, :requires => [ :space, :folder ]) {
         [
           (can? :read,    @folder),
-          (can? :create,  Folder),
+          (can? :author,  @space),
           (can? :update,  @folder),
           (can? :delete,  @folder)
         ].to_json
@@ -202,16 +202,16 @@ describe "Access control" do
           (can? :create,  Space),
           (can? :update,  @space),
           (can? :update_meta,  @space),
-          (can? :invite, [ guest, :member ]),
-          (can? :invite, [ guest, :editor ]),
-          (can? :invite, [ guest, :admin  ]),
-          (can? :kick, member),
-          (can? :kick, editor),
-          (can? :kick, admin),
-          (can? :promote, [ member, :editor ]),
-          (can? :promote, [ editor, :admin ]),
-          (can? :demote, [ editor, :member ]),
-          (can? :demote, [ admin, :member ]),
+          (can? :invite,  [ @space, guest, :member ]),
+          (can? :invite,  [ @space, guest, :editor ]),
+          (can? :invite,  [ @space, guest, :admin  ]),
+          (can? :kick,    [ @space, member ]),
+          (can? :kick,    [ @space, editor ]),
+          (can? :kick,    [ @space, admin  ]),
+          (can? :promote, [ @space, member, :editor ]),
+          (can? :promote, [ @space, editor, :admin ]),
+          (can? :demote,  [ @space, editor, :member ]),
+          (can? :demote,  [ @space, admin, :member ]),
           (can? :delete,  @space)
         ].to_json
       }
@@ -262,17 +262,17 @@ describe "Access control" do
           (can? :read,    @space),
           (can? :create,  Space),
           (can? :update,  @space),
-          (can? :update_meta,  @space),
-          (can? :invite, [ guest, :member ]),
-          (can? :invite, [ guest, :editor ]),
-          (can? :invite, [ guest, :admin  ]),
-          (can? :kick, member),
-          (can? :kick, editor),
-          (can? :kick, admin),
-          (can? :promote, [ member, :editor ]),
-          (can? :promote, [ editor, :admin ]),
-          (can? :demote, [ editor, :member ]),
-          (can? :demote, [ admin, :member ]),
+          (can? :update_meta, @space),
+          (can? :invite,  [ @space, guest, :member ]),
+          (can? :invite,  [ @space, guest, :editor ]),
+          (can? :invite,  [ @space, guest, :admin  ]),
+          (can? :kick,    [ @space, member ]),
+          (can? :kick,    [ @space, editor ]),
+          (can? :kick,    [ @space, admin  ]),
+          (can? :promote, [ @space, member, :editor ]),
+          (can? :promote, [ @space, editor, :admin ]),
+          (can? :demote,  [ @space, editor, :member ]),
+          (can? :demote,  [ @space, admin, :member ]),
           (can? :delete,  @space)
         ].to_json
       }
@@ -285,19 +285,19 @@ describe "Access control" do
         }
       }.body.should ==
         [
-          true,   # read
-          true,   # create
-          true,   # update
+          true,  # read
+          true,  # create
+          true,  # update
           true,  # update_meta
-          true,   # invite member
-          true,   # invite editor
+          true,  # invite member
+          true,  # invite editor
           true,  # invite admin
-          true,   # kick member
-          true,   # kick editor
+          true,  # kick member
+          true,  # kick editor
           true,  # kick admin
-          true,   # promote member to editor
+          true,  # promote member to editor
           true,  # promote editor to admin
-          true,   # demote editor to member
+          true,  # demote editor to member
           true,  # demote admin
           true,  # delete
         ]

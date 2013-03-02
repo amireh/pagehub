@@ -5,7 +5,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     el: $("#page_actions"),
 
     events: {
-      'click a.save_page': 'save_page',
+      'click a#save_page': 'save_page',
       'click a#destroy_page': 'destroy_page',
       'click a#edit_page': 'edit_page'
     },

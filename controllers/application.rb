@@ -6,12 +6,12 @@ def reserved?(name)
 end
 
 def name_available?(name)
-  nn = name.to_s.sanitize
-  !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ pretty_title: nn }).nil?
+  nn = (name || '').to_s.sanitize
+  !reserved?(nn) && !nn.empty? && current_user.owned_spaces.first({ pretty_title: nn }).nil?
 end
 
 def nickname_available?(name)
-  nn = name.to_s.sanitize
+  nn = (name || '').to_s.sanitize
   !reserved?(nn) && !nn.empty? && User.first({ nickname: nn }).nil?
 end
 
@@ -51,25 +51,10 @@ get "/users/:user_id/spaces/:space_id/testdrive",
   erb :"static/tutorial.md", layout: :"layouts/print"
 end
 
-# Legacy support
-get '/account' do
-  @legacy = true
-  erb :"/shared/_nav_account_links"
+[ 'features', 'about', 'open-source' ].each do |static_view|
+  get "/#{static_view}" do
+    erb :"static/#{static_view}.md"
+  end
 end
 
-get '/help' do
-  @legacy = true
-  erb :"/shared/_nav_help_links"
-end
-
-get '/features' do erb :"static/features.md" end
-get '/about' do erb :"static/about.md" end
-get '/open-source' do erb :"static/open_source.md" end
-
-user do
-  current_user
-end
-
-cancan_space do
-  @space
-end
+user do current_user end

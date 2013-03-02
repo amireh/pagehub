@@ -5,5 +5,8 @@
   <ul>
     <li><strong>Status code:</strong> {{status}}</li>
     <li><strong>Message:</strong> {{statusText}}</li>
+    {{#if exception}}
+    <li><strong>Exception:</strong> {{exception}}</li>
+    {{/if}}
   </ul>
 </div>

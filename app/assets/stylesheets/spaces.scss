@@ -77,59 +77,65 @@
         }
       }
     }
+
+    > span.folder_title {
+      display: block;
+    }
+
+    button[data-collapse] {
+      position: absolute;
+      top: -3px;
+      left: -22px;
+      padding: 0 5px;
+      line-height: 18px;
+      background: none;
+      border: none;
+      color: #bbb;
+      display: block;
+      cursor: pointer;
+    }
+    button[data-collapse]:before {
+    /*  border-style: solid;
+      border-width: 8px 4px 0 4px;
+      border-color: #ddd transparent transparent transparent;*/
+      content: '\002D';
+    }
+
+    button[data-collapsed]:before {
+    /*
+      border-width: 4px 0 4px 8px;
+      border-color: transparent transparent transparent #ddd;
+    */
+      content: '\002B';
+    }
+
+    button.edit_folder,
+    button.delete_folder {
+      right: 21px;
+      padding: 0;
+      border: none;
+      height: 12px;
+      width:  12px;
+      position: absolute;
+      top: 3px;
+      opacity: 0.1;
+      cursor: pointer;
+    }
+
+    button.edit_folder {
+      background: #fff url(/assets/icons/12x12/edit.png) no-repeat center center;
+    }
+    button.delete_folder {
+      right: 5px;
+      background: #fff url(/assets/icons/12x12/delete.png) no-repeat center center;
+    }
+
+    button.edit_folder:hover,
+    button.delete_folder:hover {
+      opacity: 1;
+    }
   } /* li.folder */
 
-
-  button[data-collapse] {
-    position: absolute;
-    top: -3px;
-    left: -22px;
-    padding: 0 5px;
-    line-height: 18px;
-    background: none;
-    border: none;
-    color: #bbb;
-    display: block;
-    cursor: pointer;
-  }
-  button[data-collapse]:before {
-  /*  border-style: solid;
-    border-width: 8px 4px 0 4px;
-    border-color: #ddd transparent transparent transparent;*/
-    content: '\002D';
-  }
-
-  button[data-collapsed]:before {
-  /*
-    border-width: 4px 0 4px 8px;
-    border-color: transparent transparent transparent #ddd;
-  */
-    content: '\002B';
-  }
-  button.edit_folder,
-  button.delete_folder {
-    right: 21px;
-    padding: 0;
-    border: none;
-    height: 12px;
-    width:  12px;
-    position: absolute;
-    top: 3px;
-    opacity: 0.1;
-    box-shadow: none;
-  }
-  button.edit_folder {
-    background: #fff url(/assets/icons/12x12/edit.png) no-repeat center center;
-  }
-  button.delete_folder {
-    right: 5px;
-    background: #fff url(/assets/icons/12x12/delete.png) no-repeat center center;
-  }
-
-  button.edit_folder:hover,
-  button.delete_folder:hover {
-    opacity: 1;
-  }
 
 } /* browser */
 

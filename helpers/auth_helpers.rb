@@ -1,11 +1,11 @@
-module Sinatra  
+module Sinatra
   module Authenticator
     module Helpers
       Messages = {
         lacks_privilege: "You lack privilege to visit this section.",
         unauthorized:    "You must sign in first."
       }
-      
+
       def logged_in?
         # support HTTP basic auth
         @auth ||= Rack::Auth::Basic::Request.new(request.env)
@@ -19,10 +19,10 @@ module Sinatra
       end
 
       def current_user
-        return @user if @user
-
+        return @current_user if @current_user
         return nil unless session[:id]
-        @user = User.get(session[:id])
+
+        @current_user = User.get(session[:id])
       end
 
       def authenticate(email, pw, encrypt = true)
@@ -32,7 +32,7 @@ module Sinatra
           password: encrypt ? User.encrypt(pw) : pw
         })
       end
-      
+
       def restricted!
         halt 401, Messages[:unauthorized] unless logged_in?
       end
@@ -49,7 +49,8 @@ module Sinatra
         end
 
         restricted!
-        @user = current_user
+
+        current_user
 
         if options[:with].is_a?(Hash)
           options[:with].each_pair { |k, v|
@@ -62,31 +63,31 @@ module Sinatra
             halt 403, Messages[:lacks_privilege]
           end
         end
-         
+
         # @access_roles = roles - [:user] # used by locate_space
       end
 
       private
-      
+
       def required?(r)
         (@required || []).include?(r.to_s)
       end
-      
+
       # def locate_folder
       #   if !@space
       #     halt 404, "No space was specified."
       #   end
-        
+
       #   @space.folders.get(params[:folder_id].to_i)
       # end
-      
+
       # def locate_page
       #   if !@space
       #     halt 404, "No space was specified."
       #   end
-        
+
       #   @space.pages.get(params[:page_id].to_i)
-      # end      
+      # end
 
       # def locate_space
       #   s = case
@@ -97,7 +98,7 @@ module Sinatra
       #   else
       #     nil
       #   end
-        
+
       #   if s
       #     # Verify the role of the user in this space, if any specified
       #     (@access_roles || []).each do |role|
@@ -106,7 +107,7 @@ module Sinatra
       #       end
       #     end
       #   end
-        
+
       #   s
       # end
 
@@ -126,15 +127,30 @@ module Sinatra
           session[:id] = user.id
         # end
       end
-      
-      
+
+
     end
-    
+
     def self.registered(app)
       app.set(:auth) do |*roles| condition do restrict_to(roles) end end
+      app.set(:exclusive) do |*_|
+        condition do
+          restricted!
+
+          if !@user
+            raise ":exclusive condition invoked, but no @user is assigned, are you sure you called :requires => [ :user ]?"
+          end
+
+          puts "enforcing exclusivity to #{current_user.id}, invoking user: #{@user.id}"
+
+          unless current_user.id == @user.id
+            halt 403, "You can not access that section."
+          end
+        end
+      end
       app.helpers Helpers
     end
   end
-  
+
   register Authenticator
 end

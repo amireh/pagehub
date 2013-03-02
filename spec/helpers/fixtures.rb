@@ -1,11 +1,11 @@
 module Fixtures
-  
+
   class << self
     def [](type)
       @@fixtures ||= {}
       @@fixtures[type.to_sym].new
     end
-    
+
     def register
       @@fixtures ||= {}
       # @@fixtures[type.to_sym] = klass
@@ -13,15 +13,15 @@ module Fixtures
         @@fixtures[kname.to_s.gsub(/Fixture/, '').downcase.to_sym] = eval "Fixtures::#{kname.to_s}"
       end
     end
-    
+
     def available_fixtures
       @@fixtures ||= {}
       @@fixtures.collect { |type,_| type }
     end
-    
+
     def teardown
       User.destroy.should == true
-      [ 
+      [
         User,
         Page,
         PublicPage,
@@ -37,72 +37,79 @@ module Fixtures
         end
       end
     end
-    
+
     def salt
       # PageHub::Helpers.tiny_salt(10)
       PageHub::Helpers.salt
     end
+
+    def gen_id
+      @@id ||= 0
+      @@id += 1
+    end
   end
-  
+
   class Fixture
     attr_reader :params
-    
+
     def cleanup
       raise "Must be implemented by child."
     end
-    
+
     def build(params = {})
       raise "Must be implemented by child."
     end
-    
+
     def salt
       Fixtures.salt
     end
-    
+
     def accept(params, p = @params)
       params.each_pair { |k,v|
         next unless p.has_key?(k)
-        
+
         if v.is_a?(Hash)
           accept(v, p)
           next
         end
-        
+
         p[k] = v
       }
       p
     end
   end
-  
+
   class UserFixture < Fixture
     def self.password
       'verysalty123'
     end
-    
+
     def build(params, cleanup = false)
       Fixtures.teardown if cleanup
-      
+
+      pw = self.class.password
+
       @params = accept(params, {
         name:     'Mysterious Mocker',
-        email:    'very@mysterious.com',
+        email:    'spec@pagehub.org',
         provider: 'pagehub',
-        nickname: "boogey-#{salt}",
-        password:               User.encrypt(self.class.password),
-        password_confirmation:  User.encrypt(self.class.password)
+        nickname: "boogey-#{Fixtures.gen_id}".sanitize,
+        password:               pw,
+        password_confirmation:  pw
       })
-      
+
       u,s,f = nil,nil,nil
-      
+
       if u = User.create(@params)
         if s = u.default_space
           f = s.root_folder
         end
       end
-      
+
       [ u, s, f ]
     end
   end
-  
+
   class PageFixture < Fixture
     def build(p)
       Page.create(accept(p, {
@@ -110,11 +117,11 @@ module Fixtures
         content: "Teehee.",
         creator: nil,
         browsable: true,
-        folder:  nil        
+        folder:  nil
       }))
     end
   end
-  
+
   class FolderFixture < Fixture
     def build(p)
       Folder.create(accept(p, {
@@ -126,7 +133,7 @@ module Fixtures
       }))
     end
   end
-  
+
   class SpaceFixture < Fixture
     def build(p)
       Space.create(accept(p, {
@@ -149,18 +156,21 @@ def fixture(resource, o = {})
     # Fixtures[:user].build(o, true)
     # @u, @s, @f = *create_user(o, cleanup)
     @u, @s, @f = *Fixtures[:user].build(o, true)
+    valid! @u
+    valid! @s
+    valid! @f
     @user, @space, @root = @u, @s, @f
     @u
   when :another_user
     # @u2, @s2, @f2 = create_user({ email: "more@mysterious" }, false)
     @u2, @s2, @f2 = *Fixtures[:user].build({
-      email: "more@mysterious.com"
+      email: "spec_shadow@pagehub.org"
     }.merge(o))
     @user2, @space2, @root2 = @u2, @s2, @f2
     @u2
   when :some_user
     Fixtures[:user].build({
-      email: "really_#{Fixtures.salt}@mysterious.com"
+      email: "spec#{Fixtures.gen_id}@pagehub.org"
     }.merge(o)).first
   when :folder
     Fixtures[:folder].build({
@@ -181,12 +191,12 @@ def fixture(resource, o = {})
     s = Fixtures[:space].build({
       creator: @u
     }.merge(o))
-    
+
     (SpaceUser::Flags - [:creator]).each do |role|
-      u, _, _ = *Fixtures[:user].build({ email: "#{PageHub::Helpers.tiny_salt}@foobar.com" })
+      u, _, _ = *Fixtures[:user].build({ email: "some_guy#{Fixtures.gen_id}@pagehub.org" })
       s.send("add_#{role}", u)
     end
-    
+
     s
   end
 end

@@ -69,7 +69,11 @@ class User
   after :create,  :create_default_space
   # after :save,    :create_default_space
 
-  [ :create, :save ].each { |advice|
+  before :create do
+    self.nickname = self.name.to_s.sanitize if (self.nickname || '').empty?
+  end
+
+  [ :save ].each { |advice|
     before advice do |_|
       if attribute_dirty?(:nickname)
         if nickname.sanitize != nickname
@@ -77,8 +81,6 @@ class User
           throw :halt
         end
       end
-
-      self.nickname = self.name.to_s.sanitize if (self.nickname || '').empty?
 
       if attribute_dirty?(:email)
         validate_email!(self.email, "primary", :email)
@@ -92,6 +94,7 @@ class User
         end
 
         attribute_set(:password, User.encrypt(password))
+        attribute_set(:password_confirmation, User.encrypt(password_confirmation))
       end
 
       if attribute_dirty?(:gravatar_email)

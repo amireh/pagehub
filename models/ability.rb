@@ -1,4 +1,4 @@
-ability do |user, space|
+ability do |user|
   user ||= User.new
 
   can :browse, [ Space, Page, Folder ] do |r|
@@ -7,67 +7,71 @@ ability do |user, space|
 
   return false unless user.saved?
 
-  can :read, [ Space, Page, Folder ] do |r|
-    # puts "checking if #{user.email} with role #{p.space.role_of(user)} can [read]"
-    r.browsable_by?(user)
-  end
-
   can :manage, User do |u|
     u.id == user.id
   end
 
+  can :read, [ Space, Page, Folder ] do |r|
+    r.browsable_by?(user)
+  end
+
+  can :access, Space do |s|
+    s.member?(user)
+  end
+
+  # space resources
+  can :author, Space do |s| s.editor?(user) end
+  can :update, [ Page, Folder ] do |r| r.space.editor?(user) end
+  can :delete, [ Page, Folder ] do |r|
+    r.creator.id == user.id || r.space.admin?(user)
+  end
   # spaces
   can :create, Space
+  can :update, Space do |s|
+    s.admin?(user)
+  end
+  can :update_meta, Space do |s| s.creator?(user) end
+  can :delete,      Space do |s| s.creator?(user) end
 
-  if space
-    if space.editor?(user)
-      can :create, [ Page, Folder ]
-      can :update, [ Page, Folder ]
-      can :delete, [ Page, Folder ] do |r|
-        # puts "checking if #{user.email} with role #{r.space.role_of(user)} #{r.creator.id == user.id} can [delete]"
-        r.creator.id == user.id || r.space.admin?(user)
-      end
-
-    end
-
-    if space.admin?(user)
-      # puts "checking admin permissions"
-      can :update, space
-
-      can :invite, Array do |a|
-        target, role = *a
-        # puts "checking if #{space.role_of(user)}##{user.id} can invite #{target.id} as #{role}"
-        space.role_of(target) == nil && role.to_sym != :admin
-      end
-
-      can :kick, User do |target|
-        # puts "checking if #{space.role_of(user)}##{user.id} can kick #{space.role_of(target)}##{target.id}"
-        !space.admin?(target)
-      end
-
-      can :promote, Array do |a|
-        target, role = *a
-
-        # puts "checking if #{space.role_of(user)}##{user.id} can promote #{space.role_of(target)}##{target.id} into #{role}"
-        space.member?(target) && [:member, :editor].include?(role.to_sym)
-      end
-
-      can :demote, Array do |a|
-        target, role = *a
-
-        # puts "checking if #{space.role_of(user)}##{user.id} can demote #{space.role_of(target)}##{target.id} into #{role}"
-        !space.admin?(target) && [:member, :editor].include?(role.to_sym)
-      end
-
-    end
+  can :invite, Array do |a|
+    space, target, role = *a
 
     if space.creator?(user)
-      can :update_meta, space
-      can :delete,      space
-      can :invite,      Array
-      can :kick,        User
-      can :promote,     Array
-      can :demote,      Array
+      true
+    else
+      space.admin?(user) && space.role_of(target) == nil && role.to_sym != :admin
+    end
+  end
+
+  can :kick, Array do |a|
+    space, victim = *a
+
+    if space.creator?(user)
+      true
+    elsif victim.id == user.id
+      true
+    else
+      space.admin?(user) && !space.admin?(victim)
+    end
+  end
+
+  can :promote, Array do |a|
+    space, victim, role = *a
+
+    if space.creator?(user)
+      true
+    else
+      space.admin?(user) && space.member?(victim) && [:member, :editor].include?(role.to_sym)
+    end
+  end
+
+  can :demote, Array do |a|
+    space, victim, role = *a
+
+    if space.creator?(user)
+      true
+    else
+      space.admin?(user) && !space.admin?(victim) && [:member, :editor].include?(role.to_sym)
     end
   end
 end

@@ -1,19 +1,8 @@
-require 'json'
-require 'uuid'
-
-private
-
-def nickname_salt
-  Base64.urlsafe_encode64(Random.rand(12345 * 1000).to_s)
-end
-
-public
-
-before do
-  if logged_in? && current_user.auto_nickname && flash.empty?
-    flash[:notice] = "You have an auto-generated nickname, please go to your profile page and update it."
-  end
-end
+# before do
+#   if logged_in? && current_user.auto_nickname && flash.empty?
+#     flash[:notice] = "You have an auto-generated nickname, please go to your profile page and update it."
+#   end
+# end
 
 get '/users/new', auth: :guest do
   erb :"/users/new"
@@ -36,7 +25,7 @@ get '/users/lookup/by_nickname',
   }
 end
 
-post '/users/:user_id/name', :auth => :user, provides: [ :json ], requires: [ :user ] do
+post '/users/name', :auth => :user, provides: [ :json ] do
   respond_to do |f|
     f.json { { available: nickname_available?(params[:name]) }.to_json }
   end
@@ -45,7 +34,8 @@ end
 get '/users/:user_id',
   auth: [ :user ],
   provides: [ :html, :json ],
-  requires: [ :user ] do
+  requires: [ :user ],
+  exclusive: true do
 
   respond_with @user do |f|
     f.html { erb :"users/dashboard" }
@@ -53,20 +43,14 @@ get '/users/:user_id',
   end
 end
 
-
-get '/demo' do
-  if logged_in?
-    flash[:error] = "You are already logged in."
-    return redirect '/'
-  end
-
+get '/demo', auth: :guest, provides: [ :html ] do
   @user = User.create({
-    nickname: 'demo',
-    name: "PageHub Demo",
+    nickname: "demo-#{salt}".sanitize,
+    name:     "PageHub Demo",
     provider: "pagehub",
-    uid: "1234",
-    email: "demo@pagehub.org",
-    password: ""
+    email:    "demo@pagehub.org",
+    password: "funkydemo123",
+    password_confirmation: "funkydemo123"
   })
 
   unless @user
@@ -74,12 +58,12 @@ get '/demo' do
     return redirect '/'
   end
 
-  session[:id] = @user.id
+  authorize(@user)
 
   redirect '/'
 end
 
-post '/users' do
+post '/users', auth: :guest, provides: [ :html ] do
   p = params
 
   # Validate input
@@ -103,7 +87,7 @@ post '/users' do
   nickname = params[:name].to_s.sanitize
   auto_nn = false
   if u = User.first({ nickname: nickname }) then
-    nickname = "#{nickname}_#{nickname_salt}"
+    nickname = "#{nickname}_#{tiny_salt}"
     auto_nn = true
   end
 
@@ -126,7 +110,8 @@ end
 put '/users/:user_id',
   auth: [ :user ],
   provides: [ :json ],
-  requires: [ :user ] do
+  requires: [ :user ],
+  exclusive: true do
 
   authorize! :manage, @user, message: "You can not do that."
 
@@ -138,8 +123,8 @@ put '/users/:user_id',
     preferences: nil,
 
     current_password: lambda { |pw|
-      puts "checking password: #{pw}"
       pw ||= ''
+
       if !pw.empty? && User.encrypt(pw) != current_user.password
         return "The current password you entered is wrong."
       end
@@ -171,260 +156,68 @@ end
 get "/users/:user_id/edit",
   auth: [ :user ],
   requires: [ :user],
-  provides: [ :html  ] do
+  provides: [ :html  ],
+  exclusive: true do
 
   authorize! :manage, @user, message: "You can not do that."
+
+  @user.spaces.each do |s|
+    puts "Can I update space #{s.title}? #{can? :update, s}"
+  end
 
   respond_with @space do |f|
     f.html { erb :"/users/settings/index" }
   end
 end
 
-%w(
-   account
-   editing
-   profile
-   notifications
-   spaces).each { |domain|
-  get "/settings/#{domain}", auth: :user do
-    erb :"/users/settings/#{domain}"
-  end
-}
+# get '/settings/verify/:type', auth: :user do |type|
+#   dispatch = lambda { |addr, tmpl|
+#     Pony.mail :to => addr,
+#               :from => "noreply@pagehub.org",
+#               :subject => "[PageHub] Please verify your email '#{addr}'",
+#               :html_body => erb(tmpl.to_sym, layout: "layouts/mail".to_sym)
+#   }
 
-get "/profiles/:nickname" do |nn|
-  unless @user = User.first({ nickname: nn })
-    halt 404, "Unable to find the user '#{nn}', are you sure of the link?"
-  end
+#   redispatch = params[:redispatch]
 
-  erb :"/users/profile"
-end
+#   @type = type.to_sym
 
-get "/settings/public_pages", auth: :user do
-  nr_invalidated_links = 0
+#   case type
+#   when "primary"
+#     @address = current_user.email
+#     if !redispatch && current_user.verified?(@address)
+#       return erb :"/emails/already_verified"
+#     elsif !redispatch && current_user.awaiting_verification?(@address)
+#       return erb :"/emails/already_dispatched"
+#     else
+#       if redispatch
+#         current_user.email_verifications.first({ address: @address }).destroy
+#       end
 
-  @pages = []
-  @scope.public_pages.all.each { |pp|
-    p = @scope.pages.first({ id: pp.page_id })
+#       unless @ev = current_user.verify_address(@address)
+#         halt 500, "Unable to generate a verification link: #{current_user.collect_errors}"
+#       end
 
-    if p then
-      @pages << p
-    else
-      nr_invalidated_links += 1
-      pp.destroy
-    end
-  }
+#       dispatch.call(current_user.email, "emails/verification")
+#     end
+#   end
 
-  if nr_invalidated_links > 0
-    flash[:notice] = "#{nr_invalidated_links} public links have been invalidated " +
-                     "because the pages they point to have deleted."
-  end
+#   erb :"/emails/dispatched"
+# end
 
-  erb :"/users/settings/public_pages"
-end
+# get '/users/:user_id/verify/:token', auth: :user, requires: [ :user ], exclusive: true do |uid, token|
+#   unless @ev = @scope.email_verifications.first({ salt: token })
+#     halt 400, "No such verification link."
+#   end
 
-get '/settings/skin/:skin', auth: :user do |skin|
-  if ["dark", "light"].include? skin
-    curr_prefs = preferences
-    curr_prefs["pagehub"] ||= {}
-    curr_prefs["pagehub"]["skin"] = skin
-
-    current_user.settings = curr_prefs.to_json
-    if current_user.save
-      flash[:notice] = "Switched to #{skin} skin."
-    else
-      flash[:error] = "Something wrong happened while updating your preferences."
-    end
-  else
-    flash[:error] = "That skin is unavailable, try with 'light' or 'dark'"
-  end
-
-  redirect "/"
-end
-
-put '/profile/preferences/runtime', auth: :user do
-  prefs = preferences
-  prefs["runtime"] = params[:settings]
-
-  unless current_user.update({ settings: prefs.to_json.to_s })
-    halt 500, current_user.collect_errors
-  end
-
-  true
-end
-
-post '/settings/password', auth: :user do
-  pw = Digest::SHA1.hexdigest(params[:password][:current])
-
-  if current_user.password == pw then
-    pw_new = Digest::SHA1.hexdigest(params[:password][:new])
-    pw_confirm = Digest::SHA1.hexdigest(params[:password][:confirmation])
-
-    if params[:password][:new].empty? then
-      flash[:error] = "You've entered an empty password!"
-    elsif pw_new == pw_confirm then
-      current_user.password = pw_new
-      if current_user.save then
-        flash[:notice] = "Your password has been changed."
-      else
-        flash[:error] = "Something bad happened while updating your password!"
-      end
-    else
-      flash[:error] = "The passwords you've entered do not match!"
-    end
-  else
-    flash[:error] = "The current password you've entered isn't correct!"
-  end
-
-  redirect back
-end
-
-post '/settings/nickname', auth: :user do
-  # see if the nickname is available
-  nickname = params[:nickname]
-  if nickname.empty? then
-    flash[:error] = "A nickname can't be empty!"
-    return redirect back
-  end
-
-  u = User.first(nickname: nickname)
-  # is it taken?
-  if u && u.email != current_user.email then
-    flash[:error] = "That nickname isn't available. Please choose another one."
-    return redirect back
-  end
-
-  current_user.nickname = nickname
-  current_user.auto_nickname = false
-
-  if current_user.save then
-    flash[:notice] = "Your nickname has been changed."
-  else
-    flash[:error] = "Something bad happened while updating your nickname."
-  end
-
-  redirect back
-end
-
-post "/settings/editing", auth: :user do
-  # some preferences ought to be sanitized:
-  # [editing][font_size] can't be 0 or over 30
-  editing_fontsz = params[:settings][:editing][:font_size].to_i
-  if editing_fontsz <= 0 then
-    params[:settings][:editing][:font_size] = 8
-  elsif editing_fontsz > 30 then
-    params[:settings][:editing][:font_size] = 30
-  end
-
-  if params[:settings][:editing][:autosave] then
-    params[:settings][:editing][:autosave] = true
-  else
-    params[:settings][:editing][:autosave] = false
-  end
-
-  prefs = preferences
-  prefs["editing"] = params[:settings][:editing]
-  current_user.settings = prefs.to_json.to_s
-
-  if current_user.save then
-    flash[:notice] = "Your editing preferences were updated."
-  else
-    flash[:error] = "Something bad happened while updating your editing preferences: #{current_user.collect_errors}."
-  end
-
-  redirect back
-end
-
-post "/settings/publishing", auth: :user do
-  prefs = preferences
-  prefs["publishing"] = params[:settings][:publishing]
-  current_user.settings = prefs.to_json.to_s
-
-  if current_user.save then
-    flash[:notice] = "Your publishing preferences were updated."
-  else
-    flash[:error] = "Something bad happened while updating your publishing " +
-                    "preferences: #{current_user.collect_errors}."
-  end
-
-  redirect back
-end
-
-post "/settings/profile", auth: :user do
-
-  { :name => "Your name can not be empty",
-    :email => "You must specify a primary email address.",
-    :gravatar_email => "Your gravatar email address can not be empty."
-  }.each_pair { |k, err|
-    if !params[k] || params[k].empty?
-      flash[:error] = err
-      return redirect back
-    else
-      current_user.send("#{k}=".to_sym, params[k])
-    end
-  }
-
-  if current_user.save then
-    flash[:notice] = "Your profile has been updated."
-  else
-    flash[:error] = current_user.collect_errors
-  end
-
-  redirect back
-end
-
-get '/settings/verify/:type', auth: :user do |type|
-  dispatch = lambda { |addr, tmpl|
-    Pony.mail :to => addr,
-              :from => "noreply@pagehub.org",
-              :subject => "[PageHub] Please verify your email '#{addr}'",
-              :html_body => erb(tmpl.to_sym, layout: "layouts/mail".to_sym)
-  }
-
-  redispatch = params[:redispatch]
-
-  @type = type.to_sym
-
-  case type
-  when "primary"
-    @address = current_user.email
-    if !redispatch && current_user.verified?(@address)
-      return erb :"/emails/already_verified"
-    elsif !redispatch && current_user.awaiting_verification?(@address)
-      return erb :"/emails/already_dispatched"
-    else
-      if redispatch
-        current_user.email_verifications.first({ address: @address }).destroy
-      end
-
-      unless @ev = current_user.verify_address(@address)
-        halt 500, "Unable to generate a verification link: #{current_user.collect_errors}"
-      end
-
-      dispatch.call(current_user.email, "emails/verification")
-    end
-  end
-
-  erb :"/emails/dispatched"
-end
-
-# Returns whether params[:nickname] is available or not
-post '/users/nickname', auth: :user do
-  name_available?(params[:nickname]).to_json
-end
-
-get '/users/:id/verify/:token', auth: :user do |uid, token|
-  unless @ev = @scope.email_verifications.first({ salt: token })
-    halt 400, "No such verification link."
-  end
-
-  if @ev.expired?
-    return erb :"emails/expired"
-  elsif @ev.verified?
-    flash[:error] = "Your email address '#{@ev.address}' is already verified."
-    return redirect "/settings/profile"
-  else
-    @ev.verify!
-    flash[:notice] = "Your email address '#{@ev.address}' has been verified."
-    return redirect "/settings/profile"
-  end
-end
+#   if @ev.expired?
+#     return erb :"emails/expired"
+#   elsif @ev.verified?
+#     flash[:error] = "Your email address '#{@ev.address}' is already verified."
+#     return redirect "/settings/profile"
+#   else
+#     @ev.verify!
+#     flash[:notice] = "Your email address '#{@ev.address}' has been verified."
+#     return redirect "/settings/profile"
+#   end
+# end

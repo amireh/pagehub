@@ -2,7 +2,7 @@
   <!-- <p>Only the space creator can manage this section.</p> -->
 <%# else %>
 <form id="space_general_settings">
-  <% if can? :update, @space %>
+  <% if can? :update_meta, @space %>
     <fieldset>
       <legend>Name</legend>
       <label>The space name must be unique (and cool, too.)

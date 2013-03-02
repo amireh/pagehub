@@ -34,7 +34,7 @@ function(SettingView, $, UI, LeaveSpaceWarningDlgTmpl) {
           space_id = el.parents('[data-space]:first').attr('data-space');
 
       $(this.templates.leave_space_warning()).dialog({
-        dialogClass: "alert",
+        dialogClass: "alert-dialog",
         buttons: {
           Cancel: function() {
             $(this).dialog("close");

@@ -1,5 +1,5 @@
 // status = ui.status;
-define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function($, undefined, ConnectivityIssueDlg) {
+define([ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(_, $, undefined, ConnectivityIssueDlg) {
   var __init = false,
       timers = {
         flash: null,
@@ -64,7 +64,7 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
 
   $(document).ajaxStart(function(xhr)     { ui.status.mark_pending(); });
   $(document).ajaxComplete(function(xhr)  { ui.status.mark_ready();   });
-  $(document).ajaxError(function(_, e) {
+  $(document).ajaxError(function(xhr, e) {
     if (e.__pagehub_no_status)
       return true;
 
@@ -72,11 +72,12 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
     if (e.status != 200) {
       try {
         var err = JSON.parse(e.responseText);
-        ui.status.show(err.messages.join('<br />'), "bad");
+        ui.status.show(err.messages.join('<br />'), "bad", null, true);
       } catch(err) {
         // TODO: show some alert and report the error
+        e.exception = err.message;
         $(ConnectivityIssueDlg(e)).dialog({
-          dialogClass: "alert",
+          dialogClass: "alert-dialog",
           buttons: {
             Dismiss: function() {
               $(this).dialog('close');
@@ -168,7 +169,7 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
         }
       },
 
-      show: function(text, status, seconds_to_show) {
+      show: function(text, status, seconds_to_show, no_escape) {
         if (!status)
           status = "notice";
         if (!seconds_to_show)
@@ -184,7 +185,13 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
           clearTimeout(timers.status)
 
         timers.status = setTimeout(function() { ui.status.clear() }, status == "bad" ? animation_dur * 2 : animation_dur);
-        $("#status").removeClass("pending good bad").addClass(status + " visible").text(text);
+        $("#status").removeClass("pending good bad").addClass(status + " visible");
+
+        if (no_escape)
+          $("#status").html(text);
+        else
+          $("#status").text(text);
+
         status_shown = true;
         current_status = status;
       },

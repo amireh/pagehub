@@ -42,6 +42,8 @@ function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, Publis
         return director.ctx.current_director.save();
       });
 
+      this.state.on('change:syncing', this.control_save_button, this);
+
       this.ctx.save_button = this.save_button; // expose it for SettingView#mark_destructive_action
 
       _.each(this.views, function(view) { view.$el.hide(); return true; });
@@ -51,6 +53,14 @@ function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, Publis
 
     hide: function() {
       this.current_view = null;
+      return this;
+    },
+
+    control_save_button: function() {
+      this.save_button
+      .html(saving_captions[this.state.get('syncing')])
+      .prop('disabled', this.state.get('syncing'));
+
       return this;
     }
 
