@@ -2,14 +2,11 @@
 
 <% content_for :nav_section do %>space_settings<% end %>
 <% content_for :deferred_js do %>
-  <script>
-    pagehub_hooks.push(
-      require([ 'models/space', 'views/spaces/settings/index' ], function(Space, SettingsView) {
-        var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
-        s = new SettingsView({ model: space, ctx: {} });
-      })
-    );
-  </script>
+<script>
+  require([ 'views/spaces/settings/index' ], function(SettingsView) {
+    application.view = new SettingsView(application);
+  });
+</script>
 <% end %>
 
 <div id="settings" style="display: none;">

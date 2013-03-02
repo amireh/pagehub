@@ -16,7 +16,8 @@ function(Backbone, $, UI, Director, ThemeSettings, LayoutSettings, NavigationLin
     el: $("#space_publishing_settings"),
 
     initialize: function(data) {
-      Director.prototype.initialize.apply(this, arguments);
+      Director.prototype.initialize.call(this, data.space, data.state);
+      _.implode(this, data);
 
       this.add_alias('space');
 

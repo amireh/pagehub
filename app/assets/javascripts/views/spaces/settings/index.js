@@ -17,8 +17,8 @@ function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, Publis
   var SpaceSettingsView = Director.extend({
     // el: $("#space_settings"),
 
-    initialize: function(data) {
-      Director.prototype.initialize.apply(this, arguments);
+    initialize: function(state) {
+      Director.prototype.initialize.call(this, state.space, state);
 
       this.add_alias('space');
 
@@ -36,11 +36,9 @@ function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, Publis
       this.register(BrowsabilityView, 'browsability');
 
       Shortcut.add("ctrl+alt+v", function() { window.open(director.space.get('media.href'), '_preview'); });
-      Shortcut.add("ctrl+alt+s", function() { director.ctx.current_director.save(); });
 
-      this.save_button.on('click', function(e) {
-        return director.ctx.current_director.save();
-      });
+      Shortcut.add("ctrl+alt+s",   function() { state.current_director.save(); });
+      this.save_button.on('click', function() { state.current_director.save(); });
 
       this.state.on('change:syncing', this.control_save_button, this);
 

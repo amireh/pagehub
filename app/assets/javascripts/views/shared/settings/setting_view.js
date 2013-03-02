@@ -9,8 +9,8 @@ function(Backbone, $) {
 
     render: function() {
       if (this.unserializable) {
-        if (this.ctx.save_button) {
-          this.ctx.save_button.prop('disabled', true);
+        if (this.director.save_button) {
+          this.director.save_button.prop('disabled', true);
         }
       }
 
@@ -39,15 +39,15 @@ function(Backbone, $) {
       this.$el.find('.help-inline').html('');
       this.mark_destructive_action(false);
 
-      if (this.ctx.save_button) {
-        this.ctx.save_button.prop('disabled', false);
+      if (this.director.save_button) {
+        this.director.save_button.prop('disabled', false);
       }
 
       return this;
     },
 
     mark_destructive_action: function(active) {
-      var btn = this.ctx.save_button;
+      var btn = this.director.save_button;
 
       if (btn)
         btn.toggleClass('btn-danger', active);

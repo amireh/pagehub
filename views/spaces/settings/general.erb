@@ -31,7 +31,7 @@
       </label>
     </fieldset>
 
-    <% if can? :destroy, @space %>
+    <% if can? :delete, @space %>
       <hr />
       <button id="destroy_space" class="btn btn-small btn-danger"><i class="icon-remove"></i> Destroy this space</button>
     <% end %>

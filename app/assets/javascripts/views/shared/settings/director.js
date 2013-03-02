@@ -19,7 +19,7 @@ function(Backbone, $, Shortcut, UI, State) {
 
       this.model    = model;
       this.state    = state;
-      this.ctx      = {};
+      this.ctx      = new State({});
       this.views    = [];
       this.aliases  = [];
       this.presync_map = {};
@@ -77,9 +77,9 @@ function(Backbone, $, Shortcut, UI, State) {
 
       var data = {
         model:    this.model,
+        state:    this.state,
         director: this,
-        label:    label,
-        ctx:      this.ctx
+        label:    label
       };
 
       _.each(this.aliases, function(alias) { data[alias] = data.model; return true; }, this);

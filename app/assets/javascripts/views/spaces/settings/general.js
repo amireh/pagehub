@@ -10,10 +10,10 @@ function(SettingView, $, UI, DestroySpaceDlgTmpl, ChangeTitleDlgTmpl) {
     el: $("#space_general_settings"),
 
     events: {
-      'click [data-role=save]': 'propagate_sync',
       'click #check_availability': 'check_availability',
       'keyup input[type=text][name=title]': 'queue_availability_check',
-      'click #destroy_space': 'confirm_total_destruction'
+      'click #destroy_space': 'confirm_total_destruction',
+      'change input[type=checkbox]': 'propagate_sync'
     },
 
     templates: {

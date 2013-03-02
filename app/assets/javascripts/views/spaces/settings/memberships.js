@@ -184,6 +184,9 @@ function(SettingView, $, UI, MembershipRecordTmpl) {
         success: function() {
           view.elements.membership_records.find('#user_' + m.id).remove();
           UI.status.show( m.nickname + " is no longer a member of this space.", "good");
+
+          // this is leaking for some reason
+          $("body > .tooltip:last").remove();
         }
       });
     }
