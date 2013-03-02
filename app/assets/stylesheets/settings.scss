@@ -4,6 +4,10 @@
     padding-right: 0;
   }
 
+  fieldset + fieldset {
+    /*margin-top: 20px;*/
+  }
+
   nav {
     padding: 10px 0;
     display: inline-block;
@@ -59,7 +63,42 @@
           /*min-width: 100px;*/
           /*text-align: center;*/
         }
+
+        &.sticky-bottom {
+          position: fixed;
+          bottom: 40px;
+          border: none;
+        }
+
+        .subnav {
+          /*position: absolute;*/
+          font-size: 0.9em;
+          line-height: 2em;
+          width: auto;
+          /*left: 0;*/
+          padding: 0;
+          margin-left: 10px;
+          /*margin-bottom: 5px;*/
+          background: rgba(0,0,0,0.0125);
+          white-space:nowrap;
+
+          li {
+            border-width: 3px;
+            white-space:nowrap;
+
+            &:hover,
+            &.selected {
+              border-color: orange;
+            }
+
+            a {
+              padding: 0 10px;
+            }
+          }
+        } /* settings nav > ul li .subnav */
+
       } /* settings nav > ul li */
+
 
     } /* settings nav > ul */
 
@@ -109,55 +148,58 @@
       vertical-align: middle;
       margin-right: 5px;
     }
-  }
 
-  section.editor_preview {
-    position: absolute;
-    left: 360px;
-    top: 160px;
-    /*border-left: 1px solid #333;*/
-    padding: 0;
-    opacity: 0.5;
-  }
+    form > fieldset:first-child {
+      /*margin-top: -10px;*/
+    }
 
-  section.editor_preview .curly,
-  section.editor_preview small {
-    font-family: "UbuntuMonoRegular";
-    font-size: 196px;
-    position: absolute;
-    opacity: 0.15;
-    left: -164px;
-    font-weight: bold;
-    top: 100px;
-    -webkit-transform: rotate(-30deg);
-    -moz-transform: rotate(-30deg);
-  }
-  section.editor_preview small {
-    position: absolute;
-    left: -128px;
-    top: 110px;
-    z-index: 100;
-    opacity: 1;
-    font-size: 14px;
-    letter-spacing: 2px;
+    .editing-settings {
+
+      fieldset {
+        position: relative;
+      }
+
+      .editor-preview {
+        position: absolute;
+        /*left: 360px;*/
+        right: 0;
+        top: 60px;
+        border-left: 1px solid #ddd;
+        padding: 0 0 0 10px;
+        opacity: 0.5;
+        z-index: 0;
+
+        .arrow {
+          /*font-family: "UbuntuMonoRegular";*/
+          font-size: 196px;
+          line-height: 1;
+          position: absolute;
+          opacity: 0.15;
+          top: 0;
+          right: 130%;
+          font-weight: bold;
+          -webkit-transform: rotate(-15deg);
+          -moz-transform: rotate(-15deg);
+          z-index: -1;
+        }
+
+        .CodeMirror {
+          width: 320px;
+          margin: 0;
+          max-height: 320px;
+          height: 320px;
+        }
+        .CodeMirror pre {
+        }
+      }
+
+    }
   }
 
   #editor_settings {
     position: relative;
   }
-  :not(&.spaces) {
-    .CodeMirror {
-      width: 320px;
-      margin: 0;
-      max-height: 320px;
-      height: 320px;
-      overflow: inherit;
-      font-family: inherit;
-    }
-    .CodeMirror pre {
-      font-family: inherit;
-    }
-  }
+
 
   &.publishing {
     .theme {
@@ -229,38 +271,11 @@
   /* space settings */
   &.spaces {
 
-    .subnav {
-      /*position: absolute;*/
-      font-size: 0.9em;
-      line-height: 2em;
-      width: auto;
-      /*left: 0;*/
-      padding: 0;
-      margin-left: 10px;
-      /*margin-bottom: 5px;*/
-      background: rgba(0,0,0,0.0125);
-      white-space:nowrap;
-
-      li {
-        border-width: 3px;
-        white-space:nowrap;
-
-        &:hover,
-        &.selected {
-          border-color: orange;
-        }
-
-        a {
-          padding: 0 10px;
-        }
-      }
-    }
-
     .navigation_links {
       margin-bottom: 15px;
     }
 
-    &.memberships {
+    .memberships {
       nav {
         ul {
           top: 17px;
@@ -366,9 +381,6 @@
             /*display: inline-block;*/
             /*max-width: 280px;*/
             margin-bottom: 0;
-            * {
-              cursor: pointer;
-            }
           }
         }
 

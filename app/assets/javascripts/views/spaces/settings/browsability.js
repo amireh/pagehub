@@ -17,6 +17,8 @@ function(SettingView, $, UI, DestroySpaceDlgTmpl) {
       this.space.folders.on('change:browsable', this.adjust_folder_contents_browsability, this);
       this.space.folders.on('change:pages.browsable', this.adjust_page_browsability, this);
 
+      this.unserializable = true;
+
       this.bootstrap();
     },
 
@@ -42,7 +44,7 @@ function(SettingView, $, UI, DestroySpaceDlgTmpl) {
     },
 
     serialize: function() {
-      return {};
+      return false;
     },
 
     update_resource_browsability: function(r, value) {

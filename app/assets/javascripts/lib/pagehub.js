@@ -65,6 +65,9 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
   $(document).ajaxStart(function(xhr)     { ui.status.mark_pending(); });
   $(document).ajaxComplete(function(xhr)  { ui.status.mark_ready();   });
   $(document).ajaxError(function(_, e) {
+    if (e.__pagehub_no_status)
+      return true;
+
     console.log(e);
     if (e.status != 200) {
       try {
@@ -181,7 +184,7 @@ define([ 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(
           clearTimeout(timers.status)
 
         timers.status = setTimeout(function() { ui.status.clear() }, status == "bad" ? animation_dur * 2 : animation_dur);
-        $("#status").removeClass("pending good bad").addClass(status + " visible").html(text);
+        $("#status").removeClass("pending good bad").addClass(status + " visible").text(text);
         status_shown = true;
         current_status = status;
       },

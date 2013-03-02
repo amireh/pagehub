@@ -8,11 +8,17 @@ class User
 
   property :id, Serial
 
-  property :name,     String, length: 255, required: true
+  property :name,     String, length: 255, required: true, message: 'We need a name for you.'
   property :provider, String, length: 255, required: true
   property :uid,      String, length: 255, default: lambda { |*_| UUID.generate }
 
-  property :email,          String, length: 255, default: ""
+  property :email,    String, length: 255, required: true,
+    format: :email_address,
+    messages: {
+      presence:   'We need your email address.',
+      format:     "Doesn't look like an email address to me..."
+    }
+
   property :gravatar_email, String, length: 255, default: lambda { |r,_| r.email }
   property :nickname,       String, length: 120
   property :password,       String, length: 64
@@ -34,8 +40,16 @@ class User
   # has n, :folders,  :constraint => :destroy
   has n, :email_verifications, :constraint => :destroy
 
-  validates_presence_of :name, :provider, :uid, :nickname
-  validates_uniqueness_of :nickname
+  validates_presence_of :provider, :uid, :nickname
+  validates_uniqueness_of :nickname, message: 'That nickname is not available.'
+
+  validates_uniqueness_of :email, :scope => :provider,
+    message: "There's already an account registered to this email address."
+
+  validates_presence_of :password, :if => lambda { |u| u.provider == 'pagehub' }
+  validates_length_of :password, within: 7..64, :if => lambda { |u| u.provider == 'pagehub' },
+    message: "Password must be at least 7 characters long."
+
   # class << self
   #   attr_accessor :editor
   # end
@@ -57,15 +71,34 @@ class User
 
   [ :create, :save ].each { |advice|
     before advice do |_|
+      if attribute_dirty?(:nickname)
+        if nickname.sanitize != nickname
+          errors.add :nickname, "Nicknames can only contain letters, numbers, dashes, and underscores."
+          throw :halt
+        end
+      end
+
       self.nickname = self.name.to_s.sanitize if (self.nickname || '').empty?
 
       if attribute_dirty?(:email)
-        validate_email!(self.email, "primary")
+        validate_email!(self.email, "primary", :email)
+      end
+
+      if attribute_dirty?(:password)
+        if password != password_confirmation
+          errors.add :password, "Passwords do not match."
+          errors.add :password_confirmation, "Passwords do not match."
+          throw :halt
+        end
+
+        attribute_set(:password, User.encrypt(password))
       end
 
       if attribute_dirty?(:gravatar_email)
-        validate_email!(self.gravatar_email, "gravatar")
+        validate_email!(self.gravatar_email, "gravatar", :gravatar_email)
       end
+
+      throw :halt unless errors.empty?
 
       errors.empty?
     end
@@ -146,14 +179,14 @@ class User
     @mx.size > 0 ? true : false
   end
 
-  def validate_email!(email, type)
+  def validate_email!(email, type, field)
     unless email.nil? || email.empty?
       unless email.is_email?
-        errors.add(:email, "Your #{type} email address does not appear to be valid.")
+        errors.add(field, "Your #{type} email address does not appear to be valid.")
         throw :halt
       else
         unless validate_email_domain(email)
-          errors.add(:email, "Your #{type} email domain name appears to be incorrect.")
+          errors.add(field, "Your #{type} email domain name appears to be incorrect.")
           throw :halt
         end
       end

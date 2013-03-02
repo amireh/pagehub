@@ -32,7 +32,7 @@ ability do |user, space|
 
     if space.admin?(user)
       # puts "checking admin permissions"
-      can :update, Space
+      can :update, space
 
       can :invite, Array do |a|
         target, role = *a
@@ -62,8 +62,8 @@ ability do |user, space|
     end
 
     if space.creator?(user)
-      can :update_meta, Space
-      can :delete,      Space
+      can :update_meta, space
+      can :delete,      space
       can :invite,      Array
       can :kick,        User
       can :promote,     Array

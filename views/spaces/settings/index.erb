@@ -6,7 +6,7 @@
     pagehub_hooks.push(
       require([ 'models/space', 'views/spaces/settings/index' ], function(Space, SettingsView) {
         var space = new Space(<%= rabl :"/spaces/show", object: @space %>.space);
-        s = new SettingsView({ model: space });
+        s = new SettingsView({ model: space, ctx: {} });
       })
     );
   </script>

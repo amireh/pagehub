@@ -4,32 +4,30 @@
   <ul class="thumbnails">
     <li class="span4">
       <div class="well">
-        <label>
-          <img src="/assets/fluid_space_publishing_layout.png" />
-          <h4>
-            <input type="radio" name="name" value="fluid" <%= checkify('publishing.layout.name') { |s| s == 'fluid' } %> />
-            Fluid Layout
-          </h4>
-          <p>The Fluid layout spans the reader's entire screen and contains
-            a static navigation side-bar.</p>
-          <p>This layout is optimal for spaces with
-            a large number of pages.
-          </p>
-        </label>
+        <img src="/assets/fluid_space_publishing_layout.png" />
+        <h4>
+          <label><input type="radio" name="name" value="fluid" <%= checkify('publishing.layout.name') { |s| s == 'fluid' } %> />
+          Fluid Layout
+          </label>
+        </h4>
+        <p>The Fluid layout spans the reader's entire screen and contains
+          a static navigation side-bar.</p>
+        <p>This layout is optimal for spaces with
+          a large number of pages.
+        </p>
       </div>
     </li>
 
     <li class="span4">
       <div class="well">
-        <label>
-          <img src="/assets/easy_space_publishing_layout.png" />
-          <h4>
-            <input type="radio" name="name" value="easy" <%= checkify('publishing.layout.name') { |s| s == 'easy' } %> />
-            Easy Reading Layout
-          </h4>
-            <p>A blog-style layout with 720 pixels set for content and a side-bar for navigation.</p>
-            <p>This layout is optimal for very long documents.</p>
-        </label>
+        <img src="/assets/easy_space_publishing_layout.png" />
+        <h4>
+          <label><input type="radio" name="name" value="easy" <%= checkify('publishing.layout.name') { |s| s == 'easy' } %> />
+          Easy Reading Layout
+          </label>
+        </h4>
+          <p>A blog-style layout with 720 pixels set for content and a side-bar for navigation.</p>
+          <p>This layout is optimal for very long documents.</p>
       </div>
     </li>
     <li class="span8">

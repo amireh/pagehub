@@ -130,7 +130,7 @@ end
 put "/users/:user_id/spaces/:space_id",
   auth:     :creator,
   provides: [ :json, :html ],
-  requires: [ :space ] do
+  requires: [ :user, :space ] do
 
   authorize! :update, @space, message: "You need to be an admin of this space to update it."
 

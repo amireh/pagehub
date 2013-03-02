@@ -1,76 +1,74 @@
-<% content_for :title do %> Account - Settings | <%= current_user.nickname %> | PageHub <% end %>
+<form id="user_account_settings">
+  <fieldset>
+    <legend>Change your nickname</legend>
+    <label>
+      Your nickname is used in the links when sharing documents with people.
+      <br />
+      <br />
+      <div class="input-append">
+        <input type="text" autocomplete="off" name="nickname" class="span4" value="<%= current_user.nickname %>" />
+        <button class="btn btn-success" id="check_availability"><i class="icon-ok"></i></button>
+      </div>
+    </label>
 
-<%= partial "users/settings/_nav" %>
-<% content_for :js do %>
-<script>
-  $(function() {
-    $("#check_availability").click(function() {
-      var btn = $(this);
-      $.ajax({
-        url: "/users/nickname",
-        type: "POST",
-        data: { nickname: $("input[name=nickname]").attr("value") },
-        before: ui.status.mark_pending,
-        success: function(is_available) {
-          is_available = JSON.parse(is_available);
-          if (is_available) {
-            btn.next("span").addClass("success").removeClass("error").html("available");
-          } else {
-            btn.next("span").addClass("error").removeClass("success").html("not available");
-          }
-        },
-        complete: ui.status.mark_ready
-      });
-      return false;
-    });
-  });
-</script>
-<% end %>
+    <p class="well">Links to your pages will look something like this:
+      <br />
+      <a><code>http://<%= request.host %>/<strong id="user_public_href_example_nickname">your-nickname</strong>/<strong>space-title</strong>/<strong>page-title</strong></code></a>
+    </p>
 
-<section>
+    <!-- <button id="change_nickname" class="btn btn-danger">Save</button> -->
+  </fieldset>
 
-  <form action="/settings/nickname" method="POST">
-    <section>
-    <h3>Nickname</h3>
-      <label>
-        Your nickname is used in the links when sharing documents with people.
-        <br />
-        <br />
-        <div class="input-append">
-          <input type="text" name="nickname" class="span3" value="<%= current_user.nickname %>" />
-          <button class="btn" id="check_availability">check availability</button>
-        </div>
-        <span></span>
-      </label>
-      <p>Links to your pages will look something like this:
-        <br />
-        &rarr; <a><code>http://<%= request.host %>/<strong>your-nickname</strong>/<strong>space-title</strong>/<strong>page-title</strong></code></a>
-      </p>
-      <p class="text-warning"><em><strong>WARNING: </strong> changing your nickname will break all the links
-        you've shared with people. Change it only if you know what you're doing!</em></p>
+  <fieldset class="form-horizontal">
+    <legend>Change your password</legend>
 
-      <input type="submit" class="btn btn-danger" value="Change Nickname" />
-    </section>
+    <div class="control-group">
+      <label class="control-label" for="current_password">Your current password</label>
+      <div class="controls">
+        <input type="password" id="current_password" name="current_password" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
 
-  </form>
+    <div class="control-group">
+      <label class="control-label" for="password">The new password</label>
+      <div class="controls">
+        <input type="password" id="password" name="password" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
 
-  <form method="POST" action="/settings/password">
-    <fieldset>
-      <legend>Changing your password</legend>
+    <div class="control-group">
+      <label class="control-label" for="password_confirmation">Again</label>
+      <div class="controls">
+        <input type="password" id="password_confirmation" name="password_confirmation" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
 
-      <label>
-        Your current password:<br />
-        <input type="password" name="password[current]" />
-      </label>
+    <!-- <button id="change_password" class="btn">Save</button> -->
+  </fieldset>
 
-      <span>
-        And a new one (type it twice to confirm it):<br />
-      </span>
-      <label>#1 &rarr; <input type="password" name="password[new]" style="margin-bottom: 5px;" /></label>
-      <label>#2 &rarr; <input type="password" name="password[confirmation]" /></label>
+  <fieldset>
+    <legend>Change your email</legend>
 
-      <input type="submit" class="btn" value="Update password" />
-    </fieldset>
+    <p>Your primary email address where we can reach you: <small><em>(not visible to people)</em></small>.</p>
 
-  </form>
-</section>
+    <div class="control-group">
+      <label class="control-label" for="email">Email</label>
+
+      <div class="controls">
+        <input required type="email" id="email" name="email" value="<%= current_user.email %>" />
+        <span class="help-inline"></span>
+      </div>
+      <!-- <button id="change_email" class="btn btn-small">Save</button> -->
+
+      <% unless current_user.verified? current_user.email %>
+        <a href="/settings/verify/primary" class="btn btn-primary">Verify</a>
+      <% else %>
+        <span class="label label-success">Verified</span>
+      <% end %>
+    </div>
+
+  </fieldset>
+</form>

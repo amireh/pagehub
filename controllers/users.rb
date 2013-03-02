@@ -36,6 +36,12 @@ get '/users/lookup/by_nickname',
   }
 end
 
+post '/users/:user_id/name', :auth => :user, provides: [ :json ], requires: [ :user ] do
+  respond_to do |f|
+    f.json { { available: nickname_available?(params[:name]) }.to_json }
+  end
+end
+
 get '/users/:user_id',
   auth: [ :user ],
   provides: [ :html, :json ],
@@ -126,17 +132,33 @@ put '/users/:user_id',
 
   api_optional!({
     name: nil,
+    nickname: nil,
     gravatar_email: nil,
     email: nil,
-    preferences: nil
+    preferences: nil,
+
+    current_password: lambda { |pw|
+      puts "checking password: #{pw}"
+      pw ||= ''
+      if !pw.empty? && User.encrypt(pw) != current_user.password
+        return "The current password you entered is wrong."
+      end
+
+      true
+    },
+
+    password: nil,
+    password_confirmation: nil
   })
 
   api_consume! :preferences do |prefs|
     @user.save_preferences(@user.preferences.deep_merge(prefs))
   end
 
+  api_consume! :current_password
+
   unless @user.update(api_params)
-    halt 400, @user.all_errors
+    halt 400, @user.errors
   end
 
   respond_to do |f|

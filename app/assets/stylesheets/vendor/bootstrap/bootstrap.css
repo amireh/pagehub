@@ -1038,6 +1038,35 @@ input[type="color"],
   border-radius: 4px;
   vertical-align: middle;
 }
+
+/*.controls > select,
+.controls > input,
+.controls > .uneditable-input {
+  margin-bottom: 0;
+}
+.controls {
+  margin-bottom: 10px;
+}*/
+select + .help-inline,
+textarea + .help-inline,
+input[type="text"] + .help-inline,
+input[type="password"] + .help-inline,
+input[type="datetime"] + .help-inline,
+input[type="datetime-local"] + .help-inline,
+input[type="date"] + .help-inline,
+input[type="month"] + .help-inline,
+input[type="time"] + .help-inline,
+input[type="week"] + .help-inline,
+input[type="number"] + .help-inline,
+input[type="email"] + .help-inline,
+input[type="url"] + .help-inline,
+input[type="search"] + .help-inline,
+input[type="tel"] + .help-inline,
+input[type="color"] + .help-inline,
+.uneditable-input + .help-inline {
+  margin-bottom: 10px;
+}
+
 input,
 textarea,
 .uneditable-input {
@@ -1091,7 +1120,7 @@ input[type="color"]:focus,
 .uneditable-input:focus {
   border-color: rgba(82, 168, 236, 0.8);
   outline: 0;
-  outline: thin dotted;
+  /*outline: thin dotted;*/
   /* IE6-9 */
 
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
@@ -1888,7 +1917,7 @@ legend + .control-group {
   transition: background-position 0.1s linear;
 }
 .btn:focus {
-  outline: thin dotted #333;
+  outline: thin solid #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -2948,7 +2977,7 @@ a.thumbnail:focus {
   padding: 9px;
   color: #555555;
 }
-.alert:not(.ui-dialog) {
+.alert {
   padding: 8px 35px 8px 14px;
   margin-bottom: 20px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -2958,14 +2987,14 @@ a.thumbnail:focus {
   -moz-border-radius: 4px;
   border-radius: 4px;
 }
-.alert:not(.ui-dialog),
-.alert:not(.ui-dialog) h4 {
+.alert,
+.alert h4 {
   color: #c09853;
 }
-.alert:not(.ui-dialog) h4 {
+.alert h4 {
   margin: 0;
 }
-.alert:not(.ui-dialog) .close {
+.alert .close {
   position: relative;
   top: -2px;
   right: -21px;

@@ -10,6 +10,11 @@ def name_available?(name)
   !reserved?(nn) && !nn.empty? && @user.owned_spaces.first({ pretty_title: nn }).nil?
 end
 
+def nickname_available?(name)
+  nn = name.to_s.sanitize
+  !reserved?(nn) && !nn.empty? && User.first({ nickname: nn }).nil?
+end
+
 before do
   if api_call?
     # puts "its an api call"

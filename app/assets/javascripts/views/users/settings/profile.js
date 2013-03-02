@@ -16,8 +16,6 @@ function(SettingView, $, UI, GravatarTmpl) {
     initialize: function(data) {
       SettingView.prototype.initialize.apply(this, arguments);
 
-      this.check_timer = null;
-      this.check_pulse = 250;
       this.elements = {
         avatar: this.$el.find('#avatar')
       }

@@ -13,11 +13,11 @@ helpers do
     }
   end
 
-  def p(*args)
-    scope = @space || @user || current_user
+  def p(key, scope = nil)
+    scope ||= @space || @user || current_user
 
     if scope && scope.respond_to?(:p)
-      scope.p(*args)
+      scope.p(key)
     end
   end
 
@@ -50,32 +50,32 @@ helpers do
   # alias_method :preferences, :p
 
 
-  def is_on?(*args)
-    scope = @space || @user || current_user
+  def is_on?(key, scope = nil)
+    scope ||= @space || @user || current_user
 
     if scope && scope.respond_to?(:is_on?)
-      scope.is_on?(*args)
+      scope.is_on?(key)
     end
   end
 
-  def is_on(*setting)
-    value = p(*setting)
+  def is_on(key, scope = nil)
+    value = p(key, scope)
 
     case
     when block_given?; yield(value)
-    else;              is_on?(*setting)
+    else;              is_on?(key)
     end
   end
 
-  def checkify(setting, &condition)
-    is_on(setting, &condition) ? 'checked="checked"' : ''
+  def checkify(setting, scope = nil, &condition)
+    is_on(setting, scope, &condition) ? 'checked="checked"' : ''
   end
 
-  def selectify(setting, &condition)
-    is_on(setting, &condition) ? 'selected="selected"' : ''
+  def selectify(setting, scope = nil, &condition)
+    is_on(setting, scope = nil, &condition) ? 'selected="selected"' : ''
   end
 
-  def disabilify(setting, &condition)
-    is_on(setting, &condition) ? 'disabled="disabled"' : ''
+  def disabilify(setting, scope = nil, &condition)
+    is_on(setting, scope, &condition) ? 'disabled="disabled"' : ''
   end
 end

@@ -1,41 +1,31 @@
 <%#= partial "users/settings/_nav" %>
 
 <form id="user_profile_settings">
-  <section>
-    <h3>Profile</h3>
+  <fieldset>
+    <legend>Profile stuff</legend>
+
     <p>When people visit your <a href="<%= current_user.href %>">profile</a>
       they will get to see your name, avatar, and your public spaces.</p>
 
-    <label>Name <br />
-      <input type="text" name="name" value="<%= @user.name %>" />
-    </label>
+    <div class="control-group">
+      <label class="control-label" for="name">Name</label>
 
-    <br />
+      <div class="controls">
+        <input required type="text" autocomplete="off" class="span4" id="name" name="name" value="<%= h @user.name %>" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
 
-    <label>Gravatar email <br />
-      <input type="text" name="gravatar_email" value="<%= @user.gravatar_email || @user.email %>" />
-    </label>
+    <div class="control-group">
+      <label for="gravatar_email">Gravatar email</label>
+      <div class="controls">
+        <input required type="email" id="gravatar_email" name="gravatar_email" class="span4" value="<%= h @user.gravatar_email || @user.email %>" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
 
-    <br />
-    <br />
     <div id="avatar" class="inline-avatar"></div>
     <span>Change your avatar at <a href="http://www.gravatar.com">gravatar.com</a></span>
-  </section>
-  <hr />
-  <section>
-    <h3>Email address</h3>
-    <label>Your primary email address where we can reach you: <small><em>(not visible to people)</em></small>
-      <br />
-      <br />
-      <input type="text" name="email" value="<%= current_user.email %>" />
-      <% unless current_user.verified? current_user.email %>
-        <a href="/settings/verify/primary" class="btn btn-primary">Verify</a>
-      <% else %>
-        <span class="badge badge-success">Verified</span>
-      <% end %>
-    </label>
-  </section>
+  </fieldset>
 
-  <br />
-  <button class="btn btn-primary" data-role="save">Save</button>
 </form>

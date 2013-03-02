@@ -18,12 +18,13 @@ function(Backbone, $, UI, Director, ThemeSettings, LayoutSettings, NavigationLin
     initialize: function(data) {
       Director.prototype.initialize.apply(this, arguments);
 
-      this.register_alias('space');
+      this.add_alias('space');
 
       this.register(LayoutSettings,           'publishing/layout');
       this.register(ThemeSettings,            'publishing/theme');
       this.register(NavigationLinksSettings,  'publishing/navigation_links');
       this.register(CustomCSSSettings,        'publishing/custom_css');
+
       this.nav = $('.settings .subnav');
       this.bootstrap();
     },
@@ -43,6 +44,8 @@ function(Backbone, $, UI, Director, ThemeSettings, LayoutSettings, NavigationLin
     hide: function() {
       this.current_view = null;
       _.each(this.views, function(v) { v.hide(); return true; });
+
+      return this;
     }
 
   });

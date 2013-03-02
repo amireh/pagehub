@@ -8,7 +8,8 @@ node(:media) do |u|
     url:    u.url,
     spaces: {
       url:  u.url(true) + '/spaces'
-    }
+    },
+    name_availability_url: u.url + '/name'
   }
 end
 
@@ -17,4 +18,8 @@ node(:nr_folders) do |u| u.folders.count end
 
 node(:spaces) do
   partial "/spaces/index", object: @user.spaces
+end
+
+node(:preferences) do |s|
+  s.preferences
 end

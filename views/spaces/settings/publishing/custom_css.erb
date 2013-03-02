@@ -1,3 +1,4 @@
+<%= partial "shared/_editor" %>
 
 <form id="custom_css_settings">
   <h3>Custom CSS</h3>
@@ -18,7 +19,4 @@
     css
   %>
   <textarea data-untogglable name="custom_css" id="css_editor" class="blocky_editor"><%= css %></textarea>
-
-  <br />
-  <button id="save_custom_css" class="btn btn-primary">Save</button> <span class="small">(Ctrl+Alt+S)</span>
 </form>

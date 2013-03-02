@@ -42,6 +42,15 @@ define('models/space',
         _.select(this.folders.models, function(f) { return f.get('parent') == null; })[0];
 
       return this.__root_folder;
+    },
+
+    modify_membership: function(user_id, role, options) {
+      this.save({
+         memberships: [{
+          user_id: user_id,
+          role:    role
+        }]
+      }, $.extend(true, (options || {}), { patch: true, wait: true }))
     }
   });
 

@@ -4,21 +4,26 @@ define(
   'backbone',
   'jquery',
   'shortcut',
-  'pagehub'
+  'pagehub',
+  'models/state'
 ],
-function(Backbone, $, Shortcut, UI) {
+function(Backbone, $, Shortcut, UI, State) {
   return Backbone.View.extend({
     el: $("#settings"),
 
     type: 'director',
 
     initialize: function(data) {
-      var director      = this;
+      var director  = this;
+      console.log(data)
+      _.implode(this, data);
 
-      this.model    = data.model;
-      this.ctx      = data.ctx || {};
+      // this.model    = data.model;
+      this.ctx      = this.ctx || {};
+      this.state    = new State({}); this.state.owner = this;
       this.views    = [];
       this.aliases  = [];
+      this.presync_map = {};
 
       this.on('section_changed',  this.sections.show, this);
       this.on('section_changed',  this.sections.highlight, this);
@@ -44,28 +49,45 @@ function(Backbone, $, Shortcut, UI) {
 
     set_router: function(router_factory, entry_point) {
       this.router = new router_factory(this, entry_point);
+
       return this;
     },
 
-    go: function(root) {
+    go: function(path) {
+      path = '/' + this.model.get('media.url') + path;
+
       Backbone.history.start({
         pushState: false,
-        root: root
+        root: path
       });
+
+      console.log(Backbone.history.root)
+      return this;
     },
 
-    register_alias: function(alias) {
+    add_alias: function(alias) {
       this.aliases.push(alias);
       return this;
     },
 
     register: function(view_factory, label) {
-      var data = { model: this.model, ctx: this.ctx };
+
+      if (this.get_view(label)) {
+        throw "[director] a view is already registered with label '" + label + "'";
+      }
+
+      var data = {
+        model:    this.model,
+        director: this,
+        label:    label,
+        ctx:      this.ctx
+      };
+
       _.each(this.aliases, function(alias) { data[alias] = data.model; return true; }, this);
 
+      this.presync_map[label] = [];
+
       var view = new view_factory(data);
-          view.label = label;
-          view.director = this;
 
       if (!view.serialize) {
         throw "Missing view#serialize() implementation in view '" + view.label + "'";
@@ -74,6 +96,8 @@ function(Backbone, $, Shortcut, UI) {
       view.on('sync', this.partial_sync, this);
 
       this.views.push(view);
+
+      this.log("view registered: '" + view.label + "'");
 
       return this;
     },
@@ -113,6 +137,12 @@ function(Backbone, $, Shortcut, UI) {
      */
     reset: function() {
       this.$el.hide();
+
+      return this;
+    },
+
+    before_sync: function(view, callback) {
+      this.presync_map[view.label].push(function() { return callback.apply(view); });
 
       return this;
     },
@@ -158,7 +188,11 @@ function(Backbone, $, Shortcut, UI) {
      *
      * You *MUST* define this in the main setting view for the settings to be stored!
      */
-    save: function() {
+    save: function(no_presync_callbacks) {
+      if (this.state.get('syncing')) {
+        return null;
+      }
+
       if (!this.sync) {
         throw "Missing director#sync() implementation!";
       }
@@ -176,7 +210,7 @@ function(Backbone, $, Shortcut, UI) {
         return null;
       }
 
-      return this.sync(data);
+      return this.sync(data, no_presync_callbacks);
     },
 
     consume: function(e) {
@@ -184,25 +218,84 @@ function(Backbone, $, Shortcut, UI) {
       return false;
     },
 
-    sync: function(d) {
-      var view = this;
+    sync: function(d, no_presync_callbacks) {
+      var director = this,
+          state    = this.state;
+
+      if (!no_presync_callbacks) {
+        this.ctx.abort_sync = false;
+
+        _.each(this.presync_map[this.current_view.label], function(callback) {
+          if (!callback()) {
+            director.ctx.abort_sync = true;
+            return false;
+          }
+
+          return true;
+        });
+
+        if (this.ctx.abort_sync) {
+          console.log("sync aborted as per a callback's request.");
+          return this;
+        }
+      }
 
       UI.status.mark_pending();
+      this.state.set('syncing', true);
+      director.trigger('presync', director);
 
-      this.model.save(d, {
-        wait: true,
-        patch: true,
-        success: function() {
-          UI.status.show("Saved", "good");
-        }
-      });
+      try { // need to make sure not to invalidate our context by leaving 'syncing' on
 
-      this.model.fetch({
-        success: function() {
-          view.render();
-          UI.status.mark_ready();
+        if (this.current_view.reset) {
+          this.current_view.reset();
         }
-      });
+
+        this.model.save(d, {
+          wait: true,
+          patch: true,
+
+          success: function() {
+            director.trigger('postsync', director, true);
+            UI.status.show("Saved", "good");
+          },
+
+          error: function(_, e) {
+            director.trigger('postsync', director, false, e);
+
+            try {
+              var api_error = JSON.parse(e.responseText);
+
+              if (director.current_view.on_sync_error) {
+                var reported = director.current_view.on_sync_error(api_error.field_errors);
+                if (reported) {
+                  e.__pagehub_no_status = true;
+                }
+              }
+
+            } catch(err) {
+            }
+          }
+        });
+
+        this.model.fetch({
+          success: function() {
+            state.set('syncing', false);
+            UI.status.mark_ready();
+
+            director.render();
+            director.trigger('postfetch', director, director.model, true);
+          },
+          error: function() {
+            state.set('syncing', false);
+            UI.status.mark_ready();
+
+            director.trigger('postfetch', director, director.model, false);
+          }
+        });
+
+      } catch(e) {
+        state.set('syncing', false);
+      }
 
       return this;
     },

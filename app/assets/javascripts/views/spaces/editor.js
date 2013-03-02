@@ -74,9 +74,11 @@ function($, Backbone) {
 
       var view = this;
 
-      $(window).on('resize', function() {
-        return view.resize_editor();
-      });
+      if (!this.config.no_resize) {
+        $(window).on('resize', function() {
+          return view.resize_editor();
+        });
+      }
 
       this.bootstrap();
     },
@@ -97,6 +99,10 @@ function($, Backbone) {
 
     // Resize it to fill up the remainder of the screen's height
     resize_editor: function(offset) {
+      if (this.config.no_resize) {
+        return this;
+      }
+
       this.editor.setSize(null, $(window).height() - (offset || this.offset));
 
       return this;

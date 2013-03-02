@@ -2,19 +2,16 @@ define(
 'views/spaces/settings/publishing/navigation_links',
 [
   'backbone',
-  'jquery',
-  'pagehub',
   'views/shared/settings/setting_view',
   'hb!spaces/settings/navigation_link.hbs'
 ],
-function(Backbone, $, UI, SettingView, NavigationLinkTmpl) {
+function(Backbone, SettingView, NavigationLinkTmpl) {
   return SettingView.extend({
     el: $("form#navigation_links_settings"),
 
     events: {
       'click #add_navigation_link':     'add_navigation_link',
-      'click #navigation_links button': 'remove_navigation_link',
-      'click #save_navigation_links':   'propagate_sync'
+      'click #navigation_links button': 'remove_navigation_link'
     },
 
     initialize: function(ctx) {
@@ -26,6 +23,7 @@ function(Backbone, $, UI, SettingView, NavigationLinkTmpl) {
       SettingView.prototype.render.apply(this, arguments);
 
       this.links.empty();
+
       _.each(this.space.get('preferences.publishing.navigation_links'), function(nl) {
         return this.links.append(NavigationLinkTmpl(nl)) || true;
       }, this);

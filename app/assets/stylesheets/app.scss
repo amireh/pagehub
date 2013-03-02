@@ -61,7 +61,17 @@ header {
 
 }
 
-
+span.shortcut {
+  font-size: 10px;
+  color: #777;
+  /*font-weight: bold;*/
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-family: monospace;
+  box-shadow: 0 0 0 1px white inset;
+}
 
 .ui-widget-overlay + .ui-dialog {
   box-shadow: 0 0 1px 5px #999;
@@ -138,7 +148,7 @@ header {
     float: right;
   }
 
-  &.alert .ui-widget-header {
+  &.alert-dialog .ui-widget-header {
     color: white;
     text-shadow: 0px -1px 0 rgba(0, 0, 0, 0.3);
     background-color: #B33630;

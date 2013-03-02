@@ -5,8 +5,16 @@
   <script>
     pagehub_hooks.push(
       require([ 'models/user', 'views/users/settings/index' ], function(User, SettingsView) {
-        var user = new User(<%= rabl :"/users/show", object: current_user %>.user);
-        u = new SettingsView({ model: user });
+        try {
+          var data = <%= h(rabl :"/users/show", object: current_user).to_json %>;
+          data = JSON.parse(_.unescape(data));
+          console.log(data)
+          var user = new User(data.user);
+          u = new SettingsView({ model: user });
+        } catch(e) {
+          console.log(e)
+          // UI.report_error('crap')
+        }
       })
     );
   </script>
@@ -14,7 +22,7 @@
 
 <div id="settings" style="display: none;">
   <%= partial :"users/settings/profile" %>
-  <%#= partial :"spaces/settings/memberships" %>
-  <%#= partial :"spaces/settings/publishing" %>
-  <%#= partial :"spaces/settings/browsability" %>
+  <%= partial :"users/settings/account" %>
+  <%= partial :"users/settings/editing" %>
+  <%= partial :"users/settings/spaces" %>
 </div>

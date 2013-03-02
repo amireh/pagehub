@@ -1,3 +1,5 @@
+// $.serializeObject()
+//
 (function($, undefined){
     $.fn.serializeObject = function(){
 
@@ -79,4 +81,15 @@ Array.prototype.pop_value = function(v) {
   }
 
   return this;
+}
+
+if (!_.implode) {
+  _.implode = function(object, data) {
+    var data  = data,
+        me    = object;
+
+    _.each(_.pairs(data), function(entry) { me[entry[0]] = entry[1]; });
+
+    return me;
+  }
 }
