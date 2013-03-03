@@ -11,6 +11,7 @@
     },
 
     "runtime": {
+      "fluid_workspace": false,
       "spaces": {
       }
     }

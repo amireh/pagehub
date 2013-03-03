@@ -29,15 +29,17 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
     hide_list($("a.listlike.selected"));
 
     var list = $(this).nextAll("ol.listlike:first");
-    list.show();
 
-    if (list_offset_threshold + list.width() + list.parent().position().left
-        +
-        $(this).position().left >= $(window).width()) {
-      list.css({ right: 0, left: 0 });
+    list.css({ left: 0, right: 0 });
+
+    if (list.width() + list.parent().offset().left >= $(window).width()) {
+      list.css({ right: 0, left: -1 * list.width() });
     } else {
       list.css({ left: $(this).position().left, right: 0 });
     }
+
+    list.show();
+
     $(this).addClass("selected");
     $(this).unbind('click', show_list);
     $(this).add($(window)).bind('click', hide_list_callback);

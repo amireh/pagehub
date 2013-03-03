@@ -97,10 +97,13 @@ nav > a.icon,
 }
 
 a.icon:hover,
+button.icon:hover,
 a.listlike:hover,
-a.icon.selected {
+a.icon.selected,
+button.icon.selected {
   background-color: rgba(0,0,0,0.1);
   border-color: #008cdd;
+  cursor: pointer;
 }
 nav {
   a.selected {
@@ -161,13 +164,6 @@ nav > a:hover:after {
   z-index: -1;
 }
 */
-.action_bar_wrap {
-  height: 33px;
-}
-#page_actions.page-actions > .icon {
-  height: 32px;
-  width:  26px;
-}
 
 .icon.new_resource  { background: url("/assets/icons/16x16/new_page.png")     no-repeat center center; }
 .icon.edit_page     { background: url("/assets/icons/16x16/edit.png")     no-repeat center center; }
@@ -185,6 +181,12 @@ nav > a:hover:after {
 }
 .icon.new-page {
   background: url("/assets/icons/16x16/new_page.png") no-repeat center;
+}
+.icon.fullscreen {
+  background: url("/assets/icons/16x16/fullscreen.png") no-repeat center;
+}
+.icon.more {
+  background: url("/assets/icons/16x16/more.png") no-repeat center;
 }
 
 a {

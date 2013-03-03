@@ -5,10 +5,11 @@ define('views/spaces/show',
   'views/spaces/resource_actions',
   'views/spaces/browser',
   'views/spaces/page_actionbar',
+  'views/spaces/general_actionbar',
   'views/spaces/editor',
   'pagehub',
   'timed_operation'
-], function(Backbone, Space, Browser, ResourceActions, PageActionBar, Editor, UI, TimedOp) {
+], function(Backbone, Space, Browser, ResourceActions, PageActionBar, GeneralActionBar, Editor, UI, TimedOp) {
   return Backbone.View.extend({
     initialize: function(state) {
       UI.status.mark_pending();
@@ -33,6 +34,7 @@ define('views/spaces/show',
       this.browser          = new Browser(data);
       this.editor           = new Editor(data);
       this.page_actionbar   = new PageActionBar($.extend({}, data, { editor: this.editor }));
+      this.page_actionbar   = new GeneralActionBar(data);
 
       state.on('sync_runtime_preferences', this.queue_preferences_sync, this);
 

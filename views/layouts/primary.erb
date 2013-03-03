@@ -57,16 +57,16 @@
 
       <nav>
         <span>
-          <a id="cuser_settings_link" href="<%= current_user.settings_url %>" %><%= current_user.nickname %></a>
+          <!-- <a id="cuser_settings_link" href="<%= current_user.settings_url %>" %><%= current_user.nickname %></a> -->
           <% if true || settings.production? %>
-            <%= gravatar_tag (current_user.gravatar_email || current_user.email), :icon %>
+            <%= gravatar_tag (current_user.gravatar_email || current_user.email), :icon, { html: { rel: "tooltip", title: current_user.nickname } } %>
           <% end %>
         </span>
         <a class="icon dashboard <%= nav_highlight 'dashboard' %>" rel="tooltip" title="Your dashboard" href="<%= current_user.dashboard_url %>">Dashboard</a>
 
         <!-- <a class="listlike icon help" href="/help" rel="tooltip" title="Help">Help</a> -->
         <%#= partial "/shared/_nav_help_links" %>
-        <a href="<%= current_user.settings_url %>" class="icon tools <%= nav_highlight 'settings' %>" rel="tooltip" title="Your account settings">Settings</a>
+        <a href="<%= current_user.settings_url %>" class="icon tools <%= nav_highlight 'settings' %>" rel="tooltip" title="Account settings">Settings</a>
         <a href="/sessions/destroy" class="icon signout" rel="tooltip" title="Sign out">Sign out</a>
       </nav>
     </div>

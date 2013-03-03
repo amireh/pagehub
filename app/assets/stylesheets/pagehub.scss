@@ -396,10 +396,10 @@ ol.listlike {
   top: 99%;
   text-align: left;
   color: white;
-  border-top-left-radius:     2px;
+  /*border-top-left-radius:     2px;
   border-bottom-left-radius:  2px;
-  border-bottom-right-radius: 2px;
-
+  border-bottom-right-radius: 2px;*/
+  border-radius: 2px;
   max-height: 320px;
   overflow-y: auto;
 }
@@ -413,7 +413,7 @@ a.listlike.selected:before {
   border-bottom-color: rgba(0, 0, 0, 0.2);
   position: absolute;
   bottom: -3px;
-  right: 3px;
+  right: 5px;
   z-index: 1;
 }
 a.listlike.selected:after {
@@ -424,7 +424,7 @@ a.listlike.selected:after {
   border-bottom: 6px solid #fff;
   position: absolute;
   bottom: -3px;
-  right: 4px;
+  right: 6px;
   z-index: 1;
 }
 ol.listlike li { padding: 0; margin: 0; line-height: inherit; height: auto; border-bottom: 1px solid #ddd;  }
@@ -526,11 +526,4 @@ ol.listlike li a { display: block; width: 100%; line-height: inherit; height: au
 
 .inline {
   display: inline-block;
-}
-
-body.fluid {
-  .stuff {
-    max-width: 100%;
-    margin: 0 40px 0 60px;
-  }
 }

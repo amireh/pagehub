@@ -68,6 +68,7 @@ function($, Backbone) {
 
       if (this.space) {
         this.space.on('page_loaded', this.populate_editor, this);
+        this.space.on('layout_changed', this.refresh, this);
         this.space.on('reset', this.reset, this);
       }
 
@@ -93,6 +94,11 @@ function($, Backbone) {
       this.editor.clearHistory();
       this.editor.setValue('Load or create a new page to begin.');
 
+      return this;
+    },
+
+    refresh: function() {
+      this.editor.refresh();
       return this;
     },
 
