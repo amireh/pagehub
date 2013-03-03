@@ -4,7 +4,7 @@
 #   end
 # end
 
-get '/users/new', auth: :guest do
+get '/signup', auth: :guest do
   erb :"/users/new"
 end
 
@@ -33,12 +33,14 @@ end
 
 get '/users/:user_id',
   auth: [ :user ],
-  provides: [ :html, :json ],
+  provides: [ :json ],
   requires: [ :user ],
   exclusive: true do
 
+  @user = current_user
+
   respond_with @user do |f|
-    f.html { erb :"users/dashboard" }
+    # f.html { erb :"users/dashboard" }
     f.json { rabl :"users/show"     }
   end
 end
@@ -153,17 +155,11 @@ put '/users/:user_id',
   end
 end
 
-get "/users/:user_id/edit",
+get "/settings",
   auth: [ :user ],
-  requires: [ :user],
-  provides: [ :html  ],
-  exclusive: true do
+  provides: [ :html  ] do
 
-  authorize! :manage, @user, message: "You can not do that."
-
-  @user.spaces.each do |s|
-    puts "Can I update space #{s.title}? #{can? :update, s}"
-  end
+  @user = current_user
 
   respond_with @space do |f|
     f.html { erb :"/users/settings/index" }

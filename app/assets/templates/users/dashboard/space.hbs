@@ -5,18 +5,18 @@
     {{else}}
       <div class="emblem private" title="This is a private space, guests can not browse it"></div>
     {{/if}}
-    
+
     {{#if owned}}
       <div class="emblem owned" title="You own this space"></div>
-    {{/if}}   
-    
+    {{/if}}
+
   </div>
-  
+
   <div class="meta">
-    <a href="{{media.url}}"><strong>{{{title}}}</strong></a>
+    <a href="{{media.actions.edit}}"><strong>{{{title}}}</strong></a>
     <p>{{{brief}}}</p>
   </div>
-  
+
   <div class="stats">
     <span>{{#pluralize 'page' nr_pages}}{{/pluralize}}</span>
     <span>{{#pluralize 'folder' nr_folders}}{{/pluralize}}</span>

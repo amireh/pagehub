@@ -973,7 +973,8 @@ fieldset {
   margin: 0;
   border: 0;
 }
-legend {
+legend,
+.blocky-heading {
   display: block;
   width: 100%;
   padding: 0;
@@ -984,7 +985,8 @@ legend {
   border: 0;
   border-bottom: 1px solid #e5e5e5;
 }
-legend small {
+legend small,
+.blocky-heading small {
   font-size: 15px;
   color: #999999;
 }

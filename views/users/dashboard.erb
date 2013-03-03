@@ -8,9 +8,28 @@
 </script>
 <% end %>
 
-<h2>Your spaces</h2>
+<div id="dashboard">
+  <div class="profile">
+    <div class="avatar">
+      <%= gravatar_tag (@user.gravatar_email || @user.email), :size => 196 %>
+    </div>
+    <h3 class="user-name"><%= @user.name %></h3>
+    <h4 class="hint"><%= @user.nickname %></h4>
+    <hr />
+    <div class="user-info">
+      <span class="join-date">Joined on <%= @user.created_at.strftime('%b. %d, %Y') %></span>
+    </div>
+  </div>
 
-<div class="gridster">
-  <ul>
-  </ul>
+  <div class="user-spaces">
+    <h3>Spaces</h3>
+    <br />
+    <!-- <div class="gridster">
+      <ul>
+      </ul>
+    </div> -->
+    <p class="alert alert-warning" style="display: none;" id="no_spaces_marker"><%= @user.nickname %> has no public spaces, or ones you have access to.</p>
+    <ul id="user_space_listing">
+    </ul>
+  </div>
 </div>

@@ -1,8 +1,6 @@
 module PageHub
   module Helpers
 
-
-
     def self.password_salt()
       rand(36**16).to_s(32)[0..6]
     end
@@ -39,6 +37,14 @@ module PageHub
 
     def vowelize(word)
       word.to_s.vowelize
+    end
+
+    def ordinalized_date(date)
+      month = date.strftime('%B')
+      day   = DataMapper::Inflector.ordinalize(date.day)
+      year  = date.year
+
+      "the #{day} of #{month}., #{year}"
     end
   end
 end

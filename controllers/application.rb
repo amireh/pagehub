@@ -1,5 +1,28 @@
+ReservedSpaceTitles = %w(
+  dashboard
+  spaces
+  settings
+)
 
-ReservedNames = [ 'name', 'spaces', 'pages', 'groups', 'spec' ]
+ReservedUsernames = %w[
+  pagehub
+  names name
+  spaces space
+  pages page
+  users user demo
+  organizations organization
+  groups group
+  spec
+  explore search features blog plans
+  site about open-source faq tos service terms security
+  sessions session
+  signup
+  new
+  login logout
+  stars favorites
+  edu
+  help
+]
 
 def reserved?(name)
   ReservedNames.include?(name)
@@ -7,12 +30,16 @@ end
 
 def name_available?(name)
   nn = (name || '').to_s.sanitize
-  !reserved?(nn) && !nn.empty? && current_user.owned_spaces.first({ pretty_title: nn }).nil?
+  !nn.empty? &&
+  !ReservedSpaceTitles.include?(nn) &&
+  current_user.owned_spaces.first({ pretty_title: nn }).nil?
 end
 
 def nickname_available?(name)
   nn = (name || '').to_s.sanitize
-  !reserved?(nn) && !nn.empty? && User.first({ nickname: nn }).nil?
+  !nn.empty? &&
+  !ReservedUsernames.include?(nn) &&
+  User.first({ nickname: nn }).nil?
 end
 
 before do
@@ -36,7 +63,7 @@ end
 get '/' do
   pass unless logged_in?
 
-  redirect current_user.url
+  redirect current_user.dashboard_url
 end
 
 get '/' do

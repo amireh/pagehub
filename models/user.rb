@@ -66,6 +66,10 @@ class User
     owned_spaces.first({ title: Space::DefaultSpace })
   end
 
+  def public_spaces
+    spaces.all({ is_public: true })
+  end
+
   after :create,  :create_default_space
   # after :save,    :create_default_space
 
@@ -132,8 +136,18 @@ class User
     pages
   end
 
+  def dashboard_url; '/' end
+
   def url(root = nil)
     "/users/#{id}"
+  end
+
+  def dashboard_url
+    href
+  end
+
+  def settings_url
+    '/settings'
   end
 
   def href

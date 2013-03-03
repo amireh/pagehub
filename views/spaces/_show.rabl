@@ -14,6 +14,13 @@ node(:media) do |s|
   {
     href:   s.href,
     url:    s.url,
+
+    actions: {
+      edit: s.edit_url,
+      settings: s.settings_url,
+      name_availability: s.creator.url + '/spaces/name'
+    },
+
     pages:  {
       url: s.url(true) + '/pages'
     },
@@ -24,6 +31,6 @@ node(:media) do |s|
   }
 end
 
-child(:creator => :creator) do |s|
-  attributes :id
+child(:creator => :creator) do |u|
+  partial "/users/_show", object: u
 end

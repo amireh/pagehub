@@ -1,0 +1,30 @@
+<li>
+  <div class="emblems">
+    {{#if is_public}}
+      <div class="emblem public" rel="tooltip" title="This is a public space, everyone can browse it"></div>
+    {{else}}
+      <div class="emblem private" rel="tooltip" title="This is a private space, guests can not browse it"></div>
+    {{/if}}
+
+    {{#if is_owner}}
+      <div class="emblem owner" rel="tooltip" title="You own this space"></div>
+    {{/if}}
+
+    {{#if is_member}}
+      <div class="emblem accessible" rel="tooltip" title="You have access to this space"></div>
+    {{/if}}
+
+  </div>
+
+  <div class="meta">
+    <h3 class="blocky-heading">
+      <a href="{{#if is_guest}}{{media.href}}{{else}}{{media.actions.edit}}{{/if}}"><strong>{{{title}}}</strong></a>
+      <div class="stats hint small">
+        <span>{{#pluralize 'page' nr_pages}}{{/pluralize}}</span>
+        <!-- <span>{{#pluralize 'folder' nr_folders}}{{/pluralize}}</span> -->
+        <span>, {{#pluralize 'member' nr_members}}{{/pluralize}}</span>
+      </div>
+    </h3>
+    <p class="hint">{{#if brief}}{{{brief}}}{{else}}<em class="small">No description available.</em>{{/if}}</p>
+  </div>
+</li>

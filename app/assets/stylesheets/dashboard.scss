@@ -1,7 +1,92 @@
 .dashboard {
+  .profile, .user-spaces {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .profile {
+    /*width: 200px;*/
+    margin-right: 40px;
+    .avatar img {
+      border: 1px solid #555;
+      padding: 2px;
+      box-shadow: none;
+    }
+
+    text-align: left;
+  }
+
+  .user-spaces {
+    width: 530px;
+  }
+
+  .user-spaces {
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    ul:not(.gridster) {
+      list-style-type: none;
+      padding: 0;
+      margin: -20px 0 0 0;
+
+      li {
+        position: relative;
+        .emblems {
+          position: absolute;
+          right: 0;
+          top: 10px;
+        }
+        h3 {
+          text-shadow: 0 1px 0 white;
+
+          .stats {
+            display: inline-block;
+            position: relative;
+            /*bottom: 0;*/
+            /*left: 0;*/
+            /*text-align: center;*/
+            font-size: 10px;
+            /*line-height: 1.25em;*/
+            /*border-top: 1px solid #eee;*/
+            /*background: white;*/
+            /*width: 100%;*/
+            /*padding: 5px;*/
+            /*z-index: 10;*/
+            /*min-height: 36px;*/
+            /*max-height: 36px;*/
+            span {
+              display: inline-block;
+              /*margin: 0 5px 0 0;*/
+            }
+          }
+        }
+      }
+
+    }
+
+    .emblems {
+      .emblem {
+        width:  24px;
+        height: 24px;
+        display: inline-block;
+        opacity: 0.5;
+        position: relative;
+        z-index: 10;
+
+        &.owner {  background: url(/assets/icons/24x24/star.png)   no-repeat center center; }
+        &.public { background: url(/assets/icons/24x24/unlock.png) no-repeat center center; }
+        &.private { background: url(/assets/icons/24x24/lock.png)  no-repeat center center; }
+        &.accessible { background: url(/assets/icons/24x24/keys.png)  no-repeat center center; }
+      }
+    }
+  }
+
   .gridster {
     margin-left: -20px;
     margin-right: 0;
+    max-width: 620px;
+    margin-top: -10px;
 
     li:not([data-sizex="1"]) {
       .stats {
@@ -13,38 +98,10 @@
 
     li {
       background: #fafafa;
-      border: 1px solid #eee;
+      border: 1px solid #ddd;
 
       text-align: center;
 
-      .emblems {
-        position: absolute;
-        z-index: 1;
-
-        left: 0;
-        bottom: 36px;
-        padding: 2px;
-        background: rgba(0,0,0,0.0325);
-        /*height: 100%;*/
-        width: 100%;
-        /*border: 1px solid #eee;*/
-        border-radius: 2px 0 0 2px;
-        border-right: none;
-        display: block;
-
-        .emblem {
-          width:  24px;
-          height: 24px;
-          display: inline-block;
-          opacity: 0.5;
-          position: relative;
-          z-index: 10;
-        }
-        .owned {  background: url(/assets/icons/24x24/star.png)   no-repeat center center; }
-        .public { background: url(/assets/icons/24x24/unlock.png) no-repeat center center; }
-        .private { background: url(/assets/icons/24x24/lock.png)  no-repeat center center; }
-
-      }
 
       .meta {
         &, a {
@@ -63,6 +120,23 @@
             text-shadow: none;
           }
         }
+      }
+
+      .emblems {
+        position: absolute;
+        z-index: 1;
+
+        left: 0;
+        bottom: 36px;
+        padding: 2px;
+        background: rgba(0,0,0,0.0325);
+        /*height: 100%;*/
+        width: 100%;
+        /*border: 1px solid #eee;*/
+        border-radius: 2px 0 0 2px;
+        border-right: none;
+        display: block;
+
       }
 
       .stats {

@@ -51,6 +51,11 @@ define('models/space',
           role:    role
         }]
       }, $.extend(true, (options || {}), { patch: true, wait: true }))
+    },
+
+    is_admin: function(user) {
+      var m = _.select(this.get('memberships'), function(m) { return parseInt(m.id) == parseInt(user.get('id')) })[0];
+      return m && ['admin', 'creator'].indexOf(m.role) != -1;
     }
   });
 

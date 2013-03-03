@@ -81,6 +81,14 @@ class Space
     root ? "/spaces/#{id}" : "#{creator.url}/spaces/#{self.id}"
   end
 
+  def edit_url
+    href + '/edit'
+  end
+
+  def settings_url
+    href + '/settings'
+  end
+
   def href
     "#{creator.href}/#{self.pretty_title}"
   end

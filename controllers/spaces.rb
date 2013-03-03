@@ -12,14 +12,13 @@ get '/users/:user_id/spaces',
   end
 end
 
-get '/users/:user_id/spaces/new',
+get '/new',
   auth: [ :user ],
-  requires: [ :user ],
-  provides: [ :html ],
-  exclusive: true do
+  # requires: [ :user ],
+  provides: [ :html ] do
 
-  authorize! :create, Space, message: "You can not create new spaces."
-
+  # authorize! :create, Space, message: "You can not create new spaces."
+  @user  = current_user
   @space = current_user.spaces.new
 
   respond_with @space do |f|
@@ -29,14 +28,13 @@ end
 
 get "/users/:user_id/spaces/:space_id",
   auth: [ :member ],
-  provides: [ :json, :html ],
+  provides: [ :json ],
   requires: [ :user, :space ] do
 
   authorize! :access, @space, message: "You do not have access to that space."
 
   respond_with @space do |f|
     f.json { rabl :"/spaces/show", object: @space }
-    f.html { erb :"/spaces/show" }
   end
 end
 
@@ -44,17 +42,17 @@ get "/users/:user_id/spaces/:space_id/dashboard", auth: :member, requires: [ :us
   erb :"/spaces/dashboard"
 end
 
-get "/users/:user_id/spaces/:space_id/edit",
-  auth: [ :admin ],
-  requires: [ :user, :space ],
-  provides: [ :html  ] do
+# get "/users/:user_id/spaces/:space_id/edit",
+#   auth: [ :admin ],
+#   requires: [ :user, :space ],
+#   provides: [ :html  ] do
 
-  authorize! :update, @space, message: "You must be an admin of this space to manage it."
+#   authorize! :update, @space, message: "You must be an admin of this space to manage it."
 
-  respond_with @space do |f|
-    f.html { erb :"/spaces/settings/index" }
-  end
-end
+#   respond_with @space do |f|
+#     f.html { erb :"/spaces/settings/index" }
+#   end
+# end
 
 delete '/users/:user_id/spaces/:space_id',
   auth: [ :creator ],

@@ -20,6 +20,8 @@ function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, Publis
     initialize: function(state) {
       Director.prototype.initialize.call(this, state.space, state);
 
+      this.state.trigger('highlight_nav_section', 'space_settings');
+
       this.add_alias('space');
 
       var director    = this;
