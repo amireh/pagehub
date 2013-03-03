@@ -52,6 +52,40 @@
     padding-right: 15px;
     cursor: pointer;
   }
+
+  > .icon { vertical-align: middle; }
+
+  .page-finder {
+    vertical-align: middle;
+    margin-bottom: 0;
+
+    > input,
+    > label {
+      line-height: 15px;
+    }
+    > label {
+      padding-left:   8px;
+      padding-right:  8px;
+    }
+
+    input {
+      /*display: none;*/
+    }
+  }
+
+  &.with-buttons {
+    > .btn {
+      line-height: inherit;
+      font-size: 0;
+      padding: 0;
+
+      > i.icon {
+        height: 26px;
+        width: 26px;
+        display: inline-block;
+      }
+    }
+  }
 }
 
 .general-actionbar {

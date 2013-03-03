@@ -35,6 +35,20 @@ define('views/spaces/show',
       this.page_actionbar   = new PageActionBar($.extend({}, data, { editor: this.editor }));
       this.page_actionbar   = new GeneralActionBar(data);
 
+      this.space.folders.every(function(f) {
+        this.space.folders.trigger('add', f);
+
+        f.pages.every(function(p) {
+          return this.pages.trigger('add', p);
+        }, f);
+
+        return true;
+      }, this);
+
+      this.space.folders.every(function(f) {
+        return this.space.folders.trigger('change:parent.id', f);
+      }, this);
+
       state.on('sync_runtime_preferences', this.queue_preferences_sync, this);
 
       this.preferences_autosaver = new TimedOp(this, this.autosave_preferences, {

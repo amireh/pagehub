@@ -63,9 +63,9 @@ function( $, Backbone, UI ) {
     bind_folder_pages: function(folder) {
       // console.log("Enabling D&D for " + folder.pages.models.length + " pages in folder " + folder.get('title'))
 
-      folder.pages.every(function(page) {
-        return this.bind_page(page);
-      }, this);
+      // folder.pages.every(function(page) {
+      //   return this.bind_page(page);
+      // }, this);
 
       this.__bind(folder.ctx.browser.el.find('> .folder_title:first'));
       folder.pages.on('add', this.bind_page, this);

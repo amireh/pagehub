@@ -77,16 +77,16 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
       console.log("Rendering " + this.space.folders.models.length + " folders");
 
-      this.space.folders.every(function(f) {
-        this.space.folders.trigger('add', f);
-        f.pages.on('add', this.reorder_page, this);
-        return true;
-      }, this);
+      // this.space.folders.every(function(f) {
+        // this.space.folders.trigger('add', f);
+        // f.pages.on('add', this.reorder_page, this);
+      //   return true;
+      // }, this);
 
-      this.space.folders.every(function(f) {
-        this.space.folders.trigger('change:parent.id', f);
-        return true;
-      }, this);
+      // this.space.folders.every(function(f) {
+      //   // this.space.folders.trigger('change:parent.id', f);
+      //   return true;
+      // }, this);
 
       return this;
     },
@@ -119,13 +119,11 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       }
 
       f.pages.on('add',           this.render_page, this);
+      f.pages.on('add',           this.reorder_page, this);
       f.pages.on('remove',        this.remove_page, this);
       f.pages.on('sync',          this.on_page_loaded, this);
       f.pages.on('change:title',  this.update_title, this);
       f.pages.on('change:title',  this.reorder_page, this);
-      f.pages.every(function(p) {
-        return this.pages.trigger('add', p);
-      }, f);
 
       f.trigger('change:parent.id', f);
 

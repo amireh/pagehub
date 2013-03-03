@@ -137,7 +137,7 @@ function($, Backbone) {
       this.editor.markClean();
       this.editor.setCursor(cursor);
       this.editor.scrollTo(scroll.left, scroll.top);
-
+      this.editor.focus();
       return this;
     },
 

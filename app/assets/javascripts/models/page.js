@@ -15,9 +15,9 @@ define(
     parse: function(data) {
       return data.page;
     },
-    urlRoot: function() {
-      return '/spaces/' + this.collection.space.get('id') + '/pages';
-    },
+    // urlRoot: function() {
+    //   return '/spaces/' + this.collection.space.get('id') + '/pages';
+    // },
 
     initialize: function() {
       if (this.get('title').length == 0) {
@@ -35,6 +35,19 @@ define(
           folder = space.folders.get(this.get('folder_id'));
 
       this.folder = folder || space.root_folder();
+    },
+
+    fully_qualified_title: function() {
+      var parts =
+        _.reject(
+          _.collect(this.folder.ancestors(),
+                    function(f) { return f.get('title'); }),
+          function(t) { return t == 'None' })
+        .reverse();
+
+      parts.push(this.get('title'));
+
+      return parts;
     }
   });
 

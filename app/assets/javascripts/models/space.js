@@ -56,6 +56,23 @@ define('models/space',
     is_admin: function(user) {
       var m = _.select(this.get('memberships'), function(m) { return parseInt(m.id) == parseInt(user.get('id')) })[0];
       return m && ['admin', 'creator'].indexOf(m.role) != -1;
+    },
+
+    find_page_by_fully_qualified_title: function(fqpt) {
+      var folder = this.root_folder();
+      var parts = fqpt.reverse();
+      while (parts.length > 1) {
+        var folder_title = parts.pop();
+
+        folder = this.folders.where({ title: folder_title, 'parent.id': folder.get('id') })[0];
+
+        if (!folder) {
+          console.log("no such folder: " + folder_title);
+          return null;
+        }
+      }
+
+      return folder.pages.where({ title: parts[0] })[0];
     }
   });
 
