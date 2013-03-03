@@ -12,6 +12,7 @@
 
     "runtime": {
       "fluid_workspace": false,
+      "scrolly_workspace": true,
       "spaces": {
       }
     }

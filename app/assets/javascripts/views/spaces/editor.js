@@ -69,6 +69,7 @@ function($, Backbone) {
       if (this.space) {
         this.space.on('page_loaded', this.populate_editor, this);
         this.space.on('layout_changed', this.refresh, this);
+        this.space.on('refresh_editor', this.refresh, this);
         this.space.on('reset', this.reset, this);
       }
 

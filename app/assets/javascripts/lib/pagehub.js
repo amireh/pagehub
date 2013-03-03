@@ -19,9 +19,6 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
         status: 1
       };
 
-  /* the minimum amount of pixels that must be available for the
-     the listlikes not to be wrapped */
-  var list_offset_threshold = 120;
   function show_list() {
     if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
       return false;
@@ -55,7 +52,14 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
     return false;
   }
 
+  var dont_hide_list = false;
+
   function hide_list(el) {
+    if (dont_hide_list) {
+      dont_hide_list = false;
+      return true;
+    }
+
     $(el).removeClass("selected");
     $(el).nextAll("ol.listlike:first").hide();
     $(el).add($(window)).unbind('click', hide_list_callback);
@@ -161,14 +165,15 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
 
     // "listlike" links
     $("a.listlike:not(.selected)").bind('click', show_list);
-    $("ol.listlike li, ol.listlike li *").click(function() {
-      var anchor = $(this).parent().prev("a.listlike,a[data-listlike]");
+    $("ol.listlike li:not(.sticky) a").click(function() {
+      var anchor = $(this).parent().prev("a.listlike");
       if (anchor.hasClass("selected")) {
         hide_list(anchor);
       }
 
       return true; // let the event propagate
     });
+    $("ol.listlike li.sticky a").on('click', function(e) { dont_hide_list = true; return true; });
 
     __init = true;
   // });

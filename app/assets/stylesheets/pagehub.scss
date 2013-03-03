@@ -395,13 +395,14 @@ ol.listlike {
   left: 0%;
   top: 99%;
   text-align: left;
-  color: white;
   /*border-top-left-radius:     2px;
   border-bottom-left-radius:  2px;
   border-bottom-right-radius: 2px;*/
   border-radius: 2px;
   max-height: 320px;
   overflow-y: auto;
+
+  li,a { position: relative; z-index: 102; }
 }
 
 a.listlike.selected:before {

@@ -34,12 +34,33 @@
   border: none;
 }
 
+.space_editor {
+  #editor_container {
+   /*width: 720px; */
+    padding-top: 34px;
+  }
+}
+
+.page-actionbar {
+  #movement_listing {
+    white-space: nowrap;
+    right: auto !important;
+    /*font-size: 0.9em;*/
+  }
+  #movement_listing a {
+    /*padding: 3px 10px;*/
+    padding-right: 15px;
+    cursor: pointer;
+  }
+}
+
 .general-actionbar {
   position: absolute;
   right: 0;
   top: 0;
   button.icon,
   a.icon {
+    width: 32px;
     /*opacity: 0.5; &.selected, &:hover { background-color: rgba(0,0,0,0.075); }*/
   }
   ol.listlike li a.selected {
@@ -66,15 +87,21 @@
 #content.space_editor {
   margin-top: -10px;
 }
-.no-scroll #pages .scroller {
-  overflow-y: visible !important;
-  max-height: inherit !important;
+.no-scroll {
+  #pages .scroller {
+    overflow-y: visible !important;
+    max-height: inherit !important;
+  }
+
+  .CodeMirror {
+    height: inherit !important;
+  }
 }
 
 .browser {
   position: relative;
   padding: 0;
-  margin: 5px 5px 0 0;
+  margin: 7px 5px 0 0;
   min-width: 180px;
 
   ul, ol {

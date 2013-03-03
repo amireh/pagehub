@@ -298,10 +298,6 @@ header h1 a.selected { text-decoration: none; }
   box-shadow: 0 0 1px 3px #ddd;
 }
 */
-#editor_container {
- /*width: 720px; */
-  padding-top: 41px;
-}
 
 .member .settings nav a:hover,
 .member .settings nav li.selected,
@@ -319,15 +315,7 @@ header h1 a.selected { text-decoration: none; }
   display: block;
 }
 
-#movement_listing {
-  white-space:nowrap;
-  right: auto !important;
-  font-size: 0.9em;
-}
-#movement_listing a {
-  padding: 3px 10px;
-  cursor: pointer;
-}
+
 #browser {
 
   .folder {
@@ -361,7 +349,6 @@ button[data-collapse] {
 }
 
 
-
 .folder_title button:hover {
   background-color: transparent;
 }
@@ -369,4 +356,15 @@ button[data-collapse] {
 .gravatar {
   box-shadow: 0 0 3px 1px #555;
   border-color: #555;
+}
+
+ol.listlike {
+  li {
+    span.title {
+      display: block;
+      padding: 5px 10px;
+      font-weight: bold;
+      background: #eee;
+    }
+  }
 }

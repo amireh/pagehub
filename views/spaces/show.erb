@@ -17,7 +17,7 @@
   <%= partial "spaces/_browser" %>
 
   <div id="editor_container">
-    <div id="page_actions" class="page-actions actions">
+    <div id="page_actions" class="page-actionbar actions">
       <a href="#" class="icon save" rel="tooltip" title="Saves the content of this page (Ctrl+Alt+S)" id="save_page">Save</a>
 
       <a target="PageHub - Preview"
@@ -32,7 +32,7 @@
 
       <a id="revisions" target="PageHub" class="icon history" rel="tooltip" title="View the history of this page">Revisions</a>
 
-      <a class="listlike icon folder" data-placement="top" rel="tooltip" title="Move this page to a different folder">Move</a>
+      <a class="listlike icon folder" data-placement="top" rel="tooltip" title="Move this page to a different folder"></a>
       <ol class="listlike" id="movement_listing">
       </ol>
 
@@ -40,7 +40,12 @@
     <div id="general_actionbar" class="general-actionbar actions">
       <a class="listlike icon more" data-placement="left" rel="tooltip" title="Workspace settings and actions">Workspace Actions</a>
       <ol class="listlike">
-        <li><a id="switch_layout" href="#" rel="tooltip" data-placement="left" title="Make the workspace span the entire screen">Fluid</a></li>
+        <li class="sticky"><a id="switch_layout" href="#" rel="tooltip" data-placement="left" title="Make the workspace span the entire screen">Fluid workspace</a>
+        </li>
+        <li class="sticky">
+          <a id="switch_scrolly" href="#" rel="tooltip" data-placement="left" title="Disable scrolling in the browser and the editor">No scrolling</a>
+        </li>
+        <li><span class="title"><strong>Editor</strong></span></li>
         <li class="sticky"><a href="#" data-placement="left" rel="tooltip" title="Increase the height of the editor" id="increase_height">Grow</a></li>
         <li class="sticky"><a href="#" data-placement="left" rel="tooltip" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
         <li class="sticky"><a href="#" data-placement="left" rel="tooltip" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
