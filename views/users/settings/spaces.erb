@@ -24,7 +24,7 @@
           <td>
             <div class="btn-group">
             <% if can? :update, @space %>
-              <a href="<%= s.url %>/edit" class="btn btn-small">Manage</a>
+              <a href="<%= s.settings_url %>" class="btn btn-small">Manage</a>
             <% end %>
             <% unless s.is_creator?(@user) %>
               <button data-role="leave_space" class="btn btn-danger btn-small">Leave</button>

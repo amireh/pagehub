@@ -66,8 +66,12 @@ class User
     owned_spaces.first({ title: Space::DefaultSpace })
   end
 
-  def public_spaces
-    spaces.all({ is_public: true })
+  def public_spaces(user)
+    if !user
+      spaces.all({ is_public: true })
+    else
+      owned_spaces.select { |s| s.member? user }
+    end
   end
 
   after :create,  :create_default_space

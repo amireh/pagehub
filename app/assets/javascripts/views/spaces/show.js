@@ -26,7 +26,6 @@ define('views/spaces/show',
       var data = {
         state: state,
         space: state.space,
-        user:  state.user,
         ctx:   this.ctx
       };
 
@@ -50,7 +49,7 @@ define('views/spaces/show',
     },
 
     autosave_preferences: function(prefs, timed_invocation) {
-      this.state.user.save($.extend({}, prefs, { no_object: true }), {
+      this.state.current_user.save($.extend({}, prefs, { no_object: true }), {
         patch: true
       })
     }

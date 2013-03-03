@@ -39,7 +39,6 @@
   </script>
 
   <script src="/assets/vendor/jquery-1.9.1.min.js"></script>
-  <script data-main="/assets/main" src="/assets/lib/require.js"></script>
 
   <%= yield_content :js %>
   <%= yield_content :scripts %>
@@ -114,7 +113,7 @@
       require([ 'views/header', 'models/user', 'models/space' ], function(Header, User, Space) {
         try {
           application.current_user =
-            new User(JSON.parse(_.unescape(<%= h(rabl :"/users/show", object: current_user).to_json %>)).user);
+            new User(JSON.parse(_.unescape(<%= h(rabl :"/users/show", locals: { user: current_user }).to_json %>)).user);
         } catch(e) {
           console.log(e)
         }
@@ -124,7 +123,7 @@
           <% else %>
             try {
               application.user =
-                new User(JSON.parse(_.unescape(<%= h(rabl :"/users/public_show", object: @user).to_json %>)).user);
+                new User(JSON.parse(_.unescape(<%= h(rabl :"/users/public_show",  object: @user).to_json %>)).user);
             } catch(e) {
               console.log(e)
             }
@@ -134,6 +133,19 @@
           try {
             application.space =
               new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
+            <% if @space.creator == @user %>
+              application.space.creator = application.user;
+            <% elsif @space.creator == current_user %>
+              application.space.creator = application.current_user;
+            <% else %>
+              try {
+                application.space.creator =
+                  new User(JSON.parse(_.unescape(<%= h(rabl :"/users/public_show", locals: { user: @space.creator }).to_json %>)).user);
+              } catch(e) {
+                console.log(e)
+              }
+            <% end %>
+
           } catch(e) {
             console.log(e)
           }
@@ -145,6 +157,8 @@
       });
     });
   </script>
+
+  <script data-main="/assets/main" src="/assets/lib/require.js"></script>
 
   <%= partial "layouts/_google_analytics" %>
 </body>

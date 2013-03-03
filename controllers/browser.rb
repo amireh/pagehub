@@ -9,8 +9,6 @@ get '/:user_nickname/:space_pretty_title/edit', auth: :user, :provides => [ :htm
 
   authorize! :access, @space, message: "You are not allowed to access that space."
 
-  @user = current_user
-
   respond_with @space do |f|
     f.json { rabl :"/spaces/show", object: @space }
     f.html { erb :"/spaces/show" }

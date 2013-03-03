@@ -169,8 +169,10 @@ span.shortcut {
 [draggable=true] {
   -khtml-user-drag: element;
 }
+
 body.fluid {
-  .stuff {
+  .stuff,
+  footer p {
     max-width: 100%;
     margin: 0 40px 0 60px;
     width: auto;

@@ -96,7 +96,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
         revisions:  this.$el.find('#revisions')
       };
 
-      if (this.user.get("preferences.editing.autosave")) {
+      if (this.state.current_user.get("preferences.editing.autosave")) {
         console.log("Page content will be autosaved every " + (this.state.get('preferences.pulses.page_content') / 1000) + " seconds.");
 
         this.autosaver = new TimedOp(this, this.save_page, {

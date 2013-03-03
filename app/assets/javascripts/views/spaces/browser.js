@@ -12,15 +12,15 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
   var init_collapsed_setting = function(object) {
     if (!get_collapsed_setting(object)) {
-      object.state.user.set('preferences.runtime.spaces.' + object.state.space.get('id'), { collapsed: [] });
+      object.state.current_user.set('preferences.runtime.spaces.' + object.state.space.get('id'), { collapsed: [] });
     }
 
     return true;
   },
       get_collapsed_setting = function(object) {
-    return object.state.user.get('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed');
+    return object.state.current_user.get('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed');
   },  set_collapsed_setting = function(object, value) {
-    return object.state.user.set('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed', value);
+    return object.state.current_user.set('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed', value);
   }
 
   return Backbone.View.extend({

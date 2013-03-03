@@ -18,8 +18,8 @@ function(Backbone) {
         switch_scrolly: this.$el.find('#switch_scrolly')
       }
 
-      this.is_fluid = this.user.get('preferences.runtime.fluid_workspace');
-      this.is_scrolly = this.user.get('preferences.runtime.scrolly_workspace');
+      this.is_fluid = this.state.current_user.get('preferences.runtime.fluid_workspace');
+      this.is_scrolly = this.state.current_user.get('preferences.runtime.scrolly_workspace');
       this.render();
     },
 

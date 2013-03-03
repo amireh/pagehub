@@ -34,7 +34,7 @@ end
 
 configure do
   config_files.each { |cf| config_file 'config/%s.yml' %[cf] }
-  
+
   respond_to :html, :json
 
   use Rack::Session::Cookie, :secret => settings.credentials['cookie']['secret']
@@ -48,13 +48,13 @@ configure do
   [ 'lib', 'helpers' ].each { |d|
     Dir.glob("#{d}/**/*.rb").reject { |f| f =~ /\.exclude/ }.each { |f| require f }
   }
-  
+
   PageHub::Config.init
 
   [ 'models' ].each { |d|
     Dir.glob("#{d}/**/*.rb").reject { |f| f =~ /\.exclude/ }.each { |f| require f }
   }
-  
+
   require 'controllers/sessions'
   require 'controllers/users'
   require 'controllers/folders'
@@ -66,10 +66,10 @@ configure do
 
   DataMapper.finalize
   DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
-  
+
   set :default_preferences, PageHub::Config.defaults
   set :jstemplates, File.join(settings.root, 'app', 'templates')
-  
+
   Rabl.configure do |config|
     config.escape_all_output = true
   end
@@ -84,7 +84,7 @@ configure :production, :development do |app|
   Gravatarify.styles[:icon] = { size: 32, html: { :class => 'gravatar gravatar-icon' } }
   Gravatarify.styles[:default] = { size: 96, html: { :class => 'gravatar' } }
   Gravatarify.styles[:profile] = { size: 128, html: { :class => 'gravatar' } }
-    
+
   use OmniAuth::Builder do
     provider :developer if app.settings.development?
 
