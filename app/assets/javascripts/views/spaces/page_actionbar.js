@@ -18,8 +18,8 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       },
 
       initialize: function(data) {
-        this.space = data.space;
-        this.ctx   = data.ctx;
+        _.implode(this, data);
+
         this.space.folders.on('add',    this.add_link, this);
         this.space.folders.on('remove', this.rm_link, this);
       },

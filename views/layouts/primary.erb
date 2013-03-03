@@ -108,19 +108,16 @@
   <script>
     <% if settings.development? %>app = null;<% end %>
 
-    request = { path: <%= request.path.to_json %> };
     pagehub_hooks.push(function(application) {
       <% if settings.development? %>app = application;<% end %>
 
       require([ 'views/header', 'models/user', 'models/space' ], function(Header, User, Space) {
-
         try {
           application.current_user =
             new User(JSON.parse(_.unescape(<%= h(rabl :"/users/show", object: current_user).to_json %>)).user);
         } catch(e) {
           console.log(e)
         }
-
         <% if @user %>
           <% if current_user == @user %>
             application.user = application.current_user;
@@ -133,14 +130,13 @@
             }
           <% end %>
         <% end %>
-
         <% if @space %>
-        try {
-          application.space =
-            new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
-        } catch(e) {
-          console.log(e)
-        }
+          try {
+            application.space =
+              new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
+          } catch(e) {
+            console.log(e)
+          }
         <% end %>
 
         application.header = new Header(application);

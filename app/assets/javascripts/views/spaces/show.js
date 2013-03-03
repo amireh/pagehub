@@ -9,10 +9,10 @@ define('views/spaces/show',
   'pagehub'
 ], function(Backbone, Space, Browser, ResourceActions, PageActionBar, Editor, UI) {
   return Backbone.View.extend({
-    initialize: function(data) {
+    initialize: function(state) {
       UI.status.mark_pending();
 
-      this.space = new Space(data.space);
+      this.space = state.space;
       this.ctx = {
         settings_changed: false,
         settings: {

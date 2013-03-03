@@ -12,8 +12,8 @@ function(Backbone, Folder, UI, Shortcut) {
     initialize: function(data) {
       var view = this;
 
-      this.space = data.space;
-      this.ctx   = data.ctx;
+      _.implode(this, data);
+
       this.$el.find('#new_page').attr("href", this.space.get('media').pages.url + '/new');
 
       Shortcut.add("ctrl+alt+c", function() { view.create_page(); })

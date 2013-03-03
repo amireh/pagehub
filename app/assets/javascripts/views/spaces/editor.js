@@ -52,18 +52,17 @@ function($, Backbone) {
   }
 
   var EditorView = Backbone.View.extend({
-    // el: $("#page_editor"),
+    el: $("#page_editor"),
 
     ctx: { },
 
     initialize: function(data) {
-      this.space  = data.space;
-      this.ctx    = data.ctx || {};
-      this.config = $.extend({
-        el: "#page_editor"
-      }, data.config);
+      _.implode(this, data);
 
-      this.offset = 135;
+      this.config = $.extend({
+        el: "#page_editor",
+        offset: 135
+      }, (this.config || {}));
 
       this.$el = $(this.config.el);
 
@@ -103,7 +102,7 @@ function($, Backbone) {
         return this;
       }
 
-      this.editor.setSize(null, $(window).height() - (offset || this.offset));
+      this.editor.setSize(null, $(window).height() - (offset || this.config.offset));
 
       return this;
     },

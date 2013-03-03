@@ -12,8 +12,7 @@ function( $, Backbone, UI ) {
     },
 
     initialize: function(data) {
-      this.space  = data.space,
-      this.ctx    = data.ctx;
+      _.implode(this, data);
 
       // Make it draggable
       if (Modernizr.draganddrop) {

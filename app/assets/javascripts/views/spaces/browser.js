@@ -28,8 +28,8 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
 
     initialize: function(data) {
-      this.space  = data.space,
-      this.ctx    = data.ctx;
+      _.implode(this, data);
+
       this.offset = 135;
 
       var view = this;
