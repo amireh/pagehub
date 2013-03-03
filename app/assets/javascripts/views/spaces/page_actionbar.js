@@ -81,10 +81,6 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       }
     }),
 
-    _ctx: {
-      disabled:     false
-    },
-
     initialize: function(data) {
       this.space  = data.space;
       this.editor = data.editor;
@@ -93,6 +89,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       this.space.on('page_loaded', this.on_page_loaded, this);
       this.space.on('reset',       this.reset, this);
 
+      this.disabled = false;
       this.anchors = {
         preview:    this.$el.find('#preview'),
         edit:       this.$el.find('#edit_page'),
@@ -121,14 +118,14 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     },
 
     disable: function() {
-      this.$el.attr("disabled", "disabled").addClass("disabled");
-      this._ctx.disabled = true;
+      this.$el.prop("disabled", true).addClass("disabled");
+      this.disabled = true;
       // this.undelegateEvents(); // this doesn't seem to work
     },
 
     enable: function() {
-      this.$el.attr("disabled", null).removeClass("disabled");
-      this._ctx.disabled = false;
+      this.$el.prop("disabled", false).removeClass("disabled");
+      this.disabled = false;
       // this.delegateEvents();
     },
 
@@ -146,7 +143,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     },
 
     save_page: function() {
-      if (this._ctx.disabled) { return false; }
+      if (this.disabled) { return false; }
 
       if (!this.editor.content_changed())
         return this;
@@ -157,7 +154,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       p.save({ content: p.get('content')}, {
         patch: true,
         success: function() {
-          UI.status.show("Page updated!", "good");
+          UI.status.show("Updated.", "good");
         }
       });
 
@@ -165,16 +162,17 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     },
 
     preview_page: function() {
-      if (this._ctx.disabled) { return false; }
+      if (this.disabled) { return false; }
 
       window.open(this.ctx.current_page.get('media').href, "_preview")
     },
 
     destroy_page: function() {
-      if (this._ctx.disabled) { return false; }
+      if (this.disabled) { return false; }
 
       var view  = this,
           page  = this.ctx.current_page,
+          pages = this.ctx.current_page.collection,
           el    = DestroyPageTmpl(page.toJSON());
 
       var dialog = $(el).dialog({
@@ -186,8 +184,10 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
           },
           Remove: function() {
             page.destroy({
+              wait: true,
               success: function(model, resp) {
                 UI.status.show("Deleted.", "good");
+                // pages.remove(page);
                 dialog.dialog("close");
               }
             });
@@ -198,7 +198,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     }, //destroy_page
 
     edit_page: function(evt) {
-      if (this._ctx.disabled) { return false; }
+      if (this.disabled) { return false; }
 
       var el      = $(evt.target),
           page    = this.ctx.current_page,

@@ -1,11 +1,11 @@
 <div id="pages" class="resources">
 
   <div id="resource_actions" class="actions">
-    <a class="listlike new_resource icon new" tabindex="1" rel="tooltip" data-placement="right" title="Create a new page or folder">New</a>
-    <ol class="listlike">
-      <li><a href="<%= @space.url(true) + '/pages/new' %>" id="new_page" rel="tooltip" data-placement="right" title="Create a new page (Ctrl+Alt+C)">New page</a></li>
-      <li><a href="<%= @space.url(true) + '/folders/new' %>" role="button" rel="tooltip" data-placement="right" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">New folder</a></li>
-    </ol>
+    <!-- <a class="listlike new_resource icon new" tabindex="1" rel="tooltip" data-placement="right" title="Create a new page or folder">New</a> -->
+    <!-- <ol class="listlike"> -->
+      <a class="icon new-page" href="<%= @space.url(true) + '/pages/new' %>" id="new_page" rel="tooltip" data-placement="right" title="Create a new page (Ctrl+Alt+C)">New page</a>
+      <a class="icon new-folder" href="<%= @space.url(true) + '/folders/new' %>" role="button" rel="tooltip" data-placement="right" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">New folder</a>
+    <!-- </ol> -->
   </div>
 
   <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->

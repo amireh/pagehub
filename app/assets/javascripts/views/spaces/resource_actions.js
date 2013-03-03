@@ -28,7 +28,7 @@ function(Backbone, Folder, UI, Shortcut) {
     create_page: function(e) {
       if (e) { e.preventDefault(); }
 
-      UI.status.show("Creating a new page...", "pending");
+      // UI.status.show("Creating a new page...", "pending");
       var folder  = this.ctx.current_folder || this.space.root_folder();
 
       folder.pages.add({ folder_id: folder.get('id') }, { silent: true });

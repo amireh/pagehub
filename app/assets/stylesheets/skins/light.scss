@@ -180,6 +180,13 @@ nav > a:hover:after {
 .icon.save          { background: url(/assets/icons/16x16/save.png)       no-repeat center center; }
 .icon.preview       { background: url(/assets/icons/16x16/television.png)    no-repeat center center; }
 .icon.history       { background: url(/assets/icons/16x16/wired.png)         no-repeat center center; }
+.icon.new-folder {
+  background: url("/assets/icons/20x20/folder.png") no-repeat  center;
+}
+.icon.new-page {
+  background: url("/assets/icons/16x16/new_page.png") no-repeat center;
+}
+
 a {
   /*color: #D4EE5E;*/
   color: #008cdd;

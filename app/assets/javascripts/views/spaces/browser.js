@@ -104,6 +104,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
       f.pages.on('add',           this.render_page, this);
       f.pages.on('remove',        this.remove_page, this);
+      f.pages.on('sync',          this.on_page_loaded, this);
       f.pages.on('change:title',  this.update_title, this);
       f.pages.on('change:title',  this.reorder_page, this);
       f.pages.every(function(p) {
@@ -130,7 +131,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
 
     update_title: function(r) {
-      r.ctx.browser.title.html(r.get('title'))
+      r.ctx.browser.title.html(_.escape(r.get('title')))
     },
 
     reorder_folder: function(f) {
@@ -169,10 +170,6 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
       folder.ctx.browser.empty_label.hide();
 
-      page.on('sync', this.on_page_loaded, this);
-      // page.on('change:folder_id', this.reorder_page, this);
-      // page.on('change:title', this.reorder_page, this);
-
       page.ctx.browser = {
         el:     el,
         anchor: el.find('a'),
@@ -196,7 +193,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
       if (this.ctx.current_page == page) {
         this.ctx.current_page = null;
-        this.space.trigger('reset');
+        this.space.trigger('reset', page);
       }
     },
 
