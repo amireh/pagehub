@@ -32,5 +32,6 @@ node(:media) do |s|
 end
 
 child(:creator => :creator) do |u|
-  partial "/users/_show", object: u
+  # partial "/users/_show", object: u
+  attributes :id
 end

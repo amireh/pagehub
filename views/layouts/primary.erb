@@ -110,7 +110,7 @@
 
     pagehub_hooks.push(function(application) {
       <% if settings.development? %>app = application;<% end %>
-
+      application.set('preferences', <%= PageHub::Config.defaults['app'].to_json %>);
       require([ 'views/header', 'models/user', 'models/space' ], function(Header, User, Space) {
         try {
           application.current_user =

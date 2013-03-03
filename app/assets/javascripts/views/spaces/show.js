@@ -36,7 +36,9 @@ define('views/spaces/show',
 
       state.on('sync_runtime_preferences', this.queue_preferences_sync, this);
 
-      this.preferences_autosaver = new TimedOp(this, this.autosave_preferences, { pulse: 1000 } /* every 10 secs */);
+      this.preferences_autosaver = new TimedOp(this, this.autosave_preferences, {
+        pulse: state.get('preferences.pulses.runtime_preferences')
+      });
 
       UI.status.mark_ready();
     },
@@ -47,11 +49,7 @@ define('views/spaces/show',
 
     autosave_preferences: function(prefs, timed_invocation) {
       this.state.user.save($.extend({}, prefs, { no_object: true }), {
-        patch: true,
-        wait: true,
-        success: function() {
-          console.log("preferences updated");
-        }
+        patch: true
       })
     }
   });

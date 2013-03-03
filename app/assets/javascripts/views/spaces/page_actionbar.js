@@ -82,9 +82,8 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
     }),
 
     initialize: function(data) {
-      this.space  = data.space;
-      this.editor = data.editor;
-      this.ctx    = data.ctx;
+      _.implode(this, data);
+
       this.movement_listing = new this.MovementListing(data);
       this.space.on('page_loaded', this.on_page_loaded, this);
       this.space.on('reset',       this.reset, this);
@@ -97,11 +96,15 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
         revisions:  this.$el.find('#revisions')
       };
 
-      this.autosaver = new TimedOp(this, this.save_page, {
-        pulse:     30000,
-        with_flag: true,
-        autoqueue: true
-      });
+      if (this.user.get("preferences.editing.autosave")) {
+        console.log("Page content will be autosaved every " + (this.state.get('preferences.pulses.page_content') / 1000) + " seconds.");
+
+        this.autosaver = new TimedOp(this, this.save_page, {
+          pulse:     this.state.get('preferences.pulses.page_content'),
+          with_flag: true,
+          autoqueue: true
+        });
+      }
 
       this.bootstrap();
     },
@@ -126,7 +129,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
       this.$el.prop("disabled", true).addClass("disabled");
       this.disabled = true;
 
-      this.autosaver.stop();
+      this.autosaver && this.autosaver.stop();
       // this.undelegateEvents(); // this doesn't seem to work
     },
 
@@ -134,7 +137,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
       this.$el.prop("disabled", false).removeClass("disabled");
       this.disabled = false;
 
-      this.autosaver.start();
+      this.autosaver && this.autosaver.start();
       // this.delegateEvents();
     },
 
@@ -160,7 +163,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
       this.editor.serialize();
       var p = this.ctx.current_page;
       // console.log("saving page + " + JSON.stringify(this.ctx.current_page.toJSON()))
-      p.save({ content: p.get('content')}, {
+      p.save({ content: p.get('content'), no_object: true }, {
         patch: true,
         success: function() {
           if (!autosave) {

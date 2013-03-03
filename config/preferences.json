@@ -12,7 +12,6 @@
 
     "runtime": {
       "spaces": {
-        "collapsed": []
       }
     }
   },
@@ -35,8 +34,10 @@
   },
 
   "app": {
-    "settings": {
-      "lookup_pulse": 250
-    }
+    "pulses": {
+      "runtime_preferences": 1000,
+      "page_content": 30000
+    },
+    "lookup_pulse": 250
   }
 }

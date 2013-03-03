@@ -41,24 +41,11 @@
           text-shadow: 0 1px 0 white;
 
           .stats {
+            vertical-align: middle;
             display: inline-block;
             position: relative;
-            /*bottom: 0;*/
-            /*left: 0;*/
-            /*text-align: center;*/
             font-size: 10px;
-            /*line-height: 1.25em;*/
-            /*border-top: 1px solid #eee;*/
-            /*background: white;*/
-            /*width: 100%;*/
-            /*padding: 5px;*/
-            /*z-index: 10;*/
-            /*min-height: 36px;*/
-            /*max-height: 36px;*/
-            span {
-              display: inline-block;
-              /*margin: 0 5px 0 0;*/
-            }
+            line-height: 1;
           }
         }
       }

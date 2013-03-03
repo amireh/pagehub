@@ -10,7 +10,7 @@
     <p><strong>Autosaving</strong></p>
     <label>
       <input type="checkbox" name="autosave" value="true" <%= checkify "editing.autosave", current_user %> />
-      Automatically save while editing (every 30 seconds)
+      Automatically save while editing (every <%= PageHub::Config.defaults['app']['pulses']['page_content'] / 1000 %> seconds)
     </label>
   </fieldset>
 

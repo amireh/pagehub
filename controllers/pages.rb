@@ -128,6 +128,8 @@ put '/spaces/:space_id/pages/:page_id',
     halt 400, @page.errors
   end
 
+  halt 200, {}.to_json if params[:no_object]
+
   respond_with @page do |f|
     f.json { rabl :"pages/show" }
   end
