@@ -1,6 +1,6 @@
 define('views/spaces/page_actionbar',
-[ 'backbone', 'hb!move_folder_link.hbs', 'hb!dialogs/destroy_page.hbs', 'shortcut', 'pagehub' ],
-function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
+[ 'backbone', 'hb!move_folder_link.hbs', 'hb!dialogs/destroy_page.hbs', 'shortcut', 'pagehub', 'timed_operation' ],
+function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedOp) {
   return Backbone.View.extend({
     el: $("#page_actions"),
 
@@ -97,6 +97,11 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
         revisions:  this.$el.find('#revisions')
       };
 
+      this.autosaver = new TimedOp(this, this.save_page, {
+        pulse:     30000,
+        with_flag: true,
+        autoqueue: true
+      });
 
       this.bootstrap();
     },
@@ -120,12 +125,16 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
     disable: function() {
       this.$el.prop("disabled", true).addClass("disabled");
       this.disabled = true;
+
+      this.autosaver.stop();
       // this.undelegateEvents(); // this doesn't seem to work
     },
 
     enable: function() {
       this.$el.prop("disabled", false).removeClass("disabled");
       this.disabled = false;
+
+      this.autosaver.start();
       // this.delegateEvents();
     },
 
@@ -142,7 +151,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
 
     },
 
-    save_page: function() {
+    save_page: function(autosave) {
       if (this.disabled) { return false; }
 
       if (!this.editor.content_changed())
@@ -154,7 +163,9 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI) {
       p.save({ content: p.get('content')}, {
         patch: true,
         success: function() {
-          UI.status.show("Updated.", "good");
+          if (!autosave) {
+            UI.status.show("Updated.", "good");
+          }
         }
       });
 

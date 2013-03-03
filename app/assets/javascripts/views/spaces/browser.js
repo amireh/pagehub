@@ -9,6 +9,20 @@ define('views/spaces/browser',
   'pagehub'
 ],
 function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
+
+  var init_collapsed_setting = function(object) {
+    if (!get_collapsed_setting(object)) {
+      object.state.user.set('preferences.runtime.spaces.' + object.state.space.get('id'), { collapsed: [] });
+    }
+
+    return true;
+  },
+      get_collapsed_setting = function(object) {
+    return object.state.user.get('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed');
+  },  set_collapsed_setting = function(object, value) {
+    return object.state.user.set('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed', value);
+  }
+
   return Backbone.View.extend({
     el: $("#browser"),
 
@@ -48,6 +62,8 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       // this.space.folders.on('sync', this.reorder_folder, this);
 
       this.drag_manager = new DragManager(data);
+
+      init_collapsed_setting(this);
 
       this.elements = {
         scroller: $("#browser_scroller")
@@ -113,7 +129,8 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
       f.trigger('change:parent.id', f);
 
-      if (this.ctx.settings.runtime.collapsed.indexOf(parseInt( f.get('id') )) != -1) {
+      // if (this.ctx.settings.runtime.collapsed.indexOf(parseInt( f.get('id') )) != -1) {
+      if (get_collapsed_setting(this).indexOf(parseInt( f.get('id') )) != -1) {
         this.__collapse(f.ctx.browser.collapser);
       }
 
@@ -342,6 +359,13 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       }
 
       this.__collapse(source);
+      var data = { preferences: { runtime: { spaces: {} } } };
+
+      data.preferences.runtime.spaces[this.state.space.get('id')] = {
+        collapsed: get_collapsed_setting(this)
+      };
+
+      this.state.trigger('sync_runtime_preferences', data);
     },
 
     __collapse: function(source) {
@@ -355,8 +379,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
         source.attr("data-collapsed", null).html(caption);
         source.parent().removeClass("collapsed");
 
-        this.ctx.settings.runtime.collapsed.pop_value(folder_id);
-        this.ctx.settings_changed = true;
+        set_collapsed_setting(this, get_collapsed_setting(this).pop_value(folder_id));
       } else {
         source.siblings(":not(span.folder_title)").hide();
         // source.parent().siblings().hide();
@@ -365,8 +388,9 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
         source.attr("data-collapsed", true).html(caption);
         source.parent().addClass("collapsed");
 
-        this.ctx.settings.runtime.collapsed.push(folder_id);
-        this.ctx.settings_changed = true;
+        get_collapsed_setting(this).push(folder_id);
+        // this.ctx.settings.runtime.collapsed.push(folder_id);
+        // this.ctx.settings_changed = true;
       }
     },
 

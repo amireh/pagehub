@@ -148,10 +148,12 @@ put '/users/:user_id',
     halt 400, @user.errors
   end
 
+  if params[:no_object]
+    halt 200, {}.to_json
+  end
+
   respond_to do |f|
-    f.json {
-      rabl :"users/show", object: @user
-    }
+    f.json { rabl :"users/show", object: @user }
   end
 end
 

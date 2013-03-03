@@ -69,8 +69,6 @@ post '/spaces/:space_id/pages',
 
   authorize! :author, @space, :message => "You need to be an editor of this space to create pages."
 
-  puts params.inspect
-
   api_required!({
     :folder_id  => lambda { |fid|
       "No such folder" unless @folder = @space.folders.get(fid)
@@ -102,8 +100,6 @@ put '/spaces/:space_id/pages/:page_id',
   requires: [ :space, :page ] do
 
   authorize! :author, @space, :message => "You need to be an editor of this space to edit pages."
-
-  puts params.inspect
 
   api_optional!({
     :title      => nil,

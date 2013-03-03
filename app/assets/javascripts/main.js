@@ -33,7 +33,8 @@ requirejs.config({
     'pagehub':                'lib/pagehub',
     'jquery.gridster':        'lib/jquery.gridster.min',
     'inflection': 'vendor/inflection',
-    'md5': "vendor/md5"
+    'md5': "vendor/md5",
+    'timed_operation': "lib/timed_operation"
     // 'codemirror',             'vendor/'
   },
 
@@ -51,6 +52,8 @@ requirejs.config({
       deps: [ 'shortcut', 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr' ],
       exports: 'UI'
     },
+
+    'timed_operation': { deps: [ "underscore", "backbone" ], exports: 'timed_operation' },
 
     'underscore': {
       exports: '_'
