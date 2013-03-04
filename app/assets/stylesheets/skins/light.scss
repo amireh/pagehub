@@ -1,42 +1,18 @@
-/*.header_wrap,*/
-.guest .nav_wrap {
-  background: rgb(255,255,255);
-  box-shadow: 0 -1px 6px 0px black;
-}
+$foreground:  #615B4E;
+$active_fg:   #008CDD;
+$active_bg:   rgba(0,0,0,0.00725);
+$inactive_fg: rgba(0,0,0,0.35);
+$link_fg:     #008CDD;
+$icon_sprite: "/assets/icons/pagehub.png";
+$high_contrast_fg: #eee;
 
-.guest .nav_wrap {
-  box-shadow: 0 -1px 4px 0px black;
-}
+$highlight_fg: #F0AD11;
+$highlight_bg: rgba(0,0,0,0);
 
-.member header {
-  /*box-shadow: 0 0 0 1px #aaa;*/
-  .icon.dashboard { background-image: url(/assets/icons/16x16/home-inverse.png); }
-  .icon.signout { background-image: url(/assets/icons/16x16/shut_down-inverse.png); }
-  .icon.settings { background-image: url(/assets/icons/16x16/process-inverse.png); }
-  .icon.tools { background-image: url(/assets/icons/16x16/tools-inverse.png); }
+$low_contrast_border: #ddd;
+$low_contrast_bg: rgba(0,0,0,0.05);
 
-  max-height:     inherit;
-  border-bottom:  3px solid #ccc;
-
-  a.icon:hover:after,
-  a.icon.selected:after {
-    content: '';
-    display: block;
-    width: 32px;
-    position: absolute;
-    z-index: -1;
-    /*background-color: rgba(255,255,255, 0.25);*/
-    border-bottom: 3px solid #008cdd;
-    height: 37px;
-    top: 0;
-    z-index:0;
-  }
-
-  *zoom: 1;
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
-  vertical-align: middle;
+@mixin high_contrast_widget {
   background-color: #363636;
   background-image: -moz-linear-gradient(top, #444444, #222222);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
@@ -45,24 +21,51 @@
   background-image: linear-gradient(to bottom, #444444, #222222);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
-  border-color: #222222 #222222 #000000;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #222222;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-  border-bottom-color: #b3b3b3;
-  *margin-left: .3em;
   -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+  border-bottom:  3px solid #ccc;
+}
 
-  cursor: default;
-  padding: 0;
-  border-radius: 0;
-  text-align: left;
+@mixin webkit-scrollbars() {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-button:start:decrement,
+  ::-webkit-scrollbar-button:end:increment  {
+    height: 0px;
+    display: block;
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-track-piece  {
+    /*background-color: rgba(0,0,0,0.15);*/
+    /*background-color: #ddd;*/
+  }
+  ::-webkit-scrollbar-thumb:vertical {
+    height: 30px;
+    /*background-color: rgba(0, 0, 0, 0.25);*/
+    background-color: #ddd;
+    border: 1px solid rgba(255,255,255,0.125);
+    /*-webkit-border-radius: 6px;*/
+  }
+}
+
+body.light {
+
+background: url(/assets/bgs/brillant/brillant.png) repeat;
+
+header {
+
+  .icon.dashboard { background-image: url(/assets/icons/16x16/home-inverse.png);      }
+  .icon.signout   { background-image: url(/assets/icons/16x16/shut_down-inverse.png); }
+  .icon.settings  { background-image: url(/assets/icons/16x16/process-inverse.png);   }
+  .icon.tools     { background-image: url(/assets/icons/16x16/tools-inverse.png);     }
 
   a, & {
-    color: #eee;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   }
 
@@ -71,286 +74,54 @@
   }
 }
 
-.CodeMirror pre.CodeMirror-cursor {
-  border-color: #615B4E;
-}
 
-/* -- icons -- */
-header a.icon,
-nav > a.icon,
-/*#page_actions > a,*/
-/*.actions > a.new_resource,*/
-.icon_container {
-  background-repeat: no-repeat;
-  /*background-position: center center;*/
-  font-size: 0;
-  min-width: 32px;
-  padding: 0;
-  vertical-align: middle;
-  height: 40px;
-  background-image: url("/assets/icons/pagehub.png");
-  display: inline-block;
-}
-.member nav > a {
-  /*height: 49px;*/
-  font-size: 0;
-}
-
-a.icon:hover,
-button.icon:hover,
-a.listlike:hover,
-a.icon.selected,
-button.icon.selected {
-  background-color: rgba(0,0,0,0.1);
-  border-color: #008cdd;
-  cursor: pointer;
-}
-nav {
-  a.selected {
-    background-color: rgba(0,0,0,0.00725);
-  }
-}
-/*
-nav > a:hover:after {
-  content: '';
-  display: block;
-  width: 32px;
-  position: absolute;
-  z-index: -1;
-  background-color: rgba(0,0,0,0.05);
-  height: 40px;
-  top: 0;
-  z-index:1;
-  text-decoration: none;
-}*/
-
-
-.icon {
-  font-size: 0;
-  box-shadow: none;
-  /*border: none;*/
-}
-.member .icon.spaces          { background-position: -88px  -32px;}
-.member .icon.help            { background-position: -56px  16px; }
-.member .icon.settings        { background-position: -88px  16px; }
-.member .icon.save_page       { background-position: -152px 12px; }
-.member .icon.pretty_page     { background-position: -120px -36px;}
-/*.member .icon.delete_page     { background-position: -24px  12px; }*/
-.member .icon.share_page      { background-position: -24px  -36px;}
-/*.member .icon.history         { background-position: -56px  -36px;}*/
-.member .icon.move_page       { background-position: -120px 12px; }
-.member .icon.editor_settings { background-position: 8px    -36px;}
-/*.member .icon.new_resource        { background-position: 4px    8px;  }*/
-/*.member .icon.edit_folder     { background: url("../icons/16x16/edit.png") no-repeat 0 0; }*/
-.member .icon.settings.standalone { background: url("../icons/24x24/process.png") no-repeat 0 0; }
-.member .icon.settings64.standalone { background: url("../icons/48x48/process.png") no-repeat 0 0; }
-/*.member .actions > .icon.new_page        { background-image: url("/assets/icons/16x16/add.png"); background-position: center center;  }*/
-/*.member .icon.folder {
-  background: url("/assets/icons/16x16/glyphicons_144_folder_open_resized.png") no-repeat 0 2px;
-}*/
-.member .collapsed .icon.folder {
-  background: url("/assets/icons/16x16/glyphicons_145_folder_plus_resized.png") no-repeat;
-}
-.member .icon.kick_member,
-.icon.remove { background: url("/assets/icons/16x16/remove.png") no-repeat; width: 16px; height: 16px; }
-.member .icon.search { background: url("/assets/icons/24x24/search.png") no-repeat center center; }
-
-/*.icon.folder {
-  width: 16px;
-  height: 16px;
-  position: relative;
-  display: inline-block;
-  top: 2px;
-  z-index: -1;
-}
-*/
-
-.icon.new_resource  { background: url("/assets/icons/16x16/new_page.png")     no-repeat center center; }
-.icon.edit_page     { background: url("/assets/icons/16x16/edit.png")     no-repeat center center; }
-.icon.delete_page   { background: url("/assets/icons/16x16/trash.png")    no-repeat center center; }
-.icon.signout       { background: url(/assets/icons/16x16/shut_down.png)  no-repeat center center; }
-.icon.settings      { background: url(/assets/icons/16x16/process.png)    no-repeat center center; }
-.icon.dashboard     { background: url(/assets/icons/16x16/home.png)       no-repeat center center; }
-.icon.tools         { background: url(/assets/icons/16x16/tools.png)      no-repeat center center; }
-.icon.folder        { background: url(/assets/icons/16x16/folder.png)     no-repeat center center; }
-.icon.save          { background: url(/assets/icons/16x16/save.png)       no-repeat center center; }
-.icon.preview       { background: url(/assets/icons/16x16/television.png)    no-repeat center center; }
-.icon.history       { background: url(/assets/icons/16x16/wired.png)         no-repeat center center; }
-.icon.new-folder {
-  background: url("/assets/icons/20x20/folder.png") no-repeat  center;
-}
-.icon.new-page {
-  background: url("/assets/icons/16x16/new_page.png") no-repeat center;
-}
-.icon.fullscreen {
-  background: url("/assets/icons/16x16/fullscreen.png") no-repeat center;
-}
-.icon.more {
-  background: url("/assets/icons/16x16/more.png") no-repeat center;
-}
-
-a {
-  /*color: #D4EE5E;*/
-  color: #008cdd;
-}
-a:hover,
-a:visited:hover,
-a.selected,
-.selected a,
-.selected {
-  /*color: #E94E77;*/
-  /*color: #555;*/
-  text-decoration: underline;
-}
-
-a.listlike {
-  border-bottom: 2px solid rgba(0,0,0,0.35);
-}
-ol.listlike li {
-  border-color: #eee;
-}
-ol.listlike li a {
-  color: #615B4E;
-}
-ol.listlike li:hover a {
-  border: 1px solid #555;
-  background: #008CDD url(/assets/jquery-ui/ui-bg_flat_100_008CDD_40x100.png) 50% 50% repeat-x;
-  font-weight: normal;
-  color: white;
-  text-decoration: none;
-  padding: 4px 9px;
-  border-radius: 0px;
-}
-.highlighted,
-#browser .selected.folder_title {
-  color: #F0AD11;
-}
-
-body {
-  /*background: url(/images/grid-18px-masked.png) repeat-x bottom center;*/
-  background: url(/assets/bgs/brillant/brillant.png) repeat;
-  /*background: url(/assets/bgs/cream_dust/cream_dust.png) repeat bottom center;*/
-  /*background: url(/assets/bgs/subtle_dots/subtle_dots.png) repeat bottom center;*/
-}
-
-header h1 a:visited,
-header h1 a {
-  font-weight: 100;
-  /*color: #E94E77;*/
-  font-family: inherit;
-}
-
-header h1 a:visited em,
-header h1 a em {
-  color: #333;
-}
-header h1 a:hover em {
-  /*color: #E94E77;*/
-}
+.icon.spaces          { background-position: -88px  -32px;}
+.icon.help            { background-position: -56px  16px; }
+.icon.settings        { background-position: -88px  16px; }
+.icon.save_page       { background-position: -152px 12px; }
+.icon.pretty_page     { background-position: -120px -36px;}
+/*.icon.delete_page   { background-position: -24px  12px; }*/
+.icon.share_page      { background-position: -24px  -36px;}
+/* .icon.history      { background-position: -56px  -36px;}*/
+.icon.move_page       { background-position: -120px 12px; }
+.icon.editor_settings { background-position: 8px    -36px;}
+/* .icon.new_resource { background-position: 4px    8px;  }*/
+/* .icon.edit_folder  { background-image: url("../icons/16x16/edit.png"); }*/
+.icon.kick_member,
+.icon.remove        { background-image: url(/assets/icons/16x16/remove.png);}
+.icon.search        { background-image: url(/assets/icons/24x24/search.png);}
+.icon.new_resource  { background-image: url(/assets/icons/16x16/new_page.png);}
+.icon.edit_page     { background-image: url(/assets/icons/16x16/edit.png);}
+.icon.delete_page   { background-image: url(/assets/icons/16x16/trash.png);}
+.icon.signout       { background-image: url(/assets/icons/16x16/shut_down.png);}
+.icon.settings      { background-image: url(/assets/icons/16x16/process.png);}
+.icon.dashboard     { background-image: url(/assets/icons/16x16/home.png);}
+.icon.tools         { background-image: url(/assets/icons/16x16/tools.png);}
+.icon.folder        { background-image: url(/assets/icons/16x16/folder.png);}
+.icon.save          { background-image: url(/assets/icons/16x16/save.png);}
+.icon.preview       { background-image: url(/assets/icons/16x16/television.png);}
+.icon.history       { background-image: url(/assets/icons/16x16/wired.png);}
+.icon.new-folder    { background-image: url(/assets/icons/20x20/folder.png);}
+.icon.new-page      { background-image: url(/assets/icons/16x16/new_page.png);}
+.icon.fullscreen    { background-image: url(/assets/icons/16x16/fullscreen.png);}
+.icon.more          { background-image: url(/assets/icons/16x16/more.png);}
 
 h2,
 .cm-s-neat span.cm-header {
-  color: #615B4E;
+  color: $foreground;
 }
 
 h3 {
   /*color: #4ECDC4;*/
   color: #777;
 }
+
 .success {
   color: #333;
 }
 
-hr {
-  box-shadow: none;
-  border-color: #ddd;
-}
-
-footer {
-  border-color: #ddd;
-}
-
-
-section > .togglable { cursor: n-resize; }
-section > .togglable.toggled { cursor: s-resize; }
-section > .togglable:after {
-  content: ' -';
-  font-size: 14px;
-  font-weight: normal;
-  font-family: monospace, mono;
-  color: #aaa;
-}
-section > .togglable.toggled:after {
-  content: ' +';
-}
-
-header h1 a.selected { text-decoration: none; }
-/*
-#status.good {
-  background-color: #98bf0d;
-  background-color: -moz-linear-gradient(top, #98bf0d 0%, #78960a 100%);
-  background-color: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#98bf0d), color-stop(100%,#78960a));
-  background-color: -webkit-linear-gradient(top, #98bf0d 0%,#78960a 100%);
-  background-color: -o-linear-gradient(top, #98bf0d 0%,#78960a 100%);
-  background-color: -ms-linear-gradient(top, #98bf0d 0%,#78960a 100%);
-  background-color: linear-gradient(to bottom, #98bf0d 0%,#78960a 100%);
-  color: white;
-  box-shadow: 0 0 1px 3px #ddd;
-}
-*/
-
-.member .settings nav a:hover,
-.member .settings nav li.selected,
-.member .settings nav li.selected a {
-  text-decoration: none;
-}
-
 .hint {
   color: #888;
-}
-#browser .folder_title button.icon {
-  display: none;
-}
-#browser .folder_title:hover button.icon {
-  display: block;
-}
-
-
-#browser {
-
-  .folder {
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-
-    &.general-folder {
-    }
-
-    &:not(.general-folder) {
-      ol.listing.pages {
-        li {
-          &:not(:last-of-type) {
-          }
-        }
-      }
-    }
-
-    span.folder_title {
-      font-weight: bold;
-    }
-  }
-}
-
-#browser .drop-target {
-  background: #f6f6f6;
-  /*box-shadow: 0 0 15px 5px white inset;*/
-}
-
-button[data-collapse] {
-
-}
-
-
-.folder_title button:hover {
-  background-color: transparent;
 }
 
 .gravatar {
@@ -358,13 +129,4 @@ button[data-collapse] {
   border-color: #555;
 }
 
-ol.listlike {
-  li {
-    span.title {
-      display: block;
-      padding: 5px 10px;
-      font-weight: bold;
-      background: #eee;
-    }
-  }
-}
+} /* body.light */

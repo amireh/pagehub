@@ -12,23 +12,24 @@
 </script>
 <% end %>
 
-<div class="resizable-content">
+<div class="workspace resizable-content">
 
   <%= partial "spaces/_browser" %>
 
-  <div id="editor_container">
+  <div class="editor-container">
+    <!-- Page Actionbar -->
     <div id="page_actions" class="page-actionbar actions">
       <a href="#" class="icon save" rel="tooltip" title="Saves the content of this page (Ctrl+Alt+S)" id="save_page">Save</a>
 
       <a target="PageHub - Preview"
          class="icon preview"
          rel="tooltip"
-         title="View the current page in prettified HTML mode in a new tab (Ctrl+Alt+V)"
+         title="Preview the page in HTML mode in a new tab (Ctrl+Alt+V)"
          href=""
-         id="preview">Pretty Version</a>
+         id="preview">Preview</a>
 
       <a href="#" id="edit_page" class="icon edit_page" rel="tooltip" title="Modify the page properties">Edit</a>
-      <a href="#" id="destroy_page" class="confirm icon delete_page" title="Delete the page (Ctrl+Alt+D)">Delete</a>
+      <a href="#" id="destroy_page" class="icon delete_page" rel="tooltip" title="Delete the page (Ctrl+Alt+D)">Delete</a>
 
       <a id="revisions" target="PageHub" class="icon history" rel="tooltip" title="View the history of this page">Revisions</a>
 
@@ -37,11 +38,14 @@
       </ol>
 
     </div>
+
+    <!-- Finder Widget -->
     <div class="input-prepend page-finder">
       <label class="btn"><i class="icon-search"></i> </label>
       <input type="text" id="page_finder" class="input-xxlarge" autocomplete="off" />
     </div>
 
+    <!-- Workspace Actionbar -->
     <div id="general_actionbar" class="general-actionbar actions">
       <a class="listlike icon more" data-placement="left" rel="tooltip" title="Workspace settings and actions">Workspace Actions</a>
       <ol class="listlike sticky">
@@ -55,12 +59,12 @@
           <a id="switch_animability" href="#" rel="tooltip" data-placement="left" title="Widgets will update faster but will no longer be animated">No animations</a>
         </li>
         <li><span class="title"><strong>Editor</strong></span></li>
-        <li><a href="#" data-placement="left" rel="tooltip" title="Increase the height of the editor" id="increase_height">Grow</a></li>
-        <li><a href="#" data-placement="left" rel="tooltip" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
         <li><a href="#" data-placement="left" rel="tooltip" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
       </ol>
     </div>
-    <textarea id="page_editor">Load or create a new page to begin.</textarea>
+
+    <!-- Editor Widget -->
+    <textarea id="page_editor" class='editor-widget'>Load or create a new page to begin.</textarea>
   </div>
 
 </div>

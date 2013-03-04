@@ -3,6 +3,111 @@
 .resources {
   @include disable-selection;
 }
+
+.editor-widget,
+.resources {
+  margin: 0;
+  /*margin-top: 5px;*/
+  vertical-align: top;
+  padding: 10px;
+}
+
+.resizable-content {
+  width: 100%;
+  display: table;
+  > * { display: table-cell; }
+}
+
+.workspace {
+
+  .actions {
+    display: inline-block;
+
+    > a {
+      display: inline-block;
+      line-height: 32px;
+      height: 32px;
+      margin: 0;
+      padding: 0 10px;
+      cursor: pointer;
+    }
+  }
+}
+.resources {
+  width: 180px;
+  padding: 0 10px 0 0;
+
+  .scroller {
+    display: block;
+    clear: both;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-left: 20px;
+    margin-left: -20px;
+
+    .browser li {
+      display: block;
+      width: auto;
+    }
+  }
+
+  .wrapper {
+    position: relative;
+  }
+}
+
+/* New page & New folder link list */
+.resource-actionbar {
+  position: relative;
+
+  > a.listlike:first-child {
+    left: -10px;
+    /*top: -1px;*/
+    /*height: 33px;*/
+    /*line-height: 33px;*/
+    /*border-radius: 4px 4px 0 0;*/
+  }
+
+/*  ol.listlike a {
+    padding: 0 5px;
+  }
+  ol.listlike .icon {
+    height: 28px;
+    vertical-align: middle;
+  }*/
+}
+
+.editor-container {
+  position: relative;
+  min-width: 240px;
+  width: 100%
+}
+.editor-widget {
+  /*width: 720px;*/
+  /*border-bottom-right-radius: 10px;*/
+  background: transparent;
+  margin-top: 50px;
+  max-height: 620px;
+}
+
+.resources ul li:not([hidden]) {
+  display: inline-block;
+  position: relative;
+  clear: both;
+  width: 100%;
+  padding: 0;
+  /*max-width: 210px;*/
+  line-height: 18px;
+  vertical-align: top;
+  margin-bottom: 5px;
+}
+
+.editor-widget > :first-child,
+.resources > :first-child {
+  margin-top: 0;
+}
+
+
 .scroller {
   resize: horizontal;
   overflow-x: hidden;
@@ -37,13 +142,22 @@
 }
 
 .space_editor {
-  #editor_container {
+  .editor-container {
    /*width: 720px; */
     padding-top: 34px;
   }
 }
 
 .page-actionbar {
+  position: absolute;
+  top: 0;
+  /*left: 0;*/
+  font-size: 13px;
+  letter-spacing: 2px;
+  z-index: 100;
+  white-space: nowrap;
+  display: block;
+
   #movement_listing {
     white-space: nowrap;
     right: auto !important;
@@ -72,6 +186,7 @@
     }
   }
 }
+
 .page-finder {
   vertical-align: middle;
   margin-bottom: 0;
@@ -144,7 +259,7 @@
 }
 
 #content.space_editor {
-  margin-top: -10px;
+  /*margin-top: 10px;*/
 }
 .no-scroll {
   #pages .scroller {
@@ -169,8 +284,31 @@
     margin:  0;
   }
 
+
+  .drop-target {
+    background: $low_contrast_bg;
+  }
+
+  .drag-src {
+    opacity: 0.5;
+  }
+
+  li.selected:before {
+    /*display: none;*/
+    position: absolute;
+    top: 5px;
+    left: -12px;
+    width: 0;
+    height: 0;
+    border-top:     5px solid transparent;
+    border-bottom:  5px solid transparent;
+    border-left:    5px solid #ddd;
+    content: '  ';
+  }
+
   li.folder {
     position: relative;
+    cursor: pointer;
 
     &.general-folder {
       > ol {
@@ -205,6 +343,48 @@
 
     > span.folder_title {
       display: block;
+      font-weight: bold;
+      margin: 5px 0;
+
+      .selected {
+        @include highlight();
+        @include transition(color, 0.25s, ease, 0s);
+      }
+
+      button.icon {
+        display: none;
+      }
+
+      &:hover button.icon {
+        display: block;
+      }
+
+
+      button.edit_folder,
+      button.delete_folder {
+        right: 21px;
+        padding: 0;
+        border: none;
+        height: 12px;
+        width:  12px;
+        position: absolute;
+        top: 3px;
+        opacity: 0.1;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      button.edit_folder {
+        background: #fff url(/assets/icons/12x12/edit.png) no-repeat center center;
+      }
+
+      button.delete_folder {
+        right: 5px;
+        background: #fff url(/assets/icons/12x12/delete.png) no-repeat center center;
+      }
     }
 
     button[data-collapse] {
@@ -234,31 +414,6 @@
       content: '\002B';
     }
 
-    button.edit_folder,
-    button.delete_folder {
-      right: 21px;
-      padding: 0;
-      border: none;
-      height: 12px;
-      width:  12px;
-      position: absolute;
-      top: 3px;
-      opacity: 0.1;
-      cursor: pointer;
-    }
-
-    button.edit_folder {
-      background: #fff url(/assets/icons/12x12/edit.png) no-repeat center center;
-    }
-    button.delete_folder {
-      right: 5px;
-      background: #fff url(/assets/icons/12x12/delete.png) no-repeat center center;
-    }
-
-    button.edit_folder:hover,
-    button.delete_folder:hover {
-      opacity: 1;
-    }
   } /* li.folder */
 
 

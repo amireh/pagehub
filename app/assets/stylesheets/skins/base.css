@@ -1,0 +1,11 @@
+$foreground:  #000000;
+$active_fg:   #ff0000;
+$active_bg:   yellow;
+$link_fg:     blue;
+$icon_sprite: "/assets/icons/pagehub.png";
+
+$high_contrast_fg: white;
+@mixin high_contrast_widget {}
+
+$highlight_fg: red;
+$highlight_bg: transparent;

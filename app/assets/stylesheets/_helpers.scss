@@ -1,3 +1,5 @@
+@import "skins/light";
+
 @mixin disable-selection {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -6,4 +8,17 @@
   user-select: none;
   -moz-user-select: -moz-none;
   -ms-touch-action: none;
+}
+
+@mixin transition($property, $duration, $type, $delay) {
+  -webkit-transition: $property $duration $type $delay;
+  -moz-transition:    $property $duration $type $delay;
+  -ms-transition:     $property $duration $type $delay;
+  -o-transition:      $property $duration $type $delay;
+  transition:         $property $duration $type $delay;
+}
+
+@mixin highlight() {
+  color:            $highlight_fg;
+  background-color: $highlight_bg;
 }

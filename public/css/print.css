@@ -130,3 +130,22 @@ em.small {
 #jumpers a {
   text-decoration: none;
 }
+
+a[href="#bottom"] {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: #33332d;
+  text-decoration: none;
+  opacity: 0.5;
+  z-index: 10;
+}
+a[href="#top"] {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  color: #33332d;
+  text-decoration: none;
+  opacity: 0.5;
+  z-index: 10;
+}
