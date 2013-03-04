@@ -36,24 +36,28 @@
       <ol class="listlike" id="movement_listing">
       </ol>
 
-      <div class="input-prepend page-finder">
-        <label class="btn"><i class="icon-search"></i> </label>
-        <input type="text" id="page_finder" data-provide="typeahead" autocomplete="off" />
-      </div>
-
     </div>
+    <div class="input-prepend page-finder">
+      <label class="btn"><i class="icon-search"></i> </label>
+      <input type="text" id="page_finder" class="input-xxlarge" autocomplete="off" />
+    </div>
+
     <div id="general_actionbar" class="general-actionbar actions">
       <a class="listlike icon more" data-placement="left" rel="tooltip" title="Workspace settings and actions">Workspace Actions</a>
-      <ol class="listlike">
-        <li class="sticky"><a id="switch_layout" href="#" rel="tooltip" data-placement="left" title="Make the workspace span the entire screen">Fluid workspace</a>
+      <ol class="listlike sticky">
+        <li><span class="title"><strong>Workspace</strong></span></li>
+        <li><a id="switch_layout" href="#" rel="tooltip" data-placement="left" title="Make the workspace span the entire screen">Fluid workspace</a>
         </li>
-        <li class="sticky">
+        <li>
           <a id="switch_scrolly" href="#" rel="tooltip" data-placement="left" title="Disable scrolling in the browser and the editor">No scrolling</a>
         </li>
+        <li>
+          <a id="switch_animability" href="#" rel="tooltip" data-placement="left" title="Widgets will update faster but will no longer be animated">No animations</a>
+        </li>
         <li><span class="title"><strong>Editor</strong></span></li>
-        <li class="sticky"><a href="#" data-placement="left" rel="tooltip" title="Increase the height of the editor" id="increase_height">Grow</a></li>
-        <li class="sticky"><a href="#" data-placement="left" rel="tooltip" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
-        <li class="sticky"><a href="#" data-placement="left" rel="tooltip" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
+        <li><a href="#" data-placement="left" rel="tooltip" title="Increase the height of the editor" id="increase_height">Grow</a></li>
+        <li><a href="#" data-placement="left" rel="tooltip" title="Decrease the height of the editor" id="decrease_height">Shrink</a></li>
+        <li><a href="#" data-placement="left" rel="tooltip" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
       </ol>
     </div>
     <textarea id="page_editor">Load or create a new page to begin.</textarea>

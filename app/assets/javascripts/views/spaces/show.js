@@ -7,9 +7,10 @@ define('views/spaces/show',
   'views/spaces/page_actionbar',
   'views/spaces/general_actionbar',
   'views/spaces/editor',
+  'views/spaces/finder',
   'pagehub',
   'timed_operation'
-], function(Backbone, Space, Browser, ResourceActions, PageActionBar, GeneralActionBar, Editor, UI, TimedOp) {
+], function(Backbone, Space, Browser, ResourceActions, PageActionBar, GeneralActionBar, Editor, Finder, UI, TimedOp) {
   return Backbone.View.extend({
     initialize: function(state) {
       UI.status.mark_pending();
@@ -34,6 +35,7 @@ define('views/spaces/show',
       this.editor           = new Editor(data);
       this.page_actionbar   = new PageActionBar($.extend({}, data, { editor: this.editor }));
       this.page_actionbar   = new GeneralActionBar(data);
+      this.finder   = new Finder(data);
 
       this.space.folders.every(function(f) {
         this.space.folders.trigger('add', f);

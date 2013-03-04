@@ -770,10 +770,13 @@
     constructor: Typeahead
 
   , select: function () {
-      var val = this.$menu.find('.active').attr('data-value')
+      var item = this.$menu.find('.active'),
+          val = item.attr('data-value');
+
       this.$element
-        .val(this.updater(val))
-        .change()
+        .val(this.updater(val, item))
+        .change();
+
       return this.hide()
     }
 
@@ -800,7 +803,12 @@
 
   , hide: function () {
       this.$menu.hide()
-      this.shown = false
+      this.shown = false;
+
+      if (this.options.on_hide) {
+        this.options.on_hide();
+      }
+
       return this
     }
 
@@ -835,6 +843,10 @@
     }
 
   , matcher: function (item) {
+      if (this.options.label_extractor) {
+        item = this.options.label_extractor(item);
+      }
+
       return ~item.toLowerCase().indexOf(this.query.toLowerCase())
     }
 
@@ -844,9 +856,16 @@
         , caseInsensitive = []
         , item
 
+
       while (item = items.shift()) {
-        if (!item.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
-        else if (~item.indexOf(this.query)) caseSensitive.push(item)
+        var label = item;
+
+        if (this.options.label_extractor) {
+          label = this.options.label_extractor(item);
+        }
+
+        if (!label.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
+        else if (~label.indexOf(this.query)) caseSensitive.push(item)
         else caseInsensitive.push(item)
       }
 
@@ -864,8 +883,19 @@
       var that = this
 
       items = $(items).map(function (i, item) {
-        i = $(that.options.item).attr('data-value', item)
-        i.find('a').html(that.highlighter(item))
+        var label = item,
+            el    = $(that.options.item);
+
+        if (that.options.formatter) {
+          that.options.formatter(item, el);
+        }
+
+        if (that.options.label_extractor) {
+          label = that.options.label_extractor(item);
+        }
+
+        i = el.attr('data-value', label);
+        i.find('a').html(that.highlighter(label))
         return i[0]
       })
 
@@ -972,7 +1002,7 @@
           break
 
         case 27: // escape
-          if (!this.shown) return
+          if (!this.shown) { if (this.options.on_escape) { this.options.on_escape(); }  return };
           this.hide()
           break
 

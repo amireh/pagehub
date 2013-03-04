@@ -34,7 +34,8 @@ requirejs.config({
     'jquery.gridster':        'lib/jquery.gridster.min',
     'inflection': 'vendor/inflection',
     'md5': "vendor/md5",
-    'timed_operation': "lib/timed_operation"
+    'timed_operation': "lib/timed_operation",
+    'animable_view': 'views/shared/animable_view'
     // 'codemirror',             'vendor/'
   },
 

@@ -165,7 +165,7 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
 
     // "listlike" links
     $("a.listlike:not(.selected)").bind('click', show_list);
-    $("ol.listlike li:not(.sticky) a").click(function() {
+    $("ol.listlike:not(.sticky) li:not(.sticky)").click(function() {
       var anchor = $(this).parent().prev("a.listlike");
       if (anchor.hasClass("selected")) {
         hide_list(anchor);
@@ -173,7 +173,7 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
 
       return true; // let the event propagate
     });
-    $("ol.listlike li.sticky a").on('click', function(e) { dont_hide_list = true; return true; });
+    $("ol.listlike.sticky li, ol.listlike:not(.sticky) li.sticky").on('click', function(e) { dont_hide_list = true; return true; });
 
     __init = true;
   // });

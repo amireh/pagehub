@@ -1,7 +1,7 @@
 define('views/spaces/page_actionbar',
-[ 'backbone', 'hb!move_folder_link.hbs', 'hb!dialogs/destroy_page.hbs', 'shortcut', 'pagehub', 'timed_operation' ],
-function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedOp) {
-  return Backbone.View.extend({
+[ 'animable_view', 'hb!move_folder_link.hbs', 'hb!dialogs/destroy_page.hbs', 'shortcut', 'pagehub', 'timed_operation' ],
+function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedOp) {
+  return AnimableView.extend({
     el: $("#page_actions"),
 
     events: {
@@ -82,7 +82,7 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
     }),
 
     initialize: function(data) {
-      _.implode(this, data);
+      AnimableView.prototype.initialize.apply(this, arguments);
 
       this.movement_listing = new this.MovementListing(data);
       this.space.on('page_loaded', this.on_page_loaded, this);
@@ -106,6 +106,8 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
         });
       }
 
+      this.state.on('hide_actionbar', this.hide, this);
+      this.state.on('finder_hidden', this.show, this);
       this.bootstrap();
     },
 
@@ -125,12 +127,43 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
       this.disable();
     },
 
+    hide: function() {
+      var view = this;
+
+      if (this.animable()) {
+        this.disable().$el.hide("slide", {}, this.anime_length, function() {
+          view.state.trigger('actionbar_hidden');
+        });
+      } else {
+        this.disable().$el.hide();
+        view.state.trigger('actionbar_hidden');
+      }
+
+      return this;
+    },
+
+    show: function() {
+      var view = this;
+
+      if (this.animable()) {
+        this.enable().$el.show("slide", {}, this.anime_length, function() {
+          view.state.trigger('actionbar_shown');
+        });
+      } else {
+        this.enable().$el.show();
+        view.state.trigger('actionbar_shown');
+      }
+
+      return this;
+    },
+
     disable: function() {
       this.$el.prop("disabled", true).addClass("disabled");
       this.disabled = true;
 
       this.autosaver && this.autosaver.stop();
       // this.undelegateEvents(); // this doesn't seem to work
+      return this;
     },
 
     enable: function() {
@@ -139,6 +172,8 @@ function(Backbone, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedO
 
       this.autosaver && this.autosaver.start();
       // this.delegateEvents();
+
+      return this;
     },
 
     on_page_loaded: function(page) {

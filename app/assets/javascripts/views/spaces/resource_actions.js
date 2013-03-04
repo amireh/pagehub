@@ -18,28 +18,6 @@ function(Backbone, Folder, UI, Shortcut) {
 
       Shortcut.add("ctrl+alt+c", function() { view.create_page(); })
       Shortcut.add("ctrl+alt+f", function() { view.create_folder(); })
-      Shortcut.add("ctrl+alt+p", function() { view.show_page_finder(); })
-
-      this.finder = $('#page_finder');
-      this.finder.siblings('.btn').on('click', function() { return view.show_page_finder(); })
-
-      this.page_titles = [];
-
-      this.space.folders.on('add', this.track_folder_pages, this);
-      this.bind_finder();
-    },
-
-    bind_finder: function() {
-      var view = this;
-
-      this.finder.typeahead({
-        source: view.page_titles,
-
-        updater: function(item) {
-          view.switch_to_page(_.unescape(item));
-          return null;
-        }
-      });
     },
 
     create_page: function(e) {
@@ -113,54 +91,6 @@ function(Backbone, Folder, UI, Shortcut) {
       });
 
       return false;
-    },
-
-    switch_to_page: function(fqpt) {
-      var page = this.space.find_page_by_fully_qualified_title(fqpt.split(' > '));
-
-      if (!page) {
-        UI.status.show("Could not find the page you were looking for.", "bad");
-        return false;
-      }
-
-      this.space.trigger('reset');
-      this.space.trigger('load_page', page);
-
-      return true;
-    },
-
-    show_page_finder: function() {
-      this.finder.focus();
-
-      return true;
-    },
-
-    track_folder_pages: function(folder) {
-      folder.pages.on('add', this.track_page_title, this);
-      folder.pages.on('remove', this.stop_tracking_page_title, this);
-
-    },
-
-    track_page_title: function(page) {
-      console.log("tracking page: " + page.get('id'))
-
-      this.page_titles.push( page.fully_qualified_title().join(' &gt; ') );
-      page.ctx.finder_index = this.page_titles.length - 1;
-
-      return true;
-    },
-
-    stop_tracking_page_title: function(page) {
-      console.log("no longer tracking page: " + page.get('title') + '@' + page.ctx.finder_index);
-
-      if (!page.ctx.finder_index) {
-        return UI.report_error("Page context is missing finder index, I can't un-track it!");
-      }
-
-      this.page_titles.splice( page.ctx.finder_index, 1 );
-
-      return true;
     }
-
   })
 })

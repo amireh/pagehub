@@ -1,11 +1,7 @@
+@import "helpers";
+
 .resources {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-  -moz-user-select: -moz-none;
-  -ms-touch-action: none;
+  @include disable-selection;
 }
 .scroller {
   resize: horizontal;
@@ -23,11 +19,17 @@
   border-bottom: 1px solid #eee;
 }
 
+.actions {
+  @include disable-selection;
+}
+
 .actions > .icon {
   height: 32px;
   width:  26px;
   display: inline-block;
   vertical-align: top;
+
+  /*@include disable-selection;*/
 }
 .actions > button.icon {
   box-shadow: none;
@@ -55,23 +57,6 @@
 
   > .icon { vertical-align: middle; }
 
-  .page-finder {
-    vertical-align: middle;
-    margin-bottom: 0;
-
-    > input,
-    > label {
-      line-height: 15px;
-    }
-    > label {
-      padding-left:   8px;
-      padding-right:  8px;
-    }
-
-    input {
-      /*display: none;*/
-    }
-  }
 
   &.with-buttons {
     > .btn {
@@ -87,6 +72,41 @@
     }
   }
 }
+.page-finder {
+  vertical-align: middle;
+  margin-bottom: 0;
+  position: absolute;
+  left: 0;
+  top: 3px;
+  display: none;
+  z-index: 105;
+
+  > input,
+  > label {
+    line-height: 15px;
+    z-index: 2;
+  }
+  > label.btn:first-child {
+    padding-left:   8px;
+    padding-right:  8px;
+    border-bottom-left-radius: 0;
+  }
+
+  input {
+    /*display: none;*/
+    border-bottom-right-radius: 0;
+  }
+
+  ul.typeahead.dropdown-menu {
+    margin-top: -1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    width: 100%;
+    left:  0 !important;
+    right: 0;
+    z-index: 1;
+  }
+}
 
 .general-actionbar {
   position: absolute;
@@ -97,6 +117,9 @@
     width: 32px;
     /*opacity: 0.5; &.selected, &:hover { background-color: rgba(0,0,0,0.075); }*/
   }
+  ol.listlike li a {
+    position: relative;
+  }
   ol.listlike li a.selected {
     text-decoration: none;
   }
@@ -104,10 +127,12 @@
     width: 16px;
     height: 16px;
     vertical-align: top;
-    margin-left: 5px;
+    /*margin-left: 5px;*/
     display: inline-block;
     background: url(/assets/icons/16x16/accept.png) no-repeat center;
     content: '';
+    position: absolute;
+    right: 5px;
   }
 }
 .space_editor {

@@ -146,7 +146,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
 
     update_title: function(r) {
-      r.ctx.browser.title.html(_.escape(r.get('title')))
+      r.ctx.browser.title.html(r.get('title'))
     },
 
     reorder_folder: function(f) {
