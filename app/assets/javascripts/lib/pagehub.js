@@ -1,5 +1,11 @@
 // status = ui.status;
-define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivity_issue.hbs' ], function(_, $, undefined, ConnectivityIssueDlg) {
+define('pagehub',
+[
+  'underscore',
+  'jquery',
+  'bootstrap',
+  'hb!dialogs/connectivity_issue.hbs'
+], function(_, $, undefined, ConnectivityIssueDlg) {
   var __init = false,
       timers = {
         flash: null,
@@ -19,32 +25,36 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
         status: 1
       };
 
-  function show_list() {
-    if ($(this).parent("[disabled],:disabled,.disabled").length > 0)
+  var show_list_from_el = function(el) {
+    if (el.parent("[disabled],:disabled,.disabled").length > 0)
       return false;
 
     hide_list($("a.listlike.selected"));
 
-    var list = $(this).nextAll("ol.listlike:first");
+    var list = el.nextAll("ol.listlike:first");
 
     list.css({ left: 0, right: 0 });
 
     if (list.width() + list.parent().offset().left >= $(window).width()) {
       list.css({ right: 0, left: -1 * list.width() });
     } else {
-      list.css({ left: $(this).position().left, right: 0 });
+      list.css({ left: el.position().left, right: 0 });
     }
 
     list.show();
 
-    $(this).addClass("selected");
-    $(this).unbind('click', show_list);
-    $(this).add($(window)).bind('click', hide_list_callback);
+    el.addClass("selected");
+    el.unbind('click', show_list);
+    el.add($(window)).bind('click', hide_list_callback);
 
     return false;
   }
 
-  function hide_list_callback(e) {
+  var show_list = function() {
+    return show_list_from_el($(this));
+  }
+
+  var hide_list_callback = function(e) {
     e.preventDefault();
 
     hide_list($(".listlike.selected:visible"));
@@ -54,7 +64,7 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
 
   var dont_hide_list = false;
 
-  function hide_list(el) {
+  var hide_list = function(el) {
     if (dont_hide_list) {
       dont_hide_list = false;
       return true;
@@ -179,9 +189,18 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
   // });
   }();
 
-  ui = {
+  ui = Backbone.View.extend({
     pbar_tick:  0,
     pbar_value: 0,
+
+    initialize: function(application) {
+      if (!application) {
+        return this;
+      }
+
+      this.state = application;
+    },
+
 
     status: {
       clear: function(cb) {
@@ -242,7 +261,9 @@ define('pagehub', [ 'underscore', 'jquery', 'bootstrap', 'hb!dialogs/connectivit
       ui.status.show("A script error has occured, please try to reproduce the bug and report it.", "bad");
       console.log(err_msg);
     }
-  }; // ui
+  }); // ui
+
+  ui = new ui();
 
   return ui;
 })

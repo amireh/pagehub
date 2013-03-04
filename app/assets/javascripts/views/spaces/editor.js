@@ -92,8 +92,8 @@ function($, Backbone) {
     },
 
     reset: function() {
-      this.editor.clearHistory();
       this.editor.setValue('Load or create a new page to begin.');
+      this.editor.clearHistory();
 
       return this;
     },
@@ -138,6 +138,9 @@ function($, Backbone) {
       this.editor.setCursor(cursor);
       this.editor.scrollTo(scroll.left, scroll.top);
       this.editor.focus();
+
+      this.editor.clearHistory();
+
       return this;
     },
 
