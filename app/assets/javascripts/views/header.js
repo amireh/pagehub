@@ -17,7 +17,8 @@ define('views/header',
         this.space = app.space;
         this.user  = app.space.creator;
         this.space.on('sync', this.render, this);
-
+        this.space.on('load_folder', this.show_folder_path, this);
+        this.space.on('load_page', this.show_page_path, this);
       } else if (app.user) { // dashboard? profile?
         this.user = app.user;
 
@@ -31,14 +32,25 @@ define('views/header',
       this.render();
     },
 
-    render: function() {
+    render: function(additional_data) {
       var data = {};
-      data.user = this.user.toJSON();
+      data.user = {
+        nickname: this.user.get('nickname'),
+        media:    this.user.get('media')
+      }
 
       if (this.space) {
-        data.space = this.space.toJSON();
+        data.space = {
+          title: this.space.get('title'),
+          media: this.space.get('media')
+        };
+
         data.space_admin = this.space.is_admin(this.user);
       }
+
+      $.extend(true, data, additional_data || {});
+
+      console.log(data);
 
       this.$el.find('#path').html(this.templates.path(data));
 
@@ -47,6 +59,29 @@ define('views/header',
 
     highlight: function(section) {
       this.$el.find('a#' + section + '_link').addClass('selected');
+    },
+
+    folder_hierarchy: function(folder) {
+      if (!folder.has_parent()) { return []; }
+      var folders = _.reject(folder.ancestors(), function(f) { return !f.has_parent(); });
+
+      return folders.reverse();
+    },
+
+    show_folder_path: function(folder, data) {
+      if (!this.state.view) return true;
+      console.log("rendering in path: " + folder)
+      return this.render($.extend(true, {
+        folders: _.collect(
+          this.folder_hierarchy(folder),
+          function(f) { return { title: f.get('title') } })
+      }, data || {}));
+    },
+
+    show_page_path: function(page) {
+      return this.show_folder_path(page.folder, {
+        page: { title: page.get('title') }
+      });
     }
   });
 });

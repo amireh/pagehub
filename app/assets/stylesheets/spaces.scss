@@ -263,9 +263,10 @@
   /*margin-top: 10px;*/
 }
 .no-scroll {
-  #pages .scroller {
-    overflow-y: visible !important;
+  .scroller {
+    overflow-y: hidden !important;
     max-height: inherit !important;
+    padding-bottom: 5px;
   }
 
   .CodeMirror {
@@ -420,3 +421,46 @@
 
 } /* browser */
 
+.browser-actionbar {
+  margin-top: 7px;
+}
+.browser.finder-like {
+  .folders.listing span.folder_title > span, .pages.listing a {
+    padding: 0 5px;
+  }
+
+  li.folder {
+    span.folder_title {
+      background: $low_contrast_bg;
+
+      @include no-transition();
+
+
+      &:hover {
+        color: white;
+        background: black;
+      }
+
+    }
+
+    .listing.pages {
+      a {
+        display: block;
+      }
+    }
+    .folders.listing .selected,
+    .pages.listing .selected {
+      background: $active_fg;
+      &, a { color: white; }
+      display: block;
+    }
+
+    button[data-collapse] { display: none; }
+
+    ul, ol { padding: 0 }
+  }
+
+  li.selected:before {
+    display: none;
+  }
+}

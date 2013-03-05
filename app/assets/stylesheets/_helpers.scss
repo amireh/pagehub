@@ -18,6 +18,14 @@
   transition:         $property $duration $type $delay;
 }
 
+@mixin no-transition {
+  -moz-transition:    none;
+  -webkit-transition: none;
+  -o-transition:      color 0 ease-in;
+  -ms-transition:     none;
+  transition:         none;
+}
+
 @mixin highlight() {
   color:            $highlight_fg;
   background-color: $highlight_bg;

@@ -110,6 +110,12 @@ header {
       text-decoration: underline;
       /*color: #FFFEDF !important;*/
     }
+
+    a#space_settings_link {
+      position: absolute;
+      top: 0;
+      left: -40px;
+    }
   }
 
   .subheader {

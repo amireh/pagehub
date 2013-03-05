@@ -2,6 +2,12 @@
 
 {{#if space}}
   / <a href="{{space.media.actions.edit}}"><strong>{{space.title}}</strong></a>
+  {{#each folders}}
+    / <strong><a>{{title}}</a></strong>
+  {{/each}}
+  {{#if page}}
+    / <a>{{page.title}}</a>
+  {{/if}}
   {{#if space_admin}}
     <a rel="tooltip" id="space_settings_link" title="Space settings" class="icon tools" href="{{space.media.actions.settings}}"></a>
   {{/if}}

@@ -3,14 +3,14 @@ define('views/spaces/show',
   'backbone',
   'models/space',
   'views/spaces/resource_actions',
-  'views/spaces/browser',
+  'views/spaces/finderlike_browser',
   'views/spaces/page_actionbar',
   'views/spaces/general_actionbar',
   'views/spaces/editor',
   'views/spaces/finder',
   'pagehub',
   'timed_operation'
-], function(Backbone, Space, Browser, ResourceActions, PageActionBar, GeneralActionBar, Editor, Finder, UI, TimedOp) {
+], function(Backbone, Space, ResourceActions, Browser, PageActionBar, GeneralActionBar, Editor, Finder, UI, TimedOp) {
   return Backbone.View.extend({
     initialize: function(state) {
       UI.status.mark_pending();
@@ -34,7 +34,7 @@ define('views/spaces/show',
       this.browser          = new Browser(data);
       this.editor           = new Editor(data);
       this.page_actionbar   = new PageActionBar($.extend({}, data, { editor: this.editor }));
-      this.page_actionbar   = new GeneralActionBar(data);
+      this.workspace_actionbar   = new GeneralActionBar(data);
       this.finder   = new Finder(data);
 
       this.space.folders.every(function(f) {
@@ -56,6 +56,8 @@ define('views/spaces/show',
       this.preferences_autosaver = new TimedOp(this, this.autosave_preferences, {
         pulse: state.get('preferences.pulses.runtime_preferences')
       });
+
+      this.space.trigger('load_folder', this.space.root_folder());
 
       UI.status.mark_ready();
     },
