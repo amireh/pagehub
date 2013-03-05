@@ -310,7 +310,6 @@
 
   li.folder {
     position: relative;
-    cursor: pointer;
 
     &.general-folder {
       > ol {
@@ -523,4 +522,10 @@
   li.selected:before {
     display: none;
   }
+}
+
+.browser.finder-like + .browser-actionbar {
+  border-top: 1px solid $low_contrast_border;
+  margin-top: 5px;
+  padding-top: 5px;
 }

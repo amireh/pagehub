@@ -83,9 +83,9 @@ define('views/spaces/workspace/router',
           this.director.space.trigger('load_folder', resource);
         } else {
           console.log('routing failed; unable to find resource titled ' + title + ' in folder ' + folder.get('id'));
+          this.director.on_invalid_route(path);
         }
       }
-
 
       return this;
     }

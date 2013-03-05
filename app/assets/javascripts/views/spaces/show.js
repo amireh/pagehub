@@ -62,6 +62,13 @@ define('views/spaces/show',
       UI.status.mark_ready();
     },
 
+    on_invalid_route: function(path) {
+      this.state.UI.status.show('The resource you requested does not seem to exist anymore.', 'bad');
+      // this.space.trigger('load_folder', this.space.root_folder());
+      this.state.router.navigate('/', { trigger: true, replace: true });
+      return true;
+    },
+
     go: function() {
       this.state.router =  new Router(this);
 

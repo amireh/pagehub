@@ -2,19 +2,18 @@
     data-parent="{{parent.id}}"
     data-collapsible
     id="folder_{{id}}"
-    class="folder">
+    class="folder{{#unless parent.id}} general-folder{{/unless}}">
 
   <button data-collapse data-collapsed-caption=""></button>
-  <span class="folder_title" {{#unless is_general}}draggable="true"{{/unless}}>
+  <span class="folder_title" {{#unless parent.id}}draggable="true"{{/unless}}>
     <!-- <span>{{#escape title}}{{/escape}}</span> -->
     <a data-href="#{{path}}"><i class="icon-folder-close"></i>{{{title}}}</a>
     <button class="icon edit_folder"></button>
     <button class="icon delete_folder"></button>
   </span>
 
-
   <ol class="listing folders"></ol>
   <ol class="listing pages">
-    <li class="empty_folder">This folder is empty.</li>
+    <li class="empty_folder"><i class="icon-warning-sign"></i> This folder is empty.</li>
   </ol>
 </li>
