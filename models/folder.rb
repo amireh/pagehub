@@ -31,6 +31,14 @@ class Folder
   # before :destroy, :deletable_by?
   # before :destroy, :nullify_references
 
+  before :save do
+    # reserved names only apply to the root-level resources
+    if !folder.folder && !resource_title_available?(self.title)
+      errors.add :title, "That title is reserved for internal usage."
+      throw :halt
+    end
+  end
+
   [ :save, :update ].each { |advice|
     before advice.to_sym do |*args|
       validate_hierarchy!

@@ -1,3 +1,6 @@
+ReservedResourceTitles = %w(
+  edit settings
+)
 ReservedSpaceTitles = %w(
   dashboard
   spaces
@@ -24,8 +27,15 @@ ReservedUsernames = %w[
   help
 ]
 
+puts ReservedResourceTitles.inspect
+
 def reserved?(name)
   ReservedNames.include?(name)
+end
+
+def resource_title_available?(title)
+  pretty = (title || '').to_s.sanitize
+  !pretty.empty? && !ReservedResourceTitles.include?(pretty)
 end
 
 def name_available?(name)
@@ -45,11 +55,14 @@ end
 before do
   if api_call?
     # puts "its an api call"
+    # puts request.content_type
     request.body.rewind
     body = request.body.read.to_s || ''
     unless body.empty?
       begin;
         params.merge!(JSON.parse(body))
+        # puts params.inspect
+        # puts request.path
       rescue JSON::ParserError => e
         puts e.message
         puts e.backtrace

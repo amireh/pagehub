@@ -26,12 +26,21 @@ get '/new',
   end
 end
 
-get "/users/:user_id/spaces/:space_id",
+get "/users/:user_id/spaces/:space_id.?:format",
   auth: [ :member ],
-  provides: [ :json ],
+  provides: [ :json, :zip ],
   requires: [ :user, :space ] do
 
   authorize! :access, @space, message: "You do not have access to that space."
+
+  if params[:format] && params[:format] == 'zip'
+    serializer = PageHub::SpaceSerializer.new
+    archive = serializer.serialize(@space, settings.space_archives, :zip, true)
+    return send_file archive, {
+      filename: File.basename(archive),
+      disposition: 'attachment'
+    }
+  end
 
   respond_with @space do |f|
     f.json { rabl :"/spaces/show", object: @space }

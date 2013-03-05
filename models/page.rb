@@ -10,7 +10,7 @@ class Page
     property :content, Text, default: "", length: 2**24-1
     belongs_to :page, key: true
   end
-  
+
   class Revision
   end
 
@@ -30,10 +30,10 @@ class Page
 
   property :created_at,   DateTime, default: lambda { |*_| DateTime.now }
   property :updated_at,   DateTime, default: lambda { |*_| DateTime.now }
-  
+
   belongs_to :folder
   belongs_to :creator, 'User'
-  
+
   has n, :public_pages, :constraint => :destroy
   has n, :revisions,    Page::Revision,    :constraint => :destroy
   has 1, :carbon_copy,  Page::CarbonCopy,  :constraint => :destroy
@@ -44,20 +44,28 @@ class Page
 
   before :valid? do
     self.updated_at = DateTime.now
-    
+
     true
   end
-  
+
   # def editor
   #   @editor || User.editor
   # end
-  
+
   alias_method :cc, :carbon_copy
-  
+
   # [ :update, :save ].each { |advice|
   #   before advice do |context|
   #   end
   # }
+
+  before :save do
+    # reserved names only apply to the root-level resources
+    if !folder.folder && !resource_title_available?(self.title)
+      errors.add :title, "That title is reserved for internal usage."
+      throw :halt
+    end
+  end
 
   after :create, :init_cc
 
@@ -69,7 +77,7 @@ class Page
     self.carbon_copy.page = self
     self.carbon_copy.save! # make sure to use the bang version here
   end
-  
+
   def browsable_by?(user)
     (browsable && folder.browsable_by?(user)) || space.member?(user)
   end
@@ -138,7 +146,7 @@ class Page
   def url(root = false)
     root ? "/pages/#{id}" : "#{space.url(true)}/pages/#{id}"
   end
-  
+
   def href
     "#{folder.href}/#{pretty_title}"
   end
@@ -146,11 +154,11 @@ class Page
   def revisions_url
     self.url(true) + '/revisions'
   end
-    
+
   def editable_by?(user)
     folder.space.editor?(user)
   end
-  
+
   def is_homepage?
     [ 'README', 'Home' ].include?(self.title)
   end
@@ -168,7 +176,7 @@ class Page
   def to_json(*args)
     serialize(args).to_json
   end
-  
+
   def space
     folder.space
   end
@@ -180,7 +188,7 @@ class Page
   # Pages are deletable only by their authors.
   # def deletable_by?(context = :default)
   #   errors.delete(:creator)
-    
+
   #   if !editor
   #     errors.add :creator, "An editor must be assigned before attempting to remove a page."
   #   elsif creator.id != editor.id
@@ -188,7 +196,7 @@ class Page
   #   end
 
   #   throw :halt unless errors.empty?
-    
+
   #   errors.empty?
   # end
 end

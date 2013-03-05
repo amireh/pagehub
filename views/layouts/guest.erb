@@ -2,52 +2,43 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title><%= yield_with_default(:title) { AppTitle } %></title>
+  <title><% __title = yield_with_default(:title) do %><%= AppTitle %><% end %><%= __title %></title>
 
   <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
-  <link href="/css/pagehub.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="/css/pagehub.css" rel="stylesheet" type="text/css" /> -->
 
-  <script type="text/javascript">
-    $(function() {
-      $("a[href='<%=request.path%>']").addClass("selected");
-    });
-
-  </script>
-
-  <%= yield_content :scripts %>
-  <%= yield_content :js %>
-
-  <link href="/css/skins/light.css" rel="stylesheet" type="text/css" />
-  <link href="/css/guest.css" rel="stylesheet" type="text/css" />
+  <link href="/assets/app.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="guest">
 
-  <div class="nav_wrap"></div>
+  <div class="status-wrap">
+    <div id="status"></div>
+    <%= partial "layouts/_flashes" %>
+  </div>
+
   <div class="stuff">
-    <nav>
+    <nav class="top">
       &nbsp;
       <a id="login" href="/sessions/new">Sign in</a>
     </nav>
 
-    <header>
-      <div class="header_wrap"></div>
-      <!-- <h1><a href="/"><img src="/images/Logo-black-without-glass.png" alt="PageHub Logo" /></a></h1> -->
-      <h1><a href="/">PageHub</a></h1> <br/>
-      <ul>
-        <a href="/features">Features</a><br/>
-        <a href="/about">About</a><br/>
-        <a href="/open-source">Open Source</a><br/>
-        <a href="/users/new">Sign up</a>
-      </ul>
-    </header>
-
     <div id="content">
-      <div id="status"></div>
-
-      <%= partial "layouts/_flashes" %>
-
       <%= yield %>
+    </div>
+    <div class="sidebar">
+      <header>
+        <h1><a href="/">PageHub</a></h1> <br/>
+      </header>
+
+      <nav>
+        <ul>
+          <a href="/features">Features</a><br/>
+          <a href="/about">About</a><br/>
+          <a href="/open-source">Open Source</a><br/>
+          <a href="/users/new">Sign up</a>
+        </ul>
+      </nav>
     </div>
 
   </div>

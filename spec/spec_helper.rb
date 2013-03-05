@@ -52,7 +52,7 @@ RSpec.configure do |config|
 
   config.append_before(:each) do
     header "Accept", "application/json"
-    # header "Content-Type", "application/json"
+    header "Content-Type", "application/json"
   end
 
   app.set :dump_errors, true

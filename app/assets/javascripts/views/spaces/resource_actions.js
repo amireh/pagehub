@@ -6,7 +6,8 @@ function(Backbone, Folder, UI, Shortcut) {
 
     events: {
       'click #new_page':    'create_page',
-      'click #new_folder':  'create_folder'
+      'click #new_folder':  'create_folder',
+      'click #download_zip': 'download_space'
     },
 
     initialize: function(data) {
@@ -18,6 +19,11 @@ function(Backbone, Folder, UI, Shortcut) {
 
       Shortcut.add("ctrl+alt+c", function() { view.create_page(); })
       Shortcut.add("ctrl+alt+f", function() { view.create_folder(); })
+    },
+
+    consume: function(e) {
+      e.preventDefault();
+      return false;
     },
 
     create_page: function(e) {
@@ -60,10 +66,13 @@ function(Backbone, Folder, UI, Shortcut) {
 
             // select the current folder from the parent folder list for convenience
             open: function() {
+              UI.dialog.on_open($(this));
+
               $(this)
               .find('select :selected').attr("selected", false).end()
-              .find("select option[value=" + parent.get('id') + "]").attr("selected", true).end()
-              .find('form').on('submit', view.consume);
+              .find("select option[value=" + parent.get('id') + "]").attr("selected", true).end();
+
+              return true;
             },
 
             buttons: {
@@ -91,6 +100,12 @@ function(Backbone, Folder, UI, Shortcut) {
       });
 
       return false;
+    },
+
+    download_space: function(e) {
+      UI.status.show('Please wait while we create the ZIP archive for you.', 'good');
+
+      return true;
     }
   })
 })

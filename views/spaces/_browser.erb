@@ -5,15 +5,22 @@
     <a class="listlike with-arrow" rel="tooltip" data-placement="right" title="Create a new page or folder">File</a>
     <ol class="listlike">
       <li>
-        <a href="<%= @space.url(true) + '/pages/new' %>" id="new_page" rel="tooltip" data-placement="right" title="Create a new page (Ctrl+Alt+C)">
-          <!-- <i class="icon new-page"></i> -->
+        <a href="#" id="new_page" rel="tooltip" data-placement="right" title="Create a new page (Ctrl+Alt+C)">
+          <i class="icon-file"></i>
           New page
         </a>
       </li>
       <li>
-        <a href="<%= @space.url(true) + '/folders/new' %>" role="button" rel="tooltip" data-placement="right" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">
-          <!-- <i class="icon new-folder"></i> -->
+        <a href="#" role="button" rel="tooltip" data-placement="right" data-toggle="modal" id="new_folder" title="Create a new folder (Ctrl+Alt+F)">
+          <i class="icon-folder-close"></i>
           New folder
+        </a>
+      </li>
+      <li><span class="title">Other</span></li>
+      <li>
+        <a href="<%= @space.url %>.zip" role="button" rel="tooltip" data-placement="right" data-toggle="modal" id="download_zip" title="Download this space as a ZIP file">
+          <i class="icon-download"></i>
+          Download as ZIP
         </a>
       </li>
     </ol>

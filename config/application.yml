@@ -4,6 +4,7 @@
 
 development: &common
   intercept_internal_errors: false
+  space_archives: tmp/archives
   courier: &courier
     enabled:  true
     host:     'pagehub.org'

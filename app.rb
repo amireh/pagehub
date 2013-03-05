@@ -35,7 +35,7 @@ end
 configure do
   config_files.each { |cf| config_file 'config/%s.yml' %[cf] }
 
-  respond_to :html, :json
+  # respond_to :html, :json
 
   use Rack::Session::Cookie, :secret => settings.credentials['cookie']['secret']
 
@@ -45,13 +45,11 @@ configure do
   # DataMapper::Logger.new($stdout, :debug)
   DataMapper.setup(:default, "mysql://#{dbc[:un]}:#{dbc[:pw]}@#{dbc[:host]}/#{dbc[:db]}")
 
-  [ 'lib', 'helpers' ].each { |d|
-    Dir.glob("#{d}/**/*.rb").reject { |f| f =~ /\.exclude/ }.each { |f| require f }
-  }
-
+  # the configurator should be loaded before the models
+  require 'lib/pagehub'
   PageHub::Config.init
 
-  [ 'models' ].each { |d|
+  [ 'lib', 'helpers', 'models' ].each { |d|
     Dir.glob("#{d}/**/*.rb").reject { |f| f =~ /\.exclude/ }.each { |f| require f }
   }
 
@@ -68,7 +66,6 @@ configure do
   DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
 
   set :default_preferences, PageHub::Config.defaults
-  set :jstemplates, File.join(settings.root, 'app', 'templates')
 
   Rabl.configure do |config|
     config.escape_all_output = true
@@ -112,8 +109,4 @@ end
 
 configure :development do
   Bundler.require(:development)
-end
-
-get '/test' do
-  erb :"test"
 end

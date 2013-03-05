@@ -3,9 +3,9 @@ define('pagehub',
 [
   'underscore',
   'jquery',
-  'bootstrap',
-  'hb!dialogs/connectivity_issue.hbs'
-], function(_, $, undefined, ConnectivityIssueDlg) {
+  'hb!dialogs/connectivity_issue.hbs',
+  'bootstrap'
+], function(_, $, ConnectivityIssueDlg) {
   var __init = false,
       timers = {
         flash: null,
@@ -117,14 +117,7 @@ define('pagehub',
     open: function() {
       var dlg = $(this);
 
-      dlg.find('.ui-dialog-buttonpane button:last').focus();
-      dlg.find('form').submit(function(e) { e.preventDefault(); return false; });
-      dlg.keypress(function(e) {
-        if( e.keyCode == 13 ) {
-          dlg.parent().find('.ui-dialog-buttonpane button:last').click();
-          return false;
-        }
-      });
+      ui.dialog.on_open(dlg);
     }
   });
 
@@ -201,6 +194,19 @@ define('pagehub',
       this.state = application;
     },
 
+    dialog: {
+      on_open: function(dlg) {
+
+        dlg.find('.ui-dialog-buttonpane button:last').focus();
+        dlg.find('form').on('submit', function(e) { e.preventDefault(); return false; });
+        dlg.keypress(function(e) {
+          if( e.keyCode == 13 ) {
+            dlg.parent().find('.ui-dialog-buttonpane button:last').click();
+            return false;
+          }
+        });
+      }
+    },
 
     status: {
       clear: function(cb) {

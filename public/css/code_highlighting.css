@@ -1,19 +1,12 @@
-
-.highlight  {
-  /*background: #ffffff;*/
-/*  background-color: #F8F8F8;
-  border: 1px solid #CCC;
-  font-size: 13px;
-  line-height: 19px;*/
-}
-.highlight pre { 
-  font-size: 14px;
+.highlight pre {
+  font-size: 12px;
   word-wrap: break-word;
   line-height: 16px;
   background: #FCFCFC;
   border-left: 5px solid #DDD;
-  padding: 5px;  
+  padding: 5px;
 }
+
 /*#8FBE00*/
 .highlight .c { color: #999988; font-style: italic } /* Comment */
 .highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
