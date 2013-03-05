@@ -1,4 +1,4 @@
-get '/:user_nickname/:space_pretty_title/edit', auth: :user, :provides => [ :html ] do |user_nn, space_pt|
+get '/:user_nickname/:space_pretty_title/edit*', auth: :user, :provides => [ :html ] do |user_nn, space_pt, *_|
   unless u = User.first(nickname: user_nn.sanitize)
     pass
   end

@@ -192,7 +192,7 @@
   vertical-align: middle;
   margin-bottom: 0;
   position: absolute;
-  left: 0;
+  /*left: 0;*/
   top: 3px;
   display: none;
   z-index: 105;
@@ -424,36 +424,96 @@
 .browser-actionbar {
   margin-top: 7px;
 }
+.scroller.finder-like {
+  margin-left: 0;
+  padding-left: 0;
+}
 .browser.finder-like {
-  .folders.listing span.folder_title > span, .pages.listing a {
-    padding: 0 5px;
+  .folders.listing span.folder_title > a, .pages.listing a {
+    padding: 0;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  li.folder,
+  li.page {
+    margin: 0;
+
+    a, span {
+      margin: 0;
+    }
+
+    * { vertical-align: top; }
+
+    [class*=icon] {
+      width: 20px;
+    }
+  }
+
+  a:hover {
+    text-decoration: none;
+    background: $low_contrast_bg;
+  }
+
+  li.page {
+    [class*=icon] {
+      opacity: 0.25;
+      margin-top: 2px;
+    }
   }
 
   li.folder {
+
     span.folder_title {
-      background: $low_contrast_bg;
+      /*background: $low_contrast_bg;*/
+      font-weight: normal;
 
-      @include no-transition();
-
+      /*@include no-transition();*/
 
       &:hover {
-        color: white;
-        background: black;
+        button {
+          display: none;
+        }
       }
+      a {
+        padding-right: 10px;
 
+        &:after {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          width: 0;
+          height: 0;
+          border-top:     4px solid transparent;
+          border-bottom:  4px solid transparent;
+          border-left:    4px solid rgba(0,0,0,0.5);
+          content: '  ';
+        }
+      }
     }
 
-    .listing.pages {
+    &.goto-parent-folder {
+      a:after { display: none; }
+    }
+
+    .listing.pages,
+    .listing.folders {
       a {
         display: block;
       }
     }
-    .folders.listing .selected,
-    .pages.listing .selected {
-      background: $active_fg;
+
+    .folders.listing .selected {
+      background: #33B5E5;
       &, a { color: white; }
-      display: block;
     }
+    .pages.listing .selected {
+      background: $low_contrast_bg;
+      /*&, a { color: white; }*/
+    }
+
 
     button[data-collapse] { display: none; }
 

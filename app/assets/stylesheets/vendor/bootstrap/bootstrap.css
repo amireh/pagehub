@@ -1919,9 +1919,9 @@ legend + .control-group {
   transition: background-position 0.1s linear;
 }
 .btn:focus {
-  outline: thin solid #333;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
+  /*outline: thin solid #333;*/
+  /*outline: 5px auto -webkit-focus-ring-color;*/
+  /*outline-offset: -2px;*/
 }
 .btn.active,
 .btn:active {

@@ -1,7 +1,7 @@
 define('views/spaces/show',
 [
   'backbone',
-  'models/space',
+  'views/spaces/workspace/router',
   'views/spaces/resource_actions',
   'views/spaces/finderlike_browser',
   'views/spaces/page_actionbar',
@@ -10,7 +10,7 @@ define('views/spaces/show',
   'views/spaces/finder',
   'pagehub',
   'timed_operation'
-], function(Backbone, Space, ResourceActions, Browser, PageActionBar, GeneralActionBar, Editor, Finder, UI, TimedOp) {
+], function(Backbone, Router, ResourceActions, Browser, PageActionBar, GeneralActionBar, Editor, Finder, UI, TimedOp) {
   return Backbone.View.extend({
     initialize: function(state) {
       UI.status.mark_pending();
@@ -57,9 +57,18 @@ define('views/spaces/show',
         pulse: state.get('preferences.pulses.runtime_preferences')
       });
 
-      this.space.trigger('load_folder', this.space.root_folder());
+      // this.space.trigger('load_folder', this.space.root_folder());
 
       UI.status.mark_ready();
+    },
+
+    go: function() {
+      this.state.router =  new Router(this);
+
+      Backbone.history.start({
+        pushState:  true,
+        root:       this.space.get('media.actions.edit') + '/'
+      });
     },
 
     queue_preferences_sync: function(prefs) {

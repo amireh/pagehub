@@ -10,19 +10,6 @@ define('views/spaces/finderlike_browser',
 ],
 function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderTmpl, UI ) {
 
-  var init_collapsed_setting = function(object) {
-    if (!get_collapsed_setting(object)) {
-      object.state.current_user.set('preferences.runtime.spaces.' + object.state.space.get('id'), { collapsed: [] });
-    }
-
-    return true;
-  },
-      get_collapsed_setting = function(object) {
-    return object.state.current_user.get('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed');
-  },  set_collapsed_setting = function(object, value) {
-    return object.state.current_user.set('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed', value);
-  }
-
   return Backbone.View.extend({
     el: $("#browser"),
 
@@ -32,16 +19,9 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
 
     events: {
-      'click li a': 'load_page',
       'click .edit_folder': 'edit_folder',
       'click .delete_folder': 'delete_folder',
-      // 'click button[data-collapse]': 'collapse',
-      // 'click .folder_title': 'collapse',
-      // 'dblclick #goto_parent_folder': 'switch_to_parent_folder',
-      'dblclick .folder_title': 'proxy_switch_to_folder',
-      'click    .folder_title': 'proxy_highlight_folder',
-      // 'mouseenter .folder_title': 'highlight_hierarchy',
-      // 'mouseleave .folder_title': 'dehighlight_hierarchy'
+      'click .folder_title a:not(.selected)': 'proxy_highlight_folder',
     },
 
     initialize: function(data) {
@@ -53,14 +33,6 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
       $(window).on('resize', function() { return view.resize(); });
 
-      // $("#browser_actionbar #goto_parent_folder").on('click', function(e) {
-      //   if (view.ctx.current_folder && view.ctx.current_folder.has_parent()) {
-      //     view.switch_to_folder(view.ctx.current_folder.get_parent());
-      //   }
-
-      //   return false;
-      // });
-
       this.space.on('load_folder',  this.switch_to_folder, this);
       this.space.on('load_page',    this.fetch_page, this);
       this.space.on('page_loaded',  this.highlight, this);
@@ -70,43 +42,31 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       this.space.folders.on('add', this.render_folder, this);
       this.space.folders.on('remove', this.remove_folder, this);
       this.space.folders.on('change:title', this.update_title, this);
-
       this.space.folders.on('change:title', this.reorder_folder, this);
       this.space.folders.on('change:parent.id', this.reorder_folder, this);
 
-      // this.space.folders.on('sync', this.reorder_folder, this);
-
       // this.drag_manager = new DragManager(data);
-
-      init_collapsed_setting(this);
 
       this.elements = {
         scroller: $("#browser_scroller"),
         go_up: $("#goto_parent_folder")
       }
 
-      this.$el.addClass('finder-like');
+      this.$el.addClass('finder-like').parent().addClass('finder-like');
 
       this.bootstrap();
     },
 
+
     bootstrap: function() {
       this.resize();
 
-      console.log("Rendering " + this.space.folders.models.length + " folders");
-
-      // this.space.folders.every(function(f) {
-        // this.space.folders.trigger('add', f);
-        // f.pages.on('add', this.reorder_page, this);
-      //   return true;
-      // }, this);
-
-      // this.space.folders.every(function(f) {
-      //   // this.space.folders.trigger('change:parent.id', f);
-      //   return true;
-      // }, this);
-
       return this;
+    },
+
+    pass: function(e) {
+    //   // e.propagateEvent();
+      return true;
     },
 
     consume: function(e) {
@@ -116,10 +76,14 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
     reset: function() {
       this.$el.find('.selected').removeClass('selected');
+      // this.ctx.current_folder = null;
+      // this.ctx.current_page   = null;
     },
 
     resize: function() {
-      $("#pages .scroller").css("max-height", $(window).height() - 135);
+      if (this.state.current_user.get('preferences.runtime.scrolly_workspace')) {
+        $("#pages .scroller").css("max-height", $(window).height() - 135);
+      }
     },
 
     folder_from_title: function(el) {
@@ -142,19 +106,10 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
           folder  = this.folder_from_title(el);
 
       this.space.trigger('load_folder', folder);
+      // console.log(el)
+      // this.state.router.resource($(el).attr('href').substr(1));
 
       return true;
-    },
-
-    switch_to_parent_folder: function(e) {
-      console.log("switching to parent folder")
-      e.preventDefault();
-
-      if (this.ctx.current_folder && this.ctx.current_folder.has_parent()) {
-        return this.switch_to_folder(this.ctx.current_folder.get_parent());
-      }
-
-      return false;
     },
 
     switch_to_folder: function(f) {
@@ -162,7 +117,15 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
         return false;
       }
 
+      this.space.trigger('reset');
+
+      if (f == this.ctx.current_folder) {
+        return false;
+      }
+
       console.log("switching to folder: " + f.get('title') + '#' +f.get('id'))
+
+      // this.reset();
       this.$el.find('.folder').hide();
 
       if (this.ctx.current_folder) {
@@ -184,8 +147,11 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       });
 
       if (f.has_parent()) {
+        this.elements.go_up
+          .show().attr('data-folder', f.get_parent().get('id'))
+          .find('a').attr('data-href', '#' + f.get_parent().path());
+
         f.ctx.browser.folder_listing.show().prepend(this.elements.go_up);
-        this.elements.go_up.show().attr('data-folder', f.get_parent().get('id'));
       }
 
       f.ctx.browser.page_listing.show();
@@ -197,7 +163,10 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
 
     render_folder: function(f) {
-      var folder_data = $.extend(f.toJSON(), { is_general: !f.has_parent() }),
+      var folder_data = $.extend(true, f.toJSON(), {
+            is_general: !f.has_parent(),
+            path:       f.path()
+          }),
           entry   = this.templates.folder(folder_data),
           target  = this.$el,
           el      = target.append( entry ).children().last();
@@ -205,7 +174,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       f.ctx.browser = {
         el:             el,
         title_container: el.find('.folder_title'),
-        title:          el.find('.folder_title > span'),
+        title:          el.find('.folder_title > a'),
         folder_listing: el.find('ol.folders'),
         collapser:      el.find('button[data-collapse]'),
         page_listing:   el.find('ol.pages'),
@@ -224,11 +193,6 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       f.pages.on('change:title',  this.reorder_page, this);
 
       f.trigger('change:parent.id', f);
-
-      // if (this.ctx.settings.runtime.collapsed.indexOf(parseInt( f.get('id') )) != -1) {
-      if (get_collapsed_setting(this).indexOf(parseInt( f.get('id') )) != -1) {
-        this.__collapse(f.ctx.browser.collapser);
-      }
 
       return this;
     },
@@ -263,7 +227,7 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
               listing  = parent.ctx.browser.folder_listing,
               el       = f.ctx.browser.el;
 
-          console.log("positioning folder " + f.get('title') + ' -> ' + position + ' [' + listing.children().length + ']');
+          // console.log("positioning folder " + f.get('title') + ' -> ' + position + ' [' + listing.children().length + ']');
 
           if (position == 0) {
             listing.prepend(el);
@@ -278,8 +242,11 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
     render_page: function(page) {
       var folder  = page.folder,
+          data    = $.extend(true, page.toJSON(), {
+            path: page.path()
+          }),
           el      = folder.ctx.browser.page_listing.
-                    append(this.templates.page(page.toJSON())).children().last();
+                    append(this.templates.page(data)).children().last();
 
       folder.ctx.browser.empty_label.hide();
 
@@ -311,26 +278,33 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
     },
 
     proxy_highlight_folder: function(e) {
-      return this.highlight_folder(this.folder_from_title($(e.target)));
+      this.highlight_folder(this.folder_from_title($(e.target)));
+
+      return false;
     },
 
-    highlight_folder: function(folder, dont_reset) {
+    dehighlight_folder: function() {
+      $("#browser .folders .selected").removeClass('selected');
+
+      return false;
+    },
+
+    highlight_folder: function(folder) {
       if (!folder) {
         return UI.report_error("Unable to highlight folder.");
       } else if (!folder.ctx) {
-        console.log(folder)
         return UI.report_error("Unable to highlight folder#" + folder.get('id') + ", bad context: " + JSON.stringify(folder.ctx));
       }
 
-      if (!dont_reset)
-        this.reset();
+      this.$el.find('.folders .selected').removeClass('selected');
 
       if (!folder.ctx.browser.title.is(":visible") &&
           this.elements.go_up.attr('data-folder') == folder.get('id')) {
 
-        this.elements.go_up.find('span').addClass('selected');
+        this.elements.go_up.find('a').addClass('selected');
 
       } else {
+        console.log("highlighting " + folder.get("id"))
         folder.ctx.browser.title.addClass('selected');
       }
 
@@ -339,7 +313,8 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
     highlight: function(page) {
       if (!page) { page = this.ctx.current_page; }
-      this.reset();
+
+      this.$el.find('.pages .selected').removeClass('selected');
 
       page.ctx.browser.el.addClass('selected');
       return this.highlight_folder(page.folder, true);
@@ -351,24 +326,24 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
       return this;
     },
 
-    load_page: function(e) {
-      var a         = $(e.target),
-          page_id   = parseInt(a.attr("id").replace('page_', '')),
-          folder_id = parseInt(a.parents(".folder:first").attr("id").replace('folder_', '')),
-          folder    = this.space.folders.get(folder_id),
-          page      = folder.pages.get(page_id);
+    // load_page: function(e) {
+    //   var a         = $(e.target),
+    //       page_id   = parseInt(a.attr("id").replace('page_', '')),
+    //       folder_id = parseInt(a.parents(".folder:first").attr("id").replace('folder_', '')),
+    //       folder    = this.space.folders.get(folder_id),
+    //       page      = folder.pages.get(page_id);
 
-      e.preventDefault();
+    //   e.preventDefault();
 
-      if (!page) {
-        UI.report_error("unable to load page " + page_id + "!")
-        return false;
-      }
+    //   if (!page) {
+    //     UI.report_error("unable to load page " + page_id + "!")
+    //     return false;
+    //   }
 
-      this.space.trigger('load_page', page);
+    //   this.space.trigger('load_page', page);
 
-      return false;
-    },
+    //   return false;
+    // },
 
     fetch_page: function(page) {
       page.fetch();
@@ -476,50 +451,6 @@ function( $, Backbone, DragManager, FolderTemplate, PageTemplate, DestroyFolderT
 
       evt.preventDefault();
       return false;
-    },
-
-    collapse: function(evt) {
-      // var source = $(evt.target);
-      var source = $(evt.target);
-
-      if (source.attr("data-collapse") == null) {
-        source = source.parents(".folder:first").find('[data-collapse]:first');
-      }
-
-      this.__collapse(source);
-      var data = { preferences: { runtime: { spaces: {} } } };
-
-      data.preferences.runtime.spaces[this.state.space.get('id')] = {
-        collapsed: get_collapsed_setting(this)
-      };
-
-      this.state.trigger('sync_runtime_preferences', data);
-    },
-
-    __collapse: function(source) {
-      var folder_id = parseInt(source.parent().attr("id").replace('folder_', ''));
-
-      if (source.attr("data-collapsed")) {
-        // source.parent().siblings().show();
-        source.siblings(":not(span.folder_title)").show();
-        var caption = source.attr("data-collapsed-caption");
-        source.attr("data-collapsed-caption", source.html());
-        source.attr("data-collapsed", null).html(caption);
-        source.parent().removeClass("collapsed");
-
-        set_collapsed_setting(this, get_collapsed_setting(this).pop_value(folder_id));
-      } else {
-        source.siblings(":not(span.folder_title)").hide();
-        // source.parent().siblings().hide();
-        var caption = source.attr("data-collapsed-caption");
-        source.attr("data-collapsed-caption", source.html());
-        source.attr("data-collapsed", true).html(caption);
-        source.parent().addClass("collapsed");
-
-        get_collapsed_setting(this).push(folder_id);
-        // this.ctx.settings.runtime.collapsed.push(folder_id);
-        // this.ctx.settings_changed = true;
-      }
     },
 
     highlight_hierarchy: function(evt) {

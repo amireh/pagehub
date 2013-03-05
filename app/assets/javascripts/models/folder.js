@@ -36,8 +36,20 @@ define('models/folder',
     children: function() {
       return this.collection.space.folders.where({ 'parent.id': this.get('id') });
     },
+
     parse: function(data) {
       return data.folder;
+    },
+
+    path: function() {
+      var parts =
+        _.reject(_.collect(this.ancestors(), function(f) { return f.get('pretty_title'); }),
+          function(t) { return t == 'none'; })
+        .reverse();
+
+      // parts.push(this.get('pretty_title'));
+
+      return parts.join('/');
     },
 
     initialize: function(data) {

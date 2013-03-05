@@ -7,7 +7,7 @@
   <button data-collapse data-collapsed-caption=""></button>
   <span class="folder_title" {{#unless is_general}}draggable="true"{{/unless}}>
     <!-- <span>{{#escape title}}{{/escape}}</span> -->
-    <span>{{{title}}}</span>
+    <a data-href="#{{path}}"><i class="icon-folder-close"></i>{{{title}}}</a>
     <button class="icon edit_folder"></button>
     <button class="icon delete_folder"></button>
   </span>

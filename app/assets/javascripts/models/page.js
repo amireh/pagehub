@@ -37,6 +37,19 @@ define(
       this.folder = folder || space.root_folder();
     },
 
+    path: function() {
+      var parts =
+        _.reject(
+          _.collect(this.folder.ancestors(),
+                    function(f) { return f.get('pretty_title'); }),
+          function(t) { return t == 'none' })
+        .reverse();
+
+      parts.push(this.get('pretty_title'));
+
+      return parts.join('/');
+    },
+
     fully_qualified_title: function() {
       var parts =
         _.reject(
