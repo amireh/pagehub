@@ -100,6 +100,7 @@ function($, Backbone) {
 
     refresh: function() {
       this.editor.refresh();
+
       return this;
     },
 
@@ -132,6 +133,7 @@ function($, Backbone) {
       var cursor = this.editor.getCursor(),
           scroll = this.editor.getScrollInfo();
 
+
       this.reset();
       this.editor.setValue(_.unescape( page.get('content') ));
       this.editor.markClean();
@@ -150,6 +152,7 @@ function($, Backbone) {
 
     serialize: function() {
       this.editor.save();
+
       if (this.ctx.current_page) {
         this.ctx.current_page.set('content', this.editor.getValue());
       }

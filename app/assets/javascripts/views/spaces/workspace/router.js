@@ -5,7 +5,7 @@ define('views/spaces/workspace/router',
 
   $(document).on("click", "#browser li.page a", function(evt) {
     evt.preventDefault();
-    console.log("navigating to page...");
+    // console.log("navigating to page...");
     Backbone.history.navigate($(this).attr("href"), true);
     return false;
   });
@@ -42,7 +42,7 @@ define('views/spaces/workspace/router',
           resource  = null,
           routed    = false;
 
-      console.log("navigating to " + path)
+      // console.log("navigating to " + path)
 
       if (title.length == 0) {
         return this;
@@ -66,20 +66,20 @@ define('views/spaces/workspace/router',
         return this;
       }
 
-      console.log('looking up resource: ' + title + " in folder: " + folder.get('id'));
+      // console.log('looking up resource: ' + title + " in folder: " + folder.get('id'));
 
       // is it a page?
       resource = folder.pages.where({ pretty_title: title })[0];
 
       if (resource) {
-        console.log('found page, navigating...');
+        // console.log('found page, navigating...');
         this.director.space.trigger('load_page', resource);
       } else {
         // is it a folder?
         resource = this.director.space.folders.where({ pretty_title: title, 'parent.id': folder.get('id') })[0];
 
         if (resource) {
-          console.log('found folder, navigating...');
+          // console.log('found folder, navigating...');
           this.director.space.trigger('load_folder', resource);
         } else {
           console.log('routing failed; unable to find resource titled ' + title + ' in folder ' + folder.get('id'));

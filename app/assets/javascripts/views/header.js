@@ -70,7 +70,7 @@ define('views/header',
 
     show_folder_path: function(folder, data) {
       if (!this.state.view) return true;
-      console.log("rendering folder path: " + folder.path())
+      // console.log("rendering folder path: " + folder.path())
       return this.render($.extend(true, {
         folders: _.collect(
           this.folder_hierarchy(folder),
@@ -84,7 +84,7 @@ define('views/header',
     },
 
     show_page_path: function(page) {
-      console.log("rendering page path: " + page.path())
+      // console.log("rendering page path: " + page.path())
       return this.show_folder_path(page.folder, {
         page: { title: page.get('title'), path: page.path() }
       });

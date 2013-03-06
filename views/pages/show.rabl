@@ -1,6 +1,8 @@
 object @page
 
-attributes :id, :title, :content
+extends "pages/_show"
+
+attributes :content
 
 node(:nr_revisions) do |p|
   p.revisions.count

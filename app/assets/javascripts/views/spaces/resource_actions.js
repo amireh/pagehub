@@ -36,6 +36,7 @@ function(Backbone, Folder, UI, Shortcut) {
       var page = _.last(folder.pages.models);
 
       page.save({}, {
+        wait: true,
         success: function() {
           page.collection.trigger('add', page);
           UI.status.show("Created!", "good");

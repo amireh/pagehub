@@ -18,6 +18,7 @@ requirejs.config({
     'jquery':                 'vendor/jquery-1.9.1.min',
     'jquery.ui':              'vendor/jquery-ui/jquery-ui-1.10.1.custom.min',
     'jquery.util':            'helpers/util',
+    'jquery.tinysort':         'vendor/jquery.tinysort.min',
     'underscore':             'lib/underscore-min',
     'underscore.inflection':  'lib/underscore/underscore.inflection',
     'underscore.helpers':     'helpers/underscore',
@@ -44,6 +45,7 @@ requirejs.config({
     'jquery.ui': [ 'jquery' ],
     'jquery.util': [ 'jquery' ],
     'jquery.gridster': [ 'jquery' ],
+    'jquery.tinysort': [ 'jquery' ],
 
     'shortcut': {
       exports: 'shortcut'

@@ -34,7 +34,7 @@ define('models/folder',
     },
 
     children: function() {
-      return this.collection.space.folders.where({ 'parent.id': this.get('id') });
+      return this.collection.where({ 'parent.id': this.get('id') });
     },
 
     parse: function(data) {

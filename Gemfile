@@ -49,6 +49,7 @@ end
 
 group :test do
   gem 'rake'
+  gem 'rack-contrib'
   gem 'rspec', '2.12'
   gem 'rack-test', :require => "rack/test"
   # gem 'capybara-webkit', '>= 0.13.0', :git => 'https://github.com/thoughtbot/capybara-webkit'

@@ -24,21 +24,26 @@
         </a>
       </li>
     </ol>
+
   </div>
 
   <!-- the scroller is used to enforce a max-height and inject scrollbars when needed -->
   <div id="browser_scroller" class="scroller">
-    <ul id="browser" class="browser">
+    <ul id="browser" class="browser" style="display: none;">
       <li style="display: none;" class="folder goto-parent-folder" id="goto_parent_folder">
         <span class="folder_title"><a><i class="icon-arrow-up"></i>..</a></span>
       </li>
     </ul>
     <div id="browser_actionbar" class="browser-actionbar">
       <div class="btn-group">
-        <button id="browser_settings" rel="tooltip" title="Browser settings" data-placement="bottom" class="btn btn-mini"><i class="icon-cog"></i> </button>
         <button id="edit_folder" rel="tooltip" title="Edit folder" data-placement="bottom" class="btn btn-mini"><i class="icon-edit"></i> </button>
         <button id="delete_folder" rel="tooltip" title="Delete folder" data-placement="bottom"  class="btn btn-mini"><i class="icon-trash"></i> </button>
       </div>
+
+      <button id="show_browser_settings" rel="tooltip" title="Browser settings" data-placement="bottom" class="btn btn-mini browser-settings"><i class="icon-cog"></i> </button>
+
     </div>
   </div>
 </div>
+
+<div id="browser_settings" class="browser-settings"></div>

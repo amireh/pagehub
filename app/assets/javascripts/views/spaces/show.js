@@ -3,7 +3,9 @@ define('views/spaces/show',
   'backbone',
   'views/spaces/workspace/router',
   'views/spaces/resource_actions',
-  'views/spaces/finderlike_browser',
+  // 'views/spaces/browser/finder',
+  // 'views/spaces/browser/explorer',
+  'views/spaces/browser/browser',
   'views/spaces/page_actionbar',
   'views/spaces/general_actionbar',
   'views/spaces/editor',
@@ -76,6 +78,8 @@ define('views/spaces/show',
         pushState:  true,
         root:       this.space.get('media.actions.edit') + '/'
       });
+
+      this.state.trigger('bootstrapped');
     },
 
     queue_preferences_sync: function(prefs) {

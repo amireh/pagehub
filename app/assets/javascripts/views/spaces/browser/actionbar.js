@@ -16,11 +16,14 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
 
     events: {
       'click #edit_folder':   'edit_folder',
-      'click #delete_folder': 'delete_folder'
+      'click #delete_folder': 'delete_folder',
+      'click #show_browser_settings': 'show_settings'
     },
 
     initialize: function(data) {
-      _.implode(this, data);
+      this.browser  = data.browser;
+      this.ctx      = data.browser.ctx;
+      this.space    = data.browser.space;
 
       this.elements = {
         edit_folder:   $("#edit_folder"),
@@ -129,6 +132,10 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
 
       evt.preventDefault();
       return false;
+    },
+
+    show_settings: function() {
+      return this.browser.settings.render();
     }
 
   });

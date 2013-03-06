@@ -329,6 +329,28 @@ span.shortcut {
   }
 }
 
+.ui-dialog.popdown {
+  width: auto       !important;
+  /*top:   0          !important;*/
+  /*top: 20px !important;*/
+  /*box-shadow: none  !important;*/
+  /*zoom: 90%;*/
+  font-size: 90%;
+  position: fixed;
+  max-height: 90%;
+  /*overflow-y: auto;*/
+
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+
+  .ui-dialog-titlebar {
+    /*display: none;*/
+    .ui-dialog-titlebar-close { display: none; }
+  }
+
+  @include box-shadow(0, 1px, 18px, 0, rgba(0,0,0,0.6));
+}
+
 /* -- icons -- */
 .icon {
   vertical-align: middle;

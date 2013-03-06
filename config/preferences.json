@@ -10,6 +10,12 @@
       "autosave":       true
     },
 
+    "workspace": {
+      "browser": {
+        "type": "finder"
+      }
+    },
+
     "runtime": {
       "fluid_workspace": false,
       "scrolly_workspace": true,

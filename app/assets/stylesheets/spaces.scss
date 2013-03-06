@@ -57,8 +57,9 @@
 }
 
 /* New page & New folder link list */
-.resource-actionbar {
+.resource-actionbar.actions {
   position: relative;
+  display: block;
 
   > a.listlike:first-child {
     left: -10px;
@@ -75,6 +76,12 @@
     height: 28px;
     vertical-align: middle;
   }*/
+
+  button.browser-settings {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
 }
 
 .editor-container {
@@ -146,6 +153,10 @@
   .editor-container {
    /*width: 720px; */
     padding-top: 34px;
+  }
+
+  .CodeMirror-scroll {
+    min-height: 420px;
   }
 }
 
@@ -274,7 +285,8 @@
   }
 }
 
-.browser {
+.browser,
+.browser.explorer-like {
   position: relative;
   padding: 0;
   margin: 7px 5px 0 0;
@@ -347,11 +359,6 @@
       font-weight: bold;
       margin: 5px 0;
 
-      .selected {
-        @include highlight();
-        @include transition(color, 0.25s, ease, 0s);
-      }
-
       button.icon {
         display: none;
       }
@@ -417,7 +424,6 @@
 
   } /* li.folder */
 
-
 } /* browser */
 
 .browser-actionbar {
@@ -426,6 +432,26 @@
 .scroller.finder-like {
   margin-left: 0;
   padding-left: 0;
+}
+.browser {
+  li.page {
+    [class*=icon] {
+      opacity: 0.25;
+      margin-top: 0px;
+    }
+  }
+
+}
+.browser.explorer-like {
+  [class^=icon] {
+    display: none;
+  }
+  .selected,
+  .selected a {
+    @include highlight();
+    @include transition(color, 0.25s, ease, 0s);
+    &:before { display: none; }
+  }
 }
 .browser.finder-like {
   .folders.listing span.folder_title > a, .pages.listing a {
@@ -454,13 +480,6 @@
   a:hover {
     text-decoration: none;
     background: $low_contrast_bg;
-  }
-
-  li.page {
-    [class*=icon] {
-      opacity: 0.25;
-      margin-top: 2px;
-    }
   }
 
   li.folder {
@@ -504,11 +523,11 @@
       }
     }
 
-    .folders.listing .selected {
+    .folder a.selected {
       background: #33B5E5;
       &, a { color: white; }
     }
-    .pages.listing .selected {
+    .page.selected {
       background: $low_contrast_bg;
       /*&, a { color: white; }*/
     }
@@ -524,8 +543,31 @@
   }
 }
 
-.browser.finder-like + .browser-actionbar {
+.browser + .browser-actionbar {
   border-top: 1px solid $low_contrast_border;
   margin-top: 5px;
   padding-top: 5px;
+}
+
+.browser-settings {
+  background: white;
+
+  form {
+    width: 460px;
+    h3:first-of-type { margin-top: 0; }
+
+    .thumbnails {
+      &, li {
+        margin-bottom: 0;
+      }
+
+      h4:first-child {
+        /*margin-top: 0;*/
+      }
+
+      :last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
