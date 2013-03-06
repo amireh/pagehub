@@ -23,6 +23,7 @@ class Folder
   # validates_with_method :title,   method: :validate_title!
   validates_uniqueness_of :title, :scope => [ :space_id, :folder_id ],
     message: 'You already have a folder with that title.'
+  validates_with_method :title, :method => :ensure_hierarchical_resource_title_uniqueness
 
   is :titlable
 
@@ -37,6 +38,15 @@ class Folder
       errors.add :title, "That title is reserved for internal usage."
       throw :halt
     end
+  end
+
+  def ensure_hierarchical_resource_title_uniqueness
+    if !folder || folder.pages.first({ pretty_title: self.pretty_title }).nil?
+      return true
+    end
+
+    errors.add :title, "You have a page titled #{self.title} in the same folder you're trying to create the folder in."
+    throw :halt
   end
 
   [ :save, :update ].each { |advice|

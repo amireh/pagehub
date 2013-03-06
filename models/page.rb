@@ -42,6 +42,17 @@ class Page
   validates_uniqueness_of :title, :scope => [ :folder_id ],
     message: 'You already have such a page in that folder.'
 
+  validates_with_method :title, :method => :ensure_hierarchical_resource_title_uniqueness
+
+  def ensure_hierarchical_resource_title_uniqueness
+    if folder.folders.first({ pretty_title: self.pretty_title }).nil?
+      return true
+    end
+
+    errors.add :title, "You have a folder titled #{self.title} in the same folder you're trying to create the page in."
+    throw :halt
+  end
+
   before :valid? do
     self.updated_at = DateTime.now
 
