@@ -3,21 +3,21 @@ define('views/spaces/workspace/router',
   'backbone'
 ], function(Backbone) {
 
-  $(document).on("click", "#browser li.page a", function(evt) {
+  $(document).on("dblclick", "#browser a.selected", function(evt) {
     evt.preventDefault();
     // console.log("navigating to page...");
     Backbone.history.navigate($(this).attr("href"), true);
     return false;
   });
 
-  $(document).on("dblclick", "#browser a[data-href].selected", function(evt) {
-    evt.preventDefault();
-    Backbone.history.navigate($(this).attr("data-href"), true);
-  });
+  // $(document).on("dblclick", "#browser a[data-href].selected", function(evt) {
+  //   evt.preventDefault();
+  //   Backbone.history.navigate($(this).attr("data-href"), true);
+  // });
 
-  $(document).on("click", "#path a[data-href]", function(evt) {
+  $(document).on("click", "#path a[href^=#]", function(evt) {
     evt.preventDefault();
-    Backbone.history.navigate($(this).attr("data-href"), true);
+    Backbone.history.navigate($(this).attr("href"), true);
   });
 
   var UserSettingsRouter = Backbone.Router.extend({

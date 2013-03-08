@@ -120,6 +120,7 @@
   resize: horizontal;
   overflow-x: hidden;
   min-width: 180px;
+  position: relative;
 }
 
 .action_bar_wrap {
@@ -298,7 +299,6 @@
     margin:  0;
   }
 
-
   .drop-target {
     background: $low_contrast_bg;
   }
@@ -329,9 +329,9 @@
         margin: 0;
       }
 
-      > span.folder_title,
+      > .folder-title,
       > button[data-collapse] {
-        display: none;
+        display: none !important;
       }
 
       &.collapsed span {
@@ -354,7 +354,7 @@
       }
     }
 
-    > span.folder_title {
+    > .folder-title {
       display: block;
       font-weight: bold;
       margin: 5px 0;
@@ -414,7 +414,7 @@
       content: '\002D';
     }
 
-    button[data-collapsed]:before {
+    .collapsed button[data-collapse]:before {
     /*
       border-width: 4px 0 4px 8px;
       border-color: transparent transparent transparent #ddd;
@@ -424,21 +424,28 @@
 
   } /* li.folder */
 
+  a { display: block; }
 } /* browser */
 
 .browser-actionbar {
-  margin-top: 7px;
+  border-top: 1px solid $low_contrast_border;
+  margin-top: 5px;
+  padding-top: 5px;
+  position: relative;
 }
 .scroller.finder-like {
   margin-left: 0;
   padding-left: 0;
 }
 .browser {
-  li.page {
-    [class*=icon] {
-      opacity: 0.25;
-      margin-top: 0px;
-    }
+
+  .folder [class*=icon] {
+    margin-left: 2px;
+  }
+  .page [class*=icon] {
+    opacity: 0.25;
+    margin-top: 2px;
+    margin-left: 3px;
   }
 
 }
@@ -446,15 +453,33 @@
   [class^=icon] {
     display: none;
   }
+
   .selected,
-  .selected a {
+  .selected-related {
     @include highlight();
     @include transition(color, 0.25s, ease, 0s);
     &:before { display: none; }
   }
+  .current,
+  .current-related {
+    /*@include highlight_current();*/
+
+    @include transition(color, 0.25s, ease, 0s);
+
+    /*&:not(.highlighted) {*/
+      color: #FF4444;
+    /*}*/
+
+    &:before { display: none; }
+  }
 }
+
+.browser {
+  /*a.current { @include highlight_current(); }*/
+}
+
 .browser.finder-like {
-  .folders.listing span.folder_title > a, .pages.listing a {
+  .folders.listing .folder-title > a, .pages.listing a {
     padding: 0;
   }
 
@@ -484,7 +509,7 @@
 
   li.folder {
 
-    span.folder_title {
+    .folder-title {
       /*background: $low_contrast_bg;*/
       font-weight: normal;
 
@@ -520,18 +545,38 @@
     .listing.folders {
       a {
         display: block;
+        padding: 1px;
+        border: 1px solid transparent;
+        border-radius: 3px;
+
+        &.current {
+          @include transition(background, 0.25s, linear, 0);
+        }
       }
     }
 
-    .folder a.selected {
-      background: #33B5E5;
-      &, a { color: white; }
+    a.selected {
+      background: $highlight_fg;
+      color: white;
     }
-    .page.selected {
-      background: $low_contrast_bg;
-      /*&, a { color: white; }*/
+    a.selected,
+    a.current,
+    a:hover {
+      box-shadow: 0 0 1px 1px white inset;
+      border-color: #777;
     }
 
+    .page a {
+      &.selected, &.current {
+        [class*=icon] { opacity: 1; @include transition(opacity, 0.25s, linear, 0); }
+      }
+
+      &.current {
+        color:      $current_fg;
+        background: $current_bg;
+      }
+      /*&, a { color: white; }*/
+    }
 
     button[data-collapse] { display: none; }
 
@@ -543,13 +588,7 @@
   }
 }
 
-.browser + .browser-actionbar {
-  border-top: 1px solid $low_contrast_border;
-  margin-top: 5px;
-  padding-top: 5px;
-}
-
-.browser-settings {
+div.browser-settings {
   background: white;
 
   form {
@@ -569,5 +608,34 @@
         margin-bottom: 0;
       }
     }
+  }
+}
+
+input[type="text"].input-capturer#browser_input_capturer {
+  &:not(.shown) {
+    &, &:active, &:hover, &:focus {
+      width:    0;
+      height:   0;
+      position: fixed;
+      bottom: 80px;
+      z-index: -1000;
+      background: transparent;
+      font-size:    0;
+      line-height:  0;
+      overflow: hidden;
+      resize: none;
+      border: none;
+      box-shadow: none;
+    }
+  }
+
+  &.shown {
+    position:     absolute;
+    /*bottom:       -10px;*/
+    width:        100%;
+    height:       inherit;
+    z-index:      1000;
+    font-size:    inherit;
+    line-height:  inherit;
   }
 }

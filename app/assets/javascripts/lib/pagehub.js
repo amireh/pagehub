@@ -150,8 +150,16 @@ define('pagehub',
       }
     });
 
-    loader = $(".loader");
-    loader_overlay = $(".loader-overlay");
+    // loader = $(".loader");
+    // loader_overlay = $(".loader-overlay");
+    loader = new CanvasLoader('loader');
+    loader.setColor('#595959'); // default is '#000000'
+    loader.setShape('spiral'); // default is 'oval'
+    loader.setDiameter(84); // default is 40
+    loader.setDensity(18); // default is 40
+    loader.setRange(1.1); // default is 1.3
+    loader.setSpeed(1); // default is 2
+    loader.setFPS(29); // default is 24
 
     // Togglable sections
     // $("section:not([data-untogglable])").
@@ -185,6 +193,7 @@ define('pagehub',
   ui = Backbone.View.extend({
     pbar_tick:  0,
     pbar_value: 0,
+    loader: loader,
 
     initialize: function(application) {
       if (!application) {
@@ -197,11 +206,14 @@ define('pagehub',
     dialog: {
       on_open: function(dlg) {
 
+        dlg.focus();
         dlg.find('.ui-dialog-buttonpane button:last').focus();
         dlg.find('form').on('submit', function(e) { e.preventDefault(); return false; });
         dlg.keypress(function(e) {
-          if( e.keyCode == 13 ) {
+          if ( e.keyCode == 13 ) {
             dlg.parent().find('.ui-dialog-buttonpane button:last').click();
+            e.preventDefault();
+            e.stopPropagation();
             return false;
           }
         });
@@ -254,6 +266,8 @@ define('pagehub',
 
       mark_pending: function() {
         loader.show();
+
+        // cl.show(); // Hidden by default
         // loader_overlay.show("fade");
       },
 

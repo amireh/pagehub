@@ -36,7 +36,8 @@ requirejs.config({
     'inflection': 'vendor/inflection',
     'md5': "vendor/md5",
     'timed_operation': "lib/timed_operation",
-    'animable_view': 'views/shared/animable_view'
+    'animable_view': 'views/shared/animable_view',
+    'canvas-loader': 'vendor/heartcode-canvasloader-min'
     // 'codemirror',             'vendor/'
   },
 
@@ -47,12 +48,11 @@ requirejs.config({
     'jquery.gridster': [ 'jquery' ],
     'jquery.tinysort': [ 'jquery' ],
 
-    'shortcut': {
-      exports: 'shortcut'
-    },
+    'shortcut': { exports: 'shortcut' },
+    'canvas-loader': { exports: 'canvas-loader' },
 
     'pagehub': {
-      deps: [ 'shortcut', 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr' ],
+      deps: [ 'shortcut', 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr', 'canvas-loader' ],
       exports: 'UI'
     },
 

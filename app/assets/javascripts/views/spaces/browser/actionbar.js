@@ -30,9 +30,11 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
         delete_folder: $("#delete_folder")
       };
 
-      this.space.on('reset', this.disable, this);
-      this.space.on('folder_selected', this.enable, this);
-      // this.state.on('change:selected_folder', this.update, this);
+      this.space.on('reset',            this.disable, this);
+      this.space.on('folder_selected',  this.enable, this);
+      this.space.on('page_selected',  this.disable, this);
+      this.space.on('folder_loaded',    this.enable, this);
+      // this.space.on('page_loaded',      this.enable, this);
     },
 
     __toggle: function(flag) {
@@ -44,7 +46,20 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
       return this;
     },
 
-    enable: function() {
+    enable: function(f) {
+      var f = f || this.ctx.selected_folder || this.ctx.current_folder;
+      console.log('[browser:actionbar] -- enabling for folder ' + f.get('title') + '-- ')
+
+      if (!f.has_parent || !f.has_parent()) {
+        return this.disable();
+      }
+      if (f && f.ctx.browser.el.hasClass('general-folder')) {
+        return this.disable();
+      }
+      else if (f && f.ctx.browser.el.hasClass('goto-parent-folder')) {
+        return this.disable();
+      }
+
       return this.__toggle(false);
     },
 
@@ -58,7 +73,7 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
 
     edit_folder: function(evt) {
       var el      = $(evt.target),
-          folder  = this.ctx.selected_folder,
+          folder  = this.ctx.selected_folder || this.ctx.current_folder,
           space   = this.space;
 
       if (!folder) {

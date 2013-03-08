@@ -32,6 +32,8 @@ define('views/spaces/show',
         ctx:   this.ctx
       };
 
+      this.state.workspace = this;
+
       this.resource_actions = new ResourceActions(data);
       this.browser          = new Browser(data);
       this.editor           = new Editor(data);
@@ -54,6 +56,7 @@ define('views/spaces/show',
       }, this);
 
       state.on('sync_runtime_preferences', this.queue_preferences_sync, this);
+      state.on('sync_runtime_preferences_now', this.autosave_preferences, this);
 
       this.preferences_autosaver = new TimedOp(this, this.autosave_preferences, {
         pulse: state.get('preferences.pulses.runtime_preferences')

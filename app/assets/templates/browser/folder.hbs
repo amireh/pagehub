@@ -4,16 +4,14 @@
     id="folder_{{id}}"
     class="folder{{#unless parent.id}} general-folder{{/unless}}">
 
-  <button data-collapse data-collapsed-caption=""></button>
-  <span class="folder_title" {{#unless parent.id}}draggable="true"{{/unless}}>
+  <button data-collapse></button>
+  <a href="#{{path}}" class="folder-title"{{#unless parent.id}} draggable="true"{{/unless}}>
     <!-- <span>{{#escape title}}{{/escape}}</span> -->
-    <a data-href="#{{path}}"><i class="icon-folder-close"></i>{{{title}}}</a>
-    <button class="icon edit_folder"></button>
-    <button class="icon delete_folder"></button>
-  </span>
+    <i class="icon-folder-close"></i>{{{title}}}
+  </a>
 
   <ol class="listing folders"></ol>
   <ol class="listing pages">
-    <li class="empty_folder"><i class="icon-warning-sign"></i> This folder is empty.</li>
+    <li class="empty-folder"><i class="icon-warning-sign"></i> This folder is empty.</li>
   </ol>
 </li>

@@ -26,7 +26,10 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
     },
 
     events: {
-      'click .folder_title a:not(.selected)': 'proxy_highlight_folder',
+      'click .folder > a:not(.selected, .current)': 'proxy_highlight_folder',
+      'click .page   > a:not(.selected, .current)': 'proxy_highlight_page',
+      'click .current': 'reset_highlights',
+
     },
 
     initialize: function(data) {
@@ -34,12 +37,12 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
       _.implode(this, data);
 
-      this.offset = 135;
+      this.offset = 145;
 
       // workspace events
       this.space.on('load_folder',  this.switch_to_folder, this);
       this.space.on('load_page',    this.switch_to_folder_and_load_page, this);
-      this.space.on('page_loaded',  this.proxy_highlight_page, this);
+      // this.space.on('page_loaded',  this.proxy_highlight_page, this);
 
       // -- disabled --
       // focus/scrolling behaviour is really inconsistent across browsers
@@ -68,12 +71,11 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       this.settings  = new Settings({  browser: this });
 
       this.elements = {
-        scroller: $("#browser_scroller"),
-        go_up: $("#goto_parent_folder")
+        scroller: $("#browser_scroller")
       }
 
       // this.impl = new BrowserImplementation();
-      this.__finder   = new Finder({ state: this.state });
+      this.__finder   = new Finder({ state: this.state, browser: this });
       this.__explorer = new Explorer({ state: this.state });
 
       Shortcut.add('ctrl+alt+g', function() {
@@ -81,6 +83,7 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       });
 
       this.render();
+
       this.state.on('bootstrapped', function() {
         this.$el.show();
       }, this);
@@ -102,7 +105,15 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
     },
 
     render: function() {
+      this.resize();
       this.set_browser_type(this.state.current_user.get('preferences.workspace.browser.type') || 'finder');
+
+      if (this.ctx.current_page) {
+        this.ctx.current_page.ctx.browser.title.focus();
+      }
+      else if (this.ctx.current_folder) {
+        this.ctx.current_folder.ctx.browser.title.focus();
+      }
 
       return this;
     },
@@ -118,26 +129,35 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
     },
 
     reset_highlights: function() {
-      // if (this.state.current_user.get('preferences.workspace.no_scrolling')) {
-      //   this.resize();
-      // }
-
-      console.log('[browser] -- resetting -- ');
+      console.log('[browser] -- resetting highlights -- ');
 
       this.impl.dehighlight_folder();
       this.impl.dehighlight_page();
 
-      this.ctx.selected_folder = null;
+      this.ctx.selected_folder  = null;
+      this.ctx.selected_page    = null;
+    },
+
+
+    reset_current_highlights: function() {
+      console.log('[browser] -- resetting current highlights -- ');
+
+      this.impl.dehighlight_current_folder( this.ctx.current_folder);
+      this.impl.dehighlight_current_page(   this.ctx.current_page);
     },
 
     reset_context: function() {
+      console.log('[browser] -- resetting context -- ');
+
+      this.reset_current_highlights();
+
       this.ctx.current_folder = null;
       this.ctx.current_page   = null;
     },
 
     resize: function() {
       if (this.state.current_user.get('preferences.runtime.scrolly_workspace')) {
-        $("#pages .scroller").css("max-height", $(window).height() - 135);
+        $("#pages .scroller").css("max-height", $(window).height() - this.offset);
       }
     },
 
@@ -152,6 +172,20 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
         id = folder_el.attr("id").replace('folder_', '');
       }
       return this.space.folders.get( id );
+    },
+
+    // -- utility -- //
+    page_from_title: function(el) {
+      var el = $(el).parents(".page:first"),
+          folder_id = null,
+          page_id   = null;
+
+      var folder = this.space.folders.get(el.attr('data-folder'));
+      if (folder) {
+        return folder.pages.get(el.attr('data-page'));
+      }
+
+      return null;
     },
 
     resource_data: function(resource) {
@@ -172,12 +206,11 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
         return false;
       }
 
-      // console.log("switching to folder: " + f.get('title') + '#' + f.get('id'))
-      // if (last_folder)
-      //   console.log('\tfrom: ' + last_folder.get('title'))
       this.impl.on_folder_loaded(f, last_folder);
+      this.impl.highlight_current_folder(f);
 
       this.ctx.current_folder = f;
+      this.space.trigger('folder_loaded', f);
 
       return true;
     },
@@ -192,13 +225,12 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
       f.ctx.browser = {
         el:               el,
-        title_container:  el.find('.folder_title'),
-        title:            el.find('.folder_title > a'),
-        title_icon:       el.find('.folder_title i'),
+        title:            el.find('> a.folder-title'),
+        title_icon:       el.find('> a.folder-title i'),
         folder_listing:   el.find('ol.folders'),
         collapser:        el.find('button[data-collapse]'),
         page_listing:     el.find('ol.pages'),
-        empty_label:      el.find('.empty_folder')
+        empty_label:      el.find('.empty-folder')
       };
 
       f.pages.on('add',           this.render_page, this);
@@ -242,12 +274,12 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
         parent.ctx.browser.el.show();
 
         listing.append(el);
-        listing.find('li').tsort('span.folder_title > a:first-child');
+        listing.find('li').tsort('> .folder-title');
       }
     },
 
     render_page: function(page) {
-      var data    = this.resource_data(page),
+      var data    = $.extend(true, this.resource_data(page), { folder: { id: page.folder.get('id') } }),
           folder  = page.folder,
           el      = folder.ctx.browser.page_listing.
                     append(this.templates.page(data)).children().last();
@@ -290,6 +322,14 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
     proxy_highlight_folder: function(e) {
       var folder = this.folder_from_title($(e.target));
 
+      this.highlight_folder(folder);
+
+      return false;
+    },
+
+    highlight_folder: function(folder) {
+      this.reset_highlights();
+
       if (this.ctx.selected_folder) {
         this.impl.dehighlight_folder(this.ctx.selected_folder);
       }
@@ -297,15 +337,26 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       this.impl.highlight_folder(folder);
       this.ctx.selected_folder = folder;
       this.space.trigger('folder_selected', folder);
-
-      return false;
     },
 
-    proxy_highlight_page: function(page) {
-      this.reset_highlights();
-      this.impl.highlight_page(page);
+    proxy_highlight_page: function(e) {
+      var page = this.page_from_title($(e.target));
+
+      this.highlight_page(page);
 
       return true;
+    },
+
+    highlight_page: function(page) {
+      this.reset_highlights();
+
+      if (this.ctx.selected_page) {
+        this.impl.dehighlight_page(this.ctx.selected_page);
+      }
+
+      this.impl.highlight_page(page);
+      this.ctx.selected_page = page;
+      this.space.trigger('page_selected', page);
     },
 
     // focus: function(page) {
@@ -325,9 +376,12 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
           if (page.folder != browser.ctx.current_folder)
             browser.switch_to_folder(page.folder, true);
 
-          browser.ctx.current_page  = page;
-          // this.ctx.current_folder = page.folder;
+          browser.reset_current_highlights();
 
+          browser.ctx.current_page  = page;
+          // browser.ctx.current_folder = page.folder;
+
+          browser.impl.highlight_current_page(page);
           browser.space.trigger('page_loaded', page);
         }
       });
@@ -341,6 +395,7 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
       listing.append(el);
       listing.find('li').tsort('> a:first-child');
-    }
+    },
+
   });
 });

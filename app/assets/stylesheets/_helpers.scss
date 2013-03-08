@@ -31,6 +31,11 @@
   background-color: $highlight_bg;
 }
 
+@mixin highlight_current() {
+  color:            $current_fg;
+  background-color: $current_bg;
+}
+
 @mixin box-shadow($left, $right, $blur, $width: 0, $color: rgba(0,0,0,0)) {
   -webkit-box-shadow: $left $right $blur $width $color;
   -moz-box-shadow:    $left $right $blur $width $color;

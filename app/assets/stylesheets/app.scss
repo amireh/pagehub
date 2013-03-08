@@ -344,6 +344,14 @@ span.shortcut {
   border-top-right-radius: 0;
 
   .ui-dialog-titlebar {
+    @include high_contrast_widget();
+
+    position: relative;
+    left: -2px;
+    top: -2px;
+    margin-right: -5px;
+    border-bottom: none;
+    border-radius: 0;
     /*display: none;*/
     .ui-dialog-titlebar-close { display: none; }
   }
@@ -605,11 +613,12 @@ body.fluid {
   vertical-align: top;
 }
 
-img.loader {
-  display:  none;
+.loader {
+  /*display:  none;*/
   position: fixed;
   right:    10px;
   bottom:   30px;
+  z-index:  10;
 }
 
 div.loader-overlay {

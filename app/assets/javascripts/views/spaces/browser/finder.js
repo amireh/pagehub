@@ -4,44 +4,66 @@ define('views/spaces/browser/finder',
   'backbone',
   'views/spaces/browser/_impl',
   'views/spaces/browser/drag_manager',
+  'views/spaces/browser/finder_navigator',
   'pagehub'
 ],
-function( $, Backbone, BrowserImplementation, DragManager, UI ) {
+function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) {
 
   return BrowserImplementation.extend({
+
     initialize: function(data) {
+      var view = this;
+
+      this.browser  = data.browser,
+      this.ctx      = data.browser.ctx;
+
       // this.drag_manager = new DragManager(data);
-      this.css_class = 'finder-like';
+      this.css_class    = 'finder-like';
       this.browser_type = 'finder';
 
       this.elements = {
         go_up:    $("#goto_parent_folder")
       }
+
+      this.navigator = new FinderNavigator(data);
+
     },
 
     setup: function(ctx) {
-      this.$el.find('.folders, .pages, .folder_title').hide();
+      var view = this;
+
+      this.$el.find('.folders, .pages, .folder-title').hide();
 
       if (ctx.current_folder) {
         this.on_folder_loaded(ctx.current_folder, null);
       }
+
+      this.navigator.setup();
+
+      return this;
     },
 
     cleanup: function() {
+      var view = this;
+
+      this.navigator.cleanup();
+
       this.$el
-        .find('.folders, .pages, .folder_title').show().end()
-        .find('.general-folder > .folder_title').hide();
+        .find('.folders, .pages, .folder-title').show().end()
+        .find('.general-folder > .folder-title').hide();
 
       this.elements.go_up.hide();
+
+      return this;
     },
 
     on_folder_loaded: function(f, last_folder) {
-      this.$el.find('.folders, .pages, .folder_title').hide();
+      this.$el.find('.folders, .pages, .folder-title').hide();
 
       var li      = f.ctx.browser.el,
           folders = f.ctx.browser.folder_listing,
           pages   = f.ctx.browser.page_listing,
-          title   = f.ctx.browser.title_container;
+          title   = f.ctx.browser.title;
 
       title.hide();
 
@@ -50,7 +72,7 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
         this.elements.go_up
           .attr('data-folder', f.get_parent().get('id'))
           .find('a')
-          .attr('data-href', f.get_parent().path())
+          .attr('href', '#' + f.get_parent().path())
           .end()
           .show()
           .children().show();
@@ -64,7 +86,7 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
       // show our direct sub-folders
       folders.show()
       .find('> .folder').show()
-      .find('> .folder_title').show().end()
+      .find('> .folder-title').show().end()
       .find('.pages').hide(); // hide their pages
 
       // our pages
@@ -101,16 +123,6 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
 
       return this;
     },
-
-    highlight_page: function(page) {
-      // if (!page) { page = this.ctx.current_page; }
-
-      // this.$el.find('.pages .selected').removeClass('selected');
-
-      page.ctx.browser.el.addClass('selected');
-      // return this.highlight_folder(page.folder, true);
-      return true;
-    }
 
   });
 });

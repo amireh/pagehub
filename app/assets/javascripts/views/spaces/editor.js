@@ -61,7 +61,7 @@ function($, Backbone) {
 
       this.config = $.extend({
         el: "#page_editor",
-        offset: 135
+        offset: 115
       }, (this.config || {}));
 
       this.$el = $(this.config.el);
@@ -143,6 +143,11 @@ function($, Backbone) {
 
       this.editor.clearHistory();
 
+      return this;
+    },
+
+    focus: function() {
+      this.editor.focus();
       return this;
     },
 
