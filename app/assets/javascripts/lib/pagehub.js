@@ -279,7 +279,8 @@ define('pagehub',
 
     report_error: function(err_msg) {
       ui.status.show("A script error has occured, please try to reproduce the bug and report it.", "bad");
-      console.log(err_msg);
+      // console.log(err_msg);
+      throw err_msg;
     }
   }); // ui
 

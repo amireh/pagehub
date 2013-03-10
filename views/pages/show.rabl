@@ -8,9 +8,9 @@ node(:nr_revisions) do |p|
   p.revisions.count
 end
 
-child(:folder) do |f|
-  partial "folders/_show", object: f
-end
+# child(:folder) do |f|
+#   partial "folders/_show", object: @page.folder
+# end
 
 node(:media) do |p|
   partial "pages/_media", object: p

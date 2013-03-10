@@ -29,9 +29,11 @@ define('views/spaces/workspace/router',
       "*notFound": "resource"
     },
 
-    initialize: function(director) {
-      this.director = director;
-      this.director.space.on('current_page_updated', this.update_current_history_state, this);
+    initialize: function(director, space) {
+      this.director = director,
+      this.space    = space;
+
+      this.director.on('current_page_updated', this.update_current_history_state, this);
     },
 
     update_current_history_state: function(page) {
@@ -40,13 +42,13 @@ define('views/spaces/workspace/router',
     },
 
     root_folder: function() {
-      this.director.space.trigger('load_folder', this.director.space.root_folder());
+      this.director.trigger('load_folder', this.space.root_folder());
     },
 
     resource: function(path) {
       var parts     = path.trim().split('/'),
           title     = _.last(parts),
-          folder    = this.director.space.root_folder(),
+          folder    = this.space.root_folder(),
           resource  = null,
           routed    = false;
 
@@ -59,10 +61,11 @@ define('views/spaces/workspace/router',
       if (parts.length > 1) {
         for (var i = 0; i < parts.length - 1; ++i) {
           var folder_title = parts[i];
-          var child = this.director.space.folders.where({ pretty_title: folder_title, 'parent.id': folder.get('id') })[0];
+          var child = this.space.folders.where({ pretty_title: folder_title, 'parent.id': folder.get('id') })[0];
 
           if (!child) {
             console.log('routing failed; no such folder with title ' + folder_title + ' in parent ' + folder.get('id'))
+            this.director.on_invalid_route(path);
             return this;
           }
 
@@ -81,14 +84,14 @@ define('views/spaces/workspace/router',
 
       if (resource) {
         // console.log('found page, navigating...');
-        this.director.space.trigger('load_page', resource);
+        this.director.trigger('load_page', resource);
       } else {
         // is it a folder?
-        resource = this.director.space.folders.where({ pretty_title: title, 'parent.id': folder.get('id') })[0];
+        resource = this.space.folders.where({ pretty_title: title, 'parent.id': folder.get('id') })[0];
 
         if (resource) {
           // console.log('found folder, navigating...');
-          this.director.space.trigger('load_folder', resource);
+          this.director.trigger('load_folder', resource);
         } else {
           console.log('routing failed; unable to find resource titled ' + title + ' in folder ' + folder.get('id'));
           this.director.on_invalid_route(path);

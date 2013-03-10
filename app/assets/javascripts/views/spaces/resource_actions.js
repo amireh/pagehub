@@ -30,7 +30,7 @@ function(Backbone, Folder, UI, Shortcut) {
       if (e) { e.preventDefault(); }
 
       // UI.status.show("Creating a new page...", "pending");
-      var folder  = this.ctx.current_folder || this.space.root_folder();
+      var folder  = this.workspace.current_folder || this.space.root_folder();
 
       folder.pages.add({ folder_id: folder.get('id') }, { silent: true });
       var page = _.last(folder.pages.models);
@@ -41,8 +41,7 @@ function(Backbone, Folder, UI, Shortcut) {
           page.collection.trigger('add', page);
           UI.status.show("Created!", "good");
         }
-      })
-      // this.space.trigger('load_page', page);
+      });
 
       return false;
     },
@@ -52,7 +51,7 @@ function(Backbone, Folder, UI, Shortcut) {
 
       // ui.status.show("Creating a new folder...", "pending");
 
-      var parent  = this.ctx.current_folder || this.space.root_folder(),
+      var parent  = this.workspace.current_folder || this.space.root_folder(),
           space   = parent.collection.space,
           view    = this;
 

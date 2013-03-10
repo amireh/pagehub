@@ -12,31 +12,40 @@ define('views/header',
     initialize: function(app) {
       this.state = app;
 
+      this.state.on('bootstrapped', function() {
+        if (app.space) { // editing a space?
+          this.space      = app.space;
+          this.user       = app.space.creator;
 
-      if (app.space) { // editing a space?
-        this.space = app.space;
-        this.user  = app.space.creator;
-        this.space.on('sync', this.render, this);
-        this.space.on('load_folder', this.show_folder_path, this);
-        this.space.on('load_page',   this.show_page_path, this);
-        this.space.on('current_page_updated', this.show_page_path, this);
+          this.space.on('sync', this.render, this);
 
-        // this.state.on('change:current_page', this.proxy_show_page_path, this);
-      } else if (app.user) { // dashboard? profile?
-        this.user = app.user;
+          if (app.workspace) {
+            this.workspace  = app.workspace;
 
-      } else { // current user sections
-        this.user = app.current_user;
-        this.user.on('change:nickname', this.render, this);
-      }
+            app.workspace.on('folder_loaded', this.render, this);
+            app.workspace.on('current_folder_updated', this.render, this);
+            app.workspace.on('page_loaded',   this.render, this);
+            app.workspace.on('current_page_updated', this.render, this);
+          }
+
+          // this.state.on('change:current_page', this.proxy_show_page_path, this);
+        } else if (app.user) { // dashboard? profile?
+          this.user = app.user;
+
+        } else { // current user sections
+          this.user = app.current_user;
+          this.user.on('change:nickname', this.render, this);
+        }
+
+        this.render();
+      }, this);
 
       this.state.on('highlight_nav_section', this.highlight, this);
-
-      this.render();
     },
 
     render: function(additional_data) {
       var data = {};
+
       data.user = {
         nickname: this.user.get('nickname'),
         media:    this.user.get('media')
@@ -49,12 +58,17 @@ define('views/header',
         };
 
         data.space_admin = this.space.is_admin(this.user);
+
+        if (this.workspace) {
+          if (this.workspace.current_page) {
+            $.extend(true, data, this.build_page_path() || {});
+          } else if (this.workspace.current_folder) {
+            $.extend(true, data, this.build_folder_path() || {});
+          }
+        }
       }
 
-      $.extend(true, data, additional_data || {});
-
-      console.log(data);
-
+      console.log(data)
       this.$el.find('#path').html(this.templates.path(data));
 
       return this;
@@ -71,11 +85,17 @@ define('views/header',
       return folders.reverse();
     },
 
-    show_folder_path: function(folder, data) {
-      if (!folder) { return false; }
-      if (!this.state.view) return true;
+    build_folder_path: function(data) {
+      var folder = this.workspace.current_folder;
+
+      if (!folder) {
+        return false;
+      }
+
+      console.log('[header] showing folder path')
+
       // console.log("rendering folder path: " + folder.path())
-      return this.render($.extend(true, {
+      return $.extend(true, {
         folders: _.collect(
           this.folder_hierarchy(folder),
           function(f) {
@@ -84,19 +104,23 @@ define('views/header',
               path:  f.path()
             }
           })
-      }, data || {}));
+      }, data || {});
     },
 
-    proxy_show_page_path: function(page) {
-      console.log(page);
-    },
+    build_page_path: function() {
+      var page = this.workspace.current_page;
 
-    show_page_path: function(page) {
-      if (!page) { return false; }
-      console.log(page)
-      // console.log("rendering page path: " + page.path())
-      return this.show_folder_path(page.folder, {
-        page: { title: page.get('title'), path: page.path() }
+      if (!page) {
+        return false;
+      }
+
+      console.log("[header] rendering page path: " + page.path())
+
+      return this.build_folder_path({
+        page: {
+          title: page.get('title'),
+          path: page.path()
+        }
       });
     }
   });

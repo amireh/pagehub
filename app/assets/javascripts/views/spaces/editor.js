@@ -66,11 +66,11 @@ function($, Backbone) {
 
       this.$el = $(this.config.el);
 
-      if (this.space) {
-        this.space.on('page_loaded', this.populate_editor, this);
-        this.space.on('workspace_layout_changed', this.refresh, this);
-        this.space.on('refresh_editor', this.refresh, this);
-        this.space.on('reset', this.reset, this);
+      if (this.workspace) {
+        this.workspace.on('page_loaded', this.populate_editor, this);
+        this.workspace.on('workspace_layout_changed', this.refresh, this);
+        this.workspace.on('refresh_editor', this.refresh, this);
+        this.workspace.on('reset', this.reset, this);
       }
 
       var view = this;
@@ -158,8 +158,8 @@ function($, Backbone) {
     serialize: function() {
       this.editor.save();
 
-      if (this.ctx.current_page) {
-        this.ctx.current_page.set('content', this.editor.getValue());
+      if (this.workspace.current_page) {
+        this.workspace.current_page.set('content', this.editor.getValue());
       }
 
       return this.editor.getValue();

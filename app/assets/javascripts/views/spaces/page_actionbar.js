@@ -67,7 +67,7 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
           return false;
         }
 
-        var page        = this.ctx.current_page,
+        var page        = this.workspace.current_page,
             old_folder  = page.folder;
 
         page.save({ folder_id: folder.get('id') }, {
@@ -89,9 +89,9 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
       AnimableView.prototype.initialize.apply(this, arguments);
 
       this.movement_listing = new this.MovementListing(data);
-      this.space.on('page_loaded', this.on_page_loaded, this);
-      this.space.on('current_page_updated', this.on_page_loaded, this);
-      this.space.on('reset',       this.reset, this);
+      this.workspace.on('page_loaded', this.on_page_loaded, this);
+      this.workspace.on('current_page_updated', this.on_page_loaded, this);
+      this.workspace.on('reset',       this.reset, this);
 
       this.disabled = false;
       this.anchors = {
@@ -205,8 +205,8 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
         return this;
 
       this.editor.serialize();
-      var p = this.ctx.current_page;
-      // console.log("saving page + " + JSON.stringify(this.ctx.current_page.toJSON()))
+      var p = this.workspace.current_page;
+      // console.log("saving page + " + JSON.stringify(this.workspace.current_page.toJSON()))
       p.save({ content: p.get('content'), no_object: true }, {
         patch: true,
         wait: true,
@@ -223,15 +223,15 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
     preview_page: function() {
       if (this.disabled) { return false; }
 
-      window.open(this.ctx.current_page.get('media').href, "_preview")
+      window.open(this.workspace.current_page.get('media').href, "_preview")
     },
 
     destroy_page: function() {
       if (this.disabled) { return false; }
 
       var view  = this,
-          page  = this.ctx.current_page,
-          pages = this.ctx.current_page.collection,
+          page  = this.workspace.current_page,
+          pages = this.workspace.current_page.collection,
           el    = DestroyPageTmpl(page.toJSON());
 
       var dialog = $(el).dialog({
@@ -257,7 +257,7 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
     }, //destroy_page
 
     proxy_edit_page: function(evt) {
-      return this.edit_page(this.ctx.current_page);
+      return this.edit_page(this.workspace.current_page);
     },
 
     edit_page: function(page) {
@@ -288,9 +288,10 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
                   patch: true,
                   success: function() {
                     UI.status.show("Updated.", "good");
-                    if (page == view.ctx.current_page) {
-                      view.space.trigger('current_page_updated', page);
-                    }
+                    // if (page == view.workspace.current_page) {
+                    //   view.space.trigger('current_page_updated', page);
+                    // }
+                    console.log(page.toJSON());
 
                     dialog.dialog("close");
                   }

@@ -107,7 +107,7 @@
           <% end %>
         <% end %>
         <% if @space %>
-          try {
+          // try {
             application.space =
               new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
             <% if @space.creator == @user %>
@@ -123,9 +123,9 @@
               }
             <% end %>
 
-          } catch(e) {
-            console.log(e)
-          }
+          // } catch(e) {
+          //   console.log(e)
+          // }
         <% end %>
 
         application.header = new Header(application);
@@ -133,6 +133,8 @@
         application.UI.initialize(application);
 
         <%= (yield_content :deferred_js).gsub(/\<\/?script\>/, '').strip %>
+
+        application.trigger('bootstrapped', application);
       });
     });
   </script>

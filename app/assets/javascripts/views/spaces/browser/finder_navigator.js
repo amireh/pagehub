@@ -28,9 +28,10 @@ function( $, Backbone, Shortcut ) {
     initialize: function(data) {
       var view = this;
 
-      this.browser  = data.browser,
-      this.ctx      = data.browser.ctx;
-      this.state    = data.browser.state;
+      this.browser   = data.browser,
+      this.ctx       = data.browser.ctx,
+      this.state     = data.browser.state,
+      this.workspace = data.browser.workspace;
 
       this.events = {
         'click a': 'focus_capturer'
@@ -244,7 +245,7 @@ function( $, Backbone, Shortcut ) {
         switch(target.action) {
           case LOAD_FOLDER:
             if ($(target.el).parent().attr('id') == 'goto_parent_folder') {
-              var current_folder = this.ctx.current_folder;
+              var current_folder = this.workspace.current_folder;
               $(target.el).click().dblclick();
               this.browser.highlight_folder(current_folder);
             } else {

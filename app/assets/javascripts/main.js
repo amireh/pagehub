@@ -91,7 +91,8 @@ require([
   'jquery.ui',
   'inflection',
   'md5',
-  'shortcut'
+  'shortcut',
+  'jquery.tinysort'
 ], function(_, $, PageHub, State) {
   $.ajaxSetup({
     headers: {
@@ -99,6 +100,13 @@ require([
       "Content-Type": "application/json; charset=utf-8"
     }
   });
+
+  $.tinysort.defaults.sortFunction = function(a,b) {
+    var atext = a.e.text().trim(),
+        btext = b.e.text().trim();
+
+    return atext === btext ? 0 : (atext > btext ? 1 : -1);
+  };
 
   var application = new State({});
 

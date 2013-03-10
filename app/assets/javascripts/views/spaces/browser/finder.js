@@ -17,6 +17,7 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       this.browser  = data.browser,
       this.ctx      = data.browser.ctx,
       this.space    = data.browser.space;
+      this.workspace    = data.browser.workspace;
 
       // this.drag_manager = new DragManager(data);
       this.css_class    = 'finder-like';
@@ -27,8 +28,17 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       }
 
       this.navigator = new FinderNavigator(data);
-      this.drag_mgr  = new DragManager({ space: this.space, browser: this.browser });
-      this.space.folders.on('change:parent.id', this.show_folder_if_applicable, this);
+      this.drag_mgr  = new DragManager({
+        space:      this.space,
+        browser:    this.browser,
+        workspace:  this.workspace
+      });
+
+      this.browser.on('folder_reordered', function(_, parent) {
+        if (this.elements.go_up.is(":visible")) {
+          parent.ctx.browser.folder_listing.prepend(this.elements.go_up);
+        }
+      }, this);
     },
 
     setup: function(ctx) {
@@ -36,17 +46,21 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
 
       this.$el.find('.folders, .pages, .folder-title').hide();
 
-      if (ctx.current_folder) {
-        this.on_folder_loaded(ctx.current_folder, null);
-      }
+      // if (this.workspace.current_folder) {
+      //   this.on_folder_loaded(this.workspace.current_folder, null);
+      // }
 
       this.navigator.setup();
+
+      this.space.folders.on('change:parent.id', this.show_folder_if_applicable, this);
 
       return this;
     },
 
     cleanup: function() {
       var view = this;
+
+      this.space.folders.off('change:parent.id', this.show_folder_if_applicable, this);
 
       this.navigator.cleanup();
 
@@ -60,7 +74,7 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
     },
 
     on_folder_rendered: function(f) {
-      if (f != this.ctx.current_folder) { f.ctx.browser.empty_label.hide(); }
+      if (f != this.workspace.current_folder) { f.ctx.browser.empty_label.hide(); }
     },
 
     on_folder_loaded: function(f, last_folder) {
@@ -92,7 +106,7 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       // show our direct sub-folders
       folders.show()
       .find('> .folder').show()
-      .find('> .folder-title').show().end()
+        .find('> .folder-title').show().end()
       .find('.pages').hide(); // hide their pages
 
       // our pages
@@ -131,13 +145,13 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
     },
 
     show_folder_if_applicable: function(folder) {
-      if (!folder.has_parent() || !folder.ctx.browser || !this.ctx.current_folder) {
+      if (!folder.has_parent() || !folder.ctx.browser || !this.workspace.current_folder) {
         return true;
       }
 
-      var is_visible = folder.get_parent() == this.ctx.current_folder;
+      var is_visible = folder.get_parent() == this.workspace.current_folder;
 
-      folder.ctx.browser.el.toggle(is_visible).parents('.folder > .folder-title0');
+      folder.ctx.browser.el.toggle(is_visible);
     }
   });
 });

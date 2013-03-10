@@ -5,25 +5,25 @@ module Sinatra
         (request.accept || '').to_s.include?('json')
       end
 
-      def api_required!(args)
+      def api_required!(args, h = params)
         args.each_pair { |name, cnd|
           if cnd.is_a?(Hash)
-            api_required!(cnd)
+            api_required!(cnd, h[name])
             next
           end
 
-          parse_api_argument(name, cnd, :required)
+          parse_api_argument(h, name, cnd, :required)
         }
       end
 
-      def api_optional!(args)
+      def api_optional!(args, h = params)
         args.each_pair { |name, cnd|
           if cnd.is_a?(Hash)
-            api_optional!(cnd)
+            api_optional!(cnd, h[name])
             next
           end
 
-          parse_api_argument(name, cnd, :optional)
+          parse_api_argument(h, name, cnd, :optional)
         }
       end
 
@@ -49,7 +49,7 @@ module Sinatra
       end
 
       def api_params(q = {})
-        @api[:optional].merge(@api[:required]).merge(q)
+        @api[:optional].deep_merge(@api[:required]).deep_merge(q)
       end
 
       # def api_resources(params)
@@ -111,7 +111,7 @@ module Sinatra
 
       private
 
-      def parse_api_argument(name, cnd, type)
+      def parse_api_argument(params, name, cnd, type)
         cnd ||= lambda { |*_| true }
         name = name.to_s
 

@@ -17,9 +17,6 @@ function( $, Backbone, UI ) {
       // Make it draggable
       if (Modernizr.draganddrop) {
         this.space.folders.on('add', this.bind_folder_pages, this);
-        this.space.on('move_folder', this.move_folder, this);
-        this.space.on('move_page', this.move_page, this);
-        this.space.on('folder_loaded', this.bind_go_to_parent_folder, this);
       } else {
         console.log("No dragndrop support, ignoring...");
       }
@@ -29,6 +26,7 @@ function( $, Backbone, UI ) {
 
     bootstrap: function() {
       this._ctx = {}
+      this.bind_go_to_parent_folder();
     },
 
     reset: function() {
@@ -79,11 +77,13 @@ function( $, Backbone, UI ) {
     },
 
     bind_go_to_parent_folder: function(folder) {
-      var el = folder.ctx.browser.folder_listing.find('#goto_parent_folder');
+      var el = this.$el.find('#goto_parent_folder');
+
       if (!el) {
-        console.log("[error] can not find go-to parent folder navigator");
+        UI.report_error("[error] can not find go-to parent folder navigator");
         return false;
       }
+
       console.log("[drag mgr] binding go_up button")
       this.__bind(el.find('> .folder-title'));
     },
@@ -175,10 +175,7 @@ function( $, Backbone, UI ) {
             target = view.browser.folder_from_title(tgt_node);
 
         if (source && target && source != target) {
-          view.space.trigger('move_folder', {
-            folder: source,
-            parent: target
-          });
+          view.workspace.trigger('move_folder', source, target);
         }
 
       } // folder drag
@@ -190,7 +187,9 @@ function( $, Backbone, UI ) {
             page          = view.browser.page_from_title(src_node);
 
         if (page && source_folder && target_folder && source_folder != target_folder) {
-          view.space.trigger('move_page', page, target_folder);
+          view.workspace.trigger('move_page', page, target_folder);
+        } else {
+          console.log("error: unable to move page, bad context")
         }
       } // page drag
 
@@ -198,38 +197,5 @@ function( $, Backbone, UI ) {
       return view.reset();
     }, // on_drop()
 
-    move_folder: function(data) {
-      if (!data.folder || !data.parent) {
-        console.log("bad move folder evt!" + JSON.stringify(data))
-        return false;
-      }
-
-      data.folder.save({ parent_id: data.parent.get('id') }, {
-        patch: true,
-        wait: true,
-        success: function() {
-          UI.status.show("Folder moved.", "good");
-        }
-      });
-    },
-
-    move_page: function(page, folder) {
-      if (!page || !folder) {
-        console.log("bad move page evt!" + JSON.stringify(data))
-        return false;
-      }
-
-      var old_folder = page.folder;
-
-      page.save({ folder_id: folder.get('id') }, {
-        patch: true,
-        wait:  true,
-        success: function() {
-          UI.status.show("Page moved.", "good");
-          // old_folder.pages.remove(page);
-          // folder.pages.add(page);
-        }
-      });
-    }
   });
 });

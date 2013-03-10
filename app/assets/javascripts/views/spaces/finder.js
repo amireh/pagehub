@@ -20,7 +20,7 @@ function(AnimableView, UI, Shortcut) {
       this.page_titles = [];
 
       this.state.on('actionbar_hidden', this.do_show_finder, this);
-      this.space.on('reset', this.hide, this);
+      this.workspace.on('reset', this.hide, this);
       this.space.folders.on('add', this.track_folder_pages, this);
       this.bind_finder();
 

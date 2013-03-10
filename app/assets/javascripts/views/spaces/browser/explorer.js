@@ -35,6 +35,7 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
     initialize: function(data) {
       // this.drag_manager = new DragManager(data);
       this.state = data.state;
+      this.workspace = data.workspace;
 
       this.css_class    = 'explorer-like';
       this.browser_type = 'explorer';
@@ -45,12 +46,12 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
     on_folder_loaded: function(f) { return this.highlight_folder(f); },
 
     setup: function(ctx) {
-      // if (ctx.current_page) {
-      //   this.highlight_current_page(ctx.current_page)
+      // if (this.workspace.current_page) {
+      //   this.highlight_current_page(this.workspace.current_page)
       // }
 
-      if (ctx.current_folder) {
-        this.highlight_current_folder(ctx.current_folder)
+      if (this.workspace.current_folder) {
+        this.highlight_current_folder(this.workspace.current_folder)
       }
 
       $(".pages").each(function(listing) {

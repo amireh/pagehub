@@ -21,19 +21,20 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
     },
 
     initialize: function(data) {
-      this.browser  = data.browser;
-      this.ctx      = data.browser.ctx;
-      this.space    = data.browser.space;
+      this.browser    = data.browser;
+      this.ctx        = data.browser.ctx;
+      this.space      = data.browser.space;
+      this.workspace  = data.browser.workspace;
 
       this.elements = {
         edit_folder:   $("#edit_folder"),
         delete_folder: $("#delete_folder")
       };
 
-      this.space.on('reset',            this.disable, this);
-      this.space.on('folder_selected',  this.enable, this);
-      this.space.on('page_selected',  this.disable, this);
-      this.space.on('folder_loaded',    this.enable, this);
+      this.workspace.space.on('reset',            this.disable, this);
+      this.workspace.space.on('folder_loaded',    this.enable, this);
+      this.browser.on('folder_selected',  this.enable, this);
+      this.browser.on('page_selected',    this.disable, this);
       // this.space.on('page_loaded',      this.enable, this);
     },
 
@@ -47,7 +48,7 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
     },
 
     enable: function(f) {
-      var f = f || this.ctx.selected_folder || this.ctx.current_folder;
+      var f = f || this.ctx.selected_folder || this.workspace.current_folder;
       console.log('[browser:actionbar] -- enabling for folder ' + f.get('title') + '-- ')
 
       if (!f.has_parent || !f.has_parent()) {
@@ -73,7 +74,7 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
 
     edit_folder: function(evt) {
       var el      = $(evt.target),
-          folder  = this.ctx.selected_folder || this.ctx.current_folder,
+          folder  = this.ctx.selected_folder || this.workspace.current_folder,
           space   = this.space;
 
       if (!folder || !folder.has_parent()) {
