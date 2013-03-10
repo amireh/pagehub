@@ -10,85 +10,85 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
       'click a#edit_page': 'proxy_edit_page'
     },
 
-    MovementListing: Backbone.View.extend({
-      el: $("#movement_listing"),
+    // MovementListing: Backbone.View.extend({
+    //   el: $("#movement_listing"),
 
-      events: {
-        'click a': 'move_page'
-      },
+    //   events: {
+    //     'click a': 'move_page'
+    //   },
 
-      initialize: function(data) {
-        _.implode(this, data);
+    //   initialize: function(data) {
+    //     _.implode(this, data);
 
-        this.space.folders.on('add',    this.add_link, this);
-        this.space.folders.on('remove', this.rm_link, this);
-      },
+    //     this.space.folders.on('add',    this.add_link, this);
+    //     this.space.folders.on('remove', this.rm_link, this);
+    //   },
 
-      add_link: function(folder) {
-        var data = folder.toJSON();
-        data.full_path =
-          _.collect(
-          _.reject(folder.ancestors(), function(f) { return f.get('title') == 'None' })
-          .reverse(),
-          function(f){ return f.get('title') }).join(' >> ');
+    //   add_link: function(folder) {
+    //     var data = folder.toJSON();
+    //     data.full_path =
+    //       _.collect(
+    //       _.reject(folder.ancestors(), function(f) { return f.get('title') == 'None' })
+    //       .reverse(),
+    //       function(f){ return f.get('title') }).join(' >> ');
 
-        if (data.full_path.trim().length == 0)
-          data.full_path = 'None';
+    //     if (data.full_path.trim().length == 0)
+    //       data.full_path = 'None';
 
-        var link = MoveFolderLinkTemplate(data);
+    //     var link = MoveFolderLinkTemplate(data);
 
-        this.$el.append("<li>" + link + "</li>");
+    //     this.$el.append("<li>" + link + "</li>");
 
-        if (!folder.ctx) { folder.ctx = {} }
-        if (!folder.ctx.page_actionbar) { folder.ctx.page_actionbar = {} }
+    //     if (!folder.ctx) { folder.ctx = {} }
+    //     if (!folder.ctx.page_actionbar) { folder.ctx.page_actionbar = {} }
 
-        folder.ctx.page_actionbar.movement_anchor = this.$el.find('li:last');
-      },
+    //     folder.ctx.page_actionbar.movement_anchor = this.$el.find('li:last');
+    //   },
 
-      rm_link: function(folder) {
-        folder.ctx.page_actionbar.movement_anchor.remove();
-      },
+    //   rm_link: function(folder) {
+    //     folder.ctx.page_actionbar.movement_anchor.remove();
+    //   },
 
-      render: function() {
-        var self = this;
-        _.each(this.space.folders.models, function(folder) {
-          self.add_link(folder);
-        })
-      },
+    //   render: function() {
+    //     var self = this;
+    //     _.each(this.space.folders.models, function(folder) {
+    //       self.add_link(folder);
+    //     })
+    //   },
 
-      move_page: function(e) {
-        var view = this,
-            el        = $(e.target),
-            folder_id = el.attr("data-folder"),
-            folder    = this.space.folders.get(parseInt(folder_id));
+    //   move_page: function(e) {
+    //     var view = this,
+    //         el        = $(e.target),
+    //         folder_id = el.attr("data-folder"),
+    //         folder    = this.space.folders.get(parseInt(folder_id));
 
-        if (!folder) {
-          UI.report_error("Attempting to move page into a non-existent folder with id" + folder_id);
-          return false;
-        }
+    //     if (!folder) {
+    //       UI.report_error("Attempting to move page into a non-existent folder with id" + folder_id);
+    //       return false;
+    //     }
 
-        var page        = this.workspace.current_page,
-            old_folder  = page.folder;
+    //     var page        = this.workspace.current_page,
+    //         old_folder  = page.folder;
 
-        page.save({ folder_id: folder.get('id') }, {
-          patch: true,
-          wait: true,
-          success: function() {
-            // old_folder.pages.remove(page);
-            // folder.pages.add(page);
-            // view.space.trigger('reset');
-            // view.space.trigger('load_page', page);
-          }
-        });
+    //     page.save({ folder_id: folder.get('id') }, {
+    //       patch: true,
+    //       wait: true,
+    //       success: function() {
+    //         // old_folder.pages.remove(page);
+    //         // folder.pages.add(page);
+    //         // view.space.trigger('reset');
+    //         // view.space.trigger('load_page', page);
+    //       }
+    //     });
 
-        e.preventDefault();
-      }
-    }),
+    //     e.preventDefault();
+    //   }
+    // }),
 
     initialize: function(data) {
       AnimableView.prototype.initialize.apply(this, arguments);
 
-      this.movement_listing = new this.MovementListing(data);
+      // this.movement_listing = new this.MovementListing(data);
       this.workspace.on('page_loaded', this.on_page_loaded, this);
       this.workspace.on('current_page_updated', this.on_page_loaded, this);
       this.workspace.on('reset',       this.reset, this);
@@ -125,7 +125,7 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
       Shortcut.add("ctrl+alt+e", function() { view.anchors.edit.click(); });
 
       this.disable();
-      this.movement_listing.render();
+      // this.movement_listing.render();
     },
 
     reset: function() {
