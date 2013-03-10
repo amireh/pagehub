@@ -5,8 +5,7 @@
     class="folder{{#unless parent.id}} general-folder{{/unless}}">
 
   <button data-collapse></button>
-  <a href="#{{path}}" class="folder-title"{{#unless parent.id}} draggable="true"{{/unless}}>
-    <!-- <span>{{#escape title}}{{/escape}}</span> -->
+  <a href="#{{path}}" class="folder-title"{{#if parent.id}} draggable="true"{{/if}}>
     <i class="icon-folder-close"></i>{{{title}}}
   </a>
 

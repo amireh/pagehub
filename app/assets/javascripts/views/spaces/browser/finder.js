@@ -27,6 +27,7 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       }
 
       this.navigator = new FinderNavigator(data);
+      this.drag_mgr  = new DragManager({ space: this.space, browser: this.browser });
       this.space.folders.on('change:parent.id', this.show_folder_if_applicable, this);
     },
 
@@ -130,14 +131,13 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
     },
 
     show_folder_if_applicable: function(folder) {
-      if (!folder.has_parent()) {
+      if (!folder.has_parent() || !folder.ctx.browser || !this.ctx.current_folder) {
         return true;
       }
 
       var is_visible = folder.get_parent() == this.ctx.current_folder;
 
-      console.log("checking if folder is still visible after moving: " + folder.get('title') + " ? " + is_visible)
-      folder.ctx.browser.el.toggle(is_visible);
+      folder.ctx.browser.el.toggle(is_visible).parents('.folder > .folder-title0');
     }
   });
 });

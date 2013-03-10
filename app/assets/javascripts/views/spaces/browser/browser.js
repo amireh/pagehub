@@ -58,8 +58,8 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       this.space.on('reset', this.reset_context, this);
 
       // folder events
-      this.space.folders.on('add', this.render_folder, this);
-      this.space.folders.on('remove', this.remove_folder, this);
+      this.space.folders.on('add',          this.render_folder, this);
+      this.space.folders.on('remove',       this.remove_folder, this);
       this.space.folders.on('change:title', this.update_title, this);
       this.space.folders.on('change:title', this.reorder_folder, this);
       this.space.folders.on('change:parent.id', this.reorder_folder, this);
@@ -236,6 +236,7 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
       f.ctx.browser.empty_label.show();
 
+      f.trigger('change:title', f);
       f.trigger('change:parent.id', f);
 
       this.impl.on_folder_rendered(f);
@@ -398,9 +399,11 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       old_folder.pages.remove(page);
       folder.pages.add(page);
 
-      this.space.trigger('reset');
-      this.space.trigger('load_page', page);
-      this.space.trigger('current_page_updated', page);
+      if (page == this.ctx.current_page) {
+        this.space.trigger('reset');
+        this.space.trigger('load_page', page);
+        this.space.trigger('current_page_updated', page);
+      }
 
       this.reorder_page(page);
 
@@ -408,6 +411,8 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
     },
 
     update_title: function(r) {
+      if (!r.ctx.browser) { return null; }
+
       var icon = r.ctx.browser.title_icon.detach();
 
       r.ctx.browser.title.html(r.get('title')).prepend(icon);

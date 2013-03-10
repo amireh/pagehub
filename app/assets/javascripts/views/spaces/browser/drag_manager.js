@@ -19,6 +19,7 @@ function( $, Backbone, UI ) {
         this.space.folders.on('add', this.bind_folder_pages, this);
         this.space.on('move_folder', this.move_folder, this);
         this.space.on('move_page', this.move_page, this);
+        this.space.on('folder_loaded', this.bind_go_to_parent_folder, this);
       } else {
         console.log("No dragndrop support, ignoring...");
       }
@@ -38,8 +39,8 @@ function( $, Backbone, UI ) {
       this._ctx.is_dragging = false;
       this._ctx.source      = null;
 
-      $("#indicator").hide();
-      $("#drag_indicator").hide();
+      // $("#indicator").hide();
+      // $("#drag_indicator").hide();
 
       this.$el.find(".drag-src,.drop-target").removeClass("drag-src drop-target");
 
@@ -67,14 +68,24 @@ function( $, Backbone, UI ) {
       //   return this.bind_page(page);
       // }, this);
 
-      this.__bind(folder.ctx.browser.el.find('> .folder_title:first'));
+      this.__bind(folder.ctx.browser.anchor);
       folder.pages.on('add', this.bind_page, this);
 
       return this;
     },
 
     bind_page: function(page) {
-      return this.__bind(page.ctx.browser.el);
+      return this.__bind(page.ctx.browser.anchor);
+    },
+
+    bind_go_to_parent_folder: function(folder) {
+      var el = folder.ctx.browser.folder_listing.find('#goto_parent_folder');
+      if (!el) {
+        console.log("[error] can not find go-to parent folder navigator");
+        return false;
+      }
+      console.log("[drag mgr] binding go_up button")
+      this.__bind(el.find('> .folder-title'));
     },
 
     consume_dragevent: function(e) {
@@ -91,6 +102,14 @@ function( $, Backbone, UI ) {
           view  = e.data;
 
       view.reset();
+
+      console.log(el)
+      if (!el.is('[draggable]')) {
+        return false;
+      }
+      else if (!el.parent().hasClass('page') && !el.parent().hasClass('folder')) {
+        return false;
+      }
 
       el.addClass("drag-src");
 
@@ -111,11 +130,17 @@ function( $, Backbone, UI ) {
       view.$el.find(".drop-target").removeClass("drop-target");
 
       // dropping is only allowed on folder targets
-      if((target = $(this).parents(".folder:first")).length != 0) {
+      // if((target = $(this).parents(".folder:first")).length != 0) {
+      if($(this).is(":visible") && $(this).hasClass('folder-title')) {
+        console.log("drag target located: ");
+        console.log($(this))
+
+        target = $(this);
         target.addClass('drop-target');
         view._ctx.target = target;
       }
       else {
+        view._ctx.target = null;
         return false;
       }
     },
@@ -128,7 +153,7 @@ function( $, Backbone, UI ) {
 
       // Since we bind to both 'dragend' and 'drop' events for browser compatibility
       // some browers might fire the callback twice, so we guard against it here.
-      if (!view._ctx.is_dragging) {
+      if (!view._ctx.is_dragging || !view._ctx.target) {
         return view.abort_dnd();
       }
 
@@ -138,21 +163,21 @@ function( $, Backbone, UI ) {
       var src_node = view._ctx.source,
           tgt_node = view._ctx.target;
 
-      if (!tgt_node.is(".folder")) {
+      if (!tgt_node.is(".folder-title")) {
         return view.abort_dnd();
       }
 
       // view._ctx.is_dragging = false;
 
       // dragging a folder?
-      if (src_node.hasClass("folder_title")) {
-        var src_folder_id = parseInt( src_node.parent().attr("id").replace("folder_", "") ),
-            tgt_folder_id = parseInt( tgt_node.attr("id").replace("folder_", "") );
+      if (src_node.hasClass("folder-title")) {
+        var source = view.browser.folder_from_title(src_node),
+            target = view.browser.folder_from_title(tgt_node);
 
-        if (src_folder_id != tgt_folder_id) {
+        if (source && target && source != target) {
           view.space.trigger('move_folder', {
-            folder: view.space.folders.get(src_folder_id),
-            parent: view.space.folders.get(tgt_folder_id)
+            folder: source,
+            parent: target
           });
         }
 
@@ -160,14 +185,12 @@ function( $, Backbone, UI ) {
 
       // dragging a page?
       else {
-        var page_id           = parseInt(src_node.children('a:first').attr("id").replace("page_", "")),
-            folder_id         = parseInt(tgt_node.attr("id").replace("folder_", "")),
-            current_folder_id = parseInt(src_node.parents(".folder:first").attr("id").replace("folder_", "")),
-            folder            = view.space.folders.get(current_folder_id),
-            page              = folder.pages.get(page_id);
+        var target_folder = view.browser.folder_from_title(tgt_node),
+            source_folder = view.browser.folder_from_title(src_node),
+            page          = view.browser.page_from_title(src_node);
 
-        if (current_folder_id != folder_id) {
-          view.space.trigger('move_page', page, view.space.folders.get(folder_id));
+        if (page && source_folder && target_folder && source_folder != target_folder) {
+          view.space.trigger('move_page', page, target_folder);
         }
       } // page drag
 
@@ -203,8 +226,8 @@ function( $, Backbone, UI ) {
         wait:  true,
         success: function() {
           UI.status.show("Page moved.", "good");
-          old_folder.pages.remove(page);
-          folder.pages.add(page);
+          // old_folder.pages.remove(page);
+          // folder.pages.add(page);
         }
       });
     }
