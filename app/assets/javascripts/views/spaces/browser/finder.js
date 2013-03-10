@@ -15,7 +15,8 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       var view = this;
 
       this.browser  = data.browser,
-      this.ctx      = data.browser.ctx;
+      this.ctx      = data.browser.ctx,
+      this.space    = data.browser.space;
 
       // this.drag_manager = new DragManager(data);
       this.css_class    = 'finder-like';
@@ -26,7 +27,7 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       }
 
       this.navigator = new FinderNavigator(data);
-
+      this.space.folders.on('change:parent.id', this.show_folder_if_applicable, this);
     },
 
     setup: function(ctx) {
@@ -49,12 +50,16 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       this.navigator.cleanup();
 
       this.$el
-        .find('.folders, .pages, .folder-title').show().end()
+        .find('.folder, .folders, .pages, .folder-title').show().end()
         .find('.general-folder > .folder-title').hide();
 
       this.elements.go_up.hide();
 
       return this;
+    },
+
+    on_folder_rendered: function(f) {
+      if (f != this.ctx.current_folder) { f.ctx.browser.empty_label.hide(); }
     },
 
     on_folder_loaded: function(f, last_folder) {
@@ -124,5 +129,15 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       return this;
     },
 
+    show_folder_if_applicable: function(folder) {
+      if (!folder.has_parent()) {
+        return true;
+      }
+
+      var is_visible = folder.get_parent() == this.ctx.current_folder;
+
+      console.log("checking if folder is still visible after moving: " + folder.get('title') + " ? " + is_visible)
+      folder.ctx.browser.el.toggle(is_visible);
+    }
   });
 });

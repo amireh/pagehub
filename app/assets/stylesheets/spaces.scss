@@ -1,9 +1,5 @@
 @import "helpers";
 
-.resources {
-  @include disable-selection;
-}
-
 .editor-widget,
 .resources {
   margin: 0;
@@ -34,8 +30,11 @@
   }
 }
 .resources {
+  @include disable-selection;
+
   width: 180px;
   padding: 0 10px 0 0;
+  position: relative;
 
   .scroller {
     display: block;
@@ -279,6 +278,7 @@
     overflow-y: hidden !important;
     max-height: inherit !important;
     padding-bottom: 5px;
+    margin-bottom: 35px;
   }
 
   .CodeMirror {
@@ -431,7 +431,13 @@
   border-top: 1px solid $low_contrast_border;
   margin-top: 5px;
   padding-top: 5px;
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  .browser-setting-buttons {
+    position: absolute; right: 0;
+  }
 }
 .scroller.finder-like {
   margin-left: 0;

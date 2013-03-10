@@ -7,7 +7,7 @@ define('animable_view', [ 'backbone', 'jquery', 'jquery.ui' ], function(Backbone
     },
 
     animable: function() {
-      return this.state && this.state.current_user && this.state.current_user.get('preferences.runtime.animations') == true;
+      return this.state && this.state.current_user && this.state.current_user.get('preferences.workspace.animable') == true;
     }
   })
 })

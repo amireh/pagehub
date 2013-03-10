@@ -19,6 +19,9 @@ define('views/header',
         this.space.on('sync', this.render, this);
         this.space.on('load_folder', this.show_folder_path, this);
         this.space.on('load_page',   this.show_page_path, this);
+        this.space.on('current_page_updated', this.show_page_path, this);
+
+        // this.state.on('change:current_page', this.proxy_show_page_path, this);
       } else if (app.user) { // dashboard? profile?
         this.user = app.user;
 
@@ -69,6 +72,7 @@ define('views/header',
     },
 
     show_folder_path: function(folder, data) {
+      if (!folder) { return false; }
       if (!this.state.view) return true;
       // console.log("rendering folder path: " + folder.path())
       return this.render($.extend(true, {
@@ -83,7 +87,13 @@ define('views/header',
       }, data || {}));
     },
 
+    proxy_show_page_path: function(page) {
+      console.log(page);
+    },
+
     show_page_path: function(page) {
+      if (!page) { return false; }
+      console.log(page)
       // console.log("rendering page path: " + page.path())
       return this.show_folder_path(page.folder, {
         page: { title: page.get('title'), path: page.path() }

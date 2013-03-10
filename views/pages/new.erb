@@ -5,5 +5,16 @@
     <label>Title: <br />
       <input class="very_fat" style="width: 100%" type="text" name="title" value="<%= h @page.title %>" />
     </label>
+
+    <label>Folder:<br />
+      <select name="folder_id">
+        <% @space.traverse do |f, lvl| %>
+          <option value="<%= f.id %>" <%= 'selected="selected"' if @page.folder && @page.folder.id == f.id %>>
+            <%= Array.new(lvl * 4, '&nbsp;').join('') %> <%= h f.title %>
+          </option>
+        <% end %>
+      </select>
+    </label>
+
   </form>
 </div>

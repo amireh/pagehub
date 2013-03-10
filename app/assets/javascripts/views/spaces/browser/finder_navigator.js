@@ -63,6 +63,8 @@ function( $, Backbone, Shortcut ) {
     },
 
     hide_capturer: function() {
+      return this;
+
       this.elements.capturer
       .removeClass('shown')
       .val('')
@@ -73,6 +75,8 @@ function( $, Backbone, Shortcut ) {
     },
 
     show_capturer: function(initial_value) {
+      return this;
+
       this.elements.capturer
       .addClass('shown')
       .val(initial_value || '')
@@ -100,8 +104,8 @@ function( $, Backbone, Shortcut ) {
       Shortcut.add('ctrl+alt+o',      view.focus_capturer, { context: view });
 
       this.elements.capturer
-        .on('keyup', this.__navigate_proxy)
-        .on('keypress', this.__lookup_proxy);
+        .on('keydown', this.__navigate_proxy)
+        // .on('keypress', this.__lookup_proxy);
 
       this.delegateEvents();
 
@@ -121,8 +125,8 @@ function( $, Backbone, Shortcut ) {
       this.undelegateEvents();
 
       this.elements.capturer
-        .off('keyup', this.__navigate_proxy)
-        .off('keypress', this.__lookup_proxy);
+        .off('keydown', this.__navigate_proxy)
+        // .off('keypress', this.__lookup_proxy);
 
       this.hide_capturer();
 
@@ -159,7 +163,7 @@ function( $, Backbone, Shortcut ) {
 
           case KC_F2:
             if (el.parent().hasClass('folder')) {
-              view.unfocus_capturer();
+              // view.unfocus_capturer();
               view.browser.actionbar.elements.edit_folder.click();
 
               return false;
@@ -169,7 +173,7 @@ function( $, Backbone, Shortcut ) {
             break;
           case KC_DELETE:
             if (el.parent().hasClass('folder')) {
-              view.unfocus_capturer();
+              // view.unfocus_capturer();
               view.browser.actionbar.elements.delete_folder.click();
 
               return false;

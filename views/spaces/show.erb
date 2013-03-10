@@ -20,17 +20,16 @@
   <div class="editor-container">
     <!-- Page Actionbar -->
     <div id="page_actions" class="page-actionbar actions">
-      <a href="#" class="icon save" rel="tooltip" title="Saves the content of this page (Ctrl+Alt+S)" id="save_page">Save</a>
+      <a class="icon save" rel="tooltip" title="Saves the content of this page (Ctrl+Alt+S)" id="save_page">Save</a>
 
       <a target="PageHub - Preview"
          class="icon preview"
          rel="tooltip"
          title="Preview the page in HTML mode in a new tab (Ctrl+Alt+V)"
-         href=""
          id="preview">Preview</a>
 
-      <a href="#" id="edit_page" class="icon edit_page" rel="tooltip" title="Modify the page properties">Edit</a>
-      <a href="#" id="destroy_page" class="icon delete_page" rel="tooltip" title="Delete the page (Ctrl+Alt+D)">Delete</a>
+      <a id="edit_page" class="icon edit_page" rel="tooltip" title="Modify the page properties">Edit</a>
+      <a id="destroy_page" class="icon delete_page" rel="tooltip" title="Delete the page (Ctrl+Alt+D)">Delete</a>
 
       <a id="revisions" target="PageHub" class="icon history" rel="tooltip" title="View the history of this page">Revisions</a>
 
@@ -51,16 +50,16 @@
       <a class="listlike icon more" data-placement="bottom" rel="tooltip" title="Workspace settings and actions">Workspace Actions</a>
       <ol class="listlike sticky">
         <li><span class="title"><strong>Workspace</strong></span></li>
-        <li><a id="switch_layout" href="#" rel="tooltip" data-placement="left" title="Make the workspace span the entire screen">Fluid workspace</a>
+        <li><a id="switch_layout" rel="tooltip" data-placement="left" title="Make the workspace span the entire screen">Fluid workspace</a>
         </li>
         <li>
-          <a id="switch_scrolly" href="#" rel="tooltip" data-placement="left" title="Disable scrolling in the browser and the editor">No scrolling</a>
+          <a id="switch_scrolling" rel="tooltip" data-placement="left" title="Disable scrolling in the browser and the editor">No scrolling</a>
         </li>
         <li>
-          <a id="switch_animability" href="#" rel="tooltip" data-placement="left" title="Widgets will update faster but will no longer be animated">No animations</a>
+          <a id="switch_animability" rel="tooltip" data-placement="left" title="Widgets will update faster but will no longer be animated">No animations</a>
         </li>
         <li><span class="title"><strong>Editor</strong></span></li>
-        <li><a href="#" data-placement="left" rel="tooltip" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
+        <li><a data-placement="left" rel="tooltip" title="Refresh the editor if it's stuck or acting funny (Ctrl+Alt+R)" id="refresh_editor">Refresh</a></li>
       </ol>
     </div>
 

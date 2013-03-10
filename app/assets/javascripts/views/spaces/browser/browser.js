@@ -63,8 +63,10 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       this.space.folders.on('change:title', this.update_title, this);
       this.space.folders.on('change:title', this.reorder_folder, this);
       this.space.folders.on('change:parent.id', this.reorder_folder, this);
+      this.space.folders.on('change:parent.id', this.update_title, this);
 
       this.state.current_user.on('change:preferences.workspace.browser.type', this.render, this);
+      this.state.current_user.on('change:preferences.workspace.scrolling', this.resize, this);
 
       // this.drag_manager = new DragManager(data);
       this.actionbar = new ActionBar({ browser: this });
@@ -153,11 +155,21 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
       this.ctx.current_folder = null;
       this.ctx.current_page   = null;
+      // this.state.set('current_page',  null);
+      // this.state.set('current_folder', null);
     },
 
     resize: function() {
-      if (this.state.current_user.get('preferences.runtime.scrolly_workspace')) {
-        $("#pages .scroller").css("max-height", $(window).height() - this.offset);
+      if (this.state.current_user.get('preferences.workspace.scrolling')) {
+        this.elements.scroller.css({
+          "max-height": $(window).height() - this.offset,
+          "min-height": "inherit"
+        });
+      } else {
+        this.elements.scroller.css({
+          "max-height": "inherit",
+          "min-height": $(window).height() - this.offset
+        });
       }
     },
 
@@ -194,26 +206,6 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       });
     },
 
-    switch_to_folder: function(f, silent) {
-      if (!f) { console.log("[browser] WARNING: switch_to_folder called with an undefined folder"); return false; } // TODO: when does this happen?
-
-      var last_folder = this.ctx.current_folder;
-
-      if (!silent)
-        this.space.trigger('reset');
-
-      if (f == this.ctx.current_folder) {
-        return false;
-      }
-
-      this.impl.on_folder_loaded(f, last_folder);
-      this.impl.highlight_current_folder(f);
-
-      this.ctx.current_folder = f;
-      this.space.trigger('folder_loaded', f);
-
-      return true;
-    },
 
     render_folder: function(f) {
       var data    = this.resource_data(f),
@@ -226,6 +218,7 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       f.ctx.browser = {
         el:               el,
         title:            el.find('> a.folder-title'),
+        anchor:           el.find('> a.folder-title'),
         title_icon:       el.find('> a.folder-title i'),
         folder_listing:   el.find('ol.folders'),
         collapser:        el.find('button[data-collapse]'),
@@ -234,11 +227,12 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       };
 
       f.pages.on('add',           this.render_page, this);
-      f.pages.on('add',           this.reorder_page, this);
+      // f.pages.on('add',           this.reorder_page, this);
       f.pages.on('remove',        this.remove_page, this);
       f.pages.on('sync',          this.on_page_loaded, this);
       f.pages.on('change:title',  this.update_title, this);
       f.pages.on('change:title',  this.reorder_page, this);
+      f.pages.on('change:folder_id',  this.reparent_page, this);
 
       f.ctx.browser.empty_label.show();
 
@@ -257,26 +251,6 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       }
     },
 
-    update_title: function(r) {
-      var icon = r.ctx.browser.title_icon.detach();
-      r.ctx.browser.title.html(r.get('title')).prepend(icon);
-
-      return true;
-    },
-
-    reorder_folder: function(f) {
-      var parent = f.get_parent();
-
-      if (f.ctx.browser && parent && parent.ctx.browser) {
-        var listing = parent.ctx.browser.folder_listing,
-            el      = f.ctx.browser.el;
-
-        parent.ctx.browser.el.show();
-
-        listing.append(el);
-        listing.find('li').tsort('> .folder-title');
-      }
-    },
 
     render_page: function(page) {
       var data    = $.extend(true, this.resource_data(page), { folder: { id: page.folder.get('id') } }),
@@ -324,6 +298,7 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
       this.highlight_folder(folder);
 
+      e.preventDefault();
       return false;
     },
 
@@ -344,7 +319,8 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
       this.highlight_page(page);
 
-      return true;
+      e.preventDefault();
+      return false;
     },
 
     highlight_page: function(page) {
@@ -364,6 +340,27 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
 
     //   return this;
     // },
+
+    switch_to_folder: function(f, silent) {
+      if (!f) { console.log("[browser] WARNING: switch_to_folder called with an undefined folder"); return false; } // TODO: when does this happen?
+
+      var last_folder = this.ctx.current_folder;
+
+      if (!silent)
+        this.space.trigger('reset');
+
+      if (f == this.ctx.current_folder) {
+        return false;
+      }
+
+      this.impl.on_folder_loaded(f, last_folder);
+      this.impl.highlight_current_folder(f);
+
+      this.ctx.current_folder = f;
+      this.space.trigger('folder_loaded', f);
+
+      return true;
+    },
 
     switch_to_folder_and_load_page: function(page) {
       var browser = this;
@@ -389,13 +386,59 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
       return true;
     },
 
+    reparent_page: function(page) {
+      var old_folder = this.space.folders.get(page._previousAttributes.folder_id),
+          folder     = this.space.folders.get(page.get('folder_id'));
+
+      if (!old_folder) {
+        console.log("Unable to locate old folder of page " + page.get('id') + "! can't reparent");
+        return false;
+      }
+
+      old_folder.pages.remove(page);
+      folder.pages.add(page);
+
+      this.space.trigger('reset');
+      this.space.trigger('load_page', page);
+      this.space.trigger('current_page_updated', page);
+
+      this.reorder_page(page);
+
+      return true;
+    },
+
+    update_title: function(r) {
+      var icon = r.ctx.browser.title_icon.detach();
+
+      r.ctx.browser.title.html(r.get('title')).prepend(icon);
+      r.ctx.browser.anchor.attr('href', '#' + r.path());
+
+      return true;
+    },
+
+    reorder_folder: function(f) {
+      var parent = f.get_parent();
+
+      if (f.ctx.browser && parent && parent.ctx.browser) {
+        var listing = parent.ctx.browser.folder_listing,
+            el      = f.ctx.browser.el;
+
+        // parent.ctx.browser.el.show();
+
+        listing.append(el);
+        listing.find('> li').tsort('> .folder-title');
+      }
+    },
+
     reorder_page: function(page) {
-      var listing = page.folder.ctx.browser.page_listing,
+      var listing = page.collection.folder.ctx.browser.page_listing,
           el      = page.ctx.browser.el;
+
+      console.log("repositioning page within " + page.collection.folder.get("title"))
 
       listing.append(el);
       listing.find('li').tsort('> a:first-child');
-    },
+    }
 
   });
 });

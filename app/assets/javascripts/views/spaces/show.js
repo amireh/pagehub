@@ -78,7 +78,7 @@ define('views/spaces/show',
       this.state.router =  new Router(this);
 
       Backbone.history.start({
-        pushState:  true,
+        pushState:  false,
         root:       this.space.get('media.actions.edit') + '/'
       });
 
@@ -93,6 +93,7 @@ define('views/spaces/show',
       this.state.current_user.save($.extend({}, prefs, { no_object: true }), {
         patch: true
       })
-    }
+    },
+
   });
 })

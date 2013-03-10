@@ -5,9 +5,9 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
     el: $("#page_actions"),
 
     events: {
-      'click a#save_page': 'save_page',
+      'click a#save_page': 'proxy_save_page',
       'click a#destroy_page': 'destroy_page',
-      'click a#edit_page': 'edit_page'
+      'click a#edit_page': 'proxy_edit_page'
     },
 
     MovementListing: Backbone.View.extend({
@@ -57,7 +57,8 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
       },
 
       move_page: function(e) {
-        var el        = $(e.target),
+        var view = this,
+            el        = $(e.target),
             folder_id = el.attr("data-folder"),
             folder    = this.space.folders.get(parseInt(folder_id));
 
@@ -71,9 +72,12 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
 
         page.save({ folder_id: folder.get('id') }, {
           patch: true,
+          wait: true,
           success: function() {
-            old_folder.pages.remove(page);
-            folder.pages.add(page);
+            // old_folder.pages.remove(page);
+            // folder.pages.add(page);
+            // view.space.trigger('reset');
+            // view.space.trigger('load_page', page);
           }
         });
 
@@ -86,6 +90,7 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
 
       this.movement_listing = new this.MovementListing(data);
       this.space.on('page_loaded', this.on_page_loaded, this);
+      this.space.on('current_page_updated', this.on_page_loaded, this);
       this.space.on('reset',       this.reset, this);
 
       this.disabled = false;
@@ -189,6 +194,10 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
 
     },
 
+    proxy_save_page: function() {
+      return this.save_page(false);
+    },
+
     save_page: function(autosave) {
       if (this.disabled) { return false; }
 
@@ -200,6 +209,7 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
       // console.log("saving page + " + JSON.stringify(this.ctx.current_page.toJSON()))
       p.save({ content: p.get('content'), no_object: true }, {
         patch: true,
+        wait: true,
         success: function() {
           if (!autosave) {
             UI.status.show("Updated.", "good");
@@ -246,12 +256,14 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
       });
     }, //destroy_page
 
-    edit_page: function(evt) {
+    proxy_edit_page: function(evt) {
+      return this.edit_page(this.ctx.current_page);
+    },
+
+    edit_page: function(page) {
       if (this.disabled) { return false; }
 
-      var el      = $(evt.target),
-          page    = this.ctx.current_page,
-          space   = this.space;
+      var view = this;
 
       $.ajax({
         headers: {
@@ -276,6 +288,10 @@ function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, Ti
                   patch: true,
                   success: function() {
                     UI.status.show("Updated.", "good");
+                    if (page == view.ctx.current_page) {
+                      view.space.trigger('current_page_updated', page);
+                    }
+
                     dialog.dialog("close");
                   }
                 });

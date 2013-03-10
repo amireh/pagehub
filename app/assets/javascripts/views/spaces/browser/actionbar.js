@@ -76,7 +76,7 @@ function( $, Backbone, DestroyFolderTmpl, UI ) {
           folder  = this.ctx.selected_folder || this.ctx.current_folder,
           space   = this.space;
 
-      if (!folder) {
+      if (!folder || !folder.has_parent()) {
         return false;
       }
 

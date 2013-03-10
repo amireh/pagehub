@@ -5,8 +5,10 @@ define('views/spaces/workspace/router',
 
   $(document).on("dblclick", "#browser a.selected", function(evt) {
     evt.preventDefault();
+    evt.stopPropagation();
+    evt.stopImmediatePropagation();
     // console.log("navigating to page...");
-    Backbone.history.navigate($(this).attr("href"), true);
+    Backbone.history.navigate($(this).attr("href"), { silent: false, trigger: true });
     return false;
   });
 
@@ -17,7 +19,7 @@ define('views/spaces/workspace/router',
 
   $(document).on("click", "#path a[href^=#]", function(evt) {
     evt.preventDefault();
-    Backbone.history.navigate($(this).attr("href"), true);
+    Backbone.history.navigate($(this).attr("href"), { silent: false, trigger: true });
   });
 
   var UserSettingsRouter = Backbone.Router.extend({
@@ -29,6 +31,12 @@ define('views/spaces/workspace/router',
 
     initialize: function(director) {
       this.director = director;
+      this.director.space.on('current_page_updated', this.update_current_history_state, this);
+    },
+
+    update_current_history_state: function(page) {
+      console.log("[router]: updating path")
+      Backbone.history.navigate(page.ctx.browser.anchor.attr('href'), { silent: false })
     },
 
     root_folder: function() {
