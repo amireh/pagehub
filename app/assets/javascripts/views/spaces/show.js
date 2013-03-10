@@ -40,7 +40,7 @@ define('views/spaces/show',
       this.editor           = new Editor(data);
       this.page_actionbar   = new PageActionBar($.extend({}, data, { editor: this.editor }));
       this.workspace_actionbar   = new GeneralActionBar(data);
-      // this.finder   = new Finder(data);
+      this.finder   = new Finder(data);
 
       this.space.folders.on('add', this.track_folder, this);
 

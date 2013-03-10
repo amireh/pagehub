@@ -21,6 +21,7 @@ function(AnimableView, UI, Shortcut) {
 
       this.state.on('actionbar_hidden', this.do_show_finder, this);
       this.workspace.on('reset', this.hide, this);
+      this.workspace.on('page_loaded', this.hide, this);
       this.space.folders.on('add', this.track_folder_pages, this);
       this.bind_finder();
 
@@ -71,19 +72,19 @@ function(AnimableView, UI, Shortcut) {
     },
 
     bind_finder: function() {
-      var view = this;
+      var finder = this;
 
       this.$el.typeahead({
-        source: view.page_titles,
+        source: finder.page_titles,
 
         updater: function(fqpt, item) {
-          view.switch_to_page(item.attr("data-page"), item.attr("data-folder"));
+          finder.switch_to_page(item.attr("data-page"), item.attr("data-folder"));
           return null;
         },
 
         on_escape: function() {
-          view.$el.val('');
-          view.hide();
+          finder.$el.val('');
+          finder.hide();
 
           return true;
         },
@@ -107,8 +108,8 @@ function(AnimableView, UI, Shortcut) {
         return false;
       }
 
-      this.space.trigger('reset');
-      this.space.trigger('load_page', page);
+      // this.workspace.trigger('load_page', page);
+      this.state.router.proxy_resource(page);
 
       return true;
     },

@@ -45,6 +45,10 @@ define('views/spaces/workspace/router',
       this.director.trigger('load_folder', this.space.root_folder());
     },
 
+    proxy_resource: function(resource) {
+      return Backbone.history.navigate(resource.path(), { trigger: true })
+    },
+
     resource: function(path) {
       var parts     = path.trim().split('/'),
           title     = _.last(parts),
