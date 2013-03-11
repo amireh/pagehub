@@ -97,19 +97,13 @@ end
       u = User.create(uparams)
       if u then
         flash[:notice] = "Welcome to PageHub! You have successfully signed up using your #{provider} account."
-
-        session[:id] = u.id
-
-        return redirect '/'
       else
         flash[:error] = "Sorry! Something wrong happened while signing you up. Please try again."
         return redirect "/auth/#{provider}"
       end
     end
 
-    # puts "User seems to already exist: #{u.id}"
     authorize(u)
-    # session[:id] = u.id
 
     redirect '/'
   end

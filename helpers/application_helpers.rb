@@ -6,7 +6,7 @@ module PageHub
     end
 
     def tiny_salt(r = 3)
-      Base64.urlsafe_encode64 Random.rand(1234 * (10**r)).to_s(8)
+      (Base64.urlsafe_encode64 Random.rand(1234 * (10**r)).to_s(8)).to_s.sanitize
     end
 
     def sane_salt(pepper)

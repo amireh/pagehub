@@ -13,35 +13,18 @@
   <script src="/assets/vendor/jquery-1.9.1.min.js"></script>
 </head>
 
-<body class="guest">
+<body class="<%= logged_in? ? 'member' : 'guest' %> light">
+
+  <%= partial "layouts/_header" %>
 
   <div class="status-wrap">
     <!-- <div id="status" class="hidden"></div> -->
     <%= partial "layouts/_flashes" %>
   </div>
 
-  <div class="stuff">
-    <nav class="top">
-      <a class="btn btn-danger" href="/signup">Signup</a>
-      <a class="btn btn-mini" href="/sessions/new">Sign in</a>
-    </nav>
-
+  <div class="stuff content-wrapper">
     <div id="content">
       <%= yield %>
-    </div>
-    <div class="sidebar">
-      <header>
-        <h1><a href="/">PageHub</a></h1>
-      </header>
-
-      <nav>
-        <ul>
-          <a href="/features">Features</a><br/>
-          <a href="/about">About</a><br/>
-          <a href="/open-source">Open Source</a><br/>
-          <a href="/signup">Sign up</a>
-        </ul>
-      </nav>
     </div>
   </div>
 

@@ -1,33 +1,66 @@
-<div class="greeting">
-<markdown>
-  # IN A NUTSHELL
+<% content_for :deferred_js do %>
+<script>
+require(['views/welcome/landing_page'], function(View) {
+  application.view = new View(application);
+})
+</script>
+<% end %>
 
-  PageHub is an editing platform built to aid developers
-  in writing documentation for their software.
+<div id="landing_page" class="landing-page">
+  <div class="greeting hero-unit">
+    <markdown>
+      # Write and publish in a snap.
 
-  # <span>IT'S</span> CLEAN
+      *An editing platform that makes writing documents a breeze.*
 
-  An interface that doesn't get in your way, one that screams "writing" all over.
+      ### <span>IT'S</span> CLEAN
 
-  # <span>IT'S</span> EFFICIENT
+      An [interface](/explore/interface) that doesn't get in your way, one that screams "writing" all over.
 
-  Write using [Markdown](http://daringfireball.net/projects/markdown/).
-  Use your keyboard for action shortcuts just like you would with your desktop editor.
+      ### <span>IT'S</span> HANDY
 
-  # <span>IT'S</span> GEEKY
+      Write using [Markdown](http://daringfireball.net/projects/markdown/).
+      Use keyboard shortcuts just like you would with your desktop editor.
 
-  Loaded with neat [features](/features) to help you write your software
-  documentation and keep it up to date.
+      ### <span>IT'S</span> GEEKY
 
-  ---
+      Loaded with neat [features](/features) to help you write documents and share them
+      with people.
 
-  # Getting Started
+    </markdown>
+    <hr />
 
-  You've got three options:
+    <a href="/signup" class="btn btn-large btn-success">Sign up</a>
+    <a href="/demo" class="btn btn-large btn-warning">Try out a demo</a>
+    <a href="/auth/github" class="btn" rel="tooltip" title="Sign in using your GitHub account"><i class="icon github icon16"></i> </a>
+  </div>
 
-    1. Try out the [instant demo](/demo)
-    2. Sign in using your [GitHub account](/auth/github)
-    3. Create a [PageHub account](/signup)
+  <div class="row text-center">
 
-</markdown>
+    <div class="span4">
+      <img src="/assets/icons/landing_page/screen.png" />
+
+      <h4>Write it and we'll format it</h4>
+      <p>
+        Documents you author on PageHub can be accessed as <a href="/features#spaces-browsing">web pages in a browser</a>,
+
+        and can also be <a href="/features#exporting">exported</a> to a number of formats like PDF, Word, LaTeX, or <code>man</code>.</p>
+    </div>
+
+    <div class="span4">
+      <img src="/assets/icons/landing_page/tree.png" />
+
+      <h4>Organize via an intuitive interface</h4>
+      <p>Use the <a href="/explore/browser">resource browser</a> to organize your pages (and folders) like you would with conventional file browsers.
+      </p>
+    </div>
+
+    <div class="span4">
+      <img src="/assets/icons/landing_page/multi-agents.png" />
+      <h4>Collaborate with others</h4>
+      <p>Start a <a href="/features#spaces">space</a> with friends or colleagues where you can write and edit together, and share
+        your work with people.
+      </p>
+    </div>
+  </div>
 </div>

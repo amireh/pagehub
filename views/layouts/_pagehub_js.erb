@@ -63,6 +63,8 @@
 
       <%= (yield_content :deferred_js).gsub(/\<\/?script\>/, '').strip %>
 
+      application.header.render();
+
       // application.on('bootstrapped', function() { console.log('bootstrapped') })
       // application.trigger('bootstrapped', application);
     });

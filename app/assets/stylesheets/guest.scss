@@ -1,75 +1,41 @@
 body.guest {
-  .stuff {
-    width: 720px;
-  }
 
-  #content {
-    /*text-align: justify;*/
-    /*width: 480px;*/
-    /*width: 640px;*/
+  .content-wrapper {
+    /*width: 800px;*/
     margin: 0 auto;
   }
 
-  body {
-    /*font-family: "ProximaNova-Light", Arial, Verdana;*/
-    /*font-size: 15px;*/
-    font-weight: 100;
-  }
-  header{
-    background: none;
-    border-bottom: none;
-    height: inherit;
-    box-shadow: none;
-  }
+  header {
+    padding: 5px 0 6px 0;
+    height: auto;
 
-  .sidebar, #content {
-    vertical-align: top;
-  }
+    nav {
+      position: relative;
+      display: inline-block;
+      margin-left: 0px;
 
-  .sidebar {
-    width: 240px;
-    display: inline-block;
-    margin-left: 15px;
-    border-left: 1px solid #ddd;
-    padding: 0 0 0 15px;
-  }
+      a,
+      a:visited {
+        /*font-weight: bold;*/
+        display: inline-block;
+        width: auto;
+        margin-left: 10px;
 
-  header h1 a,
-  header h1 a:visited {
-    font-weight: bold;
-    letter-spacing: 10px;
-    color: #008CDD;
-    text-shadow: 0 2px 0 white;
-    margin-right: -13px;
-  }
+        &.btn {
+          text-shadow: none;
+          &:hover { color: black; }
+        }
+      }
 
-  #content {
-    width: 460px;
-    display: inline-block;
-  }
+      &:last-of-type {
+        position: absolute;
+        right: 0;
+        top: 8px;
+      }
+    }
 
-  header img {
-    margin-left: -15px;
-  }
-  #flashes {
-    width: 640px;
-    margin-left: -20px;
-    padding: 5px 10px;
-  }
-
-  nav.top {
-    position: relative;
-    display: block;
-    width: 100%;
-    text-align: left;
-    clear:  both;
-    padding: 10px 0;
-    display: block;
-    /*z-index: 102;*/
-    text-align: right;
-
-    a {
-      vertical-align: middle;
+    img {
+      margin-left: -15px;
     }
   }
 
@@ -78,6 +44,7 @@ body.guest {
     clear: none;
     vertical-align: top;
   }
+
   .block.left {
     float: left;
   }
@@ -102,27 +69,6 @@ body.guest {
   form#user_signup {
     display: inline-block;
     vertical-align: top;
-  }
-  div.browser_notice {
-    /*padding-left: 163px;*/
-    position: relative;
-    width: 220px;
-    display: inline-block;
-    /*margin-left: 15px;*/
-    /*background: rgba(0,0,0,0.05);*/
-    padding: 0 40px 0 0;
-    /*box-shadow: 0 0 3px 1px #aaa;*/
-    /*border-radius: 5px;*/
-    font-size: 0.9em;
-    text-align: left;
-  }
-  div.browser_notice img {
-    vertical-align: middle;
-    display: block;
-    margin-top: 15px;
-    position: absolute;
-    top: 0;
-    right: 0;
   }
 
   span#login_buttons a {
@@ -152,17 +98,24 @@ body.guest {
     margin: 0;
   }*/
 
-  div.greeting > h1 > span {
-    color: #aaa;
-    position: absolute;
-    left: -80px;
+  div.greeting {
+    position: relative;
+
+    > h3 > span {
+      color: #aaa;
+      /*position: absolute;*/
+      /*left: 10px;*/
+    }
   }
 
-  .sidebar {
-    nav { list-style-type: none; padding: 0; margin: 0;}
+  .landing-page {
+    .pagination {
+      background: black;
+      a {
+        width: 15px;
+        height: 15px;
+        display: inline-block;
+      }
+    }
   }
-
-  footer { border: none; }
-  footer > p { width: 720px;}
-
 }

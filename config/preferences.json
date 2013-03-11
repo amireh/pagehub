@@ -11,15 +11,15 @@
     },
 
     "workspace": {
+      "fluid": false,
+      "scrolling": true,
+      "animable": true,
       "browser": {
         "type": "finder"
       }
     },
 
     "runtime": {
-      "fluid_workspace": false,
-      "scrolly_workspace": true,
-      "animations": true,
       "spaces": {
       }
     }

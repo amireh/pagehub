@@ -185,6 +185,15 @@ footer {
   p {
     width: 960px;
     margin: 0 auto;
+    font-size: 11px;
+
+    > a {
+      margin-right: 10px;
+    }
+
+    .copyright {
+      float: right;
+    }
   }
 }
 
@@ -373,6 +382,16 @@ span.shortcut {
   width:   32px;
   height:  40px;
 
+  &.icon16 {
+    width:  16px;
+    height: 24px;
+  }
+
+  &.icon24 {
+    width:  24px;
+    height: 24px;
+  }
+
   font-size: 0;
   box-shadow: none;
   background-color:     transparent;
@@ -391,7 +410,10 @@ a.listlike:hover,
   border-color: $active_fg;
   cursor: pointer;
 }
-
+.btn > .icon:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
 a.listlike {
   padding: 0 10px;
   position: relative;

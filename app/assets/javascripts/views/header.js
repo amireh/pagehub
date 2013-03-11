@@ -12,30 +12,32 @@ define('views/header',
     initialize: function(app) {
       this.state = app;
 
+      if (app.space) { // editing a space?
+        this.space      = app.space;
+        this.user       = app.space.creator;
+
+        this.space.on('sync', this.render, this);
+      } else if (app.user) { // dashboard? profile?
+        this.user = app.user;
+      } else {
+        if (app.current_user) {
+          this.user = app.current_user;
+        }
+      }
+
+      if (this.user && app.current_user == app.user) { // current user sections
+        this.user.on('change:nickname', this.render, this);
+        this.user.on('sync', this.render, this);
+      }
+
       this.state.on('bootstrapped', function() {
-        if (app.space) { // editing a space?
-          this.space      = app.space;
-          this.user       = app.space.creator;
+        if (app.workspace) {
+          this.workspace  = app.workspace;
 
-          this.space.on('sync', this.render, this);
-
-          if (app.workspace) {
-            this.workspace  = app.workspace;
-
-            app.workspace.on('folder_loaded', this.render, this);
-            app.workspace.on('current_folder_updated', this.render, this);
-            app.workspace.on('page_loaded',   this.render, this);
-            app.workspace.on('current_page_updated', this.render, this);
-          }
-
-          // this.state.on('change:current_page', this.proxy_show_page_path, this);
-        } else if (app.user) { // dashboard? profile?
-          this.user = app.user;
-
-          if (app.current_user && app.current_user == app.user) { // current user sections
-            this.user.on('change:nickname', this.render, this);
-            this.user.on('sync', this.render, this);
-          }
+          app.workspace.on('folder_loaded', this.render, this);
+          app.workspace.on('current_folder_updated', this.render, this);
+          app.workspace.on('page_loaded',   this.render, this);
+          app.workspace.on('current_page_updated', this.render, this);
         }
 
         this.render();
@@ -47,9 +49,11 @@ define('views/header',
     render: function(additional_data) {
       var data = {};
 
-      data.user = {
-        nickname: this.user.get('nickname'),
-        media:    this.user.get('media')
+      if (this.user) {
+        data.user = {
+          nickname: this.user.get('nickname'),
+          media:    this.user.get('media')
+        }
       }
 
       if (this.space) {

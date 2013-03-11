@@ -16,7 +16,7 @@ ReservedUsernames = %w[
   organizations organization
   groups group
   spec
-  explore search features blog plans
+  explore search features blog plans interface
   site about open-source faq tos service terms security
   sessions session
   signup
@@ -93,7 +93,7 @@ get "/users/:user_id/spaces/:space_id/testdrive",
   erb :"static/tutorial.md", layout: :"layouts/print"
 end
 
-[ 'features', 'about', 'open-source' ].each do |static_view|
+[ 'features', 'about', 'open-source', 'interface' ].each do |static_view|
   get "/#{static_view}" do
     erb :"static/#{static_view}.md"
   end

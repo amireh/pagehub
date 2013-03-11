@@ -95,9 +95,11 @@ configure :production, :development do |app|
       app.settings.credentials['google']['secret'],
       { access_type: "offline", approval_prompt: "" }
 
+    suffix = app.settings.development? ? '_development' : ''
+
     provider :github,
-      app.settings.credentials['github']['key'],
-      app.settings.credentials['github']['secret']
+      app.settings.credentials["github#{suffix}"]['key'],
+      app.settings.credentials["github#{suffix}"]['secret']
   end
 
   settings.courier.configure(settings.credentials['courier'])
