@@ -1,38 +1,11 @@
 <% content_for :title do %> Creating a new space | PageHub <% end %>
 
-<% content_for :js do %>
-  <script>
-    $(function() {
-      // Checks whether the typed in space name is available
-      $("#check_availability").click(function() {
-        var btn = $(this);
-        var name = $("input[name=name]").attr("value");
-
-        if (name.length == 0) {
-          btn.next("span").addClass("error").html("invalid name");
-          return false;
-        }
-
-        $.ajax({
-          url: "/spaces/name",
-          type: "POST",
-          data: { name: $("input[name=name]").attr("value") },
-
-          success: function(is_available) {
-            is_available = JSON.parse(is_available);
-            console.log(is_available)
-            if (is_available) {
-              btn.next("span").addClass("success").removeClass("error").html("available");
-            } else {
-              btn.next("span").addClass("error").removeClass("success").html("not available");
-            }
-          }
-
-        });
-        return false;
-      });
-    });
-  </script>
+<% content_for :deferred_js do %>
+<script>
+  require([ 'views/spaces/new' ],function(View) {
+    application.view = new View(application);
+  })
+</script>
 <% end %>
 
 <h2>Space Registration</h2>
@@ -46,7 +19,7 @@
   <a href="http://pagehub.org/pagehub">PageHub one</a>!
 </p>
 
-<form method="POST" action="/spaces">
+<form id="new_space" method="POST" action="<%= Space.url(current_user) %>">
   <h3>Name</h3>
   <p>
     <label for="space_title">The space name must be unique (and cool too.)</label>
@@ -68,11 +41,11 @@
   <p>
     <label>
       <input type="checkbox" value="true" name="is_public" checked="checked" />
-      Allow non-members to read and browse the space documents
+      Allow guests and non-members to read and browse the space documents
       <small>(you can always change this later)</small>
     </label>
   </p>
   <!-- <br /> -->
-  <input type="submit" class="btn btn-primary" value="Register Space" />
+  <input type="submit" class="btn btn-primary" value="Create" />
 
 </form>

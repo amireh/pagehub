@@ -74,7 +74,11 @@ define('views/spaces/show',
       this.on('move_page',   this.move_page, this);
       this.on('reset', this.reset_context, this);
 
+      this.go();
+
       UI.status.mark_ready();
+
+      this.state.trigger('bootstrapped', this.state);
     },
 
     on_invalid_route: function(path) {
@@ -91,8 +95,6 @@ define('views/spaces/show',
         pushState:  false,
         root:       this.space.get('media.actions.edit') + '/'
       });
-
-      this.state.trigger('bootstrapped');
     },
 
     queue_preferences_sync: function(prefs) {
@@ -108,6 +110,15 @@ define('views/spaces/show',
     // reset the current resource context (and selections)
     reset_context: function() {
       // console.log('[browser] -- resetting context -- ');
+
+
+      if (this.current_folder) {
+        this.current_folder.off('change', this.broadcast_current_folder_update, this);
+      }
+
+      if (this.current_page) {
+        this.current_page.off('change', this.broadcast_current_page_update, this);
+      }
 
       this.current_folder = null;
       this.current_page   = null;
@@ -173,8 +184,8 @@ define('views/spaces/show',
       }
 
       this.current_folder = f;
-      this.current_folder.on('change', this.broadcast_current_folder_update, this);
       this.trigger('folder_loaded', f, last_folder);
+      this.current_folder.on('change', this.broadcast_current_folder_update, this);
 
       return this;
     },
@@ -194,8 +205,8 @@ define('views/spaces/show',
         wait: true,
         success: function() {
           workspace.current_page = page;
-          workspace.current_page.on('change', workspace.broadcast_current_page_update, workspace);
           workspace.trigger('page_loaded', page);
+          workspace.current_page.on('change', workspace.broadcast_current_page_update, workspace);
         }
       });
 
@@ -240,7 +251,9 @@ define('views/spaces/show',
       this.trigger('current_page_updated', page);
 
       if (page.collection.folder != this.current_folder) {
-        return this.switch_to_folder_and_load_page(page);
+        console.log("current page folder changed from: " + page.collection.folder.get('title') + " to: " + (this.current_folder && this.current_folder.get('title')))
+        this.trigger('reset');
+        this.switch_to_folder_and_load_page(page);
       }
     },
 

@@ -43,9 +43,17 @@
   },
 
   "app": {
+    "animes": {
+      "toggling_duration": 250
+    },
+
     "pulses": {
       "runtime_preferences": 1000,
-      "page_content": 30000
+      "page_content": 30000,
+      "flash": {
+        "error": 10000,
+        "notice": 2500
+      }
     },
     "lookup_pulse": 250
   }

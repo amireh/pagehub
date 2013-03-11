@@ -20,10 +20,10 @@ function($, SettingView, Editor) {
         space:  this.space,
         config: {
           el:   "#css_editor",
-          mode: "css"
+          mode: "css",
+          offset: 230
         }
       });
-      this.editor.resize_editor(300);
     },
 
     render: function() {

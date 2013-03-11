@@ -75,12 +75,6 @@
     height: 28px;
     vertical-align: middle;
   }*/
-
-  button.browser-settings {
-    position: absolute;
-    right: 5px;
-    top: 5px;
-  }
 }
 
 .editor-container {
@@ -437,7 +431,8 @@
   width: 100%;
 
   .browser-setting-buttons {
-    position: absolute; right: 0;
+    position: absolute;
+    right: 0;
   }
 }
 .scroller.finder-like {
@@ -568,7 +563,8 @@
     }
     a.selected,
     a.current,
-    a:hover {
+    a:hover,
+    .drop-target {
       box-shadow: 0 0 1px 1px white inset;
       border-color: #777;
     }

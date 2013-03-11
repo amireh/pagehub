@@ -32,9 +32,10 @@ define('views/header',
         } else if (app.user) { // dashboard? profile?
           this.user = app.user;
 
-        } else { // current user sections
-          this.user = app.current_user;
-          this.user.on('change:nickname', this.render, this);
+          if (app.current_user && app.current_user == app.user) { // current user sections
+            this.user.on('change:nickname', this.render, this);
+            console.log('[header] listening to current_user nickname changes')
+          }
         }
 
         this.render();
@@ -45,7 +46,6 @@ define('views/header',
 
     render: function(additional_data) {
       var data = {};
-
       data.user = {
         nickname: this.user.get('nickname'),
         media:    this.user.get('media')
@@ -68,7 +68,6 @@ define('views/header',
         }
       }
 
-      console.log(data)
       this.$el.find('#path').html(this.templates.path(data));
 
       return this;

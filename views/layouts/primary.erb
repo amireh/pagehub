@@ -86,13 +86,19 @@
     pagehub_hooks.push(function(application) {
       <% if settings.development? %>app = application;<% end %>
       application.set('preferences', <%= PageHub::Config.defaults['app'].to_json %>);
-      require([ 'pagehub','views/header', 'models/user', 'models/space' ], function(UI, Header, User, Space) {
+      require([ 'pagehub', 'views/flash', 'views/header', 'models/user', 'models/space' ],
+              function(UI, Flash, Header, User, Space) {
+
+        application.Flash = new Flash(application);
+        application.UI = UI;
+        application.UI.initialize(application);
 
         try {
           application.current_user =
             new User(JSON.parse(_.unescape(<%= h(rabl :"/users/show", locals: { user: current_user }).to_json %>)).user);
         } catch(e) {
           console.log(e)
+          // TODO: abort with an error
         }
         <% if @user %>
           <% if current_user == @user %>
@@ -129,12 +135,11 @@
         <% end %>
 
         application.header = new Header(application);
-        application.UI = UI;
-        application.UI.initialize(application);
 
         <%= (yield_content :deferred_js).gsub(/\<\/?script\>/, '').strip %>
 
-        application.trigger('bootstrapped', application);
+        // application.on('bootstrapped', function() { console.log('bootstrapped') })
+        // application.trigger('bootstrapped', application);
       });
     });
   </script>

@@ -11,7 +11,8 @@ define('views/users/dashboard',
     el: $("#dashboard"),
 
     initialize: function(application) {
-      this.user = application.user;
+      this.state = application;
+      this.user  = application.user;
 
       var nr_pages = 0;
       this.user.spaces.every(function(s) { nr_pages += parseInt(s.get('nr_pages')); return true; });
@@ -20,6 +21,7 @@ define('views/users/dashboard',
       this.empty_listing_marker = this.$el.find('#no_spaces_marker');
 
       this.render();
+      this.state.trigger('bootstrapped');
     },
 
     render: function() {

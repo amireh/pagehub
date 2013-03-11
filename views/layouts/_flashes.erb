@@ -1,7 +1,6 @@
 <% unless flash.empty? %>
   <% flash.each_pair do |ctx, messages| %>
-
-    <div id="flashes" class="flashes <%= ctx %>">
+    <div id="flash" class="hidden flashes <%= ctx %>">
       <% if messages.is_a?(Array) && messages.size > 1 %>
         <ol>
           <% messages.each do |m| %>
@@ -12,40 +11,8 @@
         <% messages = messages.first if messages.is_a?(Array) %>
         <span class="flash <%= ctx %>"><%= messages %></span>
       <% end %>
-      <button class="close">&times;</button>
+      <button id="hide_flash" class="close">&times;</button>
     </div>
 
-  <% end %>
-  <% content_for :deferred_js do %>
-    <script>
-      var flash = {
-        timer: null,
-        hide: function() {
-          if ($("#flashes").is(":visible")) { // might have been hidden already by the user
-            $("#flashes button").click();
-          }
-
-          clearTimeout(flash.timer);
-          flash.timer = null;
-        },
-
-        hide_in_a_bit: function(pulse) {
-          if (flash.timer)
-            return;
-
-          flash.timer = setTimeout("flash.hide()", pulse * 1000);
-        }
-      };
-
-      $(function() {
-        $("#flashes button").click(function() {
-          $(this).parent().addClass("hidden");
-          // $(".flash_wrap").addClass("hidden");
-        });
-
-        flash.hide_in_a_bit(<%= flash[:error] ? 10 : 2.5 %>);
-      });
-
-    </script>
   <% end %>
 <% end %>

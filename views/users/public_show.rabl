@@ -4,7 +4,10 @@ attributes :id, :name, :nickname
 
 node(:media) do |u|
   {
-    href:   u.href
+    href:   u.href,
+    spaces: {
+      url:  u.url(true) + '/spaces'
+    }
   }
 end
 

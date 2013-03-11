@@ -69,6 +69,8 @@ define('timed_operation', [ 'underscore', 'backbone' ], function(_, Backbone) {
 
       return this;
     },
+    // alias to stop
+    cancel: function() { return this.stop(); },
 
     /**
      * Queues an operation invocation.

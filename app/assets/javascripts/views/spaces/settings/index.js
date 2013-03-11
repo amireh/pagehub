@@ -49,6 +49,8 @@ function(Director, $, UI, Shortcut, Router, GeneralView, MembershipsView, Publis
       _.each(this.views, function(view) { view.$el.hide(); return true; });
 
       this.go('/edit');
+
+      this.state.trigger('bootstrapped', this.state);
     },
 
     hide: function() {

@@ -256,18 +256,24 @@ function(Backbone, $, Shortcut, UI, State) {
 
         this.state.set('syncing', true);
 
-        console.log(this.model.url());
+        console.log("Model SYNC endpoint: " + this.model.url());
 
-        this.model.save(d, {
+        this.model.save($.extend(true, d, { no_object: true }), {
           wait: true,
           patch: true,
 
           success: function() {
+            state.set('syncing', false);
+
             director.trigger('postsync', director, true);
             UI.status.show("Saved", "good");
+
+            director.trigger('postfetch', director, director.model, true);
           },
 
           error: function(_, e) {
+            state.set('syncing', false);
+
             director.trigger('postsync', director, false, e);
 
             try {
@@ -282,24 +288,26 @@ function(Backbone, $, Shortcut, UI, State) {
 
             } catch(err) {
             }
-          }
-        });
-
-        this.model.fetch({
-          success: function() {
-            state.set('syncing', false);
-            UI.status.mark_ready();
-
-            director.render();
-            director.trigger('postfetch', director, director.model, true);
-          },
-          error: function() {
-            state.set('syncing', false);
-            UI.status.mark_ready();
 
             director.trigger('postfetch', director, director.model, false);
           }
         });
+
+        // this.model.fetch({
+        //   success: function() {
+        //     state.set('syncing', false);
+        //     UI.status.mark_ready();
+
+        //     director.render();
+        //     director.trigger('postfetch', director, director.model, true);
+        //   },
+        //   error: function() {
+        //     state.set('syncing', false);
+        //     UI.status.mark_ready();
+
+        //     director.trigger('postfetch', director, director.model, false);
+        //   }
+        // });
 
       } catch(e) {
         state.set('syncing', false);
@@ -309,6 +317,7 @@ function(Backbone, $, Shortcut, UI, State) {
     },
 
     partial_sync: function(data, options) {
+      console.log("[director] Partial Sync: model SYNC endpoint: " + this.model.urlRoot());
       this.model.save(data, $.extend(true, options, { patch: true, wait: true }));
       return this;
     },

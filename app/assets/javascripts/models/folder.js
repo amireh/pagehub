@@ -13,7 +13,7 @@ var moo = false;
       this.ctx      = {};
       this.urlRoot  = this.collection.space.get('media.folders.url');
 
-      this.pages = new Pages({}, { folder: this, space: this.collection.space });
+      this.pages = new Pages(null, { folder: this, space: this.collection.space });
       this.pages.reset(data.pages);
 
       this.on('change:parent.id', this.configure_path, this);

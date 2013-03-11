@@ -118,12 +118,33 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
         return this;
       }
 
+      var reload = false;
+
       if (this.impl) {
         this.impl.reset(this.ctx);
+
+        reload = true;
       }
 
       this.impl = type == 'explorer' ? this.__explorer : this.__finder;
       this.impl.render(this.ctx);
+
+      if (reload) {
+        var page   = this.workspace.current_page,
+            folder = this.workspace.current_folder;
+
+        this.workspace.trigger('reset');
+
+        if (page) {
+          this.workspace.trigger('load_page', page);
+        }
+        else if (folder) {
+          this.workspace.trigger('load_folder', folder);
+        }
+        else {
+          this.workspace.trigger('load_folder', this.space.root_folder());
+        }
+      }
 
       return this;
     },
@@ -205,6 +226,10 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
     },
 
     render_folder: function(f) {
+      if (!f.get('id') || !f.get('title')) {
+        throw f;
+      }
+
       var data    = this.resource_data(f),
           entry   = this.templates.folder(data),
           target  = this.$el,
@@ -370,7 +395,7 @@ function( $, Backbone, DragManager, ActionBar, Settings, BrowserImplementation, 
         listing.append(el);
         listing.find('> li:not([data-meta])').tsort('> .folder-title');
 
-        // this.trigger('folder_reordered', f, parent);
+        this.trigger('folder_reordered', f, parent);
       }
     },
 

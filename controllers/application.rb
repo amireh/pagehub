@@ -35,12 +35,13 @@ end
 
 def resource_title_available?(title)
   pretty = (title || '').to_s.sanitize
-  !pretty.empty? && !ReservedResourceTitles.include?(pretty)
+  !pretty.empty? && pretty.length >= 3 && !ReservedResourceTitles.include?(pretty)
 end
 
 def name_available?(name)
   nn = (name || '').to_s.sanitize
   !nn.empty? &&
+  nn.length >= 3 &&
   !ReservedSpaceTitles.include?(nn) &&
   current_user.owned_spaces.first({ pretty_title: nn }).nil?
 end
@@ -48,6 +49,7 @@ end
 def nickname_available?(name)
   nn = (name || '').to_s.sanitize
   !nn.empty? &&
+  nn.length >= 3 &&
   !ReservedUsernames.include?(nn) &&
   User.first({ nickname: nn }).nil?
 end

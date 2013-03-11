@@ -2,9 +2,10 @@ define(
 'views/spaces/settings/general',
 [ 'views/shared/settings/setting_view', 'jquery', 'pagehub',
 'hb!dialogs/destroy_space.hbs',
-'hb!spaces/settings/dialog_change_title_warning.hbs'
+'hb!spaces/settings/dialog_change_title_warning.hbs',
+'hb!messages/relocation_error.hbs',
 ],
-function(SettingView, $, UI, DestroySpaceDlgTmpl, ChangeTitleDlgTmpl) {
+function(SettingView, $, UI, DestroySpaceDlgTmpl, ChangeTitleDlgTmpl, RelocationErrorTmpl) {
 
   var SpaceGeneralSettingsView = SettingView.extend({
     el: $("#space_general_settings"),
@@ -17,7 +18,8 @@ function(SettingView, $, UI, DestroySpaceDlgTmpl, ChangeTitleDlgTmpl) {
     },
 
     templates: {
-      title_change_warning: ChangeTitleDlgTmpl
+      title_change_warning: ChangeTitleDlgTmpl,
+      relocation_error: RelocationErrorTmpl
     },
 
     initialize: function(data) {
@@ -123,8 +125,7 @@ function(SettingView, $, UI, DestroySpaceDlgTmpl, ChangeTitleDlgTmpl) {
     },
 
     confirm_total_destruction: function(e) {
-      var view    = this,
-          dialog  =
+      var view    = this;
 
       e.preventDefault();
 
@@ -139,11 +140,22 @@ function(SettingView, $, UI, DestroySpaceDlgTmpl, ChangeTitleDlgTmpl) {
             $(this).dialog("close");
           },
           Destroy: function(e) {
+            var dlg = $(this);
             view.space.destroy({
               wait: true,
-              success: function() { dialog.dialog("close"); }
+              success: function() {
+                window.location = '/';
+                // show some message if we were unable to relocate using JS (some browsers don't allow that)
+                dlg.dialog("close");
+                $('<div>' + view.templates.relocation_error() + '</div>').dialog({
+                  modal: true,
+                  dialogClass: "alert-dialog no-close",
+                  resizable: false,
+                  closeOnEscape: false,
+                  title: "Relocation Error"
+                });
+              }
             });
-
             e.preventDefault();
           }
         }

@@ -34,10 +34,13 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
         workspace:  this.workspace
       });
 
-      this.browser.on('folder_reordered', function(_, parent) {
-        if (this.elements.go_up.is(":visible")) {
-          parent.ctx.browser.folder_listing.prepend(this.elements.go_up);
-        }
+      this.browser.on('folder_reordered', function(f, parent) {
+        // if (this.elements.go_up.is(":visible")) {
+        //   parent.ctx.browser.folder_listing.prepend(this.elements.go_up);
+        // }
+
+        f.ctx.browser.el.show();
+        f.ctx.browser.title.show();
       }, this);
     },
 
@@ -45,10 +48,6 @@ function( $, Backbone, BrowserImplementation, DragManager, FinderNavigator, UI) 
       var view = this;
 
       this.$el.find('.folders, .pages, .folder-title').hide();
-
-      // if (this.workspace.current_folder) {
-      //   this.on_folder_loaded(this.workspace.current_folder, null);
-      // }
 
       this.navigator.setup();
 

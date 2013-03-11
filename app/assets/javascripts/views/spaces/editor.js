@@ -158,7 +158,7 @@ function($, Backbone) {
     serialize: function() {
       this.editor.save();
 
-      if (this.workspace.current_page) {
+      if (this.workspace && this.workspace.current_page) {
         this.workspace.current_page.set('content', this.editor.getValue());
       }
 

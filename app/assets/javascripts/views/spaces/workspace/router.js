@@ -3,7 +3,7 @@ define('views/spaces/workspace/router',
   'backbone'
 ], function(Backbone) {
 
-  $(document).on("dblclick", "#browser a.selected", function(evt) {
+  $(document).on("click", "#browser a.selected", function(evt) {
     evt.preventDefault();
     evt.stopPropagation();
     evt.stopImmediatePropagation();

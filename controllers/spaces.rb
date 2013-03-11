@@ -19,14 +19,14 @@ get '/new',
 
   # authorize! :create, Space, message: "You can not create new spaces."
   @user  = current_user
-  @space = current_user.spaces.new
+  @space = current_user.owned_spaces.new
 
   respond_with @space do |f|
     f.html { erb :'/spaces/new' }
   end
 end
 
-get "/users/:user_id/spaces/:space_id.?:format",
+get "/users/:user_id/spaces/:space_id",
   auth: [ :member ],
   provides: [ :json, :zip ],
   requires: [ :user, :space ] do
@@ -105,13 +105,13 @@ post '/users/:user_id/spaces',
   @space = @user.owned_spaces.create(api_params)
 
   unless @space.saved?
-    halt 400, s.all_errors
+    halt 400, @space.all_errors
   end
 
   respond_to do |f|
     f.html do
-      flash[:notice] = "Space created successfully."
-      redirect @space.url
+      flash[:notice] = "Your new space has been created."
+      redirect @space.edit_url
     end
 
     f.json do
@@ -202,6 +202,8 @@ put "/users/:user_id/spaces/:space_id",
   unless @space.update(api_params)
     halt 400, @space.all_errors
   end
+
+  halt 200, {}.to_json if params[:no_object]
 
   respond_to do |f|
     f.html {

@@ -34,9 +34,11 @@ class Folder
 
   before :save do
     # reserved names only apply to the root-level resources
-    if !folder.folder && !resource_title_available?(self.title)
-      errors.add :title, "That title is reserved for internal usage."
-      throw :halt
+    if attribute_dirty?(:title)
+      if (!folder || !folder.folder) && !resource_title_available?(self.title)
+        errors.add :title, "That title is reserved for internal usage."
+        throw :halt
+      end
     end
   end
 

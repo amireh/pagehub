@@ -190,6 +190,8 @@ define('pagehub',
   // });
   }();
 
+
+  var
   ui = Backbone.View.extend({
     pbar_tick:  0,
     pbar_value: 0,

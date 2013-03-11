@@ -327,6 +327,12 @@ span.shortcut {
     background-repeat: repeat-x;
     border-color: #CD504A;
   }
+
+  &.no-close {
+    button.ui-dialog-titlebar-close {
+      display: none;
+    }
+  }
 }
 
 .ui-dialog.popdown {
@@ -570,12 +576,11 @@ body.fluid {
 }
 
 #status,
-#flashes {
+.flashes {
   position: relative;
   text-align: center;
   padding: 5px 20px;
   border-radius: 0 0 5px 5px;
-  top: -240px;
 
   -webkit-transition: top 0.5s ease 0s;
   -moz-transition:    top 0.5s ease 0s;
@@ -589,27 +594,40 @@ body.fluid {
   z-index: 1;
 }
 
+.flashes {
+  padding: 5px 25px 10px 20px;
+  button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+}
+
+#status {
+  top: -240px;
+}
+
 /* TODO: skinify */
 #status.good,
-#flashes.notice {
+.flashes.notice {
 }
 #status.bad,
-#flashes.error {
+.flashes.error {
 }
 #status.pending {
 }
 #status.hidden,
-#flashes.hidden {
+.flashes.hidden {
   top: -240px;
 }
 #status.visible,
-#flashes:not(.hidden) {
+.flashes.visible {
   top: 0;
 }
-#flashes button {
+.flashes button {
   float: none;
 }
-#flashes * {
+.flashes * {
   vertical-align: top;
 }
 

@@ -2,9 +2,10 @@ define('views/spaces/browser/drag_manager',
 [
   'jquery',
   'backbone',
-  'pagehub'
+  'pagehub',
+  'timed_operation'
 ],
-function( $, Backbone, UI ) {
+function( $, Backbone, UI, TimedOp ) {
   return Backbone.View.extend({
     el: $("#browser"),
 
@@ -21,6 +22,10 @@ function( $, Backbone, UI ) {
         console.log("No dragndrop support, ignoring...");
       }
 
+      this.drag_opener = new TimedOp(this, this.switch_to_target_folder, {
+        pulse: 1000
+      });
+
       this.bootstrap();
     },
 
@@ -36,6 +41,8 @@ function( $, Backbone, UI ) {
     abort_dnd: function() {
       this._ctx.is_dragging = false;
       this._ctx.source      = null;
+      this._ctx.is_floating = false;
+      this.drag_opener.stop();
 
       // $("#indicator").hide();
       // $("#drag_indicator").hide();
@@ -125,19 +132,32 @@ function( $, Backbone, UI ) {
 
     on_dragenter: function(e) {
       var view = e.data,
-          target = null;
+          target = null,
+          source = view._ctx.source;
 
       view.$el.find(".drop-target").removeClass("drop-target");
+
+      view.drag_opener.stop();
 
       // dropping is only allowed on folder targets
       // if((target = $(this).parents(".folder:first")).length != 0) {
       if($(this).is(":visible") && $(this).hasClass('folder-title')) {
-        console.log("drag target located: ");
-        console.log($(this))
+        // console.log("drag target located: ");
+        // console.log($(this))
 
         target = $(this);
         target.addClass('drop-target');
         view._ctx.target = target;
+        view.drag_opener.queue();
+      }
+      else if (view._ctx.is_floating) {
+        var listing = $(this).parents('.pages:first');
+
+        if (listing.is(":visible")) {
+          target = listing;
+          target.addClass('drop-target');
+          view._ctx.target = target;
+        }
       }
       else {
         view._ctx.target = null;
@@ -163,8 +183,12 @@ function( $, Backbone, UI ) {
       var src_node = view._ctx.source,
           tgt_node = view._ctx.target;
 
-      if (!tgt_node.is(".folder-title")) {
+      if (!view._ctx.is_floating && !tgt_node.is(".folder-title")) {
         return view.abort_dnd();
+      }
+      else if (view._ctx.is_floating) {
+        if (!tgt_node.is(".folder-title") && !tgt_node.is(".pages"))
+          return view.abort_dnd();
       }
 
       // view._ctx.is_dragging = false;
@@ -177,6 +201,9 @@ function( $, Backbone, UI ) {
         if (source && target && source != target) {
           view.workspace.trigger('move_folder', source, target);
         }
+        // else {
+        //   console.log("unable to drop a folder onto another");
+        // }
 
       } // folder drag
 
@@ -188,14 +215,21 @@ function( $, Backbone, UI ) {
 
         if (page && source_folder && target_folder && source_folder != target_folder) {
           view.workspace.trigger('move_page', page, target_folder);
-        } else {
-          console.log("error: unable to move page, bad context")
         }
+        // else {
+        //   console.log("error: unable to move page, bad context")
+        // }
       } // page drag
 
       // Unmark the nodes & cleanup
       return view.reset();
     }, // on_drop()
 
+    switch_to_target_folder: function(folder) {
+      var folder = this.browser.folder_from_title(this._ctx.target);
+
+      this._ctx.is_floating = true;
+      this.workspace.state.router.proxy_resource(folder);
+    }
   });
 });

@@ -13,13 +13,13 @@ define('models/space',
     },
 
     urlRoot: function() {
-      return this.get('creator.media.spaces_url');
+      return this.creator.get('media.spaces.url');
     },
 
     initialize: function(data) {
       var self = this;
 
-      this.folders = new Folders({}, { space: this });
+      this.folders = new Folders(null, { space: this });
       // this.folders.on('add', this.attach_to_space, this);
 
       _.each(data.folders, function(fdata) {

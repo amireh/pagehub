@@ -22,7 +22,11 @@
   </div>
 
   <div class="user-spaces">
-    <h3>Spaces</h3>
+    <h3 class="spaces-heading">Spaces
+      <% if current_user == @user %>
+        <a href="/new" class="btn btn-mini btn-primary" rel="tooltip" title="Create a new space">&plus;</a>
+      <% end %>
+    </h3>
     <br />
     <!-- <div class="gridster">
       <ul>
