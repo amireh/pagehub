@@ -34,7 +34,7 @@ define('views/header',
 
           if (app.current_user && app.current_user == app.user) { // current user sections
             this.user.on('change:nickname', this.render, this);
-            console.log('[header] listening to current_user nickname changes')
+            this.user.on('sync', this.render, this);
           }
         }
 
@@ -46,6 +46,7 @@ define('views/header',
 
     render: function(additional_data) {
       var data = {};
+
       data.user = {
         nickname: this.user.get('nickname'),
         media:    this.user.get('media')

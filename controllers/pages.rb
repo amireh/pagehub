@@ -68,6 +68,7 @@ post '/spaces/:space_id/pages',
   requires: [ :space ] do
 
   authorize! :author, @space, :message => "You need to be an editor of this space to create pages."
+  authorize! :author_more, @space, :message => "You can not create any more pages in this space."
 
   api_required!({
     :folder_id  => lambda { |fid|
@@ -119,13 +120,20 @@ put '/spaces/:space_id/pages/:page_id',
       end
     rescue Page::Revision::NothingChangedError
       # it's ok
+    rescue Page::Revision::PatchTooBigError
+      # it's fine, too
+      # TODO: push a warning msg
     end
 
     @page = @page.refresh
   end
 
-  unless @page.update(api_params)
-    halt 400, @page.errors
+  begin
+    unless @page.update(api_params)
+      halt 400, @page.errors
+    end
+  rescue DataObjects::DataError => e
+    halt 400, "We were unable to save the page as its content is too long."
   end
 
   halt 200, {}.to_json if params[:no_object]

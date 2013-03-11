@@ -11,7 +11,7 @@ get '/:user_nickname/:space_pretty_title/edit*', auth: :user, :provides => [ :ht
 
   respond_with @space do |f|
     f.json { rabl :"/spaces/show", object: @space }
-    f.html { flash[:notice] = "TEST"; erb :"/spaces/show" }
+    f.html { erb :"/spaces/show" }
   end
 end
 

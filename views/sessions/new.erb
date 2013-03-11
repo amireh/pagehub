@@ -1,21 +1,29 @@
 <% content_for :title do %> Sign in | PageHub <% end %>
 
-<h2>Sign in</h2>
-
 <form action="/sessions" method="POST">
-  <label>
-    Your email:
-    <br />
-    <input class="very_fat" type="text" name="email" />
-  </label><br />
-  <label>
-    And password:
-    <br />
-    <input class="very_fat" type="password" name="password" />
-  </label><br />
+  <fieldset class="form-horizontal">
+    <legend>Sign in</legend>
 
-  <br />
-  <input type="submit" value="Login" />
-  <br />
-  <br />
+    <div class="control-group">
+      <label class="control-label" for="email">Email</label>
+      <div class="controls">
+        <input type="email" id="email" placeholder="your@email.com" name="email" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="password">Your password</label>
+      <div class="controls">
+        <input type="password" autocomplete="off" id="password" name="password" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <input class="btn btn-primary" type="submit" value="Login" />
+      </div>
+    </div>
+  </fieldset>
 </form>

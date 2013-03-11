@@ -79,73 +79,7 @@
 
   </div>
   <%= partial "layouts/_footer" %>
-
-  <script>
-    <% if settings.development? %>app = null;<% end %>
-
-    pagehub_hooks.push(function(application) {
-      <% if settings.development? %>app = application;<% end %>
-      application.set('preferences', <%= PageHub::Config.defaults['app'].to_json %>);
-      require([ 'pagehub', 'views/flash', 'views/header', 'models/user', 'models/space' ],
-              function(UI, Flash, Header, User, Space) {
-
-        application.Flash = new Flash(application);
-        application.UI = UI;
-        application.UI.initialize(application);
-
-        try {
-          application.current_user =
-            new User(JSON.parse(_.unescape(<%= h(rabl :"/users/show", locals: { user: current_user }).to_json %>)).user);
-        } catch(e) {
-          console.log(e)
-          // TODO: abort with an error
-        }
-        <% if @user %>
-          <% if current_user == @user %>
-            application.user = application.current_user;
-          <% else %>
-            try {
-              application.user =
-                new User(JSON.parse(_.unescape(<%= h(rabl :"/users/public_show",  object: @user).to_json %>)).user);
-            } catch(e) {
-              console.log(e)
-            }
-          <% end %>
-        <% end %>
-        <% if @space %>
-          // try {
-            application.space =
-              new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
-            <% if @space.creator == @user %>
-              application.space.creator = application.user;
-            <% elsif @space.creator == current_user %>
-              application.space.creator = application.current_user;
-            <% else %>
-              try {
-                application.space.creator =
-                  new User(JSON.parse(_.unescape(<%= h(rabl :"/users/public_show", locals: { user: @space.creator }).to_json %>)).user);
-              } catch(e) {
-                console.log(e)
-              }
-            <% end %>
-
-          // } catch(e) {
-          //   console.log(e)
-          // }
-        <% end %>
-
-        application.header = new Header(application);
-
-        <%= (yield_content :deferred_js).gsub(/\<\/?script\>/, '').strip %>
-
-        // application.on('bootstrapped', function() { console.log('bootstrapped') })
-        // application.trigger('bootstrapped', application);
-      });
-    });
-  </script>
-
-  <script data-main="/assets/main" src="/assets/lib/require.js"></script>
-
+  <%= partial "layouts/_pagehub_js" %>
   <%= partial "layouts/_google_analytics" %>
 </body>
 

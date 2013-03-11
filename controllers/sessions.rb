@@ -17,14 +17,20 @@ post '/sessions', auth: :guest, :provides => [ :json, :html ] do
   respond_to do |f|
     f.html {
       unless u
-        flash[:error] = "Incorrect email or password, please try again."
+        flash[:error] = "Incorrect credentials, please try again."
         return redirect back
       end
 
       redirect '/'
     }
 
-    f.json { halt 401 if !u }
+    f.json do
+      if logged_in?
+        halt 200, {}.to_json
+      else
+        halt 401
+      end
+    end
   end
 end
 

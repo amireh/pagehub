@@ -17,7 +17,8 @@ get '/new',
   # requires: [ :user ],
   provides: [ :html ] do
 
-  # authorize! :create, Space, message: "You can not create new spaces."
+  authorize! :create, Space, message: "You can not create new spaces as a demo user."
+
   @user  = current_user
   @space = current_user.owned_spaces.new
 

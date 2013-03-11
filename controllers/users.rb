@@ -45,14 +45,18 @@ get '/users/:user_id',
   end
 end
 
+def demo_password
+  "funkydemo123"
+end
+
 get '/demo', auth: :guest, provides: [ :html ] do
   @user = User.create({
-    nickname: "demo-#{salt}".sanitize,
+    nickname: "demo-#{tiny_salt}".sanitize,
     name:     "PageHub Demo",
     provider: "pagehub",
     email:    "demo@pagehub.org",
-    password: "funkydemo123",
-    password_confirmation: "funkydemo123"
+    password: demo_password,
+    password_confirmation: demo_password
   })
 
   unless @user
@@ -65,48 +69,37 @@ get '/demo', auth: :guest, provides: [ :html ] do
   redirect '/'
 end
 
-post '/users', auth: :guest, provides: [ :html ] do
-  p = params
+post '/users',
+  auth: :guest,
+  provides: [ :html ] do
 
-  # Validate input
-  {
-    "Your email can not be empty" => !p[:email] || p[:email].to_s.empty?,
-    "That email is already registered" => User.first(email: p[:email]),
-    "You must fill in your name" => !p[:name] || p[:name].to_s.empty?,
-    "You must type the same password twice" => p[:password].empty? || p[:password_confirmation].empty?,
-    "The passwords you entered do not match" => p[:password] != p[:password_confirmation],
-    "Passwords must be at least 5 characters long." => p[:password].length <= 4
-  }.each_pair { |msg, cnd|
-    if cnd then
-      flash[:error] = msg
-      return redirect back
-    end
-  }
+  api_required!({
+    nickname: nil,
+    email:    nil,
+    password: nil,
+    password_confirmation: nil
+  })
 
-  # Encrypt the password
-  params[:password] = Digest::SHA1.hexdigest(params[:password])
-
-  nickname = params[:name].to_s.sanitize
-  auto_nn = false
-  if u = User.first({ nickname: nickname }) then
-    nickname = "#{nickname}_#{tiny_salt}"
-    auto_nn = true
-  end
-
-  params.delete("password_confirmation")
+  api_optional!({
+    name: nil
+  })
 
   # Create the user with a UUID
-  u = User.create(params.merge({ uid: UUID.generate, nickname: nickname, auto_nickname: auto_nn, provider: "pagehub" }))
+  u = User.new(api_params({
+    provider: "pagehub"
+  }))
 
-  unless u.saved?
-    flash[:error] = u.collect_errors
+  u.name ||= u.nickname
+
+  unless u.save
+    flash[:error] = u.all_errors
     return redirect back
   end
 
-  flash[:notice] = "Welcome to PageHub! Your new personal account has been registered."
-  session[:id] = u.id
+  flash[:notice] = "Welcome to PageHub! Your new personal account has been created."
+  authorize(u)
 
-  redirect '/'
+  redirect u.dashboard_url
 end
 
 put '/users/:user_id',

@@ -2,51 +2,51 @@
 
 
 <form id="user_signup" action="/users" method="POST">
-  <h2>Sign up for a PageHub account</h2>
+  <fieldset class="form-horizontal">
+    <legend>Sign up for a PageHub account</legend>
 
-  <label>
-    Your email:<br />
-    <input class="very_fat" type="text" name="email" />
-  </label>
-  <br />
-  <label>
-    Your name:<br />
-    <input class="very_fat" type="text" name="name" />
-  </label>
-  <br />
+    <div class="control-group">
+      <label class="control-label" for="nickname">Nickname</label>
+      <div class="controls">
+        <input type="text" placeholder="gorilla-fighter" id="nickname" name="nickname" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
 
-  <!-- <label>
-    And some password:<br />
-    <input class="very_fat" type="password" name="password" />
-  </label> -->
-    <span>
-      And a password (type it twice to confirm it):<br />
-    </span>
-    <label>#1 &rarr; <input autocomplete="off" type="password" class="fat" name="password" style="margin-bottom: 5px;" /></label>
-    <br />
-    <label>#2 &rarr; <input autocomplete="off" type="password" class="fat" name="password_confirmation" /></label>
+    <div class="control-group">
+      <label class="control-label" for="email">Email</label>
+      <div class="controls">
+        <input type="email" id="email" placeholder="your@email.com" name="email" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
 
-  <br />
-  <br />
-  <input type="submit" value="Sign up to PageHub!" />
-  <br />
-  <br />
+    <div class="control-group">
+      <label class="control-label" for="password">Your password</label>
+      <div class="controls">
+        <input type="password" autocomplete="off" id="password" name="password" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="password_confirmation">Your password, again</label>
+      <div class="controls">
+        <input type="password" autocomplete="off" id="password_confirmation" name="password_confirmation" />
+        <span class="help-inline"></span>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <input type="submit" class="btn btn-primary btn-large" value="Sign up to PageHub!" />
+      </div>
+    </div>
+  </fieldset>
 </form>
-<div class="browser_notice">
-  <p>
-    <h2>Notice</h2>
-    <p>PageHub uses HTML5, CSS3, and JavaScript and requires an <em>up-to-date</em> browser. Officially
-      supported browsers are:
-      <ul>
-        <li>Google Chrome</li>
-        <li>Mozilla Firefox</li>
-      </ul>
-    </p>
-    <img src="/images/html5-badge-v-css3-semantics.png"
-       width="38"
-       height="138"
-       alt="HTML5 Powered with CSS3 / Styling, and Semantics"
-       rel="tooltip"
-       title="HTML5 Powered with CSS3 / Styling, and Semantics" />
-  </p>
-</div>
+
+<hr />
+
+<p class="well"><span class="label label-important">Heads up!</span><br /><br />
+  PageHub uses HTML5, CSS3, and JavaScript and requires an <em>up-to-date</em> browser.
+  Supported browsers are <strong>Chrome</strong>, <strong>Safari</strong>, and <strong>Firefox</strong>.
+</p>

@@ -76,6 +76,10 @@ helpers do
   end
 
   def disabilify(setting, scope = nil, &condition)
-    is_on(setting, scope, &condition) ? 'disabled="disabled"' : ''
+    if setting
+      is_on(setting, scope, &condition) ? 'disabled="disabled"' : ''
+    else
+      condition ? 'disabled="disabled"' : ''
+    end
   end
 end

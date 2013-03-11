@@ -23,6 +23,7 @@ function(Backbone, $, Shortcut, UI, State) {
       this.views    = [];
       this.aliases  = [];
       this.presync_map = {};
+      this.fetch_after_sync = true;
 
       this.on('section_changed',  this.sections.show, this);
       this.on('section_changed',  this.sections.highlight, this);
@@ -193,7 +194,7 @@ function(Backbone, $, Shortcut, UI, State) {
      *
      * You *MUST* define this in the main setting view for the settings to be stored!
      */
-    save: function(no_presync_callbacks) {
+    save: function(no_presync_callbacks, fetch_after_sync) {
       if (this.state.get('syncing')) {
         return null;
       }
@@ -215,7 +216,7 @@ function(Backbone, $, Shortcut, UI, State) {
         return null;
       }
 
-      return this.sync(data, no_presync_callbacks);
+      return this.sync(data, no_presync_callbacks, fetch_after_sync);
     },
 
     consume: function(e) {
@@ -223,9 +224,10 @@ function(Backbone, $, Shortcut, UI, State) {
       return false;
     },
 
-    sync: function(d, no_presync_callbacks) {
+    sync: function(d, no_presync_callbacks, fetch_after_sync) {
       var director = this,
-          state    = this.state;
+          state    = this.state,
+          fetch_after_sync = fetch_after_sync === undefined ? this.fetch_after_sync : fetch_after_sync;
 
       if (!no_presync_callbacks) {
         this.ctx.abort_sync = false;
@@ -256,23 +258,27 @@ function(Backbone, $, Shortcut, UI, State) {
 
         this.state.set('syncing', true);
 
-        console.log("Model SYNC endpoint: " + this.model.url());
-
         this.model.save($.extend(true, d, { no_object: true }), {
           wait: true,
           patch: true,
 
           success: function() {
-            state.set('syncing', false);
+            if (!fetch_after_sync) {
+              state.set('syncing', false);
+            }
 
             director.trigger('postsync', director, true);
             UI.status.show("Saved", "good");
 
-            director.trigger('postfetch', director, director.model, true);
+            if (!fetch_after_sync) {
+              director.trigger('postfetch', director, director.model, true);
+            }
           },
 
           error: function(_, e) {
-            state.set('syncing', false);
+            if (!fetch_after_sync) {
+              state.set('syncing', false);
+            }
 
             director.trigger('postsync', director, false, e);
 
@@ -289,25 +295,25 @@ function(Backbone, $, Shortcut, UI, State) {
             } catch(err) {
             }
 
-            director.trigger('postfetch', director, director.model, false);
+            if (!fetch_after_sync) {
+              director.trigger('postfetch', director, director.model, false);
+            }
           }
         });
 
-        // this.model.fetch({
-        //   success: function() {
-        //     state.set('syncing', false);
-        //     UI.status.mark_ready();
-
-        //     director.render();
-        //     director.trigger('postfetch', director, director.model, true);
-        //   },
-        //   error: function() {
-        //     state.set('syncing', false);
-        //     UI.status.mark_ready();
-
-        //     director.trigger('postfetch', director, director.model, false);
-        //   }
-        // });
+        if (fetch_after_sync) {
+          this.model.fetch({
+            success: function() {
+              state.set('syncing', false);
+              director.render();
+              director.trigger('postfetch', director, director.model, true);
+            },
+            error: function() {
+              state.set('syncing', false);
+              director.trigger('postfetch', director, director.model, false);
+            }
+          });
+        }
 
       } catch(e) {
         state.set('syncing', false);
@@ -317,8 +323,8 @@ function(Backbone, $, Shortcut, UI, State) {
     },
 
     partial_sync: function(data, options) {
-      console.log("[director] Partial Sync: model SYNC endpoint: " + this.model.urlRoot());
-      this.model.save(data, $.extend(true, options, { patch: true, wait: true }));
+      this.model.save($.extend(true, data,    { no_object: true }),
+                      $.extend(true, options, { patch: true, wait: true }));
       return this;
     },
 

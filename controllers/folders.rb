@@ -48,6 +48,7 @@ post '/spaces/:space_id/folders',
   provides: [ :json ] do
 
   authorize! :author, @space, :message => "You need to be an editor of this space to create folders."
+  authorize! :author_more, @space, :message => "You can not create any more folders in this space."
 
   api_required!({
     :title => nil

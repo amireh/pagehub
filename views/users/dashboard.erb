@@ -24,7 +24,11 @@
   <div class="user-spaces">
     <h3 class="spaces-heading">Spaces
       <% if current_user == @user %>
-        <a href="/new" class="btn btn-mini btn-primary" rel="tooltip" title="Create a new space">&plus;</a>
+        <% if can? :create, Space %>
+          <a href="/new" class="btn btn-mini btn-primary" rel="tooltip" title="Create a new space">&plus;</a>
+        <% else %>
+          <a class="btn btn-mini btn-warning" disabled="disabled" rel="tooltip" title="You must upgrade your account to create new spaces">&plus;</a>
+        <% end %>
       <% end %>
     </h3>
     <br />

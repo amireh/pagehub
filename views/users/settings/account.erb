@@ -46,7 +46,8 @@
       </div>
     </div>
 
-    <!-- <button id="change_password" class="btn">Save</button> -->
+    <button id="reset_password" rel="tooltip" title="Coming soon" class="btn btn-danger btn-mini">Reset my password</button>
+
   </fieldset>
 
   <fieldset>
@@ -55,8 +56,6 @@
     <p>Your primary email address where we can reach you: <small><em>(not visible to people)</em></small>.</p>
 
     <div class="control-group">
-      <label class="control-label" for="email">Email</label>
-
       <div class="controls">
         <input required type="email" id="email" name="email" value="<%= current_user.email %>" />
         <span class="help-inline"></span>

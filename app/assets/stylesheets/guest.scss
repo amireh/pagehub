@@ -4,7 +4,7 @@ body.guest {
   }
 
   #content {
-    text-align: justify;
+    /*text-align: justify;*/
     /*width: 480px;*/
     /*width: 640px;*/
     margin: 0 auto;
@@ -19,6 +19,7 @@ body.guest {
     background: none;
     border-bottom: none;
     height: inherit;
+    box-shadow: none;
   }
 
   .sidebar, #content {
@@ -62,19 +63,13 @@ body.guest {
     width: 100%;
     text-align: left;
     clear:  both;
-    padding: 0;
-    a {
-      padding: 0;
-      line-height: 40px;
-      height: 40px;
-      vertical-align: middle;
-      height: auto;
-      display: inline-block;
+    padding: 10px 0;
+    display: block;
+    /*z-index: 102;*/
+    text-align: right;
 
-      &:last-of-type {
-        float: right;
-        margin-right: 50px;
-      }
+    a {
+      vertical-align: middle;
     }
   }
 
@@ -156,12 +151,6 @@ body.guest {
     padding-left: 70px;
     margin: 0;
   }*/
-
-  nav.top {
-    display: block;
-    height: 40px;
-    padding-right: 40px;
-  }
 
   div.greeting > h1 > span {
     color: #aaa;

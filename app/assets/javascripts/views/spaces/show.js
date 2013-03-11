@@ -14,6 +14,8 @@ define('views/spaces/show',
   'timed_operation'
 ], function(Backbone, Router, ResourceActions, Browser, PageActionBar, GeneralActionBar, Editor, Finder, UI, TimedOp) {
   return Backbone.View.extend({
+    el: $("#workspace"),
+
     initialize: function(state) {
       UI.status.mark_pending();
 
@@ -76,9 +78,10 @@ define('views/spaces/show',
 
       this.go();
 
-      UI.status.mark_ready();
-
       this.state.trigger('bootstrapped', this.state);
+
+      this.$el.show();
+      UI.status.mark_ready();
     },
 
     on_invalid_route: function(path) {

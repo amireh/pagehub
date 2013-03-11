@@ -4,23 +4,26 @@
   <meta charset="UTF-8">
   <title><% __title = yield_with_default(:title) do %><%= AppTitle %><% end %><%= __title %></title>
 
-  <script type="text/javascript" src="/js/jquery.1.7.1.min.js"></script>
-  <!-- <link href="/css/pagehub.css" rel="stylesheet" type="text/css" /> -->
-
   <link href="/assets/app.css" rel="stylesheet" type="text/css" />
+
+  <script>
+    pagehub_hooks = [];
+  </script>
+
+  <script src="/assets/vendor/jquery-1.9.1.min.js"></script>
 </head>
 
 <body class="guest">
 
   <div class="status-wrap">
-    <div id="status"></div>
+    <!-- <div id="status" class="hidden"></div> -->
     <%= partial "layouts/_flashes" %>
   </div>
 
   <div class="stuff">
     <nav class="top">
-      &nbsp;
-      <a id="login" href="/sessions/new">Sign in</a>
+      <a class="btn btn-danger" href="/signup">Signup</a>
+      <a class="btn btn-mini" href="/sessions/new">Sign in</a>
     </nav>
 
     <div id="content">
@@ -28,7 +31,7 @@
     </div>
     <div class="sidebar">
       <header>
-        <h1><a href="/">PageHub</a></h1> <br/>
+        <h1><a href="/">PageHub</a></h1>
       </header>
 
       <nav>
@@ -36,15 +39,29 @@
           <a href="/features">Features</a><br/>
           <a href="/about">About</a><br/>
           <a href="/open-source">Open Source</a><br/>
-          <a href="/users/new">Sign up</a>
+          <a href="/signup">Sign up</a>
         </ul>
       </nav>
     </div>
-
   </div>
-  <%= partial "layouts/_footer" %>
 
-  <%= yield_content :deferred_js %>
+  <div id="loader" class="loader"></div>
+  <div class="loader-overlay"></div>
+
+  <aside class="hidden modal alert" id="html5_compatibility_notice">
+    <h2>Unsupported Browser</h2>
+
+    <p>The brower you are currently using does not appear to support
+      the latest HTML5 standards which are required for PageHub to
+      function correctly.
+    </p>
+    <p>Please update your browser or use a recent version of the
+      officially supported browsers: Google Chrome, Safari 5, or Mozilla Firefox.
+    </p>
+  </aside>
+
+  <%= partial "layouts/_footer" %>
+  <%= partial "layouts/_pagehub_js" %>
   <%= partial "layouts/_google_analytics" %>
 </body>
 
