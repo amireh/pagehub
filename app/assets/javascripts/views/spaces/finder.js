@@ -108,6 +108,10 @@ function(AnimableView, UI, Shortcut) {
         return false;
       }
 
+      if (this.workspace.current_page == page) {
+        return this.hide();
+      }
+
       // this.workspace.trigger('load_page', page);
       this.state.router.proxy_resource(page);
 
