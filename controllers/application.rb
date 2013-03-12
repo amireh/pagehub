@@ -53,27 +53,10 @@ def nickname_available?(name)
 end
 
 before do
-  if api_call?
-    # puts "its an api call"
-    # puts request.content_type
-    request.body.rewind
-    body = request.body.read.to_s || ''
-    unless body.empty?
-      begin;
-        params.merge!(JSON.parse(body))
-        # puts params.inspect
-        # puts request.path
-      rescue JSON::ParserError => e
-        puts e.message
-        puts e.backtrace
-      end
-    end
-  else
-    @layout = logged_in? ?
-              :"layouts/primary" :
-              :"layouts/guest"
-    @print  = :"layouts/print"
-  end
+  @layout = logged_in? ?
+            :"layouts/primary" :
+            :"layouts/guest"
+  @print  = :"layouts/print"
 end
 
 get '/' do
