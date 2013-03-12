@@ -1,4 +1,4 @@
-feature "Space folders" do
+describe "Space folders" do
   before(:all) do
     fixture(:user)
   end

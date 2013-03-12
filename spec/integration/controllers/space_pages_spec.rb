@@ -1,4 +1,4 @@
-feature "Space pages" do
+describe "Space pages" do
   before do
     fixture(:user)
     sign_in
@@ -57,7 +57,7 @@ feature "Space pages" do
       }.to succeed
     end
 
-    scenario "i edit a page authored by someone else" do
+    it "i edit a page authored by someone else" do
       api {
         put "/spaces/#{@s.id}/pages/#{@p.id}", {
           title: "The Foofighters"
@@ -67,14 +67,14 @@ feature "Space pages" do
       @p.refresh.title.should == "The Foofighters"
     end
 
-    scenario "i'm prohibited from deleting a page authored by someone else" do
+    it "i'm prohibited from deleting a page authored by someone else" do
       rc = api_call delete "/spaces/#{@s.id}/pages/#{@p.id}"
       rc.should fail(403, 'can not remove pages authored by someone else')
 
       @p.refresh.should be_true
     end
 
-    scenario "i delete my own page" do
+    it "i delete my own page" do
       p = valid! fixture(:page, { creator: @u2 })
 
       p.creator.id.should == @u2.id
@@ -96,7 +96,7 @@ feature "Space pages" do
       sign_in(@u2)
     end
 
-    scenario "i delete a page authored by someone else" do
+    it "i delete a page authored by someone else" do
       api { delete "/spaces/#{@s.id}/pages/#{@p.id}" }.should succeed
 
       @p.refresh.should be_false
@@ -111,7 +111,7 @@ feature "Space pages" do
       sign_in(@u2)
     end
 
-    scenario "i read a page" do
+    it "i read a page" do
       rc = api {
         get "/spaces/#{@s.id}/pages/#{@p.id}"
       }
@@ -120,7 +120,7 @@ feature "Space pages" do
       rc.body["page"]["id"].to_i.should == @p.id
     end
 
-    scenario "i'm prohibited from editing any page" do
+    it "i'm prohibited from editing any page" do
       rc = api {
         put "/spaces/#{@s.id}/pages/#{@p.id}", {}
       }
@@ -128,7 +128,7 @@ feature "Space pages" do
       rc.should fail(403, 'need to be an editor')
     end
 
-    scenario "i'm prohibited from creating any page" do
+    it "i'm prohibited from creating any page" do
       rc = api {
         post "/spaces/#{@s.id}/pages", {}
       }
@@ -136,7 +136,7 @@ feature "Space pages" do
       rc.should fail(403, 'need to be an editor')
     end
 
-    scenario "i'm prohibited from deleting any page" do
+    it "i'm prohibited from deleting any page" do
       rc = api {
         delete "/spaces/#{@s.id}/pages/#{@p.id}"
       }
