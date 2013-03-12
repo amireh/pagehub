@@ -5,8 +5,7 @@ function($, Backbone) {
   var CodeMirror_aliases = {
     "shell": [ "bash" ]
   };
-  var editor_disabled = false,
-      content_changed = false;
+  var editor_disabled = false;
   var create_editor = function(textarea_id, opts) {
     opts = opts || {};
     for(var mode in CodeMirror_aliases) {
@@ -44,10 +43,6 @@ function($, Backbone) {
       // keyMap: "mxvt",
     }, opts));
 
-    editor.on("change", function() {
-      content_changed = true;
-    });
-
     return editor;
   }
 
@@ -71,6 +66,8 @@ function($, Backbone) {
         this.workspace.on('workspace_layout_changed', this.refresh, this);
         this.workspace.on('refresh_editor', this.refresh, this);
         this.workspace.on('reset', this.reset, this);
+
+        this.state.on('bootstrapped', this.refresh, this);
       }
 
       var view = this;
@@ -94,6 +91,7 @@ function($, Backbone) {
     reset: function() {
       this.editor.setValue('Load or create a new page to begin.');
       this.editor.clearHistory();
+      this.refresh();
 
       return this;
     },
@@ -133,9 +131,11 @@ function($, Backbone) {
       var cursor = this.editor.getCursor(),
           scroll = this.editor.getScrollInfo();
 
-
       this.reset();
-      this.editor.setValue(_.unescape( page.get('content') ));
+      if (page) {
+        this.editor.setValue(_.unescape( page.get('content') ));
+      }
+
       this.editor.markClean();
       this.editor.setCursor(cursor);
       this.editor.scrollTo(scroll.left, scroll.top);
@@ -148,6 +148,7 @@ function($, Backbone) {
 
     focus: function() {
       this.editor.focus();
+
       return this;
     },
 
