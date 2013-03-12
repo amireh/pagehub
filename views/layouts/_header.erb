@@ -1,7 +1,7 @@
 <% content_for :deferred_js do %>
 <script>
   require(['views/header'], function(View) {
-    application.header = new Header(application);
+    application.header = new View(application);
     application.header.render();
   })
 </script>

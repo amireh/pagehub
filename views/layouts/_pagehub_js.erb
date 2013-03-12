@@ -1,15 +1,19 @@
 <script>
-  <% if settings.development? %>app = null;<% end %>
-
   try       { if (pagehub_hooks); }
   catch(e)  { pagehub_hooks = []; }
 
   pagehub_hooks.push(function(application) {
-    <% if settings.development? %>app = application;<% end %>
-    application.set('preferences', <%= PageHub::Config.defaults['app'].to_json %>);
-    require([ 'pagehub', 'views/flash', 'views/header', 'models/user', 'models/space' ],
-            function(UI, Flash, Header, User, Space) {
 
+    <% if settings.development? %>
+      app = application;
+    <% end %>
+
+    application.set('preferences', <%= p('app', DefaultPreferences).to_json %>);
+
+    require([ 'pagehub', 'views/flash', 'models/user', 'models/space' ],
+            function(UI, Flash, User, Space) {
+
+      application.on('bootstrapped', function() { application._bootstrapped = true; });
       application.Flash = new Flash(application);
       application.UI = UI;
       application.UI.initialize(application);
@@ -36,32 +40,25 @@
           }
         <% end %>
       <% end %>
-      <% if @space %>
-        // try {
-          application.space =
-            new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
-          <% if @space.creator == @user %>
-            application.space.creator = application.user;
-          <% elsif @space.creator == current_user %>
-            application.space.creator = application.current_user;
-          <% else %>
-            try {
-              application.space.creator =
-                new User(JSON.parse(_.unescape(<%= h(rabl :"/users/public_show", locals: { user: @space.creator }).to_json %>)).user);
-            } catch(e) {
-              console.log(e)
-            }
-          <% end %>
 
-        // } catch(e) {
-        //   console.log(e)
-        // }
+      <% if @space %>
+        application.space =
+          new Space(JSON.parse(_.unescape(<%= h(rabl :"/spaces/show", object: @space).to_json %>)).space);
+        <% if @space.creator == @user %>
+          application.space.creator = application.user;
+        <% elsif @space.creator == current_user %>
+          application.space.creator = application.current_user;
+        <% else %>
+          try {
+            application.space.creator =
+              new User(JSON.parse(_.unescape(<%= h(rabl :"/users/public_show", locals: { user: @space.creator }).to_json %>)).user);
+          } catch(e) {
+            console.log(e)
+          }
+        <% end %>
       <% end %>
 
       <%= (yield_content :deferred_js).gsub(/\<\/?script\>/, '').strip %>
-
-      // application.on('bootstrapped', function() { console.log('bootstrapped') })
-      // application.trigger('bootstrapped', application);
     });
   });
 </script>

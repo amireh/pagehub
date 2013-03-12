@@ -32,12 +32,14 @@ requirejs.config({
     'shortcut':               'vendor/shortcut',
     'bootstrap':              'vendor/bootstrap/bootstrap',
     'pagehub':                'lib/pagehub',
+    'pagehub.config':         'config',
+    'pagehub.state':          'state',
     'jquery.gridster':        'lib/jquery.gridster.min',
-    'inflection': 'vendor/inflection',
-    'md5': "vendor/md5",
-    'timed_operation': "lib/timed_operation",
-    'animable_view': 'views/shared/animable_view',
-    'canvas-loader': 'vendor/heartcode-canvasloader-min'
+    'inflection':             'vendor/inflection',
+    'md5':                    "vendor/md5",
+    'timed_operation':        "lib/timed_operation",
+    'animable_view':          'views/shared/animable_view',
+    'canvas-loader':          'vendor/heartcode-canvasloader-min'
     // 'codemirror',             'vendor/'
   },
 
@@ -48,7 +50,6 @@ requirejs.config({
     'jquery.gridster': [ 'jquery' ],
     'jquery.tinysort': [ 'jquery' ],
 
-    'shortcut': { exports: 'shortcut' },
     'canvas-loader': { exports: 'canvas-loader' },
 
     'pagehub': {
@@ -64,8 +65,9 @@ requirejs.config({
 
     'underscore.inflection': [ 'underscore' ],
 
-    'inflection': [],
-    'md5': [],
+    'shortcut':    { exports: 'shortcut' },
+    'inflection':  [],
+    'md5':         [],
 
     'backbone': {
       deps: [ "underscore", "jquery" ],
@@ -81,40 +83,30 @@ requirejs.config({
 });
 
 require([
+  'pagehub.state',
+  'pagehub.config',
   'underscore',
-  'jquery',
-  'pagehub',
-  'models/state',
   'underscore.helpers',
+  'jquery',
+  'jquery.ui',
+  'jquery.tinysort',
   'handlebars',
   'handlebars.helpers',
-  'jquery.ui',
   'inflection',
   'md5',
-  'shortcut',
-  'jquery.tinysort'
-], function(_, $, PageHub, State) {
-  $.ajaxSetup({
-    headers: {
-      Accept : "application/json; charset=utf-8",
-      "Content-Type": "application/json; charset=utf-8"
-    }
-  });
-
-  $.tinysort.defaults.sortFunction = function(a,b) {
-    var atext = a.e.text().trim(),
-        btext = b.e.text().trim();
-
-    return atext === btext ? 0 : (atext > btext ? 1 : -1);
-  };
-
+  'shortcut'
+], function(State) {
   var application = new State({});
 
-  if (!pagehub_hooks)
-    pagehub_hooks = [];
+  try       { if (pagehub_hooks); }
+  catch(e)  { pagehub_hooks = []; }
 
   console.log("PageHub dependencies loaded. Running " + pagehub_hooks.length + " hooks.")
-  _.each(pagehub_hooks, function(cb) { cb(application); return true; });
+
+  _.each(pagehub_hooks, function(cb) {
+    cb(application); return true;
+  });
+
   delete pagehub_hooks;
 });
 

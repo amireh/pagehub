@@ -4,10 +4,9 @@ define(
   'backbone',
   'jquery',
   'shortcut',
-  'pagehub',
-  'models/state'
+  'pagehub'
 ],
-function(Backbone, $, Shortcut, UI, State) {
+function(Backbone, $, Shortcut, UI) {
   return Backbone.View.extend({
     el: $("#settings"),
 
@@ -19,7 +18,7 @@ function(Backbone, $, Shortcut, UI, State) {
 
       this.model    = model;
       this.state    = state;
-      this.ctx      = new State({});
+      this.ctx      = {};
       this.views    = [];
       this.aliases  = [];
       this.presync_map = {};

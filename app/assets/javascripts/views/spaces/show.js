@@ -78,9 +78,9 @@ define('views/spaces/show',
 
       this.go();
 
-      this.state.trigger('bootstrapped', this.state);
-
       this.$el.show();
+
+      this.state.trigger('bootstrapped', this.state);
       UI.status.mark_ready();
     },
 

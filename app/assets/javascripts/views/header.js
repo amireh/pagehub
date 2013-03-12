@@ -62,7 +62,7 @@ define('views/header',
           media: this.space.get('media')
         };
 
-        data.space_admin = this.space.is_admin(this.user);
+        data.space_admin = this.space.is_admin(this.state.current_user);
 
         if (this.workspace) {
           if (this.workspace.current_page) {

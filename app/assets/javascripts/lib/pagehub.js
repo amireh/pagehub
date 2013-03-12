@@ -104,6 +104,7 @@ define('pagehub',
     }
   });
 
+  // jQuery-UI Dialog
   $.extend($.ui.dialog.prototype.options, {
     modal: true,
     resizable: false,
