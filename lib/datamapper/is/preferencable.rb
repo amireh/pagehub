@@ -25,6 +25,10 @@ module DataMapper
 
       module InstanceMethods
 
+        def __override_preferences(values)
+          @preferences = values
+        end
+
         def get_preference(k = nil)
           # if k.is_a?(String)
           #   k = k.split('.')

@@ -38,6 +38,10 @@ RSpec.configure do |config|
     Sinatra::Application
   end
 
+  def settings
+    app.settings
+  end
+
   # use this for stubbing methods to be used in the instance scope
   # @example usage
   #   app_instance.stub(:puts)

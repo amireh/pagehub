@@ -66,6 +66,8 @@ configure do
   DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
 
   set :default_preferences, PageHub::Config.defaults
+  DefaultPreferences = User.new
+  DefaultPreferences.__override_preferences(PageHub::Config.defaults)
 
   Rabl.configure do |config|
     config.escape_all_output = true
