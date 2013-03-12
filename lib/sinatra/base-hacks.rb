@@ -23,8 +23,8 @@ module Sinatra
       # at @{path}/destroy for compatibility with browsers that do  not support
       # XMLHttpRequest and thus the DELETE HTTP method
       def put(path, opts={}, &bk)
-        route 'put', path,               opts, &bk
-        route 'PATCH', path,               opts, &bk
+        route 'PUT',   path, opts, &bk
+        route 'PATCH', path, opts, &bk
       end
 
     end

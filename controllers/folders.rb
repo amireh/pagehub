@@ -92,8 +92,6 @@ put '/spaces/:space_id/folders/:folder_id',
 
   api_consume! :parent_id
 
-  puts api_params.inspect
-
   unless @folder.update api_params({ folder: @parent || @folder.folder })
     halt 400, @folder.errors
   end

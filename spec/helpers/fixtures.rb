@@ -38,10 +38,7 @@ module Fixtures
       end
     end
 
-    def salt
-      # PageHub::Helpers.tiny_salt(10)
-      PageHub::Helpers.salt
-    end
+    include PageHub::Helpers
 
     def gen_id
       @@id ||= 0

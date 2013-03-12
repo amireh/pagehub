@@ -31,7 +31,8 @@ get '/:user_nickname/:space_pretty_title/settings', auth: :user, :provides => [ 
   end
 end
 
-get '/:user_nickname/:space_pretty_title*', :provides => [ :html ] do |user_nn, space_pt, path|
+get '/:user_nickname/:space_pretty_title*',
+  :provides => [ :html, :json ] do |user_nn, space_pt, path|
   unless u = User.first({ nickname: user_nn.sanitize })
     # halt 404, "No such user #{user_nn}."
     pass

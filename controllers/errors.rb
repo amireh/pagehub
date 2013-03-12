@@ -33,7 +33,7 @@ error Sinatra::NotFound do
   if api_call?
     content_type :json
     if settings.test?
-      on_api_error("No such resource. Params: #{params.inspect}").to_json
+      on_api_error("No such resource. URI: #{request.path}, Params: #{params.inspect}").to_json
     else
       on_api_error("No such resource.").to_json
     end

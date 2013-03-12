@@ -64,5 +64,5 @@ Dir["./spec/helpers/**/*.rb"].sort.each { |f| require f }
 Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
 
 def some_salt
-  PageHub::Helpers.tiny_salt
+  Fixtures.salt
 end

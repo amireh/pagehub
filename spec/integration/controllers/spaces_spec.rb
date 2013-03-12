@@ -60,7 +60,7 @@ describe "Spaces" do
 
       rc = api_call put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
         memberships: [
-          { nickname: @u2.nickname, role: :admin }
+          { user_id: @u2.id, role: :admin }
         ]
       }
       rc.should succeed
@@ -72,7 +72,7 @@ describe "Spaces" do
       @space.add_admin(@u2)
       rc = api_call put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
         memberships: [
-          { nickname: @u2.nickname, role: nil }
+          { user_id: @u2.id, role: nil }
         ]
       }
 
@@ -84,7 +84,7 @@ describe "Spaces" do
       @space.add_member(@u2)
       rc = api_call put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
         memberships: [
-          { nickname: @u2.nickname, role: :editor }
+          { user_id: @u2.id, role: :editor }
         ]
       }
       rc.should succeed
@@ -93,7 +93,7 @@ describe "Spaces" do
 
       rc = api_call put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
         memberships: [
-          { nickname: @u2.nickname, role: :editor }
+          { user_id: @u2.id, role: :editor }
         ]
       }
 
@@ -106,7 +106,7 @@ describe "Spaces" do
       @space.add_editor(@u2)
       rc = api_call put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
         memberships: [
-          { nickname: @u2.nickname, role: :member }
+          { user_id: @u2.id, role: :member }
         ]
       }
 
@@ -116,7 +116,7 @@ describe "Spaces" do
 
       rc = api_call put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
         memberships: [
-          { nickname: @u2.nickname, role: :member }
+          { user_id: @u2.id, role: :member }
         ]
       }
 
@@ -153,7 +153,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: :admin }
+            { user_id: @some_user.id, role: :admin }
           ]
         }
       }.should fail(403, 'You can not add admins to this space.')
@@ -161,7 +161,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: :editor }
+            { user_id: @some_user.id, role: :editor }
           ]
         }
       }.should succeed
@@ -173,7 +173,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: nil }
+            { user_id: @some_user.id, role: nil }
           ]
         }
       }.should fail(403, 'You can not kick admins in this space.')
@@ -183,7 +183,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: nil }
+            { user_id: @some_user.id, role: nil }
           ]
         }
       }.should succeed
@@ -195,7 +195,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: :editor }
+            { user_id: @some_user.id, role: :editor }
           ]
         }
       }.should succeed
@@ -203,7 +203,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: :admin }
+            { user_id: @some_user.id, role: :admin }
           ]
         }
       }.should fail(403, 'can not promote member')
@@ -215,7 +215,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: :member }
+            { user_id: @some_user.id, role: :member }
           ]
         }
       }.should succeed
@@ -225,7 +225,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @some_user.nickname, role: :member }
+            { user_id: @some_user.id, role: :member }
           ]
         }
       }.should fail(403, 'can not demote member')
@@ -235,7 +235,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @u2.nickname, role: :member }
+            { user_id: @u2.id, role: :member }
           ]
         }
       }.should fail(403, 'can not modify your own membership')
@@ -245,7 +245,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @space.creator.nickname, role: :member }
+            { user_id: @space.creator.id, role: :member }
           ]
         }
       }.should fail(403, 'can not modify creator')
@@ -253,7 +253,7 @@ describe "Spaces" do
       api {
         put "/users/#{@space.creator.id}/spaces/#{@space.id}", {
           memberships: [
-            { nickname: @space.creator.nickname, role: nil }
+            { user_id: @space.creator.id, role: nil }
           ]
         }
       }.should fail(403, 'can not modify creator')
@@ -268,6 +268,10 @@ describe "Spaces" do
       @space  = valid! fixture(:space,  { creator: @user })
       @folder = valid! fixture(:folder, { space: @space, folder: @space.root_folder })
       @page   = valid! fixture(:page,   { folder: @folder })
+    end
+
+    before(:each) do
+      # header "Accept", "text/html"
     end
 
     it "i should be able to browse a public space" do
