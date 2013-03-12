@@ -373,5 +373,17 @@ namespace :pagehub do
       @@migrations.select { |m| m.name == 'from_legacy_to_spaces' }.first.perform_up
     end
 
+    desc "creates reserved spaces"
+    task :create_reserved_spaces => :environment do
+      u = User.first_or_create({ nickname: "pagehub" }, {
+        name: "The PageHub Team",
+        provider: "pagehub",
+        password: "foobar123",
+        password_confirmation: "foobar123",
+        email: "admin@pagehub.org"
+      })
+
+      u.owned_spaces.first_or_create({ title: "Explore" })
+    end
   end # l2s
 end # pagehub

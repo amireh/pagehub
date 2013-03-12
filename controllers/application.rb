@@ -27,8 +27,6 @@ ReservedUsernames = %w[
   help
 ]
 
-puts ReservedResourceTitles.inspect
-
 def reserved?(name)
   ReservedNames.include?(name)
 end
@@ -71,7 +69,10 @@ before do
       end
     end
   else
-    @layout = "layouts/#{logged_in? ? 'primary' : 'guest' }".to_sym
+    @layout = logged_in? ?
+              :"layouts/primary" :
+              :"layouts/guest"
+    @print  = :"layouts/print"
   end
 end
 
@@ -97,6 +98,14 @@ end
   get "/#{static_view}" do
     erb :"static/#{static_view}.md"
   end
+end
+
+get '/explore*' do |domain|
+  unless [ '', 'spaces', 'browser', 'interface', 'workspace' ].include?(domain)
+    pass
+  end
+
+  erb :"explore/index"
 end
 
 user do current_user end

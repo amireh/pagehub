@@ -305,11 +305,13 @@ function(Backbone, $, Shortcut, UI, State) {
           this.model.fetch({
             success: function() {
               state.set('syncing', false);
+
               director.render();
               director.trigger('postfetch', director, director.model, true);
             },
             error: function() {
               state.set('syncing', false);
+
               director.trigger('postfetch', director, director.model, false);
             }
           });
@@ -323,8 +325,7 @@ function(Backbone, $, Shortcut, UI, State) {
     },
 
     partial_sync: function(data, options) {
-      this.model.save($.extend(true, data,    { no_object: true }),
-                      $.extend(true, options, { patch: true, wait: true }));
+      this.model.save(data, $.extend(true, options, { patch: true, wait: true }));
       return this;
     },
 

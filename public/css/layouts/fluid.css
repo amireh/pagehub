@@ -20,7 +20,7 @@ body, html {
 }
 .content {
   overflow-y: none;
-  margin-left: 270px;   
+  margin-left: 270px;
   margin-top: 0px;
   padding: 0 2% 0 1%;
 }
@@ -33,7 +33,7 @@ body, html {
   height: 100%;
   padding: 5px 20px 0 20px;
   overflow-y: auto;
-  margin-top:     23px;
+  margin-top: 23px;
   /*padding-bottom: 40px;*/
   /*margin-bottom: 40px;*/
 }
@@ -48,7 +48,7 @@ body, html {
 .content > :last-child,
 .sidebar > :last-child {
   margin-bottom: 30px;
-  
+
 }
 
 #jumpers {

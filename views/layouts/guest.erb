@@ -7,7 +7,7 @@
   <link href="/assets/app.css" rel="stylesheet" type="text/css" />
 
   <script>
-    pagehub_hooks = [];
+    // pagehub_hooks = [];
   </script>
 
   <script src="/assets/vendor/jquery-1.9.1.min.js"></script>
@@ -23,7 +23,10 @@
   </div>
 
   <div class="stuff content-wrapper">
-    <div id="content">
+    <% klasses = [ request.path.gsub('/', ' ').strip.sanitize.split('-').first ] %>
+    <% klasses << (yield_content :section if content_for?(:section)) %>
+
+    <div id="content" class="<%= klasses.join(' ') %>">
       <%= yield %>
     </div>
   </div>

@@ -90,7 +90,7 @@ function(SettingView, $, UI, MembershipRecordTmpl) {
 
     add_record: function(membership, selector) {
       var data = membership;
-          data.can_kick = parseInt(membership.id) != parseInt(this.space.get('creator.id'));
+          data.can_kick = membership.id != parseInt(this.space.get('creator.id'));
       var tmpl = MembershipRecordTmpl(data);
 
       if (selector) {

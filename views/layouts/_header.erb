@@ -1,9 +1,20 @@
+<% content_for :deferred_js do %>
+<script>
+  require(['views/header'], function(View) {
+    application.header = new Header(application);
+    application.header.render();
+  })
+</script>
+<% end %>
+
 <% if !logged_in? %>
 <header id="header">
   <div class="stuff">
+    <span class="beta label label-important">BETA</span>
     <strong class="path"><a href="/">PageHub</a></strong>
     <nav>
-      <a href="/features">Features</a>
+      <a href="/explore">Explore</a>
+      <a href="http://blog.pagehub.org">Blog</a>
     </nav>
     <nav>
       <a class="btn btn-small" href="/sessions/new">Sign in</a>
@@ -15,6 +26,8 @@
 <% if logged_in? %>
 <header id="header">
   <div class="stuff">
+    <span class="beta label label-important">BETA</span>
+
     <div id="path" class="path"></div>
 
     <nav>

@@ -1,9 +1,8 @@
 <script>
   <% if settings.development? %>app = null;<% end %>
 
-  if (!pagehub_hooks) {
-    pagehub_hooks = [];
-  }
+  try       { if (pagehub_hooks); }
+  catch(e)  { pagehub_hooks = []; }
 
   pagehub_hooks.push(function(application) {
     <% if settings.development? %>app = application;<% end %>
@@ -59,11 +58,7 @@
         // }
       <% end %>
 
-      application.header = new Header(application);
-
       <%= (yield_content :deferred_js).gsub(/\<\/?script\>/, '').strip %>
-
-      application.header.render();
 
       // application.on('bootstrapped', function() { console.log('bootstrapped') })
       // application.trigger('bootstrapped', application);

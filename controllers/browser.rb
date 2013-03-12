@@ -10,7 +10,6 @@ get '/:user_nickname/:space_pretty_title/edit*', auth: :user, :provides => [ :ht
   authorize! :access, @space, message: "You are not allowed to access that space."
 
   respond_with @space do |f|
-    f.json { rabl :"/spaces/show", object: @space }
     f.html { erb :"/spaces/show" }
   end
 end
@@ -67,7 +66,6 @@ get '/:user_nickname/:space_pretty_title*', :provides => [ :html ] do |user_nn, 
 end
 
 get '/:user_nickname', provides: [ :html ] do |user_nn|
-  puts "looking up a user: #{user_nn}"
   unless @user = User.first({ nickname: user_nn.sanitize })
     pass
   end

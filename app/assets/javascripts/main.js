@@ -114,6 +114,7 @@ require([
     pagehub_hooks = [];
 
   console.log("PageHub dependencies loaded. Running " + pagehub_hooks.length + " hooks.")
-  _.each(pagehub_hooks, function(cb) { cb(application); });
+  _.each(pagehub_hooks, function(cb) { cb(application); return true; });
+  delete pagehub_hooks;
 });
 
