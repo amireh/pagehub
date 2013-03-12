@@ -3,7 +3,7 @@
 
   <style>
     .CodeMirror {
-      font-family:    <%= Preferences::FontMap[current_user.p('editing.font_face')] %>;
+      font-family:    <%= FontMap[current_user.p('editing.font_face')] %>;
       font-size:      <%= current_user.p('editing.font_size').to_i %>px;
       line-height:    <%= current_user.p('editing.line_height').to_i %>px;
       letter-spacing: <%= current_user.p('editing.letter_spacing').to_i %>px;

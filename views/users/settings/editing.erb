@@ -19,7 +19,7 @@
 
     <p><strong>Font face</strong></p>
     <div id="editor_font_face_list">
-      <% Preferences::FontMap.each_pair do |name, font| %>
+      <% FontMap.each_pair do |name, font| %>
         <label style="font-family: <%= font %>; font-size: 14px">
           <input type="radio" name="font_face" value="<%=h name%>" <%= checkify("editing.font_face", current_user) { |v| v == name } %>
            /> <%= h name %>
