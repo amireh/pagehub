@@ -11,42 +11,44 @@ module DataMapper
 
         options = {
           property: :title,
+          sanitizer: 'pretty',
           default: '',
+          length:  120,
           messages: {
             presence: 'A title must be provided.',
             length:   'Title must be at least 3 characters long.'
           }
         }.deep_merge(options)
-        
+
         base_prop = options[:property].to_sym
-        sane_prop = "pretty_#{base_prop}".to_sym
-        
-        property base_prop, DataMapper::Property::String, length: 120, default: options[:default]
-        property sane_prop, DataMapper::Property::String, length: 120
-        
+        sane_prop = (options[:sanitizer] + '_' + base_prop.to_s).to_sym
+
+        property base_prop, DataMapper::Property::String, length: options[:length], default: options[:default]
+        property sane_prop, DataMapper::Property::String, length: options[:length]
+
         validates_presence_of base_prop, message: options[:messages][:presence]
         validates_length_of   base_prop, within: 3..120, message: options[:messages][:length]
-        
-        @title_base_prop = base_prop
-        @title_sane_prop = sane_prop
-        
-        before :valid?, :validate_title
+
+        @__title_base_prop = base_prop
+        @__title_sane_prop = sane_prop
+
+        before :valid?, :build_sane_title_if_applicable
       end
 
       module ClassMethods
-        attr_reader :title_base_prop, :title_sane_prop
+        attr_reader :__title_base_prop, :__title_sane_prop
       end
-      
+
       module InstanceMethods
-        def validate_title(*ctx)
-          if attribute_dirty?(model.title_base_prop)
-            self.send(:"#{model.title_sane_prop}=", (self.send(model.title_base_prop) || '').sanitize)
+        def build_sane_title_if_applicable(*ctx)
+          if attribute_dirty?(model.__title_base_prop)
+            self.send(:"#{model.__title_sane_prop}=", (self.send(model.__title_base_prop) || '').sanitize)
           end
-          
+
           true
         end
       end
-      
+
     end
   end
 
