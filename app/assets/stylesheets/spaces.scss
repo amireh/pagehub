@@ -1,5 +1,14 @@
 @import "helpers";
 
+header {
+  .path {
+    .space-settings-link {
+      position: absolute;
+      right: 155px;
+      top: 9px;
+    }
+  }
+}
 .editor-widget,
 .resources {
   margin: 0;
@@ -450,10 +459,7 @@
   }
 
   a {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    resize: none;
+    @include ellipsify();
   }
 
 }

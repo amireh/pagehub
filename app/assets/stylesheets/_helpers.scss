@@ -43,3 +43,15 @@
   -o-box-shadow:      $left $right $blur $width $color;
   box-shadow:         $left $right $blur $width $color;
 }
+
+@mixin ellipsify() {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  resize: none;
+}
+@mixin unellipsify() {
+  text-overflow: inherit;
+  white-space: normal;
+  overflow: inherit;
+}
