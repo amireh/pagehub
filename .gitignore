@@ -2,7 +2,7 @@
 config/credentials.yml
 
 [raw assets]
-glyphicons*
+public/**/glyphicons*
 *.zip
 *.xcf
 app/assets/bootstrap
