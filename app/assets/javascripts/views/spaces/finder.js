@@ -124,7 +124,6 @@ function(AnimableView, UI, Shortcut) {
       folder.pages.on('remove', this.stop_tracking_page_title, this);
       folder.pages.on('change:title', this.update_tracked_page_title, this);
     },
-
     track_page_title: function(page) {
       // console.log("tracking page: " + page.get('id'))
 
@@ -142,7 +141,7 @@ function(AnimableView, UI, Shortcut) {
     stop_tracking_page_title: function(page) {
       // console.log("no longer tracking page: " + page.get('title') + '@' + page.ctx.finder_index);
 
-      if (!page.ctx.finder_index) {
+      if (typeof page.ctx.finder_index === undefined) {
         return UI.report_error("Page context is missing finder index, I can't un-track it!");
       }
 
@@ -170,7 +169,7 @@ function(AnimableView, UI, Shortcut) {
     },
 
     update_tracked_page_title: function(page) {
-      if (!page.ctx.finder_index) {
+      if (typeof page.ctx.finder_index === undefined) {
         return UI.report_error("Page context is missing finder index, I can't un-track it!");
       }
 
