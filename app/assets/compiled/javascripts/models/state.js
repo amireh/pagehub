@@ -1,0 +1,1 @@
+define("models/state",["backbone","backbone.nested"],function(e){var t=e.DeepModel.extend({initialize:function(e){return _.implode(this,e||{})}});return t});

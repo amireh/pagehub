@@ -1,0 +1,1 @@
+({appDir:"./",baseUrl:"./",dir:"../compiled/javascripts",mainConfigFile:"./main.js",optimize:"uglify",uglify:{toplevel:!0,ascii_only:!0,beautify:!1,max_line_length:1e3,no_mangle:!1},pragmasOnSave:{excludeHbsParser:!0,excludeHbs:!0,excludeAfterBuild:!0},removeCombined:!0,inlineText:!0,preserveLicenseComments:!1,modules:[{name:"main",include:["main"]}]});

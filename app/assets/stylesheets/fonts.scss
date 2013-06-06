@@ -1,0 +1,46 @@
+/*@import "../fonts/PageHub/style";*/
+
+@font-face {
+    font-family: 'ProximaNova-Light';
+    src: url('/assets/fonts/proximanova/proximanova-light-webfont.eot');
+    src: url('/assets/fonts/proximanova/proximanova-light-webfont.eot?iefix') format('eot'),
+         url('/assets/fonts/proximanova/proximanova-light-webfont.woff') format('woff'),
+         url('/assets/fonts/proximanova/proximanova-light-webfont.ttf') format('truetype'),
+         url('/assets/fonts/proximanova/proximanova-light-webfont.svg#webfontOdV5l44Z') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ProximaNova-Regular';
+    src: url('/assets/fonts/proximanova/proximanova-regular-webfont.eot');
+    src: url('/assets/fonts/proximanova/proximanova-regular-webfont.eot?iefix') format('eot'),
+         url('/assets/fonts/proximanova/proximanova-regular-webfont.woff') format('woff'),
+         url('/assets/fonts/proximanova/proximanova-regular-webfont.ttf') format('truetype'),
+         url('/assets/fonts/proximanova/proximanova-regular-webfont.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'UbuntuRegular';
+    src: url('/assets/fonts/ubuntu/Ubuntu-R-webfont.eot');
+    src: url('/assets/fonts/ubuntu/Ubuntu-R-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/ubuntu/Ubuntu-R-webfont.woff') format('woff'),
+         url('/assets/fonts/ubuntu/Ubuntu-R-webfont.ttf') format('truetype'),
+         url('/assets/fonts/ubuntu/Ubuntu-R-webfont.svg#UbuntuRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'UbuntuMonoRegular';
+    src: url('/assets/fonts/ubuntu-mono/UbuntuMono-R-webfont.eot');
+    src: url('/assets/fonts/ubuntu-mono/UbuntuMono-R-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/ubuntu-mono/UbuntuMono-R-webfont.woff') format('woff'),
+         url('/assets/fonts/ubuntu-mono/UbuntuMono-R-webfont.ttf') format('truetype'),
+         url('/assets/fonts/ubuntu-mono/UbuntuMono-R-webfont.svg#UbuntuMonoRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

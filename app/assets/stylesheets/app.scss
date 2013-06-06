@@ -1,13 +1,15 @@
-//= require vendor/jquery-ui/pagehub-jqueryui/jquery-ui-1.10.1.custom.min
-//= require vendor/bootstrap/bootstrap
-//= require vendor/jquery.gridster
-//= require icons
-//= require code_highlighting
-//= require revisions
-//= require settings
-//= require dashboard
-//= require spaces
-//= require guest
+@import "fonts";
+@import "vendor/jquery-ui/pagehub-jqueryui/jquery-ui-1.10.1.custom";
+@import "vendor/bootstrap/bootstrap";
+@import "vendor/jquery.gridster";
+@import "icons";
+@import "code_highlighting";
+@import "codemirror";
+@import "revisions";
+@import "settings";
+@import "dashboard";
+@import "spaces";
+@import "guest";
 
 @import "helpers";
 @import "skins/light";

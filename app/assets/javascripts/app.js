@@ -1,0 +1,1 @@
+../compiled/javascripts/main.js

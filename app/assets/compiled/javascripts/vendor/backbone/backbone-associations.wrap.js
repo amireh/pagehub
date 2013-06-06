@@ -1,0 +1,1 @@
+define("backbone-associations",["require","backbone"],function(){return require(["backbone","lib/backbone/backbone-associations-min"],function(){}),{}});

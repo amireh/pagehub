@@ -1,0 +1,32 @@
+<form title="Browser Settings">
+  <!-- <h3 class="blocky-heading">Browser Type</h3> -->
+  <ul class="thumbnails">
+    <li class="span3">
+      <div>
+        <h4>
+          <label><input type="radio" name="type" value="finder" {{#checkify type 'finder'}}{{/checkify}} />
+          <strong>OS X&trade; Finder&trade;</strong>
+          </label>
+        </h4>
+        <p>A compact browser style that focuses on one folder at a time.<br /><br /></p>
+        <img class="thumbnail" height="208px" src="/assets/images/shots/finder_browser_02.png" />
+        <p class="hint"><em>This style is optimal if your space contains folders and pages within a deep hierarchy.</em></p>
+      </div>
+    </li>
+
+    <li class="span3">
+      <div>
+        <h4>
+          <label><input type="radio" name="type" value="explorer" {{#checkify type 'explorer'}}{{/checkify}}  />
+          <strong>Windows&trade; Explorer&trade;</strong>
+          </label>
+        </h4>
+          <p>The classic, expanding browser that allows you to browse all the folders and pages of your space in the same view.</p>
+        <img class="thumbnail" height="208px" src="/assets/images/shots/explorer_browser_03.png" />
+          <p class="hint"><em>This style is recommended if your folders are no more than two levels deep.</em></p>
+      </div>
+    </li>
+  </ul>
+
+  <!-- <button class="btn btn-info btn-block" ><i class="icon-film icon-white"></i> Save</button> -->
+</form>

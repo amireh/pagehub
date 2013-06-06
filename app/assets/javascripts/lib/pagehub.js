@@ -3,8 +3,12 @@ define('pagehub',
 [
   'underscore',
   'jquery',
-  'hb!dialogs/connectivity_issue.hbs',
-  'bootstrap'
+  'hbs!templates/dialogs/connectivity_issue',
+  'bootstrap',
+  'shortcut',
+  'jquery.ui',
+  'modernizr',
+  'canvas-loader'
 ], function(_, $, ConnectivityIssueDlg) {
   var __init = false,
       timers = {

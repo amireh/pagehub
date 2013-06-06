@@ -9,9 +9,10 @@
     <% end %>
 
     application.set('preferences', <%= p('app', DefaultPreferences).to_json %>);
-
+    require([ 'pagehub' ], function() {})
     require([ 'pagehub', 'views/flash', 'models/user', 'models/space' ],
             function(UI, Flash, User, Space) {
+
 
       application.on('bootstrapped', function() { application._bootstrapped = true; });
       application.Flash = new Flash(application);
@@ -63,4 +64,4 @@
   });
 </script>
 
-<script data-main="/assets/main" src="/assets/lib/require.js"></script>
+<script data-main="/assets/javascripts/app" src="/assets/javascripts/vendor/require.js"></script>

@@ -1,6 +1,4 @@
 <% content_for :css do %>
-  <link rel="stylesheet" href="/js/codemirror-3.0/lib/codemirror.css">
-
   <style>
     .CodeMirror {
       font-family:    <%= FontMap[current_user.p('editing.font_face')] %>;
@@ -9,16 +7,4 @@
       letter-spacing: <%= current_user.p('editing.letter_spacing').to_i %>px;
     }
   </style>
-<% end %>
-
-<% content_for :scripts do %>
-  <script src="/js/codemirror-3.0/lib/codemirror.js"></script>
-  <script src="/js/codemirror-3.0/addon/mode/overlay.js"></script>
-  <script src="/js/codemirror-3.0/mode/javascript/javascript.js"></script>
-  <script src="/js/codemirror-3.0/mode/markdown/markdown.js"></script>
-  <script src="/js/codemirror-3.0/mode/css/css.js"></script>
-  <script src="/js/codemirror-3.0/mode/gfm/gfm.js"></script>
-  <script src="/js/codemirror-3.0/mode/ruby/ruby.js"></script>
-  <script src="/js/codemirror-3.0/mode/clike/clike.js"></script>
-  <script src="/js/codemirror-3.0/mode/shell/shell.js"></script>
 <% end %>

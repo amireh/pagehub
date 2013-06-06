@@ -1,4 +1,4 @@
-define('handlebars.helpers', [ 'underscore', 'handlebars', 'md5', 'underscore.inflection' ], function(_, Handlebars) {
+define('helpers/handlebars', [ 'underscore', 'Handlebars', 'md5', 'underscore.inflection' ], function(_, Handlebars) {
   Handlebars.registerHelper("pluralize", function (word, count) {
     return _(word).pluralize(count, true);
   });

@@ -1,6 +1,6 @@
 define('views/spaces/editor',
-[ 'jquery', 'backbone' ],
-function($, Backbone) {
+[ 'jquery', 'backbone', 'codemirror' ],
+function($, Backbone, CodeMirror) {
 
   var CodeMirror_aliases = {
     "shell": [ "bash" ]

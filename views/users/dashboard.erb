@@ -2,7 +2,7 @@
 <% content_for :nav_section do %>dashboard<% end %>
 <% content_for :deferred_js do %>
 <script>
-  require([ 'views/users/dashboard' ], function(Dashboard) {
+  require([ 'views/users/dashboard/director' ], function(Dashboard) {
     application.view = new Dashboard(application);
   });
 </script>

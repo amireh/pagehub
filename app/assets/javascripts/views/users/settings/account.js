@@ -3,7 +3,7 @@ define(
 [
   'views/shared/settings/setting_view',
   'jquery',
-  'hb!users/settings/dialog_nickname_change_warning.hbs'
+  'hbs!templates/users/settings/dialog_nickname_change_warning'
  ],
 function(SettingView, $, NnWarningDlgTmpl) {
   return SettingView.extend({

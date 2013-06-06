@@ -4,7 +4,7 @@ define(
   'views/shared/settings/setting_view',
   'jquery',
   'pagehub',
-  'hb!users/settings/dialog_leave_space_warning.hbs'
+  'hbs!templates/users/settings/dialog_leave_space_warning'
 ],
 
 function(SettingView, $, UI, LeaveSpaceWarningDlgTmpl) {

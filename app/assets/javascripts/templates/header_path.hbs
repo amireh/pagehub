@@ -1,0 +1,17 @@
+<a href="{{user.media.href}}">{{user.nickname}}</a>
+
+{{#if space}}
+  {{#if space.title}}
+    / <a href="{{space.media.actions.edit}}#"><strong>{{space.title}}</strong></a>
+  {{/if}}
+
+  {{#each folders}}
+    / <strong><a href="#{{path}}">{{title}}</a></strong>
+  {{/each}}
+  {{#if page}}
+    / <span>{{page.title}}</span>
+  {{/if}}
+  {{#if space_admin}}
+    <a rel="tooltip" id="space_settings_link" title="Space settings" class="space-settings-link btn btn-mini btn-primary" href="{{space.media.actions.settings}}">Space Admin</a>
+  {{/if}}
+{{/if}}

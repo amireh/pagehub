@@ -1,6 +1,6 @@
 define(
 'views/spaces/settings/memberships',
-[ 'views/shared/settings/setting_view', 'jquery', 'pagehub', 'hb!spaces/settings/membership_record.hbs' ],
+[ 'views/shared/settings/setting_view', 'jquery', 'pagehub', 'hbs!templates/spaces/settings/membership_record' ],
 function(SettingView, $, UI, MembershipRecordTmpl) {
 
   var SpaceMembershipsSettingsView = SettingView.extend({

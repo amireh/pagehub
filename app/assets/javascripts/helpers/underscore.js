@@ -1,4 +1,4 @@
-define('underscore.helpers', [ 'underscore' ], function(_) {
+define('helpers/underscore', [ 'underscore' ], function(_) {
   if (!_.implode) {
     _.implode = function(object, data) {
       var data  = data,

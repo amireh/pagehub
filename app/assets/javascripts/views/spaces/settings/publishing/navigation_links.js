@@ -3,7 +3,7 @@ define(
 [
   'backbone',
   'views/shared/settings/setting_view',
-  'hb!spaces/settings/navigation_link.hbs'
+  'hbs!templates/spaces/settings/navigation_link'
 ],
 function(Backbone, SettingView, NavigationLinkTmpl) {
   return SettingView.extend({

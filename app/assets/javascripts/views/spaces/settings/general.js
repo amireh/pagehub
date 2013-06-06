@@ -1,9 +1,9 @@
 define(
 'views/spaces/settings/general',
 [ 'views/shared/settings/setting_view', 'jquery', 'pagehub',
-'hb!dialogs/destroy_space.hbs',
-'hb!spaces/settings/dialog_change_title_warning.hbs',
-'hb!messages/relocation_error.hbs',
+'hbs!templates/dialogs/destroy_space',
+'hbs!templates/spaces/settings/dialog_change_title_warning',
+'hbs!templates/messages/relocation_error',
 ],
 function(SettingView, $, UI, DestroySpaceDlgTmpl, ChangeTitleDlgTmpl, RelocationErrorTmpl) {
 

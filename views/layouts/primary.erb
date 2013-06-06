@@ -6,15 +6,13 @@
   <% this_title = yield_content(:title) %>
   <title><%= title(this_title) %></title>
 
-  <link href="/assets/app.css" rel="stylesheet" type="text/css" />
+  <link href="/assets/stylesheets/app.css" rel="stylesheet" type="text/css" />
 
   <%= yield_content :css %>
 
   <script>
     pagehub_hooks = [];
   </script>
-
-  <script src="/assets/vendor/jquery-1.9.1.min.js"></script>
 
   <%= yield_content :js %>
   <%= yield_content :scripts %>

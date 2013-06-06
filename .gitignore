@@ -12,3 +12,4 @@ dumps
 tmp
 exclude
 .sass-cache
+*.sql

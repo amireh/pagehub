@@ -2,7 +2,7 @@ define('views/spaces/browser/actionbar',
 [
   'jquery',
   'backbone',
-  'hb!dialogs/destroy_folder.hbs',
+  'hbs!templates/dialogs/destroy_folder',
   'pagehub'
 ],
 function( $, Backbone, DestroyFolderTmpl, UI ) {

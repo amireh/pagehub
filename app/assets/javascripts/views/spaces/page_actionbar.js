@@ -1,5 +1,5 @@
 define('views/spaces/page_actionbar',
-[ 'animable_view', 'hb!move_folder_link.hbs', 'hb!dialogs/destroy_page.hbs', 'shortcut', 'pagehub', 'timed_operation' ],
+[ 'animable_view', 'hbs!templates/move_folder_link', 'hbs!templates/dialogs/destroy_page', 'shortcut', 'pagehub', 'timed_operation' ],
 function(AnimableView, MoveFolderLinkTemplate, DestroyPageTmpl, Shortcut, UI, TimedOp) {
   return AnimableView.extend({
     el: $("#page_actions"),

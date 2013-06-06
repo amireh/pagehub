@@ -1,61 +1,39 @@
 requirejs.config({
-  //By default load any module IDs from js/lib
-  baseUrl: '/assets',
-  //except, if the module ID starts with "app",
-  //load it from the js/app directory. paths
-  //config is relative to the baseUrl, and
-  //never includes a ".js" extension since
-  //the paths config could be for a directory.
-  // <script type="text/javascript" src="/js/modernizr.js"></script>
-  // <script type="text/javascript" src="/js/json2.min.js"></script>
-  // <script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
-  //   <script type="text/javascript" src="/js/shortcut.js"></script>
-  //   <script src="/js/dynamism.js"></script>
-  //   <script src="/js/pagehub.js"></script>
-  //   <script src="/js/pagehub_ui.js"></script>
+  baseUrl: '/assets/javascripts',
   paths: {
-    // jquery:     '          lib/require-jquery',
     'jquery':                 'vendor/jquery-1.9.1.min',
     'jquery.ui':              'vendor/jquery-ui/jquery-ui-1.10.1.custom.min',
-    'jquery.util':            'helpers/util',
-    'jquery.tinysort':         'vendor/jquery.tinysort.min',
-    'underscore':             'lib/underscore-min',
-    'underscore.inflection':  'lib/underscore/underscore.inflection',
-    'underscore.helpers':     'helpers/underscore',
-    'backbone':               'lib/backbone-min',
-    'backbone.nested':        'lib/backbone/deep-model.min',
-    'text':                   'lib/text',
-    'handlebars':             'lib/handlebars',
-    'handlebars.helpers':     'helpers/handlebars',
-    'hb':                     'lib/hbtemplate',
+    'jquery.tinysort':        'vendor/jquery.tinysort.min',
+    'underscore':             'vendor/underscore-min',
+    'underscore.inflection':  'vendor/underscore/underscore.inflection',
+    'backbone':               'vendor/backbone-min',
+    'backbone.nested':        'vendor/backbone/deep-model.min',
+    'Handlebars':             'vendor/handlebars',
+    'hbs':                    'vendor/hbs/hbs',
+    'hbs/i18nprecompile':     'vendor/hbs/i18nprecompile',
     'modernizr':              'vendor/modernizr',
     'shortcut':               'vendor/shortcut',
     'bootstrap':              'vendor/bootstrap/bootstrap',
     'pagehub':                'lib/pagehub',
     'pagehub.config':         'config',
     'pagehub.state':          'state',
-    'jquery.gridster':        'lib/jquery.gridster.min',
+    'jquery.gridster':        'vendor/jquery/jquery.gridster.min',
     'inflection':             'vendor/inflection',
     'md5':                    "vendor/md5",
     'timed_operation':        "lib/timed_operation",
     'animable_view':          'views/shared/animable_view',
-    'canvas-loader':          'vendor/heartcode-canvasloader-min'
-    // 'codemirror',             'vendor/'
+    'canvas-loader':          'vendor/heartcode-canvasloader-min',
+
+    'codemirror': 'vendor/codemirror-compressed',
   },
 
   shim: {
     'jquery': { exports: '$' },
     'jquery.ui': [ 'jquery' ],
-    'jquery.util': [ 'jquery' ],
     'jquery.gridster': [ 'jquery' ],
     'jquery.tinysort': [ 'jquery' ],
 
     'canvas-loader': { exports: 'canvas-loader' },
-
-    'pagehub': {
-      deps: [ 'shortcut', 'jquery', 'jquery.ui', 'jquery.util', 'shortcut', 'modernizr', 'canvas-loader' ],
-      exports: 'UI'
-    },
 
     'timed_operation': { deps: [ "underscore", "backbone" ], exports: 'timed_operation' },
 
@@ -69,6 +47,10 @@ requirejs.config({
     'inflection':  [],
     'md5':         [],
 
+    'bootstrap': {
+      deps: [ 'jquery' ]
+    },
+
     'backbone': {
       deps: [ "underscore", "jquery" ],
       exports: "Backbone"
@@ -76,25 +58,58 @@ requirejs.config({
 
     'backbone.nested': [ 'backbone' ],
 
-    'handlebars': {
-      exports: 'Handlebars'
+    'Handlebars': { exports: 'Handlebars' },
+
+    'codemirror': {
+      exports: 'CodeMirror'
     }
+  },
+
+  hbs: {
+    templateExtension: "",
+    disableI18n: true,
+    disableHelpers: true
   }
 });
 
 require([
   'pagehub.state',
+  'pagehub',
   'pagehub.config',
   'underscore',
-  'underscore.helpers',
   'jquery',
   'jquery.ui',
   'jquery.tinysort',
-  'handlebars',
-  'handlebars.helpers',
+  'Handlebars',
   'inflection',
   'md5',
-  'shortcut'
+  'shortcut',
+
+  'codemirror',
+
+  'models/folder',
+  'models/page',
+  'models/space',
+  'models/user',
+  'collections/folders',
+  'collections/pages',
+  'collections/spaces',
+  'helpers/handlebars',
+  'helpers/underscore',
+  'helpers/jquery',
+  'views/flash',
+  'views/header',
+  'views/shared/animable_view',
+  'views/shared/settings/director',
+  'views/shared/settings/nav',
+  'views/shared/settings/setting_view',
+  'views/spaces/show',
+  'views/spaces/new',
+  'views/spaces/settings/index',
+  'views/users/dashboard/director',
+  'views/users/settings/index',
+  'views/welcome/landing_page'
+
 ], function(State) {
   var application = new State({});
 

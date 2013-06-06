@@ -10,7 +10,7 @@
 <% if !logged_in? %>
 <header id="header">
   <div class="stuff">
-    <span class="beta label label-important">BETA</span>
+    <!-- <span class="beta label label-important">BETA</span> -->
     <strong class="path"><a href="/">PageHub</a></strong>
     <nav>
       <!-- <a href="/explore">Explore</a> -->
@@ -26,15 +26,13 @@
 <% if logged_in? %>
 <header id="header">
   <div class="stuff">
-    <span class="beta label label-important">BETA</span>
+    <!-- <span class="beta label label-important">BETA</span> -->
 
     <div id="path" class="path"></div>
 
     <nav>
       <span class="avatar">
-        <% if true || settings.production? %>
-          <%= gravatar_tag (current_user.gravatar_email || current_user.email), :icon, { html: { rel: "tooltip", title: current_user.nickname } } %>
-        <% end %>
+        <%= gravatar_tag (current_user.gravatar_email || current_user.email), :icon, { html: { rel: "tooltip", title: current_user.nickname } } %>
       </span>
       <a class="icon dashboard <%= nav_highlight 'dashboard' %>" rel="tooltip" title="Your dashboard" href="<%= current_user.dashboard_url %>">Dashboard</a>
 
