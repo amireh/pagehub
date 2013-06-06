@@ -1,3 +1,5 @@
+require 'models/space_user'
+
 class Space
   include DataMapper::Resource
   # include Sentinel
