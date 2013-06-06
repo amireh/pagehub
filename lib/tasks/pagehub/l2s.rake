@@ -90,7 +90,7 @@ namespace :pagehub do
       nr_spaces_created = 0
       nr_spaces = Space.count
       User.all.each do |u|
-        if u.owned_spaces.empty?
+        if !u.default_space
           u.create_default_space
           nr_spaces_created += 1
         end
