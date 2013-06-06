@@ -59,11 +59,16 @@ class User
   # end
 
   def create_default_space
-    owned_spaces.first_or_create({ title: Space::DefaultSpace })
+    if owned_spaces.empty?
+      return owned_spaces.create({ title: Space::DefaultSpace })
+    end
+
+    default_space
   end
 
   def default_space
-    owned_spaces.first({ title: Space::DefaultSpace })
+    # owned_spaces.first({ title: Space::DefaultSpace })
+    owned_spaces.first
   end
 
   def public_spaces(user)

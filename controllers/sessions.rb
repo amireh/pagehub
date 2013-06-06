@@ -66,7 +66,13 @@ end
     unless u = User.first({ uid: auth.uid, provider: provider, name: auth.info.name })
 
       uparams = { uid: auth.uid, provider: provider, name: auth.info.name }
-      uparams[:email] = auth.info.email if auth.info.email
+      uparams[:email] = auth.info.email
+
+      if !uparams[:email] || !uparams[:email].is_a?(String) || uparams[:email].empty?
+        flash[:error] = "The 3rd-party provider did not provide us with your email, we can not create your PageHub account."
+        return redirect "/"
+      end
+
       uparams[:nickname] = auth.info.nickname if auth.info.nickname
       uparams[:oauth_token] = auth.credentials.token if auth.credentials.token
       uparams[:oauth_secret] = auth.credentials.secret if auth.credentials.secret
@@ -99,7 +105,7 @@ end
         flash[:notice] = "Welcome to PageHub! You have successfully signed up using your #{provider} account."
       else
         flash[:error] = "Sorry! Something wrong happened while signing you up. Please try again."
-        return redirect "/auth/#{provider}"
+        return redirect "/"
       end
     end
 

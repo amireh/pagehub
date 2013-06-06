@@ -45,8 +45,13 @@ class Space
     message: 'You already have a space with that title.'
 
   def create_root_folder
-    f = folders.create({ title: Folder::DefaultFolder, creator: creator })
-    f.create_homepage
+    f = folders.first_or_create({ title: Folder::DefaultFolder, creator: creator })
+
+    if f.saved?
+      f.create_homepage
+    end
+
+    f
   end
 
   after :create do
@@ -239,7 +244,8 @@ class Space
   end
 
   def default?
-    title == DefaultSpace
+    # title == DefaultSpace
+    creator.default_space == self
   end
 
   def orphanize

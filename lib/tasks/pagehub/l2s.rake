@@ -67,6 +67,13 @@ namespace :pagehub do
       demo_users.destroy
     end
 
+    desc "assigns fake email addresses to [oauth] users that don't have it"
+    task :assign_emails => :environment do
+      users = User.all.select { |u| u.email.empty? }
+      puts "Fixing #{users.count} users with no emails"
+      users.each do |u| u.update({ email: "#{u.nickname.sanitize}@pagehub.org" }) end
+    end
+
     desc "shows some hard resource numbers"
     task :stats => :mimic do
       [
@@ -91,8 +98,12 @@ namespace :pagehub do
       nr_spaces = Space.count
       User.all.each do |u|
         if !u.default_space
-          u.create_default_space
-          nr_spaces_created += 1
+          space = u.create_default_space
+          if space.saved?
+            nr_spaces_created += 1
+          else
+            throw space.errors
+          end
         end
       end
 
@@ -230,6 +241,16 @@ namespace :pagehub do
       end
     end
 
+    desc "creates root folders for all spaces"
+    task :create_root_folders => [ :convert_groups_to_spaces ] do
+      Space.all.each do |s|
+        f = s.create_root_folder
+        unless f
+          throw f.errors
+        end
+      end
+    end
+
     desc "moves group folders to spaces"
     task :populate_spaces => [ :convert_groups_to_spaces ] do
       folders = Folder.all({ :space_id => 0, :group_id.not => 0 }).map(&:id)
@@ -270,7 +291,6 @@ namespace :pagehub do
 
         p.update!({ folder: s.root_folder })
       end
-
     end
 
     desc "migrates data and structure from legacy version to the Space-driven one"
@@ -278,6 +298,7 @@ namespace :pagehub do
       :page_scoped_carbon_copies,
       :page_scoped_revisions,
       :cleanup_demos,
+      :assign_emails,
       :stats,
       :create_default_spaces,
       :stats,
@@ -286,6 +307,7 @@ namespace :pagehub do
       :populate_default_spaces,
       :stats,
       :convert_groups_to_spaces,
+      :create_root_folders,
       :populate_spaces
     ] do
       puts "Migration complete."
@@ -293,7 +315,7 @@ namespace :pagehub do
 
       nr_spaces = Space.count
       unless nr_spaces == Group.count + User.count
-        raise "Unexpected number of spaces #{Space.count}, should've been #{Group.count + User.count}"
+        # raise "Unexpected number of spaces #{Space.count}, should've been #{Group.count + User.count}"
       end
 
       if User.all({ email: "demo@pagehub.org" }).any?
