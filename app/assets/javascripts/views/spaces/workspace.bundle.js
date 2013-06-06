@@ -1,0 +1,4 @@
+define('workspace',
+  [
+    'workspace/'
+  ])

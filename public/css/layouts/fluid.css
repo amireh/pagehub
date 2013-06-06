@@ -71,7 +71,8 @@ body, html {
   font-size: 11px;
   display: inline-block;
   margin: 0;
-  vertical-align: top;
+  vertical-align: middle;
+  line-height: 1;
 }
 .scope_title em {
   font-style: normal;
@@ -80,6 +81,8 @@ body, html {
 .scope_title .nav_links {
   position: absolute;
   right: 1%;
+  top: 0;
+  line-height: 24px;
 }
 
 .page_title {

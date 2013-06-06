@@ -4,7 +4,7 @@ define('views/users/dashboard',
   'jquery',
   'models/user',
   'jquery.gridster',
-  'hb!users/dashboard/space_record.hbs',
+  'hbs!templates/users/dashboard/space_record',
   'pagehub'
 ], function(Backbone, $, User, undefined, SpaceTmpl, UI) {
   return Backbone.View.extend({
@@ -62,7 +62,7 @@ define('views/users/dashboard',
 
       this.user.spaces.every(function(space) {
         var data  = space.toJSON();
-        console.log(data)
+
         if (space.get('role') == 'creator')
           data.is_owner = true;
         else if(space.get('role') != null)

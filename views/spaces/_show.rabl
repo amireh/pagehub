@@ -33,5 +33,5 @@ end
 
 child(:creator => :creator) do |u|
   # partial "/users/_show", object: u
-  attributes :id
+  attributes :id, :nickname
 end

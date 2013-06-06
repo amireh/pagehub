@@ -18,7 +18,7 @@
 
   <div class="meta">
     <h3 class="blocky-heading">
-      <a href="{{#if is_guest}}{{media.href}}{{else}}{{media.actions.edit}}{{/if}}"><strong>{{{title}}}</strong></a>
+      <a href="{{#if is_guest}}{{media.href}}{{else}}{{media.actions.edit}}{{/if}}"><strong>{{{creator.nickname}}} / {{{title}}}</strong></a>
       <div class="stats hint small">
         <span>{{#pluralize 'page' nr_pages}}{{/pluralize}}</span>
         <!-- <span>{{#pluralize 'folder' nr_folders}}{{/pluralize}}</span> -->

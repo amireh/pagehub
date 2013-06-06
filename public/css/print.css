@@ -107,6 +107,7 @@ em.small {
 }
 .scope_title h1 {
   vertical-align: middle;
+  font-weight: bold;
 }
 ::-webkit-scrollbar {
   width: 8px;
