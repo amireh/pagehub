@@ -59,7 +59,7 @@ class User
   # end
 
   def create_default_space
-    owned_spaces.create({ title: Space::DefaultSpace }) if owned_spaces.empty?
+    owned_spaces.first_or_create({ title: Space::DefaultSpace })
   end
 
   def default_space
