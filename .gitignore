@@ -1,5 +1,6 @@
 [config]
 config/credentials.yml
+config/database.yml
 
 [raw assets]
 public/**/glyphicons*
