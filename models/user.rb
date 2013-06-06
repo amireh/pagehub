@@ -83,7 +83,9 @@ class User
   # after :save,    :create_default_space
 
   before :create do
+    self.nickname ||=
     self.nickname = self.name.to_s.sanitize if (self.nickname || '').empty?
+    self.nickname = self.nickname.sanitize
   end
 
   [ :save ].each { |advice|
