@@ -252,7 +252,7 @@ namespace :pagehub do
     end
 
     desc "moves group folders to spaces"
-    task :populate_spaces => [ :convert_groups_to_spaces ] do
+    task :populate_spaces => [ :create_root_folders ] do
       folders = Folder.all({ :space_id => 0, :group_id.not => 0 }).map(&:id)
       puts "Moving #{folders.count} folders to spaces corresponding to legacy groups."
       folders.each do |fid|
