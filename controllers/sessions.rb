@@ -95,7 +95,7 @@ end
       end
 
       if fix_nickname
-        uparams[:nickname] = "#{nickname}_#{tiny_salt}"
+        uparams[:nickname] = "#{nickname}_#{tiny_salt}".sanitize
         uparams[:auto_nickname] = true
       end
 
