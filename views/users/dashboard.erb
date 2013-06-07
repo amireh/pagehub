@@ -11,7 +11,7 @@
 <div id="dashboard">
   <div class="profile">
     <div class="avatar">
-      <%= gravatar_tag (@user.gravatar_email || @user.email), :size => 196 %>
+      <%= gravatar_tag (@user.gravatar_email || @user.email), size: 196, secure: true %>
     </div>
     <h3 class="user-name"><%= @user.name %></h3>
     <h4 class="hint"><%= @user.nickname %></h4>
