@@ -104,8 +104,8 @@ class Space
     { folders: folders.collect { |f| f.serialize } }
   end
 
-  def home_page
-    root_folder.home_page
+  def homepage
+    root_folder.homepage
   end
 
   def is_browsable?

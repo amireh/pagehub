@@ -1,4 +1,4 @@
-<% @page = home_page = @folder.pages({ title: "Home" }).first %>
+<% @page = home_page = @folder.homepage %>
 
 <% unless @page %>
   <% @page = @folder.pages.new({ title: @folder.title, content: ' ' }) %>

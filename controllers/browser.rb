@@ -1,9 +1,13 @@
+def user_space(user, q)
+  user.owned_spaces.first(q) || user.spaces.first(q)
+end
+
 get '/:user_nickname/:space_pretty_title/edit*', auth: :user, :provides => [ :html ] do |user_nn, space_pt, *_|
   unless u = User.first(nickname: user_nn.sanitize)
     pass
   end
 
-  unless @space = u.spaces.first({ pretty_title: space_pt.sanitize })
+  unless @space = user_space(u, { pretty_title: space_pt.sanitize })
     halt 404, "No such space #{space_pt} for user #{u.nickname}"
   end
 
@@ -19,26 +23,27 @@ get '/:user_nickname/:space_pretty_title/settings', auth: :user, :provides => [ 
     pass
   end
 
-  unless @space = u.spaces.first({ pretty_title: space_pt.sanitize })
+  unless @space = user_space(u, { pretty_title: space_pt.sanitize })
     halt 404, "No such space #{space_pt} for user #{u.nickname}"
   end
 
   authorize! :update, @space, message: "You must be an admin of this space to manage it."
 
   @user = current_user
+
   respond_with @space do |f|
     f.html { erb :"/spaces/settings/index" }
   end
 end
 
-get '/:user_nickname/:space_pretty_title*',
+get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   :provides => [ :html, :json ] do |user_nn, space_pt, path|
   unless u = User.first({ nickname: user_nn.sanitize })
     # halt 404, "No such user #{user_nn}."
     pass
   end
 
-  unless s = u.spaces.first({ pretty_title: space_pt.sanitize })
+  unless s = user_space(u, { pretty_title: space_pt.sanitize })
     halt 404, "No such space #{space_pt} for user #{u.nickname}"
   end
 
@@ -46,10 +51,16 @@ get '/:user_nickname/:space_pretty_title*',
     halt 401, "You are not allowed to browse that space."
   end
 
-  path = path.split('/')
+  p = nil
 
-  unless p = s.locate_resource(path)
-    halt 404, "No such page #{path.last} in #{s.title}"
+  if path && !path.empty?
+    path = path.split('/')
+
+    unless p = s.locate_resource(path)
+      halt 404, "No such page #{path.last} in #{s.title}"
+    end
+  else
+    p = s.homepage || s.pages.first
   end
 
   unless can? :browse, p
