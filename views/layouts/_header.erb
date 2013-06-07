@@ -32,7 +32,7 @@
 
     <nav>
       <span class="avatar">
-        <%= gravatar_tag (current_user.gravatar_email || current_user.email), :icon, { html: { rel: "tooltip", title: current_user.nickname } } %>
+        <%= gravatar_tag (current_user.gravatar_email || current_user.email),:icon, { secure: true, html: { rel: "tooltip", title: current_user.nickname } } %>
       </span>
       <a class="icon dashboard <%= nav_highlight 'dashboard' %>" rel="tooltip" title="Your dashboard" href="<%= current_user.dashboard_url %>">Dashboard</a>
 
