@@ -37,7 +37,7 @@ get '/:user_nickname/:space_pretty_title/settings', auth: :user, :provides => [ 
 end
 
 get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
-  :provides => [ :html, :json ] do |user_nn, space_pt, path|
+  :provides => [ :html, :json, :text ] do |user_nn, space_pt, path|
   unless u = User.first({ nickname: user_nn.sanitize })
     # halt 404, "No such user #{user_nn}."
     pass
@@ -52,9 +52,22 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   end
 
   p = nil
+  ext = nil
 
   if path && !path.empty?
     path = path.split('/')
+
+    if path.last =~ /\.[html|json|text]/
+      puts path.last
+      path.last.gsub!(/\.(.+)/, '')
+      ext = $1
+
+      case ext
+      when "html"; content_type :html
+      when "json"; content_type :json
+      when "text"; content_type :text
+      end
+    end
 
     unless p = s.locate_resource(path)
       halt 404, "No such page #{path.last} in #{s.title}"
@@ -74,6 +87,7 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   respond_to do |f|
     f.html { erb  :"pages/pretty", layout: :"layouts/print" }
     f.json { rabl :"pages/show", object: p }
+    f.text { p.content }
   end
 end
 
