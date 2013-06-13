@@ -1,6 +1,7 @@
 [config]
 config/credentials.yml
 config/database.yml
+config/cors.yml
 
 [raw assets]
 public/**/glyphicons*

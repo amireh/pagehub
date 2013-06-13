@@ -37,6 +37,7 @@ gem 'omniauth-github'
 gem 'omniauth-google-oauth2'
 # gem 'omniauth-twitter', '0.0.9'
 gem 'sinatra-can', :require => "sinatra/can"
+gem 'sinatra-cross_origin', :github => 'britg/sinatra-cross_origin', :require => 'sinatra/cross_origin'
 gem 'rabl'
 gem 'sass'
 

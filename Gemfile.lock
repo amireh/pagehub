@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/britg/sinatra-cross_origin.git
+  revision: c10579923c64b65ec7266098f16ae7596a1c6a86
+  specs:
+    sinatra-cross_origin (0.2.0)
+
+GIT
   remote: https://github.com/sinatra/sinatra
   revision: 10cab5f0984609db944d6ed2384353ef1f908905
   specs:
@@ -192,6 +198,7 @@ DEPENDENCIES
   sinatra (= 1.4.0)!
   sinatra-can
   sinatra-contrib!
+  sinatra-cross_origin!
   sinatra-flash
   thin
   uuid

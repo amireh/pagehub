@@ -12,7 +12,7 @@ Bundler.require(:default)
 
 # ----
 # Validating that configuration files exist and are readable...
-config_files = [ 'application', 'database' ]
+config_files = [ 'application', 'database', 'cors' ]
 config_files << 'credentials' unless settings.test?
 config_files.each { |config_file|
   unless File.exists?(File.join($ROOT, 'config', "%s.yml" %[config_file] ))
@@ -41,10 +41,6 @@ configure do
 
   PageHub::Markdown::configure({}, { with_toc_data: true } )
 
-  dbc = settings.database
-  # DataMapper::Logger.new($stdout, :debug)
-  DataMapper.setup(:default, "mysql://#{dbc[:un]}:#{dbc[:pw]}@#{dbc[:host]}/#{dbc[:db]}")
-
   # the configurator should be loaded before the models
   require 'lib/pagehub'
   PageHub::Config.init
@@ -62,16 +58,13 @@ configure do
   require 'controllers/browser'
   require 'controllers/errors'
 
-  DataMapper.finalize
-  DataMapper.auto_upgrade! unless $DB_BOOTSTRAPPING
-
   set :default_preferences, PageHub::Config.defaults
   DefaultPreferences = User.new
   DefaultPreferences.__override_preferences(PageHub::Config.defaults)
 
-  Rabl.configure do |config|
-    config.escape_all_output = true
-  end
+  require 'config/initializers/datamapper'
+  require 'config/initializers/cors'
+  require 'config/initializers/rabl'
 end
 
 configure :production, :development do |app|

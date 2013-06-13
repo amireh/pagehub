@@ -38,6 +38,9 @@ end
 
 get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   :provides => [ :html, :json, :text ] do |user_nn, space_pt, path|
+
+  cross_origin
+
   unless u = User.first({ nickname: user_nn.sanitize })
     # halt 404, "No such user #{user_nn}."
     pass
@@ -63,7 +66,7 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
       ext = $1
 
       case ext
-      when "html"; content_type :html
+      when "html"; content_type :html; @content_only = true
       when "json"; content_type :json
       when "text"; content_type :text
       end
@@ -85,7 +88,13 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   @folder = @page.folder
 
   respond_to do |f|
-    f.html { erb  :"pages/pretty", layout: :"layouts/print" }
+    f.html {
+      if @content_only
+        md @page.content
+      else
+        erb :"pages/pretty", layout: :"layouts/print"
+      end
+    }
     f.json { rabl :"pages/show", object: p }
     f.text { p.content }
   end

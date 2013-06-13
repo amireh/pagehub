@@ -1,0 +1,7 @@
+development:
+  cors: &common
+    allowed_origin: ''
+
+production:
+  cors:
+    <<: *common
