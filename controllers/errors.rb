@@ -42,16 +42,19 @@ error Sinatra::NotFound do
   end
 end
 
-error 400, :provides => [ :json, :html ] do
+error 400, :provides => [ :json, :html, :text ] do
   return if @internal_error_handled
   @internal_error_handled = true
 
   respond_to do |f|
     f.html {
-      session["flash"]["error"] = response.body
+      flash[:error] = response.body
+
       return redirect back
     }
+
     f.json { on_api_error.to_json }
+    f.text { response.body }
   end
 end
 

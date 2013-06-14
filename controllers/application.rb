@@ -91,4 +91,22 @@ get '/explore*' do |domain|
   erb :"explore/index"
 end
 
+post '/markdown/raw', provides: [ :text ] do
+  md, content = nil, request.body.read
+
+  if content.nil? || content.empty?
+    halt 400, "Missing Markdown content."
+  end
+
+  begin
+    md = content.to_markdown
+  rescue Exception => e
+    halt 400, e.message
+  end
+
+  respond_to do |f|
+    f.text { md }
+  end
+end
+
 user do current_user end

@@ -61,7 +61,6 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
     path = path.split('/')
 
     if path.last =~ /\.[html|json|text]/
-      puts path.last
       path.last.gsub!(/\.(.+)/, '')
       ext = $1
 
@@ -100,12 +99,12 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   end
 end
 
-get '/:user_nickname', provides: [ :html ] do |user_nn|
+get '/:user_nickname', provides: [ :text ] do |user_nn|
   unless @user = User.first({ nickname: user_nn.sanitize })
     pass
   end
 
   respond_with @user do |f|
-    f.html { erb :"users/dashboard" }
+    f.text { erb :"users/dashboard" }
   end
 end
