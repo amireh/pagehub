@@ -99,12 +99,12 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   end
 end
 
-get '/:user_nickname', provides: [ :text ] do |user_nn|
+get '/:user_nickname', provides: [ :html ] do |user_nn|
   unless @user = User.first({ nickname: user_nn.sanitize })
     pass
   end
 
   respond_with @user do |f|
-    f.text { erb :"users/dashboard" }
+    f.html { erb :"users/dashboard" }
   end
 end

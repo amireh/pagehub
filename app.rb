@@ -35,7 +35,7 @@ end
 configure do
   config_files.each { |cf| config_file 'config/%s.yml' %[cf] }
 
-  # respond_to :html, :json
+  respond_to :html, :json, :text
 
   use Rack::Session::Cookie, :secret => settings.credentials['cookie']['secret']
 
