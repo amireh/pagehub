@@ -57,3 +57,4 @@ group :test do
 end
 
 gem 'zipruby'
+gem 'puma', '~> 2.7.1'
