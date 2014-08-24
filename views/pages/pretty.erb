@@ -7,12 +7,12 @@
 
 <% if @space %>
   <% @folder ||= @page %>
-  
+
   <%= partial "/spaces/public/_breadcrumbs" if @space.is_on?('publishing.layout.show_breadcrumbs') %>
-  
+
   <% content_for :sidebar do %>
     <%= partial "/spaces/public/_listing" %>
-  <% end %>  
+  <% end %>
 <% end %>
 
 <% if @page.nil? || @page.content.empty? %>
@@ -20,3 +20,17 @@
 <% else %>
   <%= @page.content.to_markdown %>
 <% end %>
+
+<% authors = @page.revisions.map(&:editor).uniq %>
+<% editors = authors - [@page.creator] %>
+
+<footer class="article_info">
+  <p>
+    This page was authored by <%= @page.creator.name %>,
+    and was last updated on <%= ordinalized_date(@page.updated_at) %>.
+
+    <% if editors.any? %>
+      Contributions were also made by <%= editors.map(&:name).join(', ') %>.
+    <% end %>
+  </p>
+</footer>

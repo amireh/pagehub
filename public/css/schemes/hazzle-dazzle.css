@@ -12,7 +12,7 @@ body {
 }
 
 h1 {
-  color: #E94E77;
+  color: #BAE2EE;
 }
 
 h2 {
@@ -21,4 +21,23 @@ h2 {
 
 h3,a, a:visited {
   color: #F0AD11;
+}
+
+blockquote {
+  padding: 5px 15px;
+  background: rgba(0,0,0,0.2);
+  border-left-color: rgba(0,0,0,0.5);
+  /*color: #aaa;*/
+}
+
+code {
+  background: #332c27;
+  border-width: 0;
+  font-size: inherit;
+  font-family: inherit;
+  letter-spacing: 1px;
+}
+
+div.highlight {
+  background-color: #332c27;
 }

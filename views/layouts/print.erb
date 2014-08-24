@@ -19,9 +19,6 @@
   <%= yield_content :js %>
 
   <% scheme = params[:theme] || @space.p('publishing.theme.name') %>
-  <% unless scheme == "None" %>
-    <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
-  <% end %>
 
   <% if params[:embedded] %>
     <style>html { padding: 0 20px; overflow-x: hidden; }</style>
@@ -36,8 +33,11 @@
     </style>
   <% end %>
 
-
   <link href="/css/print.css" rel="stylesheet" type="text/css" />
+  <% unless scheme == "None" %>
+    <link href="/css/schemes/<%= scheme.sanitize %>.css" rel="stylesheet" type="text/css" />
+  <% end %>
+
   <%= yield_content :css %>
 
   <% layout = "" %>
@@ -84,8 +84,7 @@
         <em><%= @space.brief %></em>
         <div class="nav_links">
           <% (@space.p('publishing.navigation_links') || []).each do |e| %>
-            <% puts e.inspect %>
-            <a href="<%= e["uri"] %>"><%= e["title"] %></a>
+            <a target="_blank" href="<%= e["uri"] %>"><%= e["title"] %></a>
           <% end %>
         </div>
       <% end %>

@@ -20,6 +20,9 @@
   padding: 0 0 0 20px;
 }
 .sidebar header { display: none; }
+.sidebar .group_listing > ul {
+  margin-top: 0;
+}
 
 .scope_title {
   padding-bottom: 10px;

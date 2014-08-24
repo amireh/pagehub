@@ -65,6 +65,7 @@ configure do
   require 'config/initializers/datamapper'
   require 'config/initializers/cors'
   require 'config/initializers/rabl'
+  require 'config/initializers/pagehub_markdown'
 end
 
 configure :production, :development do |app|

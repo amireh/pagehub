@@ -55,7 +55,6 @@ code {
 blockquote {
   border-left: 4px solid #DDD;
   padding: 0 15px;
-  color: #777;
   margin: 15px 0;
 }
 
@@ -105,43 +104,55 @@ em.small {
   font-size: 11px;
   font-style: normal;
 }
+
+.page_title em.small {
+  vertical-align: middle;
+}
+
 .scope_title h1 {
   vertical-align: middle;
   font-weight: bold;
 }
 
-  ::-webkit-scrollbar {
-    width:  10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-button:start:decrement,
-  ::-webkit-scrollbar-button:end:increment  {
-    height: 0px;
-    display: block;
-    background-color: transparent;
+::-webkit-scrollbar {
+  width:  12px;
+  height: 12px;
+}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+  height: 10px;
+  display: block;
+  background-color: rgba(0,0,0,0.1);
 
-  }
-  ::-webkit-scrollbar-track-piece  {
-    background-color: rgba(0,0,0,0.05);
-    -webkit-border-radius: $scrollbar-radius;
+}
+::-webkit-scrollbar-track-piece  {
+  background-color: rgba(0,0,0,0.05);
+  -webkit-border-radius: $scrollbar-radius;
 
-  }
-  ::-webkit-scrollbar-thumb:vertical {
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255,255,255,0.075);
-    -webkit-border-radius: $scrollbar-radius;
-    &:hover {
-      background-color: rgba(0,0,0,0.35);
-    }
-  }
+}
+::-webkit-scrollbar-thumb:vertical {
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255,255,255,0.075);
+  -webkit-border-radius: $scrollbar-radius;
+}
 
-  ::-webkit-scrollbar-thumb:horizontal {
-    width: 30px;
-    background-color: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255,255,255,0.075);
-    -webkit-border-radius: $scrollbar-radius;
-  }
+::-webkit-scrollbar-thumb:vertical,
+::-webkit-scrollbar-thumb:horizontal {
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
+::-webkit-scrollbar-thumb:vertical:hover,
+::-webkit-scrollbar-thumb:horizontal:hover {
+  background-color: rgba(0,0,0,0.35);
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  width: 30px;
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255,255,255,0.075);
+  -webkit-border-radius: $scrollbar-radius;
+}
 
 #jumpers a {
   text-decoration: none;
@@ -164,4 +175,54 @@ a[href="#top"] {
   text-decoration: none;
   opacity: 0.5;
   z-index: 10;
+}
+
+
+.content table {
+  padding: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+.content table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+.content table tr:nth-child(2n) {
+  background-color: #f4f4f4;
+}
+.content table tr th {
+  font-weight: bold;
+}
+.content table tr th,
+.content table tr td {
+  border: 1px solid #ccc;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+.content table tr th>:first-child,
+.content table tr td>:first-child {
+  margin-top: 0;
+}
+.content table tr th>:last-child,
+.content table tr td>:last-child {
+  margin-bottom: 0;
+}
+
+div.highlight {
+  padding: 15px;
+}
+
+div.highlight > pre {
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+}
+
+footer.article_info {
+  font-style: italic;
+  font-size: small;
 }

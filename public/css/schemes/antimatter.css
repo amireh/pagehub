@@ -1,8 +1,8 @@
 body.antimatter {
   background: #111;
   color: #fff;
-  /*font-family: monospace;*/
-  font-size: 12px;
+    font-family: "Avenir-Webfont", "Avenir", "Droid Sans", "DroidSansRegular", Corbel, Tahoma, Geneva, sans-serif;
+  line-height: 1.5em;
 }
 
 h1 {
@@ -51,4 +51,12 @@ hr {
 }
 .easy .sidebar {
   border-left: 1px solid #293338;
+}
+
+div.highlight {
+  background: #000;
+}
+
+blockquote {
+  color: #777;
 }

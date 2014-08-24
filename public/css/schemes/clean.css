@@ -1,6 +1,7 @@
 body {
   background: #FFF;
   color: #615B4E;
+  line-height: 21px;
 }
 
 h1,h2 {
@@ -69,3 +70,14 @@ em.small {
   color: #777;
 }
 
+div.highlight {
+  background: #f4f4f4;
+}
+
+blockquote {
+  color: #777;
+}
+
+pre {
+  line-height: 18px;
+}

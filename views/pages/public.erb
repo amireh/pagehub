@@ -2,7 +2,7 @@
 
 <h2>Public Pages</h2>
 
-<p>Here's a list of all the pages you've currently shared. 
+<p>Here's a list of all the pages you've currently shared.
   Clicking on them will take you to the public link that you can share with others.</p>
 
 <ol>
@@ -19,7 +19,6 @@
 </ol>
 
 <% if false %>
-
   <h3>Group Shares</h3>
   <% current_user.groups.each do |g| %>
     <% user_group_pages = g.pages.all({ user_id: current_user.id }) %>

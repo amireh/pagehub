@@ -14,4 +14,4 @@ exclude
 .sass-cache
 
 [build]
-/public/js/compiled
+# /public/js/compiled

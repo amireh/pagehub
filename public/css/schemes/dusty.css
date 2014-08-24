@@ -31,7 +31,7 @@ hr {
   padding-bottom: 0;
 }
 
-.dusty .highlight pre,
+.dusty .highlight,
 .dusty code {
   background: rgba(205,160,95, 0.075);
   border-color: #CDA05F;
@@ -40,7 +40,7 @@ hr {
 .fluid .sidebar {
   text-shadow: 0 1px 0 #fff;
   background: rgba(205,160,95, 0.075);
-  border-right: 1px solid #CCC;  
+  border-right: 1px solid #CCC;
 }
 
 .fluid .scope_title {

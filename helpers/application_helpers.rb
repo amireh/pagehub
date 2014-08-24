@@ -44,7 +44,7 @@ module PageHub
       day   = DataMapper::Inflector.ordinalize(date.day)
       year  = date.year
 
-      "the #{day} of #{month}., #{year}"
+      "the #{day} of #{month}, #{year}"
     end
   end
 end
