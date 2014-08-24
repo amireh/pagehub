@@ -109,4 +109,10 @@ post '/markdown/raw', provides: [ :text ] do
   end
 end
 
+if settings.development? && !ENV['OPTIMIZED']
+  get '/public/js/compiled/app.js' do
+    File.read(settings.root + '/app/assets/javascripts/main.js')
+  end
+end
+
 user do current_user end

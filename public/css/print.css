@@ -118,41 +118,45 @@ em.small {
   width:  12px;
   height: 12px;
 }
+
 ::-webkit-scrollbar-button:start:decrement,
 ::-webkit-scrollbar-button:end:increment  {
-  height: 10px;
+  height: 12px;
+  width: 12px;
   display: block;
-  background-color: rgba(0,0,0,0.1);
-
+  background-color: rgba(0,0,0,0.25);
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.5) inset;
 }
+
 ::-webkit-scrollbar-track-piece  {
   background-color: rgba(0,0,0,0.05);
-  -webkit-border-radius: $scrollbar-radius;
+  -webkit-border-radius: 0;
 
 }
 ::-webkit-scrollbar-thumb:vertical {
   height: 30px;
-  background-color: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255,255,255,0.075);
-  -webkit-border-radius: $scrollbar-radius;
-}
-
-::-webkit-scrollbar-thumb:vertical,
-::-webkit-scrollbar-thumb:horizontal {
-  border: 1px solid rgba(255,255,255,0.5);
-}
-
-::-webkit-scrollbar-thumb:vertical:hover,
-::-webkit-scrollbar-thumb:horizontal:hover {
-  background-color: rgba(0,0,0,0.35);
 }
 
 ::-webkit-scrollbar-thumb:horizontal {
   width: 30px;
-  background-color: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255,255,255,0.075);
-  -webkit-border-radius: $scrollbar-radius;
 }
+
+::-webkit-scrollbar-thumb:vertical,
+::-webkit-scrollbar-thumb:horizontal {
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid transparent;
+  -webkit-border-radius: 0;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.5) inset;
+}
+
+::-webkit-scrollbar-thumb:vertical:hover,
+::-webkit-scrollbar-thumb:horizontal:hover,
+::-webkit-scrollbar-button:start:decrement:hover,
+::-webkit-scrollbar-button:end:increment:hover {
+  background-color: rgba(0,0,0,0.35);
+}
+
 
 #jumpers a {
   text-decoration: none;
@@ -213,16 +217,20 @@ a[href="#top"] {
 }
 
 div.highlight {
-  padding: 15px;
 }
 
 div.highlight > pre {
-  padding: 0;
+  padding: 15px;
+  /*padding: 0;*/
   margin: 0;
   overflow: auto;
 }
 
 footer.article_info {
-  font-style: italic;
-  font-size: small;
+  font-size: 11px;
+  font-style: normal;
+}
+
+code, pre {
+  font-family: Monospace, monospace, courier;
 }

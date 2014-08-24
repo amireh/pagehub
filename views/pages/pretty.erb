@@ -23,11 +23,12 @@
 
 <% authors = @page.revisions.map(&:editor).uniq %>
 <% editors = authors - [@page.creator] %>
+<% update_timestamp = @page.updated_at || @page.created_at %>
 
 <footer class="article_info">
   <p>
     This page was authored by <%= @page.creator.name %>,
-    and was last updated on <%= ordinalized_date(@page.updated_at) %>.
+    and was last updated on <%= ordinalized_date(update_timestamp) %>.
 
     <% if editors.any? %>
       Contributions were also made by <%= editors.map(&:name).join(', ') %>.

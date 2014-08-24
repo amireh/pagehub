@@ -6,8 +6,6 @@
   <meta charset="UTF-8">
   <title><%= (yield_with_default(:title) { AppTitle }).force_encoding('UTF-8') %></title>
 
-  <link href="/css/code_highlighting.css" rel="stylesheet" type="text/css" />
-
   <% # I'm not really proud of the following but it's the quickest way to
      # get things done: we need the preferences of the author of the page,
      # not the current (or none) user, and Helpers::preferences uses either
@@ -109,7 +107,5 @@
   </div>
 
   <div id="bottom"></div>
-  <%= partial "layouts/_google_analytics" %>
 </body>
-
 </html>
