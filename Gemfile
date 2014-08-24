@@ -28,8 +28,8 @@ gem 'addressable'
 gem 'diff-lcs', '1.1.3'
 gem 'uuid'
 gem 'gravatarify', ">= 3.1.0"
-gem 'pagehub-markdown', '>=0.1.3', :require => 'pagehub-markdown'
-# gem 'pagehub-markdown', '>=0.1.3', :require => 'pagehub-markdown', path: '~/Workspace/Projects/pagehub-markdown'
+gem 'pagehub-markdown', '>= 0.2.0', :require => 'pagehub-markdown'
+# gem 'pagehub-markdown', :require => 'pagehub-markdown', path: '~/Workspace/Projects/pagehub-markdown'
 gem "pony"
 gem 'omniauth'
 gem 'omniauth-facebook'

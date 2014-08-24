@@ -86,7 +86,7 @@ footer.article_info {
   color: #777;
 }
 
-/* Trac pygments theme */
+/* vs pygments theme */
 .highlight .hll { background-color: #ffffcc }
 .highlight  { background: #ffffff; }
 .highlight .c { color: #008000 } /* Comment */
@@ -121,5 +121,4 @@ footer.article_info {
 .highlight .sr { color: #a31515 } /* Literal.String.Regex */
 .highlight .s1 { color: #a31515 } /* Literal.String.Single */
 .highlight .ss { color: #a31515 } /* Literal.String.Symbol */
-
-/* Trac pygments theme */
+/* vs pygments theme */
