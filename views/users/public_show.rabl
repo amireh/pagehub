@@ -15,7 +15,6 @@ node(:nr_pages) do |u| u.pages.count end
 node(:nr_folders) do |u| u.folders.count end
 
 node(:spaces) do
-  puts @user.public_spaces(current_user).inspect
   partial "/spaces/index", object: @user.public_spaces(current_user)
 end
 

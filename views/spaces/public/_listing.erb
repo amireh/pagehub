@@ -1,40 +1,11 @@
 <% no_title ||= false %>
 <% show_homepages ||= @space.is_on?("publishing.layout.show_homepages_in_sidebar") %>
 <% coll ||= nil %>
-<% def dump_page(p) %>
-  <li>
-  <% if @page && @page.id == p.id %>
-    <span class="selected"><%= p.title %></span>
-  <% else %>
-    <a href="<%= p.public_url %>"><%= p.title %></a>
-  <% end %>
-  </li>
-<% end %>
-
-<% def dump_folder(f) %>
-  <ol>
-    <li <%= 'class="selected"' if @folder && @folder.id == f.id %>>
-      <strong><a href="<%= f.public_url %>"><%= f.title %></a></strong></li>
-
-    <% if f.pages.empty? %>
-      <li><em>This folder is empty.</em></li>
-    <% else %>
-      <% f.pages({ conditions: { browsable: true }, :order => [ :title.asc ] }).each do |p| %>
-        <% dump_page(p) %>
-      <% end %>
-    <% end %>
-
-    <% f.folders.all({ browsable: true, folder_id: f.id }).each { |cf| dump_folder(cf) } %>
-  </ol>
-<% end %>
 
 <section class="group_listing">
   <% unless no_title %><header><h1>Navigation</h1></header><% end %>
   <ul>
-    <%# @group.browsable_pages({ folder: nil }).each { |p| dump_page p } %>
-    <%# @group.browsable_folders.all({ folder_id: nil }).each { |tlf| dump_folder(tlf) } %>
-
-  <% 1.times do
+    <%
     traverse_space(@space, {
       on_page: lambda { |p| %>
         <% return if !show_homepages && p.is_homepage? %>
@@ -50,12 +21,14 @@
       on_folder: lambda { |f| %>
         <% selected = @folder && @folder.id == f.id ? 'class="selected"' : '' %>
         <% is_empty = f.empty?(:public) %>
+        <% folder_title = f.is_root_folder? ? f.space.title : f.title %>
+
         <li <%= 'class="root-folder"' if f.is_root_folder? %>>
           <label>
             <% if f.pages.all({ browsable:true }).empty? || !f.has_homepage? %>
-              <strong><%= f.title %></strong>
+              <strong><%= folder_title %></strong>
             <% else %>
-              <strong><a <%= selected %> href="<%= f.href %>"><%= f.title %></a></strong>
+              <strong><a <%= selected %> href="<%= f.href %>"><%= folder_title %></a></strong>
             <% end %>
           </label>
           <ol>
@@ -68,6 +41,6 @@
         </ol></li>
       <% }
     }, { browsable: true }, coll)
-   end %>
+   %>
   </ul>
 </section>

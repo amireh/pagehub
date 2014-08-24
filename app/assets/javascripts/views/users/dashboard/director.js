@@ -1,5 +1,4 @@
-define('views/users/dashboard/director',
-[
+define([
   'backbone',
   'jquery',
   'models/user',
