@@ -1,0 +1,26 @@
+development:
+  oauth: &common
+    host: 'http://pagehub.kodoware.com'
+    facebook:
+      key: ''
+      secret: ''
+    github:
+      key:    ''
+      secret: ''
+    google:
+      key: ''
+      secret: ''
+
+production:
+  oauth:
+    <<: *common
+    host: 'https://www.pagehub.org'
+    facebook:
+      key:    ''
+      secret: ''
+    github:
+      key:    ''
+      secret: ''
+    google:
+      key: ''
+      secret: ''

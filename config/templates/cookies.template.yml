@@ -1,0 +1,13 @@
+development:
+  cookies: &common
+    domain: 'localhost'
+    path:   '/'
+    key:    'pagehub.session'
+    secret: ''
+    secure: false
+
+production:
+  cookies:
+    <<: *common
+    domain: '.pagehub.org'
+    secret: ''

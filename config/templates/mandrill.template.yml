@@ -1,0 +1,8 @@
+development:
+  mandrill: &common
+    key: ''
+
+production:
+  mandrill:
+    <<: *common
+    key: ''

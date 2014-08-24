@@ -1,0 +1,17 @@
+development:
+  courier: &common
+    dispatcher:     "mandrill" # mandrill or Pony
+    name:           "Pibi Courier"
+    address:        "courier@pibiapp.com"
+    subject_prefix: "[Pibi] "
+    bugs_address:   "bugs@pibiapp.com"
+    app_url:        "http://pibi.localhost"
+    api_url:        "http://api.pibi.localhost"
+    cloud_url:      "http://cloud.pibi.localhost"
+
+production:
+  courier:
+    <<: *common
+    app_url:        "https://www.pibiapp.com"
+    api_url:        "https://api.pibiapp.com"
+    cloud_url:      "https://cloud.pibiapp.com"
