@@ -12,6 +12,7 @@ exclude
 /dumps
 /tmp
 .sass-cache
+/.ruby-version
 
 [build]
 # /public/js/compiled
