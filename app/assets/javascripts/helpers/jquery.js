@@ -64,20 +64,4 @@ define('helpers/jquery', ['jquery'], function($) {
 
       return json;
   };
-
-  Array.prototype.has_value = function(v) {
-    for (var i = 0; i < this.length; ++i)
-      if (this[i] == v) return true;
-
-    return false;
-  }
-
-  Array.prototype.pop_value = function(v) {
-    var index = -1;
-    while ((index = this.indexOf(v)) != -1 ) {
-      this.splice(index, 1);
-    }
-
-    return this;
-  }
-})
+});

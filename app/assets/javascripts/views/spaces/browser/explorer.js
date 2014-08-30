@@ -1,27 +1,32 @@
-define('views/spaces/browser/explorer',
-[
+define([
   'jquery',
+  'underscore',
   'backbone',
   'views/spaces/browser/_impl',
   'views/spaces/browser/drag_manager',
   'pagehub'
 ],
-function( $, Backbone, BrowserImplementation, DragManager, UI ) {
+function( $, _, Backbone, BrowserImplementation, DragManager, UI ) {
 
-  var
-  init_collapsed_setting = function(object) {
+  var init_collapsed_setting = function(object) {
     if (!get_collapsed_setting(object)) {
       object.state.current_user.set('preferences.runtime.spaces.' + object.state.space.get('id'), { collapsed: [] });
     }
 
     return true;
-  },
-  get_collapsed_setting = function(object) {
-    return object.state.current_user.get('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed');
-  },
-  set_collapsed_setting = function(object, value) {
-    return object.state.current_user.set('preferences.runtime.spaces.' + object.state.space.get('id') + '.collapsed', value);
-  }
+  };
+
+  var get_collapsed_setting = function(object) {
+    var space_id = object.state.space.get('id');
+    var value = object.state.current_user.get('preferences.runtime.spaces.' + space_id + '.collapsed');
+    return _.uniq(value);
+  };
+
+  var set_collapsed_setting = function(object, value) {
+    var space_id = object.state.space.get('id');
+    var collapsed = _.uniq(value);
+    return object.state.current_user.set('preferences.runtime.spaces.' + space_id + '.collapsed', collapsed);
+  };
 
   return BrowserImplementation.extend({
     events: {
@@ -51,11 +56,11 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
       // }
 
       if (this.workspace.current_folder) {
-        this.highlight_current_folder(this.workspace.current_folder)
+        this.highlight_current_folder(this.workspace.current_folder);
       }
 
       $(".pages").each(function(listing) {
-        if ($(listing).children(":visible").length == 0) {
+        if ($(listing).children(":visible").length === 0) {
           $(listing).find('.empty-folder').show();
         }
       });
@@ -136,7 +141,7 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
     collapse: function(evt) {
       var source = $(evt.target);
 
-      if (source.attr("data-collapse") == null) {
+      if (source.attr("data-collapse") === null) {
         source = source.parents(".folder:first").find('[data-collapse]:first');
       }
 
@@ -144,7 +149,9 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
     },
 
     __expand: function(el) {
-      var folder_id = parseInt(el.parent().attr("id").replace('folder_', ''));
+      var folder_id = parseInt(el.parent().attr("id").replace('folder_', ''), 10);
+      var collapsed = get_collapsed_setting(this);
+      var folder_index = collapsed.indexOf(folder_id);
 
       el
       .prop("data-collapsed", false)
@@ -153,7 +160,10 @@ function( $, Backbone, BrowserImplementation, DragManager, UI ) {
       .parent()
         .removeClass("collapsed");
 
-      set_collapsed_setting(this, get_collapsed_setting(this).pop_value(folder_id));
+      if (folder_index > -1) {
+        collapsed.splice(folder_index, 1);
+        set_collapsed_setting(this, collapsed);
+      }
 
       return this;
     },
