@@ -1,3 +1,0 @@
-[submodule "public/js/codemirror-3.0"]
-  path = public/js/codemirror-3.0
-  url = git@github.com:amireh/codemirror
