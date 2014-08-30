@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title><% __title = yield_with_default(:title) do %><%= AppTitle %><% end %><%= __title %></title>
 
-  <link href="/assets/stylesheets/app.css" rel="stylesheet" type="text/css" />
+  <link href="/css/compiled/app.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="<%= logged_in? ? 'member' : 'guest' %> light">

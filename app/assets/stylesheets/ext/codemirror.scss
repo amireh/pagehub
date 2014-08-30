@@ -1,0 +1,51 @@
+@import "skins/base";
+
+.CodeMirror {
+  color: inherit;
+  background: transparent;
+
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.CodeMirror-gutters {
+  background: transparent;
+  border-right: none;
+}
+
+// "Neat" theme -- theme/neat.css
+.cm-s-neat span.cm-comment { color: #a86; }
+.cm-s-neat span.cm-keyword { line-height: 1em; font-weight: bold; color: blue; }
+// .cm-s-neat span.cm-string { color: #a22; }
+.cm-s-neat span.cm-string { color: #E2403D; }
+.cm-s-neat span.cm-builtin { line-height: 1em; font-weight: bold; color: #077; }
+.cm-s-neat span.cm-special { line-height: 1em; font-weight: bold; color: #0aa; }
+.cm-s-neat span.cm-variable { color: black; }
+.cm-s-neat span.cm-number, .cm-s-neat span.cm-atom { color: #3a3; }
+.cm-s-neat span.cm-meta {color: #555;}
+.cm-s-neat span.cm-link { color: #3a3; }
+
+.cm-s-neat .CodeMirror-activeline-background {
+  background-color: rgba(0,0,0,0.025);
+}
+
+.cm-s-neat .CodeMirror-matchingbracket {
+  // outline:1px solid grey;
+  // color: black !important;
+}
+
+.CodeMirror-ruler {
+  border-left-color: #eee;
+}
+
+.CodeMirror-foldmarker {
+  color: inherit;
+  text-shadow: $active_fg 0px 0px 2px;
+  margin: 0 5px;
+  font-family: arial;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.CodeMirror-selected { background: #d9d9d9; }
+.CodeMirror-focused .CodeMirror-selected { background: #ffa; }

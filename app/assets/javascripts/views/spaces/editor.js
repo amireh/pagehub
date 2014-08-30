@@ -1,10 +1,49 @@
-define('views/spaces/editor',
-[ 'jquery', 'backbone', 'codemirror' ],
-function($, Backbone, CodeMirror) {
+define([
+  'jquery',
+  'backbone',
+  'cm/lib/codemirror',
+  'cm/addon/fold/foldcode',
+  'cm/addon/fold/foldgutter',
+  'cm/addon/fold/brace-fold',
+  'cm/addon/fold/markdown-fold',
+  'cm/addon/dialog/dialog',
+  'cm/addon/search/searchcursor',
+  'cm/addon/search/search',
+  'cm/addon/selection/active-line',
+  'cm/addon/display/rulers',
+  'cm/keymap/emacs',
+  'cm/keymap/sublime',
+  'cm/keymap/vim',
+  'cm/mode/markdown/markdown',
+  'cm/mode/gfm/gfm',
+  'cm/mode/lua/lua',
+  'cm/mode/htmlembedded/htmlembedded',
+  'cm/mode/htmlmixed/htmlmixed',
+  'cm/mode/xml/xml',
+  'cm/mode/shell/shell',
+  'cm/mode/ruby/ruby',
+  'cm/mode/javascript/javascript',
+  'cm/mode/clike/clike',
+  'cm/mode/coffeescript/coffeescript',
+  'cm/mode/css/css',
+  'cm/mode/diff/diff',
+  'cm/mode/erlang/erlang',
+  'cm/mode/go/go',
+  'cm/mode/http/http',
+  'cm/mode/nginx/nginx',
+  'cm/mode/perl/perl',
+  'cm/mode/php/php',
+  'cm/mode/puppet/puppet',
+  'cm/mode/python/python',
+  'cm/mode/sass/sass',
+  'cm/mode/sql/sql',
+  'cm/mode/yaml/yaml',
+], function($, Backbone, CodeMirror) {
 
   var CodeMirror_aliases = {
-    "shell": [ "bash" ]
+    'shell': [ 'bash', 'sh' ]
   };
+
   var editor_disabled = false;
   var create_editor = function(textarea_id, opts) {
     opts = opts || {};
@@ -21,6 +60,8 @@ function($, Backbone, CodeMirror) {
       }
     }
 
+    var RULER = 80;
+
     // mxvt.markdown.setup_bindings();
     var editor = CodeMirror.fromTextArea(document.getElementById(textarea_id), $.extend({
       mode: "gfm",
@@ -28,9 +69,16 @@ function($, Backbone, CodeMirror) {
       matchBrackets: true,
       theme: "neat",
       tabSize: 2,
+      indentUnit: 2,
       gutter: false,
+      lineNumbers: false,
+      foldGutter: true,
+      gutters: [ "CodeMirror-foldgutter" ],
       autoClearEmptyLines: false,
       lineWrapping: true,
+      styleActiveLine: true,
+      rulers: [ RULER ],
+      keyMap: "sublime",
       onKeyEvent: function(editor,e) {
         if (editor_disabled) {
           e.preventDefault();
@@ -39,8 +87,7 @@ function($, Backbone, CodeMirror) {
         } else {
           return false;
         }
-      }
-      // keyMap: "mxvt",
+      },
     }, opts));
 
     return editor;

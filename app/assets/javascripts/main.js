@@ -24,7 +24,8 @@ requirejs.config({
     'animable_view':          'views/shared/animable_view',
     'canvas-loader':          'vendor/heartcode-canvasloader-min',
 
-    'codemirror': 'vendor/codemirror-compressed',
+    // 'codemirror': 'vendor/codemirror-compressed',
+    'cm': 'vendor/codemirror-4.5',
   },
 
   shim: {
@@ -60,9 +61,9 @@ requirejs.config({
 
     'Handlebars': { exports: 'Handlebars' },
 
-    'codemirror': {
-      exports: 'CodeMirror'
-    }
+    // 'codemirror': {
+    //   exports: 'CodeMirror'
+    // }
   },
 
   hbs: {
@@ -85,7 +86,7 @@ require([
   'md5',
   'shortcut',
 
-  'codemirror',
+  // 'codemirror',
 
   'models/folder',
   'models/page',

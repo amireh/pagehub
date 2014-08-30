@@ -5,10 +5,16 @@ module.exports = function(grunt) {
   'use strict';
 
   var jsRoot = path.join(__dirname, 'app', 'assets', 'javascripts');
+  var cssRoot = path.join(__dirname, 'app', 'assets', 'stylesheets');
 
   grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-sass');
 
   grunt.initConfig({
+    meta: {
+      cssRoot: cssRoot
+    },
+
     requirejs: {
       compile: {
         options: {
@@ -36,6 +42,21 @@ module.exports = function(grunt) {
 
           name: "main",
           include: [ 'main' ]
+        }
+      }
+    },
+
+    sass: {
+      dist: {
+        options: {
+          style: 'expanded',
+          includePaths: [
+            cssRoot
+          ],
+          outputStyle: 'nested'
+        },
+        files: {
+          'public/css/compiled/app.css': '<%= meta.cssRoot %>/app.scss',
         }
       }
     }

@@ -1,10 +1,15 @@
 @import "fonts";
 @import "vendor/jquery-ui/pagehub-jqueryui/jquery-ui-1.10.1.custom";
 @import "vendor/bootstrap/bootstrap";
-@import "vendor/jquery.gridster";
+// @import "vendor/jquery.gridster";
 @import "icons";
+// @import "codemirror";
+@import "vendor/codemirror";
+@import "vendor/codemirror/addon/search/match_highlighter";
+@import "../javascripts/vendor/codemirror-4.5/addon/dialog/dialog";
+@import "../javascripts/vendor/codemirror-4.5/addon/fold/foldgutter";
 @import "code_highlighting";
-@import "codemirror";
+@import "ext/codemirror";
 @import "revisions";
 @import "settings";
 @import "dashboard";
