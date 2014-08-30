@@ -1,5 +1,4 @@
-define('views/spaces/resource_actions',
-[ 'backbone', 'models/folder', 'pagehub', 'shortcut' ],
+define([ 'backbone', 'models/folder', 'pagehub', 'shortcut' ],
 function(Backbone, Folder, UI, Shortcut) {
   return Backbone.View.extend({
     el: $("#pages .actions"),
@@ -17,8 +16,8 @@ function(Backbone, Folder, UI, Shortcut) {
 
       this.$el.find('#new_page').attr("href", this.space.get('media').pages.url + '/new');
 
-      Shortcut.add("ctrl+alt+c", function() { view.create_page(); })
-      Shortcut.add("ctrl+alt+f", function() { view.create_folder(); })
+      Shortcut.add("ctrl+alt+c", function() { view.create_page(); });
+      Shortcut.add("ctrl+alt+f", function() { view.create_folder(); });
     },
 
     consume: function(e) {
@@ -29,16 +28,15 @@ function(Backbone, Folder, UI, Shortcut) {
     create_page: function(e) {
       if (e) { e.preventDefault(); }
 
-      // UI.status.show("Creating a new page...", "pending");
-      var folder  = this.workspace.current_folder || this.space.root_folder();
-
-      folder.pages.add({ folder_id: folder.get('id') }, { silent: true });
-      var page = _.last(folder.pages.models);
+      var workspace = this.workspace;
+      var folder  = workspace.current_folder || this.space.root_folder();
+      var page = folder.pages.push({ folder_id: folder.get('id') }, { silent: true });
 
       page.save({}, {
         wait: true,
         success: function() {
           page.collection.trigger('add', page);
+          workspace.trigger('load_page', page);
           UI.status.show("Created!", "good");
         }
       });
@@ -107,5 +105,5 @@ function(Backbone, Folder, UI, Shortcut) {
 
       return true;
     }
-  })
-})
+  });
+});

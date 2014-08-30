@@ -72,4 +72,6 @@ module.exports = function(grunt) {
 
     fs.symlinkSync(rawJsPath, compiledJsPath);
   });
+
+  grunt.registerTask('build', [ 'requirejs', 'sass' ]);
 };

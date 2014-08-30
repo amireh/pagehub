@@ -15,4 +15,5 @@ exclude
 /.ruby-version
 
 [build]
-# /public/js/compiled
+/public/js/compiled
+/public/css/compiled
