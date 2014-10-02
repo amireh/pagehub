@@ -2,6 +2,10 @@ def user_space(user, q)
   user.owned_spaces.first(q) || user.spaces.first(q)
 end
 
+def strip_trailing_slash!(str)
+  str.gsub!(/\/$/, '')
+end
+
 get '/:user_nickname/:space_pretty_title/edit*', auth: :user, :provides => [ :html ] do |user_nn, space_pt, *_|
   unless u = User.first(nickname: user_nn.sanitize)
     pass
@@ -36,15 +40,21 @@ get '/:user_nickname/:space_pretty_title/settings', auth: :user, :provides => [ 
   end
 end
 
-get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
+get %r{([^\/]{3,})\/([^\/]{3,})(\/.*)?$},
   :provides => [ :html, :json, :text ] do |user_nn, space_pt, path|
 
   cross_origin
+
+  strip_trailing_slash! user_nn
+
+  puts "Looking up: #{user_nn} => #{space_pt} => #{path}"
 
   unless u = User.first({ nickname: user_nn.sanitize })
     # halt 404, "No such user #{user_nn}."
     pass
   end
+
+  strip_trailing_slash! space_pt
 
   unless s = user_space(u, { pretty_title: space_pt.sanitize })
     halt 404, "No such space #{space_pt} for user #{u.nickname}"
@@ -58,7 +68,9 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   ext = nil
 
   if path && !path.empty?
-    path = path.split('/')
+    strip_trailing_slash! path
+
+    path = path.split('/').reject(&:empty?).map { |fragment| fragment.gsub(/\/$/, '') }
 
     if path.last =~ /\.[html|json|text]/
       path.last.gsub!(/\.(.+)/, '')
@@ -99,7 +111,7 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.+)?$},
   end
 end
 
-get '/:user_nickname', provides: [ :html ] do |user_nn|
+get '/:user_nickname*', provides: [ :html ] do |user_nn, *garbage|
   unless @user = User.first({ nickname: user_nn.sanitize })
     pass
   end
