@@ -47,8 +47,6 @@ get %r{([^\/]{3,})\/([^\/]{3,})(\/.*)?$},
 
   strip_trailing_slash! user_nn
 
-  puts "Looking up: #{user_nn} => #{space_pt} => #{path}"
-
   unless u = User.first({ nickname: user_nn.sanitize })
     # halt 404, "No such user #{user_nn}."
     pass
