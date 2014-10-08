@@ -597,9 +597,7 @@ ol.listlike {
 
   /*overflow: hidden;*/
 
-  @include webkit-scrollbars();
-
-
+  // @include webkit-scrollbars();
 }
 
 body.fluid {
