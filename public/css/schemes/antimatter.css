@@ -34,14 +34,6 @@ hr {
   border-color: #222;
 }
 
-.antimatter ::-webkit-scrollbar-track-piece  {
-  background-color: rgba(0,0,0,1);
-}
-.antimatter ::-webkit-scrollbar-thumb:vertical {
-  background-color: #293338;
-  border: 1px solid rgba(0,0,0,0.125);
-}
-
 .fluid .scope_title {
   background: #293338;
   /*box-shadow: 0 0 10px 2px white inset;*/

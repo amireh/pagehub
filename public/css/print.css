@@ -114,50 +114,6 @@ em.small {
   font-weight: bold;
 }
 
-::-webkit-scrollbar {
-  width:  12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-button:start:decrement,
-::-webkit-scrollbar-button:end:increment  {
-  height: 12px;
-  width: 12px;
-  display: block;
-  background-color: rgba(0,0,0,0.25);
-  border: 1px solid transparent;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.5) inset;
-}
-
-::-webkit-scrollbar-track-piece  {
-  background-color: rgba(0,0,0,0.05);
-  -webkit-border-radius: 0;
-
-}
-::-webkit-scrollbar-thumb:vertical {
-  height: 30px;
-}
-
-::-webkit-scrollbar-thumb:horizontal {
-  width: 30px;
-}
-
-::-webkit-scrollbar-thumb:vertical,
-::-webkit-scrollbar-thumb:horizontal {
-  background-color: rgba(0, 0, 0, 0.25);
-  border: 1px solid transparent;
-  -webkit-border-radius: 0;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.5) inset;
-}
-
-::-webkit-scrollbar-thumb:vertical:hover,
-::-webkit-scrollbar-thumb:horizontal:hover,
-::-webkit-scrollbar-button:start:decrement:hover,
-::-webkit-scrollbar-button:end:increment:hover {
-  background-color: rgba(0,0,0,0.35);
-}
-
-
 #jumpers a {
   text-decoration: none;
 }
