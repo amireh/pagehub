@@ -34,15 +34,16 @@ namespace :pagehub do
       end
     end
 
+    users = nil
     user_ids = ENV['USER_IDS'].to_s.split(',').map(&:strip).reject(&:empty?)
     path = ENV['OUT'] || "#{$ROOT}/dumps/#{Time.now.strftime("%Y.%m.%d")}"
     writer = Writer.new(path)
 
-
-    users = if user_ids.any?
-      User.all(id: Array(user_ids))
+    if user_ids.any?
+      users = User.all(id: Array(user_ids))
     else
-      User.all
+      users = User.all
+      user_ids = users.map(&:id)
     end
 
     puts "Exporting data for #{users.count} users."
